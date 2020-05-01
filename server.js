@@ -56,12 +56,3 @@ const port = process.env.PORT || 8080
 app.listen(port, function() {
   console.log('Server started at port: ' + port)
 })
-
-async function test() {
-  const sftp = new client()
-  await sftp.connect(config)
-  await sftp.put
-  sftp.end()
-}
-
-test()
