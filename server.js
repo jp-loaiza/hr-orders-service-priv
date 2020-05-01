@@ -13,7 +13,7 @@ const config = {
   host: SFTP_HOST,
   port: Number(SFTP_PORT),
   username: SFTP_USERNAME,
-  privateKey: Buffer.from(SFTP_PRIVATE_KEY,'base64')
+  privateKey: SFTP_PRIVATE_KEY
 }
 
 const app = express()
@@ -24,6 +24,17 @@ app.use(bodyParser.json())
 
 app.get('/', async function(_, res) {
   res.send('ok')
+})
+
+app.get('/health', async function(_, res) {
+  const sftp = new client()
+  await sftp.connect({
+    ...config,
+    privateKey: Buffer.from(config.privateKey,'base64')
+  })
+  await sftp.list(SFTP_INCOMING_ORDERS_PATH)
+  sftp.end()
+  res.json('ok')
 })
 
 app.get('/list', async function(req, res) {
