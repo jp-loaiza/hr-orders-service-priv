@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hr-orders-service
+  name: hr-orders-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hr-orders-service
+  template:
+    metadata:
+      labels:
+        app: hr-orders-service
+    spec:
+      containers:
+      - name: hr-orders-service-container
+        image: us.icr.io/hrretailplatform/hr-orders-service:0.0.1
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 1500m
+            memory: 3Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        env:
+        - name: SFTP_HOST
+          valueFrom:
+            secretKeyRef:
+              key: SFTP_HOST
+              name: hr-orders-service
+        - name: SFTP_PORT
+          valueFrom:
+            secretKeyRef:
+              key: SFTP_PORT
+              name: hr-orders-service
+        - name: SFTP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: SFTP_USERNAME
+              name: hr-orders-service
+        - name: SFTP_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SFTP_PRIVATE_KEY
+              name: hr-orders-service
+        - name: SFTP_INCOMING_ORDERS_PATH
+          valueFrom:
+            secretKeyRef:
+              key: SFTP_INCOMING_ORDERS_PATH
+              name: hr-orders-service
+        - name: INCOMING_ORDER_FIELDS
+          valueFrom:
+            secretKeyRef:
+              key: INCOMING_ORDER_FIELDS
+              name: hr-orders-service

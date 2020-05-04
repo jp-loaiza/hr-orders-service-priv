@@ -3,3 +3,4 @@
 .env
 id_rsa
 .DS_Store
+secrets.yaml
