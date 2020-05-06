@@ -13,3 +13,4 @@ orders.d.ts
 # k8s yamls
 secrets.yaml
 deployment.yaml
+.env-template

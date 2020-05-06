@@ -25,8 +25,8 @@ docker tag hr-orders-service:$VERSION us.icr.io/hrretailplatform/hr-orders-servi
 docker push us.icr.io/hrretailplatform/hr-orders-service:$VERSION
 ```
 
-- Ref: https://docs.docker.com/get-started/part2/#build-the-app
-- IBM Cloud registry: https://cloud.ibm.com/kubernetes/registry/main/start
+- Note: reference https://docs.docker.com/get-started/part2/#build-the-app
+- Note: IBM Cloud registry is accessible at https://cloud.ibm.com/kubernetes/registry/main/start
 
 ## To deploy
 0. Set up the environment
@@ -36,6 +36,7 @@ ibmcloud ks cluster config --cluster {clusterId}
 ```
 source .env
 ```
+- Note: Refer to .env-template for all the required environmental variables
 
 1. Setup secrets and configurations on the cluster
 ```
@@ -60,5 +61,5 @@ sed "s/{version}/$VERSION/" ./deployment.yaml > ./deployment-versioned.yaml && k
 ```
 kubectl expose deployment hr-orders-service --type=LoadBalancer --name=hr-orders-service
 ```
-- You can check health by using EXTERNAL-IP from `kubectl get services` and then pinging `EXTERNAL-IP:8080/health` from your local machine
-- Since load balancers are not free ($0.02 per hour as of May 2020), delete if deployed but not needed with `kubectl delete service hr-orders-service `
+- Note: you can check health by using EXTERNAL-IP from `kubectl get services` and then pinging `EXTERNAL-IP:8080/health` from your local machine
+- Note: since load balancers are not free ($0.02 per hour as of May 2020), delete if deployed but not needed with `kubectl delete service hr-orders-service `
