@@ -27,14 +27,19 @@ app.get('/', async function(_, res) {
 })
 
 app.get('/health', async function(_, res) {
-  const sftp = new client()
-  await sftp.connect({
-    ...config,
-    privateKey: Buffer.from(config.privateKey,'base64')
-  })
-  await sftp.list(SFTP_INCOMING_ORDERS_PATH)
-  sftp.end()
-  res.json('ok')
+  try {
+    const sftp = new client()
+    await sftp.connect({
+      ...config,
+      privateKey: Buffer.from(config.privateKey,'base64')
+    })
+    await sftp.list(SFTP_INCOMING_ORDERS_PATH)
+    sftp.end()
+    res.json('ok')
+  } catch (error) {
+    res.status(500)
+    res.send()
+  }
 })
 
 app.get('/list', async function(req, res) {
