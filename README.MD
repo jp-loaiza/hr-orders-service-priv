@@ -61,5 +61,5 @@ sed "s/{version}/$VERSION/" ./deployment.yaml > ./deployment-versioned.yaml && k
 ```
 kubectl expose deployment hr-orders-service --type=LoadBalancer --name=hr-orders-service
 ```
-- Note: you can check health by using EXTERNAL-IP from `kubectl get services` and then pinging `EXTERNAL-IP:8080/health` from your local machine
+- Note: you can check health by using EXTERNAL-IP from `kubectl get services` and then pinging `EXTERNAL-IP:8080/health` from your local machine or sending requests to `EXTERNAL-IP:8080/list` and `EXTERNAL-IP:8080/put` with proper credentials
 - Note: since load balancers are not free ($0.02 per hour as of May 2020), delete if deployed but not needed with `kubectl delete service hr-orders-service `
