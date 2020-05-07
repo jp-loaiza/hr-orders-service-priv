@@ -35,37 +35,50 @@ app.get('/health', async function(_, res) {
     })
     await sftp.list(SFTP_INCOMING_ORDERS_PATH)
     sftp.end()
-    res.json('ok')
+    res.send('ok')
   } catch (error) {
+    console.error('Health check failed: ', error)
     res.status(500)
     res.send()
   }
 })
 
 app.get('/list', async function(req, res) {
-  const config = await req.body.config
-  const sftp = new client()
-  await sftp.connect({
-    ...config,
-    privateKey: Buffer.from(config.privateKey,'base64')
-  })
-  const list = await sftp.list(SFTP_INCOMING_ORDERS_PATH)
-  sftp.end()
-  res.json(list)
+  try {
+    const config = await req.body.config
+    const sftp = new client()
+    await sftp.connect({
+      ...config,
+      privateKey: Buffer.from(config.privateKey,'base64')
+    })
+    const list = await sftp.list(SFTP_INCOMING_ORDERS_PATH)
+    sftp.end()
+    res.json(list)
+  } catch (error) {
+    console.error('Failed to list orders: ', error)
+    res.status(400)
+    res.send()
+  }
 })
 
 const fields = JSON.parse(INCOMING_ORDER_FIELDS)
 app.post('/put', async function(req, res) {
-  const { config, fileName, data } = await req.body
-  const sftp = new client()
-  await sftp.connect({
-    ...config,
-    privateKey: Buffer.from(config.privateKey,'base64')
-  })
-  const csv = await parseAsync(data, { fields })
-  const result = await sftp.put(Buffer.from(csv),SFTP_INCOMING_ORDERS_PATH + fileName)
-  sftp.end()
-  res.json(result)
+  try {
+    const { config, fileName, data } = await req.body
+    const sftp = new client()
+    await sftp.connect({
+      ...config,
+      privateKey: Buffer.from(config.privateKey,'base64')
+    })
+    const csv = await parseAsync(data, { fields })
+    const result = await sftp.put(Buffer.from(csv),SFTP_INCOMING_ORDERS_PATH + fileName)
+    sftp.end()
+    res.json(result)
+  } catch (error) {
+    console.error('Failed to put the order: ', error)
+    res.status(400)
+    res.send()
+  }
 })
 
 const port = process.env.PORT || 8080
