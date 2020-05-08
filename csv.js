@@ -13,8 +13,8 @@ const {
 //  - ORDER_DATE must be of the form `yyyy-MM-dd HH24:MI`
 //  - CARRIER_ID must be one of ['CP', 'FDX', 'PRL', 'DHL', 'USPS', 'UPS']
 //  - SERVICE_TYPE must be one of  ['EXPRESS', 'SHIPMENT', 'EXPEDITED PARCEL', 'XPRESSPOST']
-
 // TODO: Figure out whether `SHIPPING_TAX2` is required, and if so what to put for it
+// TODO: Check units of prices that JESTA expects and do conversion if necessary
 
 /** 
  * @param {string} shippingMethodName
@@ -47,6 +47,25 @@ const shippingMethodIsRushShipping = shippingMethodName => {
 }
 
 /**
+ * @param {{ lineItems: Array<import('./orders').LineItem> }} order 
+ */
+const getLineItemTotalTax = order => (
+  order.lineItems.reduce((totalTax, lineItem) => (
+    totalTax + (lineItem.taxedPrice.totalGross.centAmount - lineItem.taxedPrice.totalNet.centAmount)), 0
+  )
+)
+
+/**
+ * @param {import('./orders').ShippingInfo} shippingInfo
+ */
+const getShippingTotalTax = shippingInfo => shippingInfo.taxedPrice.totalGross.centAmount - shippingInfo.price.centAmount
+
+/**
+ * @param {{ shippingInfo: import('./orders').ShippingInfo, lineItems: Array<import('./orders').LineItem>}} order
+ */
+const getOrderTotalTax = order => getLineItemTotalTax(order) + getShippingTotalTax(order.shippingInfo)
+
+/**
  * @param {import('./orders').Order} order 
  * @explain Maps the CT order object to another object which we'll use to
  *          generate the "Header records" part of the CSV.
@@ -56,12 +75,12 @@ const getHeaderObjectFromOrder = ({
   createdAt,
   customerEmail,
   customerId,
+  lineItems,
   locale,
   orderNumber,
   paymentState,
   shippingAddress,
   shippingInfo,
-  taxedPrice,
   totalPrice
 }) => ({
   [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
@@ -90,10 +109,10 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: shippingMethodIsRushShipping(shippingInfo.shippingMethodName) ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
   [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: shippingInfo.shippingRate.price.centAmount,
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: taxedPrice.totalGross.centAmount,
+  [HEADER_ROWS_ENUM.TAX_TOTAL]: getOrderTotalTax({lineItems, shippingInfo}),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: totalPrice.centAmount,
   [HEADER_ROWS_ENUM.ORDER_DATE]: createdAt,
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: shippingInfo.taxedPrice.centAmount - shippingInfo.price.centAmount,
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTotalTax(shippingInfo),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: shippingInfo.taxRate.name,
   [HEADER_ROWS_ENUM.SHIPPING_TAX3]: 0, // Required. From JESTA's docs: "Not Used, Default to 0".
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,

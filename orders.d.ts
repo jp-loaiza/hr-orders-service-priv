@@ -15,10 +15,9 @@ type Price = {
   fractionDigits: number
 }
 
-type TaxPortion = {
-  rate: number,
-  amount: Price,
-  name: string
+type TaxedPrice = {
+  totalNet: Price,
+  totalGross: Price
 }
 
 type LineItem = {
@@ -32,10 +31,7 @@ type LineItem = {
       isGift: boolean
     }
   },
-  taxedPrice?: {
-    totalNet: Price,
-    totalGross: Price
-  }
+  taxedPrice: TaxedPrice
 }
 
 type Address = {
@@ -53,7 +49,7 @@ type ShippingInfo = {
   shippingMethodName: string,
   shippingRate: { price: Price },
   price: Price,
-  taxedPrice: Price,
+  taxedPrice: TaxedPrice,
   taxRate: {
     name: string,
     amount: number,
@@ -72,11 +68,6 @@ type Order = {
   anonymousId?: string,
   customerEmail: string,
   totalPrice: Price,
-  taxedPrice: {
-    totalNet: Price,
-    totalGross: Price,
-    taxPortions: Array<TaxPortion>
-  },
   lineItems: Array<LineItem>,
   shippingAddress: Address,
   billingAddress: Address,
@@ -87,5 +78,7 @@ type Order = {
 
 export {
   Env,
-  Order
+  LineItem,
+  Order,
+  ShippingInfo
 }
