@@ -21,14 +21,24 @@ type TaxedPrice = {
 }
 
 type LineItem = {
+  id: string,
   variant: {
     sku: string,
     prices: Array<{ value: Price }>
   },
+  price: { value: Price }
   quantity: number,
   custom: {
     fields: {
       isGift: boolean
+      barcodeData: Array<{
+        obj: {
+          value: {
+            subType: string,
+            barcode: string
+          }
+        }
+      }>
     }
   },
   taxedPrice: TaxedPrice

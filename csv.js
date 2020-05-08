@@ -1,6 +1,7 @@
 const {
   CARRIER_NAMES_TO_IDS,
   CT_PAYMENT_STATES,
+  DETAILS_ROWS_ENUM,
   HEADER_ROWS_ENUM,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   ONLINE_SITE_ID,
@@ -51,7 +52,7 @@ const shippingMethodIsRushShipping = shippingMethodName => {
  */
 const getLineItemTotalTax = order => (
   order.lineItems.reduce((totalTax, lineItem) => (
-    totalTax + (lineItem.taxedPrice.totalGross.centAmount - lineItem.taxedPrice.totalNet.centAmount)), 0
+    totalTax + (lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount)), 0
   )
 )
 
@@ -64,6 +65,11 @@ const getShippingTotalTax = shippingInfo => shippingInfo.taxedPrice.totalGross.c
  * @param {{ shippingInfo: import('./orders').ShippingInfo, lineItems: Array<import('./orders').LineItem>}} order
  */
 const getOrderTotalTax = order => getLineItemTotalTax(order) + getShippingTotalTax(order.shippingInfo)
+
+const convertToDollars = cents => {
+  const unroundedDollars = cents / 100
+  return unroundedDollars // TODO: do proper rounding
+}
 
 /**
  * @param {import('./orders').Order} order 
@@ -121,3 +127,26 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
   [HEADER_ROWS_ENUM.RELEASED]: (paymentState === CT_PAYMENT_STATES.PAID || paymentState === CT_PAYMENT_STATES.CREDIT_OWED) ? 'Y' : 'N'
 })
+
+const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem) => ({
+  [DETAILS_ROWS_ENUM.RECORD_TYPE]: 'D',
+  [DETAILS_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+  [DETAILS_ROWS_ENUM.LINE]: lineItem.id, // Still TBD whether this will have to change
+  [DETAILS_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
+  [DETAILS_ROWS_ENUM.QTY_ORDERED]: lineItem.quantity,
+  [DETAILS_ROWS_ENUM.UNIT_PRICE]: lineItem.price.value.centAmount,
+  [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: lineItem.quantity * lineItem.price.value.centAmount,
+  [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: 0, // TODO: confirm what goes here
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount,
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: lineItem.taxedPrice.totalGross.centAmount,
+  [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
+  [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
+  [DETAILS_ROWS_ENUM.EXT_REF_ID]: undefined, // Still TBD what goes here
+  [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift,
+  [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
+})
+
+module.exports = {
+  getHeaderObjectFromOrder,
+  getDetailsObjectFromOrderAndLineItem
+}
