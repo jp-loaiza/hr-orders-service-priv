@@ -31,6 +31,10 @@ type LineItem = {
     fields: {
       isGift: boolean
     }
+  },
+  taxedPrice?: {
+    totalNet: Price,
+    totalGross: Price
   }
 }
 
@@ -39,7 +43,24 @@ type Address = {
   postalCode: string,
   city: string,
   state: string,
-  country: string
+  country: string,
+  firstName: string,
+  lastName: string,
+  phone: string
+}
+
+type ShippingInfo = {
+  shippingMethodName: string,
+  shippingRate: { price: Price },
+  price: Price,
+  taxedPrice: Price,
+  taxRate: {
+    name: string,
+    amount: number,
+    country: string,
+    state: string,
+    includedInPrice: boolean
+  }
 }
 
 type Order = {
@@ -58,7 +79,10 @@ type Order = {
   },
   lineItems: Array<LineItem>,
   shippingAddress: Address,
-  billingAddress: Address
+  billingAddress: Address,
+  shippingInfo: ShippingInfo,
+  locale: string,
+  paymentState: string
 }
 
 export {

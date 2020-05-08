@@ -1,3 +1,34 @@
+const LOCALES_TO_JESTA_LANGUAGE_NUMBERS = {
+  'en-CA': 1,
+  'fr-CA': 3
+}
+
+const CT_PAYMENT_STATES = {
+  BALANCE_DUE: 'BalanceDue',
+  FAILED: 'Failed',
+  PENDING: 'Pending',
+  PAID: 'Paid',
+  CREDIT_OWED: 'CreditOwed'
+}
+
+const SHIPPING_SERVICE_TYPES = {
+  EXPRESS: 'EXPRESS',
+  SHIPMENT: 'SHIPMENT',
+  EXPEDITED_PARCEL: 'EXPEDITED PARCEL', 
+  XPRESSPOST: 'XPRESSPOST'
+}
+
+const CARRIER_NAMES_TO_IDS = {
+  'Canada Post': 'CP',
+  FedEx: 'FDX',
+  Purolator: 'PRL',
+  DHL: 'DHL',
+  USPS: 'USPS',
+  UPS: 'UPS'
+}
+
+const ONLINE_SITE_ID = '990'
+
 const HEADER_ROWS_ENUM = {
   RECORD_TYPE: 'RECORD_TYPE',
   SITE_ID: 'SITE_ID',
@@ -61,7 +92,7 @@ const HEADER_ROWS_ENUM = {
 // maters, and the order of the properties on JS objects isn't guaranteed.
 // And we don't generate the enum from this array because my editor isn't smart
 // enough to figure out how to do autocomplete unless you explicitly define the
-// values.
+// values of an object.
 const HEADER_ROWS = [
   'RECORD_TYPE',
   'SITE_ID',
@@ -122,6 +153,11 @@ const HEADER_ROWS = [
 ]
 
 module.exports = {
+  LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
+  ONLINE_SITE_ID,
+  CT_PAYMENT_STATES,
   HEADER_ROWS,
-  HEADER_ROWS_ENUM
+  HEADER_ROWS_ENUM,
+  SHIPPING_SERVICE_TYPES,
+  CARRIER_NAMES_TO_IDS
 }
