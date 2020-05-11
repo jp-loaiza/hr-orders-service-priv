@@ -20,6 +20,14 @@ type TaxedPrice = {
   totalGross: Price
 }
 
+type TaxRate = {
+  name: string,
+  amount: number,
+  country: string,
+  state: string,
+  includedInPrice: boolean
+}
+
 type LineItem = {
   id: string,
   variant: {
@@ -41,7 +49,8 @@ type LineItem = {
       }>
     }
   },
-  taxedPrice: TaxedPrice
+  taxedPrice: TaxedPrice,
+  taxRate: TaxRate
 }
 
 type Address = {
@@ -60,13 +69,7 @@ type ShippingInfo = {
   shippingRate: { price: Price },
   price: Price,
   taxedPrice: TaxedPrice,
-  taxRate: {
-    name: string,
-    amount: number,
-    country: string,
-    state: string,
-    includedInPrice: boolean
-  }
+  taxRate: TaxRate
 }
 
 type Order = {

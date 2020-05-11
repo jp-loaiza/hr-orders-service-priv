@@ -5,7 +5,8 @@ const {
   HEADER_ROWS_ENUM,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   ONLINE_SITE_ID,
-  SHIPPING_SERVICE_TYPES
+  SHIPPING_SERVICE_TYPES,
+  TAXES_ROWS_ENUM
 } = require('./constants')
 
 // TODO: Validate values. Some things to check:
@@ -65,6 +66,10 @@ const getShippingTotalTax = shippingInfo => shippingInfo.taxedPrice.totalGross.c
  */
 const getOrderTotalTax = order => getLineItemTotalTax(order) + getShippingTotalTax(order.shippingInfo)
 
+/**
+ * @param {number} cents 
+ * @explain CT stores prices in cents, but JESTA expects them to be given in dollars.
+ */
 const convertToDollars = cents => {
   const unroundedDollars = cents / 100
   return unroundedDollars // TODO: do proper rounding
@@ -145,7 +150,18 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
 })
 
+const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem) => ({
+  [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
+  [TAXES_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+  [TAXES_ROWS_ENUM.LINE]: lineItem.id, // Still TBD whether this will have to change
+  [TAXES_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
+  [TAXES_ROWS_ENUM.SITE_ID]: 1, // From JESTA's docs: "1 if one tax. 1 and 2 if two tax lines"
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount),
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.taxRate.name
+})
+
 module.exports = {
   getHeaderObjectFromOrder,
-  getDetailsObjectFromOrderAndLineItem
+  getDetailsObjectFromOrderAndLineItem,
+  getTaxesObjectFromOrderAndLineItem
 }
