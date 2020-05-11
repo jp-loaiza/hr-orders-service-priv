@@ -1,12 +1,19 @@
+const { parse } = require('json2csv')
+
 const {
   CARRIER_NAMES_TO_IDS,
   CT_PAYMENT_STATES,
+  DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
+  GENERAL_CSV_OPTIONS,
+  HEADER_ROWS,
   HEADER_ROWS_ENUM,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   ONLINE_SITE_ID,
   SHIPPING_SERVICE_TYPES,
+  TAXES_ROWS,
   TAXES_ROWS_ENUM,
+  TENDER_ROWS,
   TENDER_ROWS_ENUM
 } = require('./constants')
 
@@ -76,10 +83,11 @@ const convertToDollars = cents => {
   return roundedDollars
 }
 
+// The following group of functions turn the CT order object into objects that
+// we can feed into the CSV generator to create the CSV
+
 /**
  * @param {import('./orders').Order} order 
- * @explain Maps the CT order object to another object which we'll use to
- *          generate the "Header records" part of the CSV.
  */
 const getHeaderObjectFromOrder = ({
   billingAddress,
@@ -170,9 +178,75 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: paymentInfo.paymentMethodInfo.method, // TODO: check whether Bold will do mapping from payment type names to the numbers JESTA wants
 })
 
+
+// The actual CSV string creation happens below
+//
+// The resulting CSV will contain data associated with four different headers,
+// so we format the data associated with each header separately, and then combine the
+// individual strings in `generateCsvStringFromOrder`.
+
+const generateHeadersCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+  const options = {
+    ...GENERAL_CSV_OPTIONS,
+    fields: HEADER_ROWS
+  }
+
+  const headerObject = getHeaderObjectFromOrder(order)
+  return parse(headerObject, options)
+}
+
+const generateDetailsCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+  const options = {
+    ...GENERAL_CSV_OPTIONS,
+    fields: DETAILS_ROWS
+  }
+
+  const detailsObjects = order.lineItems.map(getDetailsObjectFromOrderAndLineItem(order))
+  return parse(detailsObjects, options)
+}
+
+const generateTaxCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+  const options = {
+    ...GENERAL_CSV_OPTIONS,
+    fields: TAXES_ROWS
+  }
+
+  const taxesObjects = order.lineItems.map(getTaxesObjectFromOrderAndLineItem(order))
+  return parse(taxesObjects, options)
+}
+
+const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+  const options = {
+    ...GENERAL_CSV_OPTIONS,
+    fields: TENDER_ROWS
+  }
+
+  const tenderObjects = order.paymentInfo.map(getTenderObjectFromOrderAndPaymentInfoItem(order))
+  return parse(tenderObjects, options)
+}
+
+/**
+ * @param {import('./orders').Order} order 
+ * @return {string}
+ */
+const generateCsvStringFromOrder = order => {
+  const headerNames = 'TODO\n'
+  const headerData = generateHeadersCsvStringFromOrder(order)
+  const details =  generateDetailsCsvStringFromOrder(order)
+  const tax = generateTaxCsvStringFromOrder(order)
+  const tenders = generateTendersCsvStringFromOrder(order)
+
+  return headerNames + headerData + details + tax + tenders
+}
+
 module.exports = {
   getHeaderObjectFromOrder,
   getDetailsObjectFromOrderAndLineItem,
   getTaxesObjectFromOrderAndLineItem,
-  getTenderObjectFromOrderAndPaymentInfoItem
+  getTenderObjectFromOrderAndPaymentInfoItem,
+  generateHeadersCsvStringFromOrder,
+  generateDetailsCsvStringFromOrder,
+  generateTaxCsvStringFromOrder,
+  generateTendersCsvStringFromOrder,
+  generateCsvStringFromOrder
 }
