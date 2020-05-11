@@ -9,6 +9,7 @@ const {
   HEADER_ROWS,
   HEADER_ROWS_ENUM,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
+  MISC_ROWS,
   ONLINE_SITE_ID,
   SHIPPING_SERVICE_TYPES,
   TAXES_ROWS,
@@ -169,10 +170,10 @@ const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order}
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.taxRate.name
 })
 
-const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').PaymentInfo} */ paymentInfo, /** @type {number} */ count) => ({
+const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').PaymentInfo} */ paymentInfo, /** @type {number} */ index) => ({
   [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
   [TENDER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
-  [TENDER_ROWS_ENUM.LINE]: count, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
+  [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(paymentInfo.amountPlanned.centAmount),
   [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: paymentInfo.paymentMethodInfo.method, // TODO: check whether Bold will do mapping from payment type names to the numbers JESTA wants
@@ -226,17 +227,37 @@ const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} 
 }
 
 /**
+ * @explain Generates comma separated header names, which are the same for
+ *          every order. Not to be confused with `generateHeadersCsvStringFromOrder`,
+ *          which generates the string of the *row* that JESTA classifies as
+ *          "header" data.
+ */
+const generateCsvHeaderNamesString = () => {
+  const options = {
+    ...GENERAL_CSV_OPTIONS,
+    header: true
+  }
+
+  const headerHeaders = parse({}, { ...options, fields: HEADER_ROWS })
+  const detailsHeaders = parse({}, { ...options, fields: DETAILS_ROWS })
+  const taxesHeaders = parse({}, { ...options, fields: TAXES_ROWS })
+  const tendersHeaders = parse({}, { ...options, fields: TENDER_ROWS })
+  const miscHeaders = parse({}, { ...options, fields: MISC_ROWS })
+  return `${headerHeaders}\n${detailsHeaders}\n${taxesHeaders}\n${tendersHeaders}\n${miscHeaders}`
+}
+
+/**
  * @param {import('./orders').Order} order 
  * @return {string}
  */
 const generateCsvStringFromOrder = order => {
-  const headerNames = 'TODO\n'
+  const headerNames = generateCsvHeaderNamesString()
   const headerData = generateHeadersCsvStringFromOrder(order)
   const details =  generateDetailsCsvStringFromOrder(order)
   const tax = generateTaxCsvStringFromOrder(order)
   const tenders = generateTendersCsvStringFromOrder(order)
 
-  return headerNames + headerData + details + tax + tenders
+  return `${headerNames}\n${headerData}\n${details}\n${tax}\n${tenders}\n`
 }
 
 module.exports = {
@@ -248,5 +269,6 @@ module.exports = {
   generateDetailsCsvStringFromOrder,
   generateTaxCsvStringFromOrder,
   generateTendersCsvStringFromOrder,
-  generateCsvStringFromOrder
+  generateCsvStringFromOrder,
+  generateCsvHeaderNamesString
 }

@@ -30,7 +30,7 @@ const CARRIER_NAMES_TO_IDS = {
 const ONLINE_SITE_ID = '990'
 
 const HEADER_ROWS_ENUM = {
-  RECORD_TYPE: 'Record Type',
+  RECORD_TYPE: 'RecordType H',
   SITE_ID: 'SITE_ID',
   WFE_TRANS_ID: 'WFE_TRANS_ID',
   SHIP_TO_FIRST_NAME: 'SHIP_TO_FIRST_NAME',
@@ -83,14 +83,16 @@ const HEADER_ROWS_ENUM = {
 // And we don't generate the enum from this array because my editor isn't smart
 // enough to figure out how to do autocomplete unless you explicitly define the
 // values of an object.
-// `__<number>` represents a reserved field that must be blank
+//
+// Empty strings represent blank headers.
+//
 const HEADER_ROWS = [
-  'Record Type',
+  'RecordType H',
   'SITE_ID',
   'WFE_TRANS_ID',
   'SHIP_TO_FIRST_NAME',
   'SHIP_TO_LAST_NAME',
-  '__0',
+  '',
   'SHIP_TO_ADDRESS_1',
   'SHIP_TO_ADDRESS_2',
   'SHIP_TO_ADDRESS_3',
@@ -113,17 +115,17 @@ const HEADER_ROWS = [
   'CARRIER_ID',
   'RUSH_SHIPPING_IND',
   'SHIP_COMPLETE_IND',
-  '__1',
+  '',
   'SHIPPING_CHARGES_TOTAL',
   'TAX_TOTAL',
-  '__2',
+  '',
   'TRANSACTION_TOTAL',
-  '__3',
+  '',
   'POS_EQUIVALENCE',
-  '__4',
-  '__5',
-  '__6',
-  '__7',
+  '',
+  '',
+  '',
+  '',
   'ORDER_DATE',
   'ADDITIONAL_METADATA',
   'SHIPPING_TAX1',
@@ -134,8 +136,8 @@ const HEADER_ROWS = [
   'SHIPPING_TAX3_DESCRIPTION',
   'DESTINATION_SITE_ID',
   'REQUESTER_SITE_ID',
-  '__8',
-  '__9',
+  '',
+  '',
   'SERVICE_TYPE',
   'LANGUAGE_NO',
   'FREE_RETURN_IND',
@@ -144,7 +146,7 @@ const HEADER_ROWS = [
 ]
 
 const DETAILS_ROWS_ENUM = {
-  RECORD_TYPE: 'Record Type',
+  RECORD_TYPE: 'RecordType D',
   SITE_ID: 'SITE_ID',
   LINE: 'LINE',
   WFE_TRANS_ID: 'WFE_TRANS_ID',
@@ -164,16 +166,16 @@ const DETAILS_ROWS_ENUM = {
 }
 
 const DETAILS_ROWS = [
-  'Record Type',
+  'RecordType D',
   'SITE_ID',
   'LINE',
   'WFE_TRANS_ID',
-  '__0',
-  '__1',
-  '__2',
+  '',
+  '',
+  '',
   'QTY_ORDERED',
   'UNIT_PRICE',
-  '__3',
+  '',
   'EXTENSION_AMOUNT',
   'LINE_SHIPPING_CHARGES',
   'LINE_TOTAL_TAX',
@@ -182,15 +184,15 @@ const DETAILS_ROWS = [
   'ENDLESS_AISLE_IND',
   'EXT_REF_ID',
   'GIFT_WRAP_IND',
-  '__4',
-  '__5',
+  '',
+  '',
   'SALESPERSON_ID',
   'ADDITIONAL_METADATA',
   'SUB_TYPE'
 ]
 
 const TAXES_ROWS_ENUM = {
-  RECORD_TYPE: 'Record Type',
+  RECORD_TYPE: 'RecordType T',
   SITE_ID: 'SITE_ID',
   LINE: 'LINE',
   WFE_TRANS_ID: 'WFE_TRANS_ID',
@@ -200,19 +202,19 @@ const TAXES_ROWS_ENUM = {
 }
 
 const TAXES_ROWS = [
-  'Record Type',
+  'RecordType T',
   'SITE_ID',
   'LINE',
   'WFE_TRANS_ID',
   'SEQUENCE',
   'MERCHANDISE_TAX_AMOUNT',
   'MERCHANDISE_TAX_DESC',
-  '__0',
-  '__1'
+  '',
+  ''
 ]
 
 const TENDER_ROWS_ENUM = {
-  RECORD_TYPE: 'Record Type',
+  RECORD_TYPE: 'RecordType N',
   SITE_ID: 'SITE_ID',
   LINE: 'LINE',
   WFE_TRANS_ID: 'WFE_TRANS_ID',
@@ -225,7 +227,7 @@ const TENDER_ROWS_ENUM = {
 }
 
 const TENDER_ROWS = [
-  'Record Type',
+  'RecordType N',
   'SITE_ID',
   'LINE',
   'WFE_TRANS_ID',
@@ -233,9 +235,23 @@ const TENDER_ROWS = [
   'POS_EQUIVALENCE',
   'REFERENCENO',
   'EXPDATE',
-  '__0',
+  '',
   'CARD_NO',
   'AUTHORIZATION_NO'
+]
+
+const MISC_ROWS = [
+  'RecordType M',
+  'SITE_ID',
+  'LINE',
+  'WFE_TRANS_ID',
+  'SEQUENCE',
+  'AMOUNT',
+  'REASON_ID',
+  'MISC_TAX_AMOUNT1',
+  'MISC_TAX_DESC1',
+  'MISC_TAX_AMOUNT2',
+  'MISC_TAX_DESC2'
 ]
 
 const GENERAL_CSV_OPTIONS = {
@@ -252,6 +268,7 @@ module.exports = {
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   HEADER_ROWS,
   HEADER_ROWS_ENUM,
+  MISC_ROWS,
   ONLINE_SITE_ID,
   SHIPPING_SERVICE_TYPES,
   TAXES_ROWS,
