@@ -15,7 +15,6 @@ const {
 //  - CARRIER_ID must be one of ['CP', 'FDX', 'PRL', 'DHL', 'USPS', 'UPS']
 //  - SERVICE_TYPE must be one of  ['EXPRESS', 'SHIPMENT', 'EXPEDITED PARCEL', 'XPRESSPOST']
 // TODO: Figure out whether `SHIPPING_TAX2` is required, and if so what to put for it
-// TODO: Check units of prices that JESTA expects and do conversion if necessary
 
 /** 
  * @param {string} shippingMethodName
@@ -114,11 +113,11 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.CARRIER_ID]: getCarrierIdFromShippingMethodName(shippingInfo.shippingMethodName),
   [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: shippingMethodIsRushShipping(shippingInfo.shippingMethodName) ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
-  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: shippingInfo.shippingRate.price.centAmount,
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: getOrderTotalTax({lineItems, shippingInfo}),
-  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: totalPrice.centAmount,
+  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.shippingRate.price.centAmount),
+  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({lineItems, shippingInfo})),
+  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(totalPrice.centAmount),
   [HEADER_ROWS_ENUM.ORDER_DATE]: createdAt,
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTotalTax(shippingInfo),
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTotalTax(shippingInfo)),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: shippingInfo.taxRate.name,
   [HEADER_ROWS_ENUM.SHIPPING_TAX3]: 0, // Required. From JESTA's docs: "Not Used, Default to 0".
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
@@ -134,11 +133,11 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.LINE]: lineItem.id, // Still TBD whether this will have to change
   [DETAILS_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [DETAILS_ROWS_ENUM.QTY_ORDERED]: lineItem.quantity,
-  [DETAILS_ROWS_ENUM.UNIT_PRICE]: lineItem.price.value.centAmount,
-  [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: lineItem.quantity * lineItem.price.value.centAmount,
+  [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.price.value.centAmount),
+  [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: convertToDollars(lineItem.quantity * lineItem.price.value.centAmount),
   [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: 0, // TODO: confirm what goes here
-  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount,
-  [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: lineItem.taxedPrice.totalGross.centAmount,
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount),
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: undefined, // Still TBD what goes here
