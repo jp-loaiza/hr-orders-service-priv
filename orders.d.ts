@@ -72,6 +72,13 @@ type ShippingInfo = {
   taxRate: TaxRate
 }
 
+type PaymentInfo = {
+    paymentMethodInfo: {
+      method: string
+    },
+    amountPlanned: Price
+}
+
 type Order = {
   type: string,
   id: string,
@@ -86,12 +93,14 @@ type Order = {
   billingAddress: Address,
   shippingInfo: ShippingInfo,
   locale: string,
-  paymentState: string
+  paymentState: string,
+  paymentInfo: Array<PaymentInfo>
 }
 
 export {
   Env,
   LineItem,
   Order,
-  ShippingInfo
+  ShippingInfo,
+  PaymentInfo
 }

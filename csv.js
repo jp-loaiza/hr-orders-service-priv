@@ -6,7 +6,8 @@ const {
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   ONLINE_SITE_ID,
   SHIPPING_SERVICE_TYPES,
-  TAXES_ROWS_ENUM
+  TAXES_ROWS_ENUM,
+  TENDER_ROWS_ENUM
 } = require('./constants')
 
 // TODO: Validate values. Some things to check:
@@ -15,7 +16,6 @@ const {
 //  - ORDER_DATE must be of the form `yyyy-MM-dd HH24:MI`
 //  - CARRIER_ID must be one of ['CP', 'FDX', 'PRL', 'DHL', 'USPS', 'UPS']
 //  - SERVICE_TYPE must be one of  ['EXPRESS', 'SHIPMENT', 'EXPEDITED PARCEL', 'XPRESSPOST']
-// TODO: Figure out whether `SHIPPING_TAX2` is required, and if so what to put for it
 
 /** 
  * @param {string} shippingMethodName
@@ -146,7 +146,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: undefined, // Still TBD what goes here
-  [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift,
+  [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
 })
 
@@ -160,8 +160,18 @@ const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order}
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.taxRate.name
 })
 
+const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').PaymentInfo} */ paymentInfo, /** @type {number} */ count) => ({
+  [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
+  [TENDER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+  [TENDER_ROWS_ENUM.LINE]: count, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
+  [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
+  [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(paymentInfo.amountPlanned.centAmount),
+  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: paymentInfo.paymentMethodInfo.method, // TODO: check whether Bold will do mapping from payment type names to the numbers JESTA wants
+})
+
 module.exports = {
   getHeaderObjectFromOrder,
   getDetailsObjectFromOrderAndLineItem,
-  getTaxesObjectFromOrderAndLineItem
+  getTaxesObjectFromOrderAndLineItem,
+  getTenderObjectFromOrderAndPaymentInfoItem
 }
