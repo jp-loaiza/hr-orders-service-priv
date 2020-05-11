@@ -30,7 +30,7 @@ const CARRIER_NAMES_TO_IDS = {
 const ONLINE_SITE_ID = '990'
 
 const HEADER_ROWS_ENUM = {
-  RECORD_TYPE: 'RECORD_TYPE',
+  RECORD_TYPE: 'Record Type',
   SITE_ID: 'SITE_ID',
   WFE_TRANS_ID: 'WFE_TRANS_ID',
   SHIP_TO_FIRST_NAME: 'SHIP_TO_FIRST_NAME',
@@ -89,12 +89,12 @@ const HEADER_ROWS_ENUM = {
 }
 
 // We don't generate this array from the above enum because the order
-// maters, and the order of the properties on JS objects isn't guaranteed.
+// matters, and the order of the properties on JS objects isn't guaranteed.
 // And we don't generate the enum from this array because my editor isn't smart
 // enough to figure out how to do autocomplete unless you explicitly define the
 // values of an object.
 const HEADER_ROWS = [
-  'RECORD_TYPE',
+  'Record Type',
   'SITE_ID',
   'WFE_TRANS_ID',
   'SHIP_TO_FIRST_NAME',
@@ -153,7 +153,7 @@ const HEADER_ROWS = [
 ]
 
 const DETAILS_ROWS_ENUM = {
-  RECORD_TYPE: 'RECORD_TYPE',
+  RECORD_TYPE: 'Record Type',
   SITE_ID: 'SITE_ID',
   LINE: 'LINE',
   WFE_TRANS_ID: 'WFE_TRANS_ID',
@@ -179,7 +179,7 @@ const DETAILS_ROWS_ENUM = {
 }
 
 const DETAILS_ROWS = [
-  'RECORD_TYPE',
+  'Record Type',
   'SITE_ID',
   'LINE',
   'WFE_TRANS_ID',
@@ -204,6 +204,28 @@ const DETAILS_ROWS = [
   'SUB_TYPE'
 ]
 
+const TAXES_ROWS_ENUM = {
+  RECORD_TYPE: 'Record Type',
+  SITE_ID: 'SITE_ID',
+  LINE: 'LINE',
+  WFE_TRANS_ID: 'WFE_TRANS_ID',
+  SEQUENCE: 'SEQUENCE',
+  MERCHANDISE_TAX_AMOUNT: 'MERCHANDISE_TAX_AMOUNT',
+  MERCHANDISE_TAX_DESC: 'MERCHANDISE_TAX_DESC'
+}
+
+const TAXES_ROWS = [
+  'Record Type',
+  'SITE_ID',
+  'LINE',
+  'WFE_TRANS_ID',
+  'SEQUENCE',
+  'MERCHANDISE_TAX_AMOUNT',
+  'MERCHANDISE_TAX_DESC',
+  '__0',
+  '__1'
+]
+
 module.exports = {
   CARRIER_NAMES_TO_IDS,
   CT_PAYMENT_STATES,
@@ -213,5 +235,7 @@ module.exports = {
   HEADER_ROWS,
   HEADER_ROWS_ENUM,
   ONLINE_SITE_ID,
-  SHIPPING_SERVICE_TYPES
+  SHIPPING_SERVICE_TYPES,
+  TAXES_ROWS,
+  TAXES_ROWS_ENUM
 }
