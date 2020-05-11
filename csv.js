@@ -71,8 +71,9 @@ const getOrderTotalTax = order => getLineItemTotalTax(order) + getShippingTotalT
  * @explain CT stores prices in cents, but JESTA expects them to be given in dollars.
  */
 const convertToDollars = cents => {
-  const unroundedDollars = cents / 100
-  return unroundedDollars // TODO: do proper rounding
+  const exactDollars = cents / 100
+  const roundedDollars = Math.round(exactDollars * 100) / 100
+  return roundedDollars
 }
 
 /**
