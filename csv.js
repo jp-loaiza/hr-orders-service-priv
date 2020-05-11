@@ -243,7 +243,7 @@ const generateCsvHeaderNamesString = () => {
   const taxesHeaders = parse({}, { ...options, fields: TAXES_ROWS })
   const tendersHeaders = parse({}, { ...options, fields: TENDER_ROWS })
   const miscHeaders = parse({}, { ...options, fields: MISC_ROWS })
-  return `${headerHeaders}\n${detailsHeaders}\n${taxesHeaders}\n${tendersHeaders}\n${miscHeaders}`
+  return `${headerHeaders}\r\n${detailsHeaders}\r\n${taxesHeaders}\r\n${tendersHeaders}\r\n${miscHeaders}`
 }
 
 /**
@@ -257,7 +257,7 @@ const generateCsvStringFromOrder = order => {
   const tax = generateTaxCsvStringFromOrder(order)
   const tenders = generateTendersCsvStringFromOrder(order)
 
-  return `${headerNames}\n${headerData}\n${details}\n${tax}\n${tenders}\n`
+  return `${headerNames}\r\n${headerData}\r\n${details}\r\n${tax}\r\n${tenders}\r\n`
 }
 
 module.exports = {

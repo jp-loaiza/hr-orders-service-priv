@@ -257,6 +257,7 @@ const MISC_ROWS = [
 const GENERAL_CSV_OPTIONS = {
   header: false,
   quote: '',
+  eol: '\r\n' // The CSVs will be processed by a Windows machine
 }
 
 module.exports = {
