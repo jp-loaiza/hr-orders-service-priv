@@ -60,3 +60,21 @@ const keepAlive = async () => {
 
 keepAlive()
 setInterval(keepAlive, 300000)
+
+// Fetches all orders that we haven't already tried (successfully or
+// unsuccessfully) to send to the OMS
+const fetchOrdersThatShouldBeSentToOms = async () => {
+  const query = 'not custom(fields(sentToOMS = true)) and custom(fields(errorMessage is not defined))'
+  const uri = requestBuilder.orders.where(query).build()
+  try {
+    const { body } = await ctClient.execute({ method: 'GET', uri })
+    return body.results
+  } catch (err) {
+    console.error('Failed to fetch orders:')
+    console.error(err)
+  }
+}
+
+module.exports = {
+  fetchOrdersThatShouldBeSentToOms
+}
