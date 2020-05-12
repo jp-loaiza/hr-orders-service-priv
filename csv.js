@@ -128,13 +128,12 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.CARRIER_ID]: getCarrierIdFromShippingMethodName(shippingInfo.shippingMethodName),
   [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: shippingMethodIsRushShipping(shippingInfo.shippingMethodName) ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
-  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.shippingRate.price.centAmount),
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({lineItems, shippingInfo})),
+  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalGross.centAmount),
+  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({ lineItems, shippingInfo })),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(totalPrice.centAmount),
   [HEADER_ROWS_ENUM.ORDER_DATE]: createdAt,
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTotalTax(shippingInfo)),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: shippingInfo.taxRate.name,
-  [HEADER_ROWS_ENUM.SHIPPING_TAX3]: 0, // Required. From JESTA's docs: "Not Used, Default to 0".
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.SERVICE_TYPE]: getServiceTypeFromShippingMethodName(shippingInfo.shippingMethodName),
   // @ts-ignore
