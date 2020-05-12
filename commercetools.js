@@ -1,4 +1,7 @@
 const dotenv = require('dotenv')
+
+const { KEEP_ALIVE_INTERVAL } = require('./constants')
+
 dotenv.config()
 
 // commercetools SDK
@@ -59,7 +62,7 @@ const keepAlive = async () => {
 }
 
 keepAlive()
-setInterval(keepAlive, 300000)
+setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
 // Fetches all orders that we haven't already tried (successfully or
 // unsuccessfully) to send to the OMS
