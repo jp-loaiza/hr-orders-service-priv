@@ -24,7 +24,6 @@ type TaxRate = {
   name: string,
   amount: number,
   country: string,
-  state: string,
   includedInPrice: boolean
 }
 
@@ -76,7 +75,9 @@ type PaymentInfo = {
     paymentMethodInfo: {
       method: string
     },
-    amountPlanned: Price
+    amountPlanned: {
+      centAmount: number
+    }
 }
 
 type Order = {
