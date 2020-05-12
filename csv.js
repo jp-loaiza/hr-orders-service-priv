@@ -200,14 +200,5 @@ const generateCsvStringFromOrder = order => {
 }
 
 module.exports = {
-  getHeaderObjectFromOrder,
-  getDetailsObjectFromOrderAndLineItem,
-  getTaxesObjectFromOrderAndLineItem,
-  getTenderObjectFromOrderAndPaymentInfoItem,
-  generateHeadersCsvStringFromOrder,
-  generateDetailsCsvStringFromOrder,
-  generateTaxCsvStringFromOrder,
-  generateTendersCsvStringFromOrder,
-  generateCsvStringFromOrder,
-  generateCsvHeaderNamesString
+  generateCsvStringFromOrder
 }
