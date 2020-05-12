@@ -18,13 +18,6 @@ const {
   TENDER_ROWS_ENUM
 } = require('./constants')
 
-// TODO: Validate values. Some things to check:
-//  - Countries must be two characters
-//  - States must be two characters
-//  - ORDER_DATE must be of the form `yyyy-MM-dd HH24:MI`
-//  - CARRIER_ID must be one of ['CP', 'FDX', 'PRL', 'DHL', 'USPS', 'UPS']
-//  - SERVICE_TYPE must be one of  ['EXPRESS', 'SHIPMENT', 'EXPEDITED PARCEL', 'XPRESSPOST']
-
 /** 
  * @param {string} shippingMethodName
  * @info The string should be of the form `${carrier} ${shippingMethod}`. For
@@ -84,6 +77,15 @@ const convertToDollars = cents => {
   return roundedDollars
 }
 
+
+/**
+ * @param {string} jsonDateString 
+ * @explain CT dates are JSON dates, but JESTA expects dates to be of the form `yyyy-MM-dd HH24:MI`
+ */
+const formatDate = jsonDateString => (
+  jsonDateString.slice(0, 10) + ' ' + jsonDateString.slice(11, 16)
+)
+
 // The following group of functions turn the CT order object into objects that
 // we can feed into the CSV generator to create the CSV
 
@@ -131,7 +133,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalGross.centAmount),
   [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({ lineItems, shippingInfo })),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(totalPrice.centAmount),
-  [HEADER_ROWS_ENUM.ORDER_DATE]: createdAt,
+  [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTotalTax(shippingInfo)),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: shippingInfo.taxRate.name,
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
