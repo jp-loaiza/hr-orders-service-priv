@@ -82,10 +82,10 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.RELEASED]: (paymentState === CT_PAYMENT_STATES.PAID || paymentState === CT_PAYMENT_STATES.CREDIT_OWED) ? 'Y' : 'N'
 })
 
-const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem) => ({
+const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
   [DETAILS_ROWS_ENUM.RECORD_TYPE]: 'D',
   [DETAILS_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
-  [DETAILS_ROWS_ENUM.LINE]: lineItem.id, // Still TBD whether this will have to change
+  [DETAILS_ROWS_ENUM.LINE]: index + 1,
   [DETAILS_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [DETAILS_ROWS_ENUM.QTY_ORDERED]: lineItem.quantity,
   [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.price.value.centAmount),
@@ -95,15 +95,15 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
-  [DETAILS_ROWS_ENUM.EXT_REF_ID]: undefined, // Still TBD what goes here
+  [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id, // Still TBD whether this will have to change
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
 })
 
-const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem) => ({
+const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
   [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
   [TAXES_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
-  [TAXES_ROWS_ENUM.LINE]: lineItem.id, // Still TBD whether this will have to change
+  [TAXES_ROWS_ENUM.LINE]: index + 1,
   [TAXES_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TAXES_ROWS_ENUM.SITE_ID]: 1, // From JESTA's docs: "1 if one tax. 1 and 2 if two tax lines"
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount),
