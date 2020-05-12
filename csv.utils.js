@@ -6,9 +6,9 @@ const { CARRIER_NAMES_TO_IDS, SHIPPING_SERVICE_TYPES } = require('./constants')
  *       example, 'FedEx Express'.
  * */
 const getServiceTypeFromShippingMethodName = shippingMethodName => {
-  const [, serviceDescription] = shippingMethodName.split(' ')
+  const [, ...serviceDescription] = shippingMethodName.split(' ')
   // @ts-ignore
-  return SHIPPING_SERVICE_TYPES[serviceDescription.toUpperCase()]
+  return SHIPPING_SERVICE_TYPES[serviceDescription.join('_').toUpperCase()]
 }
 
 /** 
