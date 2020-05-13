@@ -25,9 +25,11 @@ const getCarrierIdFromShippingMethodName = shippingMethodName => {
  * */
 const shippingMethodIsRushShipping = shippingMethodName => {
   const serviceType = getServiceTypeFromShippingMethodName(shippingMethodName)
-  return serviceType === SHIPPING_SERVICE_TYPES.EXPRESS
-    || serviceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL
-    || serviceType === SHIPPING_SERVICE_TYPES.XPRESSPOST
+  return [
+    SHIPPING_SERVICE_TYPES.EXPRESS,
+    SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL,
+    SHIPPING_SERVICE_TYPES.XPRESSPOST
+  ].includes(serviceType)
 }
 
 /**
