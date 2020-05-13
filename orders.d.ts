@@ -93,15 +93,21 @@ type Order = {
   shippingAddress: Address,
   billingAddress: Address,
   shippingInfo: ShippingInfo,
-  locale: string,
+  locale: 'en-CA' | 'fr-CA',
   paymentState: string,
   paymentInfo: Array<PaymentInfo>
 }
 
+type ShippingServiceKey = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED_PARCEL' | 'XPRESSPOST'
+
+type CarrierName = 'Canada Post' | 'FedEx' | 'Purolator' | 'DHL' | 'USPS' | 'UPS'
+
 export {
+  CarrierName,
   Env,
   LineItem,
   Order,
+  PaymentInfo,
   ShippingInfo,
-  PaymentInfo
+  ShippingServiceKey
 }

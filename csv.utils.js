@@ -7,16 +7,16 @@ const { CARRIER_NAMES_TO_IDS, SHIPPING_SERVICE_TYPES } = require('./constants')
  * */
 const getServiceTypeFromShippingMethodName = shippingMethodName => {
   const [, ...serviceDescription] = shippingMethodName.split(' ')
-  // @ts-ignore
-  return SHIPPING_SERVICE_TYPES[serviceDescription.join('_').toUpperCase()]
+  const shippingType = /** @type {import('./orders').ShippingServiceKey} */ (serviceDescription.join('_').toUpperCase())
+  return SHIPPING_SERVICE_TYPES[shippingType]
 }
 
 /** 
  * @param {string} shippingMethodName
  * */
 const getCarrierIdFromShippingMethodName = shippingMethodName => {
-  const [carrierName] = shippingMethodName.split(' ')
-  // @ts-ignore
+  const carrierNameAndServiceType = shippingMethodName.split(' ')
+  const carrierName = /** @type {import('./orders').CarrierName} */ (carrierNameAndServiceType[0])
   return CARRIER_NAMES_TO_IDS[carrierName]
 }
 

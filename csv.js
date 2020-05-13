@@ -77,7 +77,6 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: shippingInfo.taxRate.name,
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.SERVICE_TYPE]: getServiceTypeFromShippingMethodName(shippingInfo.shippingMethodName),
-  // @ts-ignore
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
   [HEADER_ROWS_ENUM.RELEASED]: (paymentState === CT_PAYMENT_STATES.PAID || paymentState === CT_PAYMENT_STATES.CREDIT_OWED) ? 'Y' : 'N'
 })
@@ -132,7 +131,7 @@ const generateHeadersCsvStringFromOrder = (/** @type {import('./orders').Order} 
   }
 
   const headerObject = getHeaderObjectFromOrder(order)
-  return parse(headerObject, options)
+  return parse([headerObject], options)
 }
 
 const generateDetailsCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
