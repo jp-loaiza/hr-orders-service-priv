@@ -51,13 +51,10 @@ const getOrderTotalTax = order => getLineItemTotalTax(order) + getShippingTotalT
 
 /**
  * @param {number} cents 
- * @explain CT stores prices in cents, but JESTA expects them to be given in dollars
+ * @explain CT stores prices in cents, but JESTA expects them to be given in
+ *          dollars. The result is rounded to two decimal places.
  */
-const convertToDollars = cents => {
-  const exactDollars = cents / 100
-  const roundedDollars = Math.round(exactDollars * 100) / 100
-  return roundedDollars
-}
+const convertToDollars = cents => Math.round(cents) / 100
 
 /**
  * @param {string} jsonDateString 
