@@ -57,3 +57,28 @@ spec:
             configMapKeyRef:
               key: INCOMING_ORDER_FIELDS
               name: hr-orders-service
+        - name: CT_PROJECT_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: CT_PROJECT_KEY
+              name: hr-orders-service
+        - name: CT_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: CT_CLIENT_SECRET
+              name: hr-orders-service
+        - name: CT_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: CT_CLIENT_ID
+              name: hr-orders-service
+        - name: CT_OAUTH_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: CT_OAUTH_HOST
+              name: hr-orders-service
+        - name: CT_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: CT_HOST
+              name: hr-orders-service
