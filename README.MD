@@ -1,65 +1,73 @@
-# Guides
-## To build
+# Initial Deployment Guide
 Since our kubernetes deployment is based off our docker image, we need to fist build the docker image and the push it to IBM Cloud registry.
 
-0. Setup the environment
+1. Setup the environment
 ```
-ibmcloud cr login
-```
-
-1. Build docker image with proper version e.g. 0.0.1 as the tag
-```
-export VERSION={version}
+ENVIRONMENT=development && BUILD_NUMBER=0
 ```
 ```
-docker build --tag=hr-orders-service:$VERSION .
+source .env && source environment.sh
 ```
 
-2. Tag the image on the repository
-```
-docker tag hr-orders-service:$VERSION us.icr.io/hrretailplatform/hr-orders-service:$VERSION
-```
+- Note: Refer to .env-template for all the required environmental variables
 
-3. Push the image to the repository
+2. Build and push the docker image to IBM Cloud repository
 ```
-docker push us.icr.io/hrretailplatform/hr-orders-service:$VERSION
+source build.sh
 ```
 
 - Note: reference https://docs.docker.com/get-started/part2/#build-the-app
 - Note: IBM Cloud registry is accessible at https://cloud.ibm.com/kubernetes/registry/main/start
 
-## To deploy
-0. Set up the environment
+
+3. Set the cluster by replacing clusterId from access tab of the cluster on IBM Cloud and deploy
 ```
 ibmcloud ks cluster config --cluster {clusterId}
 ```
 ```
-source .env
-```
-- Note: Refer to .env-template for all the required environmental variables
-
-1. Setup secrets and configurations on the cluster
-```
-kubectl create configmap hr-orders-service \
-  --from-literal=SFTP_HOST=$SFTP_HOST_KUBERNETES \
-  --from-literal=SFTP_PORT=$SFTP_PORT \
-  --from-literal=SFTP_INCOMING_ORDERS_PATH=$SFTP_INCOMING_ORDERS_PATH --from-literal=INCOMING_ORDER_FIELDS=$INCOMING_ORDER_FIELDS
-```
-```
-kubectl create secret generic hr-orders-service \
-  --from-literal=SFTP_USERNAME=$SFTP_USERNAME \
-  --from-literal=SFTP_PRIVATE_KEY=$SFTP_PRIVATE_KEY
+source deploy.sh
 ```
 
-2. Deploy the service
-Update image version of the container in 'deployment.yaml' and then apply the deployment file:
-```
-sed "s/{version}/$VERSION/" ./deployment.yaml > ./deployment-versioned.yaml && kubectl apply -f ./deployment-versioned.yaml && rm ./deployment-versioned.yaml
-```
-
-3. (optional) Expose the deployment as a service for debugging
+4. (optional) Expose the deployment as a service for debugging
 ```
 kubectl expose deployment hr-orders-service --type=LoadBalancer --name=hr-orders-service
 ```
 - Note: you can check health by using EXTERNAL-IP from `kubectl get services` and then pinging `EXTERNAL-IP:8080/health` from your local machine or sending requests to `EXTERNAL-IP:8080/list` and `EXTERNAL-IP:8080/put` with proper credentials
 - Note: since load balancers are not free ($0.02 per hour as of May 2020), delete if deployed but not needed with `kubectl delete service hr-orders-service `
+
+# Delivery Pipeline
+- Build script:
+```
+source environment.sh
+source build.sh
+```
+- Deploy script:
+```
+source environment.sh
+source deploy.sh
+```
+- These environmental variables should be set for the toolchain pipeline:
+  - ENVIRONMENT
+  - SFTP_HOST_KUBERNETES
+  - SFTP_PORT
+  - SFTP_USERNAME
+  - SFTP_PRIVATE_KEY
+  - SFTP_INCOMING_ORDERS_PATH
+  - INCOMING_ORDER_FIELDS
+  - REGISTRY_URL
+  - REGISTRY_NAMESPACE
+  - IMAGE_NAME
+
+- Note: These environmental variables are automatically set by the build stage if you configure it properly:
+  - BUILD_NUMBER
+
+- NOTE: For the build stage, select "Builder type" as the build type; however, note that we override all the actual relevant parameters by setting them as environmental parameters i.e. REGISTRY_URL, REGISTRY_NAMESPACE and IMAGE_NAME
+
+- Note: This environmental variables is created during build/deployment:
+  - IMAGE
+
+- Note: SFTP hosts for kubernetes and local environments are different
+
+# Troubleshooting
+## To redeploying using the same image
+- First delete the current deployment with `kubectl delete deployment hr-orders-service`

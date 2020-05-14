@@ -70,7 +70,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: shippingMethodIsRushShipping(shippingInfo.shippingMethodName) ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
   [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalGross.centAmount),
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({ lineItems, shippingInfo })), // TODO: get from custom field instead of calculating
+  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({ lineItems, shippingInfo })),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(totalPrice.centAmount),
   [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTotalTax(shippingInfo)),
