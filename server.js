@@ -2,10 +2,10 @@ require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
-let client = require('ssh2-sftp-client')
+const client = require('ssh2-sftp-client')
 const { parseAsync } = require('json2csv')
 
-const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, SFTP_INCOMING_ORDERS_PATH, INCOMING_ORDER_FIELDS } = (/** @type {Env} */ (process.env))
+const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, SFTP_INCOMING_ORDERS_PATH, INCOMING_ORDER_FIELDS } = (/** @type {import('./orders').Env} */ (process.env))
 /**
  * sftp config
  */
