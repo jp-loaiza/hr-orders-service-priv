@@ -72,13 +72,15 @@ type ShippingInfo = {
   taxRate: TaxRate
 }
 
-type PaymentInfo = {
+type Payment = {
+  obj: {
     paymentMethodInfo: {
       method: string
     },
     amountPlanned: {
       centAmount: number
     }
+  }
 }
 
 type Order = {
@@ -97,7 +99,9 @@ type Order = {
   shippingInfo: ShippingInfo,
   locale: 'en-CA' | 'fr-CA',
   paymentState: string,
-  paymentInfo: Array<PaymentInfo>
+  paymentInfo: {
+    payments: Array<Payment>
+  }
 }
 
 type ShippingServiceKey = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED_PARCEL' | 'XPRESSPOST'
@@ -109,7 +113,7 @@ export {
   Env,
   LineItem,
   Order,
-  PaymentInfo,
+  Payment,
   ShippingInfo,
   ShippingServiceKey
 }

@@ -474,16 +474,20 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
   },
   itemShippingAddresses: [],
   refusedGifts: [],
-  paymentInfo: [
-    {
-      paymentMethodInfo: {
-        method: '06',
-      },
-      amountPlanned: {
-        centAmount: 152,
-      },
-    },
-  ],
+  paymentInfo: {
+    payments: [
+      {
+        obj: {
+          paymentMethodInfo: {
+            method: '06',
+          },
+          amountPlanned: {
+            centAmount: 152,
+          }
+        }
+      }
+    ]
+  },
   locale: 'en-CA',
   paymentState: 'Paid'
 })
