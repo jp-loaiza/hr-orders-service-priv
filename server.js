@@ -5,6 +5,14 @@ const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
 const { parseAsync } = require('json2csv')
 
+const {
+  fetchOrdersThatShouldBeSentToOms,
+  setOrderAsSentToOms,
+  setOrderErrorMessage
+} = require('./commercetools')
+const { generateCsvStringFromOrder } = require('./csv')
+const { generateFilenameFromOrder } = require('./server.utils')
+const { ORDER_UPLOAD_INTERVAL } = require('./constants')
 const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, SFTP_INCOMING_ORDERS_PATH, INCOMING_ORDER_FIELDS } = (/** @type {import('./orders').Env} */ (process.env))
 /**
  * sftp config
@@ -80,6 +88,47 @@ app.post('/put', async function(req, res) {
     res.send()
   }
 })
+
+const createAndUploadCsvs = async () => {
+  let sftp
+  try {
+    sftp = new client()
+    await sftp.connect({
+      ...config,
+      privateKey: Buffer.from(config.privateKey, 'base64')
+    })
+
+    const orders = await fetchOrdersThatShouldBeSentToOms()
+    console.log(`Starting to process ${orders.length} orders`)
+
+    for (const order of orders) {
+      let csvString
+      try {
+        csvString = generateCsvStringFromOrder(order)
+      } catch (err) {
+        console.error(`Unable to generate CSV for order ${order.orderNumber}`)
+        setOrderErrorMessage(order, 'Unable to generate CSV')
+        continue
+      }
+      try {
+        await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
+      } catch (err) {
+        console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
+        setOrderErrorMessage(order, 'Unable to upload CSV to JESTA')
+        continue
+      }
+      setOrderAsSentToOms(order)
+    }
+    console.log('Done processing orders')
+  } catch (err) {
+    console.error('Unable to process orders:')
+    console.error(err)
+  } finally {
+    sftp && sftp.end()
+  }
+}
+
+setInterval(createAndUploadCsvs, ORDER_UPLOAD_INTERVAL)
 
 const port = process.env.PORT || 8080
 app.listen(port, function() {
