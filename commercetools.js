@@ -64,17 +64,35 @@ const keepAlive = async () => {
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
-// Fetches all orders that we haven't already tried (successfully or
-// unsuccessfully) to send to the OMS
+/**
+ * @param {string} orderId 
+ */
+const fetchFullOrder = async orderId => {
+  // See https://docs.commercetools.com/http-api.html#reference-expansion
+  const expansionParams = '?expand=lineItems[*].custom.fields.barcodeData[*]&expand=paymentInfo.payments[*]'
+  const uri = requestBuilder.orders.byId(orderId).build() + expansionParams
+  console.log('uri', uri)
+  return (await ctClient.execute({ method: 'GET', uri })).body
+}
+
+/**
+ * @explain Fetches all orders that we haven't already tried (successfully or
+ *          unsuccessfully) to send to the OMS
+ */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = 'not custom(fields(sentToOMS = true)) and custom(fields(errorMessage is not defined))'
   const uri = requestBuilder.orders.where(query).build()
   try {
     const { body } = await ctClient.execute({ method: 'GET', uri })
-    return body.results
+    // The orders that we get back from the query aren't reference-expanded,
+    // so we need to make an additional request to CT for each order to get the
+    // reference-expanded version of the order
+    const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+    return await Promise.all(orderIds.map(fetchFullOrder))
   } catch (err) {
     console.error('Failed to fetch orders:')
     console.error(err)
+    throw err
   }
 }
 
