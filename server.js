@@ -69,26 +69,6 @@ app.get('/list', async function(req, res) {
   }
 })
 
-const fields = JSON.parse(INCOMING_ORDER_FIELDS)
-app.post('/put', async function(req, res) {
-  try {
-    const { config, fileName, data } = await req.body
-    const sftp = new client()
-    await sftp.connect({
-      ...config,
-      privateKey: Buffer.from(config.privateKey,'base64')
-    })
-    const csv = await parseAsync(data, { fields })
-    const result = await sftp.put(Buffer.from(csv),SFTP_INCOMING_ORDERS_PATH + fileName)
-    sftp.end()
-    res.json(result)
-  } catch (error) {
-    console.error('Failed to put the order: ', error)
-    res.status(400)
-    res.send()
-  }
-})
-
 const createAndUploadCsvs = async () => {
   let sftp
   try {
