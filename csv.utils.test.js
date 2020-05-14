@@ -6,15 +6,6 @@ describe('convertToDollars', () => {
     expect(convertToDollars(700)).toBe(7)
   })
 
-  it('rounds to two decimal places', () => {
-    const veryPreciseCents = 123.001
-    expect(convertToDollars(veryPreciseCents)).toBe(1.23)
-  })
-
-  it('rounds up when given 100.5 cents', () => {
-    expect(convertToDollars(100.5)).toBe(1.01)
-  })
-
   it('returns 0 when given 0', () => {
     expect(convertToDollars(0)).toBe(0)
   })
