@@ -103,7 +103,20 @@ const setOrderAsSentToOms = order => {
  * @param {string} errorMessage 
  */
 const setOrderErrorMessage = async (order, errorMessage) => {
-  return 'TODO'
+  const uri = requestBuilder.orders.byId(order.id).build()
+
+  const body = JSON.stringify({
+    version: order.version,
+    actions: [
+      {
+        action: 'setCustomField',
+        name: 'errorMessage',
+        value: errorMessage
+      }
+    ]
+  })
+
+  return ctClient.execute({ method: 'POST', uri, body })
 }
 
 module.exports = {
