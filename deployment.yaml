@@ -82,3 +82,8 @@ spec:
             configMapKeyRef:
               key: CT_HOST
               name: hr-orders-service
+        - name: ORDER_UPLOAD_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: ORDER_UPLOAD_INTERVAL
+              name: hr-orders-service

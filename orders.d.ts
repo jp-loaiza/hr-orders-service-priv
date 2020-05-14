@@ -5,7 +5,8 @@ interface Env {
   SFTP_PORT: string,
   SFTP_USERNAME: string,
   SFTP_PRIVATE_KEY: string,
-  SFTP_INCOMING_ORDERS_PATH: string
+  SFTP_INCOMING_ORDERS_PATH: string,
+  ORDER_UPLOAD_INTERVAL: string
 }
 
 type Price = {

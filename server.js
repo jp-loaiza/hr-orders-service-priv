@@ -3,7 +3,6 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
-const { parseAsync } = require('json2csv')
 
 const {
   fetchOrdersThatShouldBeSentToOms,
@@ -12,8 +11,8 @@ const {
 } = require('./commercetools')
 const { generateCsvStringFromOrder } = require('./csv')
 const { generateFilenameFromOrder } = require('./server.utils')
-const { ORDER_UPLOAD_INTERVAL } = require('./constants')
-const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, SFTP_INCOMING_ORDERS_PATH, INCOMING_ORDER_FIELDS } = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL} = (/** @type {import('./orders').Env} */ (process.env))
+
 /**
  * sftp config
  */
@@ -108,7 +107,8 @@ const createAndUploadCsvs = async () => {
   }
 }
 
-setInterval(createAndUploadCsvs, ORDER_UPLOAD_INTERVAL)
+if (!ORDER_UPLOAD_INTERVAL) throw new Error('ORDER_UPLOAD_INTERVAL is undefined')
+setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
 
 const port = process.env.PORT || 8080
 app.listen(port, function() {
