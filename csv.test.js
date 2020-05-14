@@ -480,7 +480,7 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
         method: '06',
       },
       amountPlanned: {
-        centAmount: 152.9,
+        centAmount: 152,
       },
     },
   ],
@@ -500,7 +500,7 @@ D,990,1,67899,,,,1,57.99,,57.99,0,7.54,65.53,aleksBarcodeTest-009,N,63ac6446-aa8
 D,990,2,67899,,,,1,57.99,,57.99,0,7.54,65.53,38211393-102,N,d64aad3b-c0af-45e1-9b35-c800d50d75be,Y,,,,,UPCE
 T,1,1,67899,,7.54,HST-ON
 T,1,2,67899,,7.54,HST-ON
-N,990,1,67899,1.53,06,,,,,
+N,990,1,67899,1.52,06,,,,,
 `.split('\n').join('\r\n') // the expected string has Windows line breaks
     expect(generateCsvStringFromOrder(completeOrderEnglish)).toEqual(expectedOrderCsv)
   })
@@ -521,7 +521,7 @@ D,990,1,67899,,,,1,57.99,,57.99,0,7.54,65.53,aleksBarcodeTest-009,N,63ac6446-aa8
 D,990,2,67899,,,,1,57.99,,57.99,0,7.54,65.53,38211393-102,N,d64aad3b-c0af-45e1-9b35-c800d50d75be,Y,,,,,UPCE
 T,1,1,67899,,7.54,HST-ON
 T,1,2,67899,,7.54,HST-ON
-N,990,1,67899,1.53,06,,,,,
+N,990,1,67899,1.52,06,,,,,
 `.split('\n').join('\r\n')
     expect(generateCsvStringFromOrder(completeOrderFrench)).toEqual(expectedOrderCsv)
   })
@@ -542,7 +542,7 @@ D,990,1,67899,,,,1,57.99,,57.99,0,7.54,65.53,aleksBarcodeTest-009,N,63ac6446-aa8
 D,990,2,67899,,,,1,57.99,,57.99,0,7.54,65.53,38211393-102,N,d64aad3b-c0af-45e1-9b35-c800d50d75be,Y,,,,,UPCE
 T,1,1,67899,,7.54,HST-ON
 T,1,2,67899,,7.54,HST-ON
-N,990,1,67899,1.53,06,,,,,
+N,990,1,67899,1.52,06,,,,,
 `.split('\n').join('\r\n')
 
     expect(generateCsvStringFromOrder(orderWithFailedPayment)).toEqual(expectedOrderCsv)
