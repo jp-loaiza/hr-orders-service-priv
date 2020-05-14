@@ -78,6 +78,36 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
   }
 }
 
+/**
+ * @param {import('./orders').Order} order
+ */
+const setOrderAsSentToOms = order => {
+  const uri = requestBuilder.orders.byId(order.id).build()
+
+  const body = JSON.stringify({
+    version: order.version,
+    actions: [
+      {
+        action: 'setCustomField',
+        name: 'sentToOMS',
+        value: true
+      }
+    ]
+  })
+
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
+/**
+ * @param {import('./orders').Order} order 
+ * @param {string} errorMessage 
+ */
+const setOrderErrorMessage = async (order, errorMessage) => {
+  return 'TODO'
+}
+
 module.exports = {
-  fetchOrdersThatShouldBeSentToOms
+  fetchOrdersThatShouldBeSentToOms,
+  setOrderAsSentToOms,
+  setOrderErrorMessage
 }

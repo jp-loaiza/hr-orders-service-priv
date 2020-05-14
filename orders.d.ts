@@ -81,6 +81,7 @@ type PaymentInfo = {
 }
 
 type Order = {
+  version: number,
   type: string,
   id: string,
   orderNumber: string,
