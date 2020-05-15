@@ -65,7 +65,8 @@ keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
 /**
- * @param {string} orderId 
+ * @param {string} orderId
+ * @returns {Promise<import('./orders').Order>}
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
