@@ -107,7 +107,7 @@ const createAndUploadCsvs = async () => {
   }
 }
 
-if (!ORDER_UPLOAD_INTERVAL) throw new Error('ORDER_UPLOAD_INTERVAL is undefined')
+if (isNaN(Number(ORDER_UPLOAD_INTERVAL)) || Number(ORDER_UPLOAD_INTERVAL) === 0) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
 setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
 
 const port = process.env.PORT || 8080
