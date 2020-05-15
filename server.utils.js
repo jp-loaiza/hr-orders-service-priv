@@ -32,6 +32,7 @@ const createAndUploadCsvs = async () => {
       ...sftpConfig,
       privateKey: Buffer.from(sftpConfig.privateKey, 'base64')
     })
+    console.log('Connected to SFTP server')
 
     const orders = await fetchOrdersThatShouldBeSentToOms()
     console.log(`Starting to process ${orders.length} orders`)
