@@ -54,7 +54,7 @@ app.get('/list', async function(req, res) {
   }
 })
 
-if (isNaN(Number(ORDER_UPLOAD_INTERVAL)) || Number(ORDER_UPLOAD_INTERVAL) === 0) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
+if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
 setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
 
 const port = process.env.PORT || 8080
