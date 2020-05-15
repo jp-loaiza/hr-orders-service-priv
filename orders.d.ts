@@ -101,6 +101,12 @@ type Order = {
   paymentState: string,
   paymentInfo: {
     payments: Array<Payment>
+  },
+  custom?: {
+    fields: {
+      sentToOMS?: boolean,
+      errorMessage?: string
+    }
   }
 }
 

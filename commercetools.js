@@ -92,6 +92,30 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
 }
 
 /**
+ * @param {string} name
+ * @param {any} value
+ * @param {boolean} createCustomType
+ */
+const getCustomFieldUpdateAction = (name, value, createCustomType) => {
+  if (createCustomType) {
+    return {
+      action: 'setCustomType',
+      type: {
+        key: 'orderCustomFields'
+      },
+      fields: {
+        [name]:  value
+      }
+    }
+  }
+  return {
+    action: 'setCustomField',
+    name,
+    value
+  }
+}
+
+/**
  * @param {import('./orders').Order} order
  */
 const setOrderAsSentToOms = order => {
@@ -100,11 +124,7 @@ const setOrderAsSentToOms = order => {
   const body = JSON.stringify({
     version: order.version,
     actions: [
-      {
-        action: 'setCustomField',
-        name: 'sentToOMS',
-        value: true
-      }
+      getCustomFieldUpdateAction('sentToOMS', true, !(order.custom))
     ]
   })
 
@@ -121,11 +141,7 @@ const setOrderErrorMessage = async (order, errorMessage) => {
   const body = JSON.stringify({
     version: order.version,
     actions: [
-      {
-        action: 'setCustomField',
-        name: 'errorMessage',
-        value: errorMessage
-      }
+      getCustomFieldUpdateAction('errorMessage', errorMessage, !(order.custom))
     ]
   })
 
