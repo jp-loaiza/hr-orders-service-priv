@@ -1,5 +1,7 @@
 const client = require('ssh2-sftp-client')
 
+const { validateOrder } = require('./validation')
+ 
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -40,10 +42,13 @@ const createAndUploadCsvs = async () => {
     for (const order of orders) {
       let csvString
       try {
+        if (!validateOrder(order)) throw new Error('Invalid order')
         csvString = generateCsvStringFromOrder(order)
       } catch (err) {
         console.error(`Unable to generate CSV for order ${order.orderNumber}`)
-        setOrderErrorMessage(order, 'Unable to generate CSV')
+        const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
+        console.error(errorMessage)
+        setOrderErrorMessage(order, errorMessage)
         continue
       }
       try {
