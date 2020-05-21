@@ -94,7 +94,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
-  [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id, // Still TBD whether this will have to change
+  [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
 })
@@ -109,13 +109,13 @@ const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order}
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.taxRate.name
 })
 
-const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').PaymentInfo} */ paymentInfo, /** @type {number} */ index) => ({
+const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
   [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
   [TENDER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
   [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
-  [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(paymentInfo.amountPlanned.centAmount),
-  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: paymentInfo.paymentMethodInfo.method, // TODO: check whether Bold will do mapping from payment type names to the numbers JESTA wants
+  [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),
+  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: payment.obj.paymentMethodInfo.method, // TODO: check whether Bold will do mapping from payment type names to the numbers JESTA wants
 })
 
 // The actual CSV string creation happens below
@@ -160,7 +160,7 @@ const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} 
     fields: TENDER_ROWS
   }
 
-  const tenderObjects = order.paymentInfo.map(getTenderObjectFromOrderAndPaymentInfoItem(order))
+  const tenderObjects = order.paymentInfo.payments.map(getTenderObjectFromOrderAndPaymentInfoItem(order))
   return parse(tenderObjects, options)
 }
 

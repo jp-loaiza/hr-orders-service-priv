@@ -2,19 +2,12 @@ require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
-let client = require('ssh2-sftp-client')
-const { parseAsync } = require('json2csv')
+const client = require('ssh2-sftp-client')
 
-const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, SFTP_INCOMING_ORDERS_PATH, INCOMING_ORDER_FIELDS } = (/** @type {Env} */ (process.env))
-/**
- * sftp config
- */
-const config = {
-  host: SFTP_HOST,
-  port: Number(SFTP_PORT),
-  username: SFTP_USERNAME,
-  privateKey: SFTP_PRIVATE_KEY
-}
+const { createAndUploadCsvs } = require('./server.utils')
+const { sftpConfig } = require('./config')
+
+const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL} = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -30,8 +23,8 @@ app.get('/health', async function(_, res) {
   try {
     const sftp = new client()
     await sftp.connect({
-      ...config,
-      privateKey: Buffer.from(config.privateKey,'base64')
+      ...sftpConfig,
+      privateKey: Buffer.from(sftpConfig.privateKey,'base64')
     })
     await sftp.list(SFTP_INCOMING_ORDERS_PATH)
     sftp.end()
@@ -61,25 +54,8 @@ app.get('/list', async function(req, res) {
   }
 })
 
-const fields = JSON.parse(INCOMING_ORDER_FIELDS)
-app.post('/put', async function(req, res) {
-  try {
-    const { config, fileName, data } = await req.body
-    const sftp = new client()
-    await sftp.connect({
-      ...config,
-      privateKey: Buffer.from(config.privateKey,'base64')
-    })
-    const csv = await parseAsync(data, { fields })
-    const result = await sftp.put(Buffer.from(csv),SFTP_INCOMING_ORDERS_PATH + fileName)
-    sftp.end()
-    res.json(result)
-  } catch (error) {
-    console.error('Failed to put the order: ', error)
-    res.status(400)
-    res.send()
-  }
-})
+if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
+setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
 
 const port = process.env.PORT || 8080
 app.listen(port, function() {

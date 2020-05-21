@@ -5,7 +5,8 @@ interface Env {
   SFTP_PORT: string,
   SFTP_USERNAME: string,
   SFTP_PRIVATE_KEY: string,
-  SFTP_INCOMING_ORDERS_PATH: string
+  SFTP_INCOMING_ORDERS_PATH: string,
+  ORDER_UPLOAD_INTERVAL: string
 }
 
 type Price = {
@@ -71,16 +72,19 @@ type ShippingInfo = {
   taxRate: TaxRate
 }
 
-type PaymentInfo = {
+type Payment = {
+  obj: {
     paymentMethodInfo: {
       method: string
     },
     amountPlanned: {
       centAmount: number
     }
+  }
 }
 
 type Order = {
+  version: number,
   type: string,
   id: string,
   orderNumber: string,
@@ -95,7 +99,15 @@ type Order = {
   shippingInfo: ShippingInfo,
   locale: 'en-CA' | 'fr-CA',
   paymentState: string,
-  paymentInfo: Array<PaymentInfo>
+  paymentInfo: {
+    payments: Array<Payment>
+  },
+  custom?: {
+    fields: {
+      sentToOMS?: boolean,
+      errorMessage?: string
+    }
+  }
 }
 
 type ShippingServiceKey = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED_PARCEL' | 'XPRESSPOST'
@@ -107,7 +119,7 @@ export {
   Env,
   LineItem,
   Order,
-  PaymentInfo,
+  Payment,
   ShippingInfo,
   ShippingServiceKey
 }

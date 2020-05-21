@@ -64,20 +64,93 @@ const keepAlive = async () => {
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
-// Fetches all orders that we haven't already tried (successfully or
-// unsuccessfully) to send to the OMS
+/**
+ * @param {string} orderId
+ * @returns {Promise<import('./orders').Order>}
+ */
+const fetchFullOrder = async orderId => {
+  // See https://docs.commercetools.com/http-api.html#reference-expansion
+  const expansionParams = '?expand=lineItems[*].custom.fields.barcodeData[*]&expand=paymentInfo.payments[*]'
+  const uri = requestBuilder.orders.byId(orderId).build() + expansionParams
+  return (await ctClient.execute({ method: 'GET', uri })).body
+}
+
+/**
+ * @explain Fetches all orders that we haven't already tried (successfully or
+ *          unsuccessfully) to send to the OMS
+ * @returns {Promise<Array<(import('./orders').Order)>>}
+ */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = 'not custom(fields(sentToOMS = true)) and custom(fields(errorMessage is not defined))'
   const uri = requestBuilder.orders.where(query).build()
-  try {
-    const { body } = await ctClient.execute({ method: 'GET', uri })
-    return body.results
-  } catch (err) {
-    console.error('Failed to fetch orders:')
-    console.error(err)
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+
+  // The orders that we get back from the query aren't reference-expanded,
+  // so we need to make an additional request to CT for each order to get the
+  // reference-expanded version of the order
+  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  return await Promise.all(orderIds.map(fetchFullOrder))
+}
+
+/**
+ * @param {string} name
+ * @param {any} value
+ * @param {boolean} createCustomType
+ */
+const getCustomFieldUpdateAction = (name, value, createCustomType) => {
+  if (createCustomType) {
+    return {
+      action: 'setCustomType',
+      type: {
+        key: 'orderCustomFields'
+      },
+      fields: {
+        [name]:  value
+      }
+    }
+  }
+  return {
+    action: 'setCustomField',
+    name,
+    value
   }
 }
 
+/**
+ * @param {import('./orders').Order} order
+ */
+const setOrderAsSentToOms = order => {
+  const uri = requestBuilder.orders.byId(order.id).build()
+
+  const body = JSON.stringify({
+    version: order.version,
+    actions: [
+      getCustomFieldUpdateAction('sentToOMS', true, !(order.custom))
+    ]
+  })
+
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
+/**
+ * @param {import('./orders').Order} order 
+ * @param {string} errorMessage 
+ */
+const setOrderErrorMessage = async (order, errorMessage) => {
+  const uri = requestBuilder.orders.byId(order.id).build()
+
+  const body = JSON.stringify({
+    version: order.version,
+    actions: [
+      getCustomFieldUpdateAction('errorMessage', errorMessage, !(order.custom))
+    ]
+  })
+
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
 module.exports = {
-  fetchOrdersThatShouldBeSentToOms
+  fetchOrdersThatShouldBeSentToOms,
+  setOrderAsSentToOms,
+  setOrderErrorMessage
 }

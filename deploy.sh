@@ -2,10 +2,11 @@
 kubectl create configmap hr-orders-service \
   --from-literal=SFTP_HOST=$SFTP_HOST_KUBERNETES \
   --from-literal=SFTP_PORT=$SFTP_PORT \
-  --from-literal=SFTP_INCOMING_ORDERS_PATH=$SFTP_INCOMING_ORDERS_PATH --from-literal=INCOMING_ORDER_FIELDS=$INCOMING_ORDER_FIELDS \
+  --from-literal=SFTP_INCOMING_ORDERS_PATH=$SFTP_INCOMING_ORDERS_PATH \
   --from-literal=CT_PROJECT_KEY=$CT_PROJECT_KEY \
   --from-literal=CT_OAUTH_HOST=$CT_OAUTH_HOST \
   --from-literal=CT_HOST=$CT_HOST \
+  --from-literal=ORDER_UPLOAD_INTERVAL=$ORDER_UPLOAD_INTERVAL \
   -o yaml --dry-run | kubectl apply -f -
 
 # update existing secret
