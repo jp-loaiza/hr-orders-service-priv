@@ -1,7 +1,6 @@
 const { parse } = require('json2csv')
 
 const {
-  CT_PAYMENT_STATES,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
   GENERAL_CSV_OPTIONS,
@@ -15,15 +14,7 @@ const {
   TENDER_ROWS,
   TENDER_ROWS_ENUM
 } = require('./constants')
-const  {
-  convertToDollars,
-  formatDate,
-  getCarrierIdFromShippingMethodName,
-  getOrderTotalTax,
-  getServiceTypeFromShippingMethodName,
-  getShippingTotalTax,
-  shippingMethodIsRushShipping
-} = require('./csv.utils')
+const  { convertToDollars, formatDate } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
 // we can feed into the CSV generator to create the CSV
@@ -36,13 +27,10 @@ const getHeaderObjectFromOrder = ({
   createdAt,
   customerEmail,
   customerId,
-  lineItems,
   locale,
   orderNumber,
-  paymentState,
   shippingAddress,
-  shippingInfo,
-  totalPrice
+  custom
 }) => ({
   [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
   [HEADER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
@@ -66,19 +54,19 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.BILL_TO_COUNTRY_ID]: billingAddress.country,
   [HEADER_ROWS_ENUM.BILL_TO_HOME_PHONE]: billingAddress.phone || shippingAddress.phone, // From JESTA's docs: "Both [BILL_TO_HOME_PHONE and SHIP_TO_HOME_PHONE] are copied from this field"
   [HEADER_ROWS_ENUM.EMAIL_ADDRESS]: customerEmail,
-  [HEADER_ROWS_ENUM.CARRIER_ID]: getCarrierIdFromShippingMethodName(shippingInfo.shippingMethodName),
-  [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: shippingMethodIsRushShipping(shippingInfo.shippingMethodName) ? 'Y' : 'N',
+  [HEADER_ROWS_ENUM.CARRIER_ID]: custom.fields.carrierId,
+  [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: custom.fields.shippingIsRush ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
-  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalGross.centAmount),
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getOrderTotalTax({ lineItems, shippingInfo })),
-  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(totalPrice.centAmount),
+  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(custom.fields.shippingCost.centAmount),
+  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(custom.fields.totalOrderTax.centAmount),
+  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(custom.fields.transactionTotal.centAmount),
   [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTotalTax(shippingInfo)),
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: shippingInfo.taxRate.name,
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(custom.fields.shippingTax.centAmount),
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: custom.fields.shippingTaxDescription,
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
-  [HEADER_ROWS_ENUM.SERVICE_TYPE]: getServiceTypeFromShippingMethodName(shippingInfo.shippingMethodName),
+  [HEADER_ROWS_ENUM.SERVICE_TYPE]: custom.fields.shippingServiceType,
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
-  [HEADER_ROWS_ENUM.RELEASED]: (paymentState === CT_PAYMENT_STATES.PAID || paymentState === CT_PAYMENT_STATES.CREDIT_OWED) ? 'Y' : 'N'
+  [HEADER_ROWS_ENUM.RELEASED]: custom.fields.paymentIsReleased ? 'Y' : 'N'
 })
 
 const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
@@ -88,9 +76,9 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [DETAILS_ROWS_ENUM.QTY_ORDERED]: lineItem.quantity,
   [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.price.value.centAmount),
-  [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: convertToDollars(lineItem.quantity * lineItem.price.value.centAmount),
-  [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: 0, // TODO: confirm what goes here
-  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount),
+  [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: convertToDollars(lineItem.totalPrice.centAmount),
+  [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: convertToDollars(lineItem.custom.fields.lineShippingCharges.centAmount),
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(lineItem.custom.fields.lineTotalTax.centAmount),
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
@@ -105,8 +93,8 @@ const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order}
   [TAXES_ROWS_ENUM.LINE]: index + 1,
   [TAXES_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TAXES_ROWS_ENUM.SITE_ID]: 1, // From JESTA's docs: "1 if one tax. 1 and 2 if two tax lines"
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount - lineItem.price.value.centAmount),
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.taxRate.name
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(lineItem.custom.fields.lineTotalTax.centAmount),
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.custom.fields.lineTaxDescription
 })
 
 const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
@@ -115,7 +103,11 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),
-  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: payment.obj.paymentMethodInfo.method, // TODO: check whether Bold will do mapping from payment type names to the numbers JESTA wants
+  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: payment.obj.paymentMethodInfo.method,
+  [TENDER_ROWS_ENUM.REFERENCENO]: payment.obj.custom.fields.cardReferenceNumber,
+  [TENDER_ROWS_ENUM.EXPDATE]: payment.obj.custom.fields.cardExpiryDate,
+  [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.cardNumber,
+  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.authorizationNumber
 })
 
 // The actual CSV string creation happens below
