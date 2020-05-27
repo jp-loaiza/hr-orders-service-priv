@@ -127,7 +127,8 @@ type Order = {
       totalOrderTax: Price,
       carrierId:  'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
       shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
-      returnsAreFree: boolean
+      returnsAreFree: boolean,
+      destinationSiteId: string,
     }
   }
 }

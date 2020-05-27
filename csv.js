@@ -64,6 +64,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(custom.fields.shippingTax.centAmount),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: custom.fields.shippingTaxDescription,
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
+  [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
   [HEADER_ROWS_ENUM.SERVICE_TYPE]: custom.fields.shippingServiceType,
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
   [HEADER_ROWS_ENUM.RELEASED]: custom.fields.paymentIsReleased ? 'Y' : 'N'
