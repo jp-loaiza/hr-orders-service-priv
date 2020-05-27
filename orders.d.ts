@@ -34,7 +34,8 @@ type LineItem = {
     sku: string,
     prices: Array<{ value: Price }>
   },
-  price: { value: Price }
+  price: { value: Price },
+  totalPrice: Price,
   quantity: number,
   custom: {
     fields: {
@@ -46,7 +47,11 @@ type LineItem = {
             barcode: string
           }
         }
-      }>
+      }>,
+      salespersonId?: number,
+      lineTaxDescription: string,
+      lineTotalTax: Price,
+      lineShippingCharges: Price
     }
   },
   taxedPrice: TaxedPrice,
@@ -79,6 +84,14 @@ type Payment = {
     },
     amountPlanned: {
       centAmount: number
+    },
+    custom: {
+      fields: {
+        cardReferenceNumber: string,
+        cardExpiryDate: string,
+        cardNumber: string,
+        authorizationNumber: string
+      }
     }
   }
 }
@@ -96,30 +109,38 @@ type Order = {
   lineItems: Array<LineItem>,
   shippingAddress: Address,
   billingAddress: Address,
-  shippingInfo: ShippingInfo,
   locale: 'en-CA' | 'fr-CA',
   paymentState: string,
   paymentInfo: {
     payments: Array<Payment>
   },
-  custom?: {
+  custom: {
     fields: {
       sentToOMS?: boolean,
-      errorMessage?: string
+      errorMessage?: string,
+      shippingTax: Price,
+      shippingTaxDescription: string,
+      paymentIsReleased: boolean,
+      shippingCost: Price,
+      shippingIsRush: boolean,
+      transactionTotal: Price,
+      signatureIsRequired: boolean,
+      totalOrderTax: Price,
+      carrierId: CarrierId,
+      shippingServiceType: ShippingServiceType,
+      returnsAreFree: boolean
     }
   }
 }
 
-type ShippingServiceKey = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED_PARCEL' | 'XPRESSPOST'
+type ShippingServiceType = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST'
 
-type CarrierName = 'Canada Post' | 'FedEx' | 'Purolator' | 'DHL' | 'USPS' | 'UPS'
+type CarrierId = 'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS'
 
 export {
-  CarrierName,
   Env,
   LineItem,
   Order,
   Payment,
-  ShippingInfo,
-  ShippingServiceKey
+  ShippingInfo
 }
