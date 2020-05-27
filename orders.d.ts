@@ -110,7 +110,6 @@ type Order = {
   shippingAddress: Address,
   billingAddress: Address,
   locale: 'en-CA' | 'fr-CA',
-  paymentState: string,
   paymentInfo: {
     payments: Array<Payment>
   },
@@ -126,16 +125,12 @@ type Order = {
       transactionTotal: Price,
       signatureIsRequired: boolean,
       totalOrderTax: Price,
-      carrierId: CarrierId,
-      shippingServiceType: ShippingServiceType,
+      carrierId:  'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
+      shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
       returnsAreFree: boolean
     }
   }
 }
-
-type ShippingServiceType = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST'
-
-type CarrierId = 'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS'
 
 export {
   Env,

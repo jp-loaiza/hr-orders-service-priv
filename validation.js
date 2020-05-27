@@ -58,7 +58,7 @@ const orderSchema = {
       values: lineItemSchema
     }
   },
-  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'paymentState', 'locale']
+  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'locale']
 }
 
 const validateOrder = ajv.compile(orderSchema)

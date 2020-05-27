@@ -2,105 +2,64 @@ const { generateCsvStringFromOrder } = require('./csv')
 
 const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
   type: 'Order',
-  id: 'fcfa2770-8afd-41fc-87cf-50293a2fcd9b',
-  version: 7,
-  lastMessageSequenceNumber: 4,
-  createdAt: '2020-05-05T20:54:07.503Z',
-  lastModifiedAt: '2020-05-05T21:24:36.112Z',
+  id: '3d7a60fd-3108-497d-bb4a-def424b53553',
+  version: 2,
+  lastMessageSequenceNumber: 1,
+  createdAt: '2020-05-27T17:46:34.019Z',
+  lastModifiedAt: '2020-05-27T17:57:09.255Z',
   lastModifiedBy: {
-    clientId: 'V8OBU194rSz516W2-CrwV5QL',
+    clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
     isPlatformClient: false,
   },
   createdBy: {
-    clientId: 'Qj2NyrWdIX1y5pFKeySN3q5x',
+    clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
     isPlatformClient: false,
   },
-  orderNumber: '67899',
-  customerId: '48be3e25-9cc0-4c8c-9fa1-35d0bf6c2aa7',
-  customerEmail: 'test@example.com',
+  orderNumber: '122004',
+  customerEmail: 'example01@example.com',
+  locale: 'en-CA',
   totalPrice: {
     type: 'centPrecision',
     currencyCode: 'CAD',
-    centAmount: 7118,
+    centAmount: 53250,
     fractionDigits: 2,
   },
   orderState: 'Open',
   syncInfo: [],
   returnInfo: [],
-  shippingInfo: {
-    shippingMethodName: 'FedEx Express',
-    price: {
-      type: 'centPrecision',
-      currencyCode: 'CAD',
-      centAmount: 565,
-      fractionDigits: 2,
-    },
-    shippingRate: {
-      price: {
-        type: 'centPrecision',
-        currencyCode: 'CAD',
-        centAmount: 500,
-        fractionDigits: 2,
-      },
-      tiers: [],
-    },
-    taxRate: {
-      name: 'HST-ON',
-      amount: 65.0,
-      includedInPrice: true,
-      country: 'CA',
-      subRates: [],
-    },
-    deliveries: [],
-    taxedPrice: {
-      totalNet: {
-        type: 'centPrecision',
-        currencyCode: 'CAD',
-        centAmount: 9,
-        fractionDigits: 2,
-      },
-      totalGross: {
-        type: 'centPrecision',
-        currencyCode: 'CAD',
-        centAmount: 565,
-        fractionDigits: 2,
-      },
-    },
-    shippingMethodState: 'MatchesCart',
-  },
-  taxMode: 'External',
+  taxMode: 'ExternalAmount',
   inventoryMode: 'None',
   taxRoundingMode: 'HalfEven',
   taxCalculationMode: 'LineItemLevel',
   origin: 'Customer',
   lineItems: [
     {
-      id: '63ac6446-aa81-4aa5-8527-255ac00dc74a',
-      productId: 'e445798e-d0ab-4a83-9e91-f0632bf8af41',
+      id: 'db2f65b2-e231-4197-abf5-3186290ff46a',
+      productId: '0733f9d0-f49e-44fb-8941-7263f9e37b1e',
       name: {
-        'fr-CA': 'Printed Silk Tie',
-        'en-CA': 'Printed Silk Tie',
+        'en-CA': 'Embossed Leather Belt',
+        'fr-CA': 'Ceinture en cuir estampé',
       },
       productType: {
         typeId: 'product-type',
         id: '3f69b1dd-631c-4913-b015-c20c083a7940',
       },
       productSlug: {
-        'en-CA': '2002511081',
-        'fr-CA': '2002511081',
+        'en-CA': '20046187',
+        'fr-CA': '20046187',
       },
       variant: {
-        id: 2,
-        sku: '-2294027',
+        id: 24,
+        sku: '-2864801',
         prices: [
           {
             value: {
               type: 'centPrecision',
               currencyCode: 'CAD',
-              centAmount: 5799,
+              centAmount: 22500,
               fractionDigits: 2,
             },
-            id: '6b8db701-1ca5-4ab4-b9fd-d0ad0914394f',
+            id: 'dd02d3af-a828-4e95-a665-488cc034043c',
           },
         ],
         images: [],
@@ -108,43 +67,47 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
           {
             name: 'brandName',
             value: {
-              'en-CA': 'Eton',
-              'fr-CA': 'Eton',
+              'fr-CA': 'Anderson\'s',
+              'en-CA': 'Anderson\'s',
             },
           },
           {
             name: 'construction',
             value: {
-              'en-CA': '<li> Made in England</li>',
-              'fr-CA': '<li> Confectionnée en Angleterre',
+              'fr-CA': '<li> Boucle ardillon\n<li> Fabriquée en Italie',
+              'en-CA': '<li> Pin buckle\n<li> Made in Italy',
             },
           },
           {
             name: 'fabricAndMaterials',
             value: {
-              'en-CA': '<li> 100% silk\n<li> Neat print \n<li> Multi-colour',
-              'fr-CA': '<li> 100 % soie\n<li> Fins motifs\n<li> Multicolore',
+              'fr-CA':
+                  '<li> Cuir\n<li> Effet bruni\n<li> Motif botanique estampé\n<li> Brun foncé',
+              'en-CA':
+                  '<li> Leather\n<li> Burnished finish\n<li> Embossed botanical pattern\n<li> Dark brown',
             },
           },
           {
             name: 'styleAndMeasurements',
             value: {
-              'en-CA': '<li> Width: 8 cm',
-              'fr-CA': '<li> Largeur : 8 cm',
+              'fr-CA':
+                  '<li> Largeur : 3,2 cm (1,25 po)\n<li> Sélectionnez la ceinture qui mesure 2 po de plus (ou le nombre entier le plus proche) que le tour de taille de votre pantalon.',
+              'en-CA':
+                  '<li> Width: 1.25 in\n<li> Select one size (2 inches, to nearest even number) up from your trouser waist size for a standard fit',
             },
           },
           {
             name: 'careInstructions',
             value: {
-              'en-CA': '<li> Dry clean only',
-              'fr-CA': '<li> Nettoyer à sec seulement',
+              'fr-CA': '',
+              'en-CA': '',
             },
           },
           {
             name: 'advice',
             value: {
-              'en-CA': '',
               'fr-CA': '',
+              'en-CA': '',
             },
           },
           {
@@ -153,59 +116,54 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
           },
           {
             name: 'season',
-            value: 'SP-18',
+            value: 'FA-19',
           },
           {
             name: 'originalPrice',
             value: {
               type: 'centPrecision',
               currencyCode: 'CAD',
-              centAmount: 14500,
+              centAmount: 22500,
               fractionDigits: 2,
             },
           },
           {
             name: 'vsn',
-            value: 'A000 30247 80',
+            value: 'A3387-AF3790/14-PL152-M1',
           },
           {
             name: 'relatedProductId',
-            value: 'A000 30247 80274727Eton',
+            value: 'A3387-AF3790/14-PL152-M1375366Anderson\'s',
+          },
+          {
+            name: 'styleLastModifiedInternal',
+            value: '2019-09-06T04:09:45.000Z',
           },
           {
             name: 'colorId',
-            value: '081',
+            value: '068',
           },
           {
             name: 'skuLastModifiedInternal',
-            value: '2018-01-05T17:01:52.000Z',
+            value: '2019-05-10T16:03:35.000Z',
           },
           {
             name: 'size',
             value: {
-              'en-CA': 'O/S',
+              'en-CA': '38',
             },
           },
           {
             name: 'sizeId',
-            value: '179',
-          },
-          {
-            name: 'onlineSalePrice',
-            value: {
-              fractionDigits: 2,
-              centAmount: 5799,
-              currencyCode: 'CAD',
-              type: 'centPrecision',
-            },
+            value: '99',
           },
           {
             name: 'isOnlineSale',
-            value: true,
+            value: false,
           },
           {
             name: 'onlineDiscount',
-            value: 60,
+            value: 0,
           },
           {
             name: 'isOutlet',
@@ -213,7 +171,7 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
           },
           {
             name: 'styleOutletLastModifiedInternal',
-            value: '2019-08-02T16:37:00.000Z',
+            value: '2019-10-15T14:50:00.000Z',
           },
         ],
         assets: [],
@@ -222,26 +180,75 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
         value: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 5799,
+          centAmount: 22500,
           fractionDigits: 2,
         },
-        id: '18fe7002-7934-4a90-8c74-7f8791916430',
+        id: 'dd02d3af-a828-4e95-a665-488cc034043c',
       },
-      quantity: 1,
-      discountedPricePerQuantity: [],
+      quantity: 2,
+      discountedPrice: {
+        value: {
+          type: 'centPrecision',
+          currencyCode: 'CAD',
+          centAmount: 16875,
+          fractionDigits: 2,
+        },
+        includedDiscounts: [
+          {
+            discount: {
+              typeId: 'cart-discount',
+              id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
+            },
+            discountedAmount: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 5625,
+              fractionDigits: 2,
+            },
+          },
+        ],
+      },
+      discountedPricePerQuantity: [
+        {
+          quantity: 2,
+          discountedPrice: {
+            value: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 16875,
+              fractionDigits: 2,
+            },
+            includedDiscounts: [
+              {
+                discount: {
+                  typeId: 'cart-discount',
+                  id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
+                },
+                discountedAmount: {
+                  type: 'centPrecision',
+                  currencyCode: 'CAD',
+                  centAmount: 5625,
+                  fractionDigits: 2,
+                },
+              },
+            ],
+          },
+        },
+      ],
       taxRate: {
-        name: 'HST-ON',
+        name: 'HST',
         amount: 0.13,
         includedInPrice: false,
         country: 'CA',
+        state: 'ON',
         subRates: [],
       },
       state: [
         {
-          quantity: 1,
+          quantity: 2,
           state: {
             typeId: 'state',
-            id: 'a5b4470b-6518-4a10-88c7-3773b4c07971',
+            id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629',
           },
         },
       ],
@@ -249,20 +256,20 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
       totalPrice: {
         type: 'centPrecision',
         currencyCode: 'CAD',
-        centAmount: 5799,
+        centAmount: 33750,
         fractionDigits: 2,
       },
       taxedPrice: {
         totalNet: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 5799,
+          centAmount: 33750,
           fractionDigits: 2,
         },
         totalGross: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 6553,
+          centAmount: 38137,
           fractionDigits: 2,
         },
       },
@@ -272,26 +279,34 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
           id: '72953947-9bf8-4d31-8a2e-9a9c22d40649',
         },
         fields: {
+          salespersonId: 355216,
           isGift: true,
+          lineTaxDescription: 'HST-ON',
+          lineTotalTax: {
+            fractionDigits: 2,
+            centAmount: 4387,
+            currencyCode: 'CAD',
+            type: 'centPrecision',
+          },
           barcodeData: [
             {
               typeId: 'key-value-document',
-              id: '1f55cd86-0a2c-4240-9031-9b8393537c62',
+              id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
               obj: {
-                id: '1f55cd86-0a2c-4240-9031-9b8393537c62',
+                id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
                 version: 1,
                 container: 'barcodes',
-                key: 'aleksBarcodeTest-009',
+                key: '22360227-05',
                 value: {
-                  id: 'aleksBarcodeTest-009',
-                  styleId: '22222222',
-                  skuId: '-aleksTest12',
+                  id: '22360227-05',
+                  styleId: '22360227',
+                  skuId: '-754864',
                   subType: 'UPCE',
-                  barcode: 'aleksBarcodeTest-009',
-                  lastModifiedDate: 1459699217000,
+                  barcode: '22360227-05',
+                  lastModifiedDate: 1459699210000,
                 },
-                createdAt: '2020-04-01T19:03:08.808Z',
-                lastModifiedAt: '2020-04-01T19:03:08.808Z',
+                createdAt: '2020-03-31T16:55:02.111Z',
+                lastModifiedAt: '2020-03-31T16:55:02.111Z',
                 lastModifiedBy: {
                   clientId: '9YnDCNDg16EER7mWlMjXeHkF',
                   isPlatformClient: false,
@@ -303,57 +318,171 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
               },
             },
           ],
-          orderDetailLastModifiedDate: '2018-12-28T15:23:49.008Z',
+          lineShippingCharges: {
+            fractionDigits: 2,
+            centAmount: 550,
+            currencyCode: 'CAD',
+            type: 'centPrecision',
+          },
         },
       },
       lineItemMode: 'Standard',
     },
     {
-      id: 'd64aad3b-c0af-45e1-9b35-c800d50d75be',
-      productId: 'c167482d-9561-4567-8790-c49372575249',
+      id: '328613b8-9f8a-4de6-95c4-f1d6ef7da755',
+      productId: 'f6b5a911-69e8-4d00-85a6-958ab72d2ede',
       name: {
-        'fr-CA': 'Printed Silk Tie',
-        'en-CA': 'Printed Silk Tie',
+        'en-CA': 'The Tellis Modern Slim Fit Jeans',
+        'fr-CA': 'Jean de coupe moderne amincie\\, modèle Tellis',
       },
       productType: {
         typeId: 'product-type',
         id: '3f69b1dd-631c-4913-b015-c20c083a7940',
       },
       productSlug: {
-        'en-CA': '5327754781',
-        'fr-CA': '5327754781',
+        'en-CA': '20034684',
+        'fr-CA': '20034684',
       },
       variant: {
         id: 2,
-        sku: '-649343',
-        prices: [],
+        sku: '-2651290',
+        prices: [
+          {
+            value: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 26000,
+              fractionDigits: 2,
+            },
+            id: '55af6537-e55a-48d9-8f28-1fd7ec554433',
+          },
+        ],
         images: [],
         attributes: [
           {
+            name: 'brandName',
+            value: {
+              'fr-CA': 'AG',
+              'en-CA': 'AG',
+            },
+          },
+          {
+            name: 'construction',
+            value: {
+              'fr-CA': '<li> Braguette à glissière\n<li> Cinq poches',
+              'en-CA': '<li> Zipper fly\n<li> Five-pocket style',
+            },
+          },
+          {
+            name: 'fabricAndMaterials',
+            value: {
+              'fr-CA':
+                  '<li> 98 % coton, 2 % polyuréthane\n<li> Écusson-logo en cuir sur la taille\n<li> Délavage foncé\n<li> Bleu marine',
+              'en-CA':
+                  '<li> 98% cotton, 2% polyurethane\n<li> Leather logo patch on waistband\n<li> Dark wash\n<li> Navy',
+            },
+          },
+          {
+            name: 'styleAndMeasurements',
+            value: {
+              'fr-CA':
+                  '<li> Coupe amincie\n<li> Coupe moderne amincie Tellis d¿AG\n<li> Taille moyenne\n<li> Fourche avant de 25,4 cm (10 po)\n<li> Fourche arrière de 35,6 cm (14 po)\n<li> Entrejambe de 83,8 cm (33 po)\n<li> Mesures prises sur la taille 32',
+              'en-CA':
+                  '<li> Slim fit\n<li> AG The Tellis Modern Slim fit\n<li> Mid-rise style\n<li> Front rise: 10 in\n<li> Back rise: 14 in\n<li> Inseam: 33 in\n<li> Measurements are based on size 32',
+            },
+          },
+          {
+            name: 'careInstructions',
+            value: {
+              'fr-CA':
+                  '<li> Laver à la machine à l¿eau froide\n<li> Sécher par culbutage à température moyenne\n<li> Repasser à température moyenne\n<li> Ne pas nettoyer à sec',
+              'en-CA':
+                  '<li> Machine wash, cold\n<li> Tumble dry, medium\n<li> Iron, medium\n<li> Do not dry clean',
+            },
+          },
+          {
+            name: 'advice',
+            value: {
+              'fr-CA': '',
+              'en-CA': '',
+            },
+          },
+          {
+            name: 'webStatus',
+            value: true,
+          },
+          {
+            name: 'season',
+            value: 'BASIC',
+          },
+          {
+            name: 'originalPrice',
+            value: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 26000,
+              fractionDigits: 2,
+            },
+          },
+          {
+            name: 'vsn',
+            value: 'TLS',
+          },
+          {
+            name: 'relatedProductId',
+            value: 'TLS465437AG',
+          },
+          {
+            name: 'styleLastModifiedInternal',
+            value: '2020-05-07T08:20:57.000Z',
+          },
+          {
             name: 'colorId',
-            value: '081',
+            value: '049',
           },
           {
             name: 'skuLastModifiedInternal',
-            value: '2016-03-31T13:03:01.000Z',
+            value: '2018-08-23T20:03:18.000Z',
           },
           {
             name: 'size',
             value: {
-              'en-CA': 'NA',
+              'en-CA': '36',
             },
           },
           {
             name: 'sizeId',
-            value: '177',
+            value: '95',
+          },
+          {
+            name: 'isOnlineSale',
+            value: false,
+          },
+          {
+            name: 'onlineDiscount',
+            value: 0,
           },
           {
             name: 'isOutlet',
-            value: true,
+            value: false,
           },
           {
             name: 'styleOutletLastModifiedInternal',
-            value: '2019-08-20T02:20:55.000Z',
+            value: '2019-12-19T18:48:26.000Z',
+          },
+          {
+            name: 'colour',
+            value: {
+              'en-CA': 'Indigo',
+              'fr-CA': 'Bleu indigo',
+            },
+          },
+          {
+            name: 'colourGroup',
+            value: {
+              'en-CA': 'Blue',
+              'fr-CA': 'Bleu',
+            },
           },
         ],
         assets: [],
@@ -362,18 +491,67 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
         value: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 5799,
+          centAmount: 26000,
           fractionDigits: 2,
         },
-        id: '464e9664-8b65-4d99-99db-e7062f28e9ed',
+        id: '55af6537-e55a-48d9-8f28-1fd7ec554433',
       },
       quantity: 1,
-      discountedPricePerQuantity: [],
+      discountedPrice: {
+        value: {
+          type: 'centPrecision',
+          currencyCode: 'CAD',
+          centAmount: 19500,
+          fractionDigits: 2,
+        },
+        includedDiscounts: [
+          {
+            discount: {
+              typeId: 'cart-discount',
+              id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
+            },
+            discountedAmount: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 6500,
+              fractionDigits: 2,
+            },
+          },
+        ],
+      },
+      discountedPricePerQuantity: [
+        {
+          quantity: 1,
+          discountedPrice: {
+            value: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 19500,
+              fractionDigits: 2,
+            },
+            includedDiscounts: [
+              {
+                discount: {
+                  typeId: 'cart-discount',
+                  id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
+                },
+                discountedAmount: {
+                  type: 'centPrecision',
+                  currencyCode: 'CAD',
+                  centAmount: 6500,
+                  fractionDigits: 2,
+                },
+              },
+            ],
+          },
+        },
+      ],
       taxRate: {
-        name: 'HST-ON',
+        name: 'HST',
         amount: 0.13,
         includedInPrice: false,
         country: 'CA',
+        state: 'ON',
         subRates: [],
       },
       state: [
@@ -381,7 +559,7 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
           quantity: 1,
           state: {
             typeId: 'state',
-            id: '207a16ee-a405-4347-b2fd-37fcc589b250',
+            id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629',
           },
         },
       ],
@@ -389,20 +567,20 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
       totalPrice: {
         type: 'centPrecision',
         currencyCode: 'CAD',
-        centAmount: 5799,
+        centAmount: 19500,
         fractionDigits: 2,
       },
       taxedPrice: {
         totalNet: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 5799,
+          centAmount: 19500,
           fractionDigits: 2,
         },
         totalGross: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 6553,
+          centAmount: 22035,
           fractionDigits: 2,
         },
       },
@@ -412,27 +590,34 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
           id: '72953947-9bf8-4d31-8a2e-9a9c22d40649',
         },
         fields: {
-          orderDetailLastModifiedDate: '2018-12-28T15:23:49.007Z',
-          isGift: true,
+          salespersonId: 355216,
+          isGift: false,
+          lineTaxDescription: 'HST-ON',
+          lineTotalTax: {
+            type: 'centPrecision',
+            currencyCode: 'CAD',
+            centAmount: 2535,
+            fractionDigits: 2,
+          },
           barcodeData: [
             {
               typeId: 'key-value-document',
-              id: '396d3d6e-b799-43b0-b5a2-563e986d24a0',
+              id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
               obj: {
-                id: '396d3d6e-b799-43b0-b5a2-563e986d24a0',
+                id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
                 version: 1,
                 container: 'barcodes',
-                key: '38211393-102',
+                key: '22360227-05',
                 value: {
-                  id: '38211393-102',
-                  styleId: '001',
-                  skuId: '003',
+                  id: '22360227-05',
+                  styleId: '22360227',
+                  skuId: '-754864',
                   subType: 'UPCE',
-                  barcode: '38211393-102',
-                  lastModifiedDate: 1459699217000,
+                  barcode: '22360227-05',
+                  lastModifiedDate: 1459699210000,
                 },
-                createdAt: '2020-03-26T15:45:27.667Z',
-                lastModifiedAt: '2020-03-26T15:45:27.667Z',
+                createdAt: '2020-03-31T16:55:02.111Z',
+                lastModifiedAt: '2020-03-31T16:55:02.111Z',
                 lastModifiedBy: {
                   clientId: '9YnDCNDg16EER7mWlMjXeHkF',
                   isPlatformClient: false,
@@ -444,52 +629,132 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
               },
             },
           ],
+          lineShippingCharges: {
+            type: 'centPrecision',
+            currencyCode: 'CAD',
+            centAmount: 550,
+            fractionDigits: 2,
+          },
         },
       },
       lineItemMode: 'Standard',
     },
   ],
   customLineItems: [],
-  transactionFee: false,
+  transactionFee: true,
   discountCodes: [],
+  cart: {
+    typeId: 'cart',
+    id: '2b8ba61e-2ac9-4142-9efd-49c4b80e04c3',
+  },
+  custom: {
+    type: {
+      typeId: 'type',
+      id: '4525a9be-e60e-4d48-b27f-8c5d12b6aada',
+    },
+    fields: {
+      shippingTax: {
+        fractionDigits: 2,
+        centAmount: 130,
+        currencyCode: 'CAD',
+        type: 'centPrecision',
+      },
+      paymentIsReleased: true,
+      shippingCost: {
+        fractionDigits: 2,
+        centAmount: 1000,
+        currencyCode: 'CAD',
+        type: 'centPrecision',
+      },
+      shippingIsRush: true,
+      transactionTotal: {
+        fractionDigits: 2,
+        centAmount: 54380,
+        currencyCode: 'CAD',
+        type: 'centPrecision',
+      },
+      signatureIsRequired: false,
+      shippingTaxDescription: 'HST-ON',
+      totalOrderTax: {
+        fractionDigits: 2,
+        centAmount: 7052,
+        currencyCode: 'CAD',
+        type: 'centPrecision',
+      },
+      carrierId: 'FDX',
+      returnsAreFree: false,
+      shippingServiceType: 'EXPEDITED PARCEL',
+    },
+  },
+  paymentInfo: {
+    payments: [
+      {
+        typeId: 'payment',
+        id: '2843b6d1-8497-45b3-a9a5-cc01a187ba51',
+        obj: {
+          id: '2843b6d1-8497-45b3-a9a5-cc01a187ba51',
+          version: 2,
+          lastMessageSequenceNumber: 1,
+          createdAt: '2020-05-26T18:53:57.098Z',
+          lastModifiedAt: '2020-05-26T19:21:23.444Z',
+          lastModifiedBy: {
+            clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
+            isPlatformClient: false,
+          },
+          createdBy: {
+            clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
+            isPlatformClient: false,
+          },
+          amountPlanned: {
+            type: 'centPrecision',
+            currencyCode: 'CAD',
+            centAmount: 54380,
+            fractionDigits: 2,
+          },
+          paymentMethodInfo: {
+            method: '05',
+          },
+          custom: {
+            type: {
+              typeId: 'type',
+              id: 'c9a81e31-3fa6-4e73-8267-72cc3fd901b7',
+            },
+            fields: {
+              cardReferenceNumber: '19',
+              cardExpiryDate: '0525',
+              cardNumber: '1212',
+              authorizationNumber: '12345',
+            },
+          },
+          paymentStatus: {},
+          transactions: [],
+          interfaceInteractions: [],
+        },
+      },
+    ],
+  },
   shippingAddress: {
     firstName: 'Harry',
     lastName: 'Rosen',
-    additionalStreetInfo: '82 Bloor St W',
-    postalCode: 'M5S1L9',
-    city: 'Toronto',
+    additionalStreetInfo: '218 Young Street\n#1246',
+    postalCode: 'M5B 2H6',
     state: 'ON',
+    city: 'Toronto',
     country: 'CA',
-    phone: '(416) 972-0556',
+    phone: '(416) 598-8885',
   },
   billingAddress: {
     firstName: 'Harry',
     lastName: 'Rosen',
-    additionalStreetInfo: '82 Bloor St W',
-    postalCode: 'M5S1L9',
+    additionalStreetInfo: '218 Young Street\n#1246',
+    postalCode: 'M5B 2H6',
     city: 'Toronto',
     state: 'ON',
     country: 'CA',
-    phone: '(416) 972-0556',
+    phone: '(416) 598-8885',
   },
   itemShippingAddresses: [],
   refusedGifts: [],
-  paymentInfo: {
-    payments: [
-      {
-        obj: {
-          paymentMethodInfo: {
-            method: '06',
-          },
-          amountPlanned: {
-            centAmount: 152,
-          }
-        }
-      }
-    ]
-  },
-  locale: 'en-CA',
-  paymentState: 'Paid'
 })
 
 describe('generateCsvStringFromOrder', () => {
@@ -499,12 +764,12 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-H,990,67899,Harry,Rosen,,82 Bloor St W,,,Toronto,ON,M5S1L9,CA,48be3e25-9cc0-4c8c-9fa1-35d0bf6c2aa7,Harry,Rosen,82 Bloor St W,,,Toronto,ON,M5S1L9,CA,(416) 972-0556,test@example.com,FDX,Y,N,,5.65,15.08,,71.18,,,,,,,2020-05-05 20:54,,0,HST-ON,,,,,,990,,,EXPRESS,1,,,Y
-D,990,1,67899,,,,1,57.99,,57.99,0,7.54,65.53,aleksBarcodeTest-009,N,63ac6446-aa81-4aa5-8527-255ac00dc74a,Y,,,,,UPCE
-D,990,2,67899,,,,1,57.99,,57.99,0,7.54,65.53,38211393-102,N,d64aad3b-c0af-45e1-9b35-c800d50d75be,Y,,,,,UPCE
-T,1,1,67899,,7.54,HST-ON
-T,1,2,67899,,7.54,HST-ON
-N,990,1,67899,1.52,06,,,,,
+H,990,122004,Harry,Rosen,,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,,Harry,Rosen,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,(416) 598-8885,example01@example.com,FDX,Y,N,,10,70.52,,543.8,,,,,,,2020-05-27 17:46,,1.3,HST-ON,,,,,,990,,,EXPEDITED PARCEL,1,,,Y
+D,990,1,122004,,,,2,225,,337.5,5.5,43.87,381.37,22360227-05,N,db2f65b2-e231-4197-abf5-3186290ff46a,Y,,,,,UPCE
+D,990,2,122004,,,,1,260,,195,5.5,25.35,220.35,22360227-05,N,328613b8-9f8a-4de6-95c4-f1d6ef7da755,N,,,,,UPCE
+T,1,1,122004,,43.87,HST-ON
+T,1,2,122004,,25.35,HST-ON
+N,990,1,122004,543.8,05,19,0525,,1212,12345
 `.split('\n').join('\r\n') // the expected string has Windows line breaks
     expect(generateCsvStringFromOrder(completeOrderEnglish)).toEqual(expectedOrderCsv)
   })
@@ -520,20 +785,25 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-H,990,67899,Harry,Rosen,,82 Bloor St W,,,Toronto,ON,M5S1L9,CA,48be3e25-9cc0-4c8c-9fa1-35d0bf6c2aa7,Harry,Rosen,82 Bloor St W,,,Toronto,ON,M5S1L9,CA,(416) 972-0556,test@example.com,FDX,Y,N,,5.65,15.08,,71.18,,,,,,,2020-05-05 20:54,,0,HST-ON,,,,,,990,,,EXPRESS,3,,,Y
-D,990,1,67899,,,,1,57.99,,57.99,0,7.54,65.53,aleksBarcodeTest-009,N,63ac6446-aa81-4aa5-8527-255ac00dc74a,Y,,,,,UPCE
-D,990,2,67899,,,,1,57.99,,57.99,0,7.54,65.53,38211393-102,N,d64aad3b-c0af-45e1-9b35-c800d50d75be,Y,,,,,UPCE
-T,1,1,67899,,7.54,HST-ON
-T,1,2,67899,,7.54,HST-ON
-N,990,1,67899,1.52,06,,,,,
+H,990,122004,Harry,Rosen,,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,,Harry,Rosen,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,(416) 598-8885,example01@example.com,FDX,Y,N,,10,70.52,,543.8,,,,,,,2020-05-27 17:46,,1.3,HST-ON,,,,,,990,,,EXPEDITED PARCEL,3,,,Y
+D,990,1,122004,,,,2,225,,337.5,5.5,43.87,381.37,22360227-05,N,db2f65b2-e231-4197-abf5-3186290ff46a,Y,,,,,UPCE
+D,990,2,122004,,,,1,260,,195,5.5,25.35,220.35,22360227-05,N,328613b8-9f8a-4de6-95c4-f1d6ef7da755,N,,,,,UPCE
+T,1,1,122004,,43.87,HST-ON
+T,1,2,122004,,25.35,HST-ON
+N,990,1,122004,543.8,05,19,0525,,1212,12345
 `.split('\n').join('\r\n')
     expect(generateCsvStringFromOrder(completeOrderFrench)).toEqual(expectedOrderCsv)
   })
 
-  it('returns the correct CSV string when given an order whose payment state is \'Failed\'', () => {
+  it('returns the correct CSV string when given an order whose payment is not released', () => {
     const orderWithFailedPayment = {
       ...completeOrderEnglish,
-      paymentState: 'Failed'
+      custom: {
+        fields: {
+          ...completeOrderEnglish.custom.fields,
+          paymentIsReleased: false
+        }
+      }
     }
 
     const expectedOrderCsv = `RecordType H,SITE_ID,WFE_TRANS_ID,SHIP_TO_FIRST_NAME,SHIP_TO_LAST_NAME,,SHIP_TO_ADDRESS_1,SHIP_TO_ADDRESS_2,SHIP_TO_ADDRESS_3,SHIP_TO_CITY,SHIP_TO_STATE_ID,SHIP_TO_ZIP_CODE,SHIP_TO_COUNTRY_ID,WFE_CUSTOMER_ID,BILL_TO_FIRST_NAME,BILL_TO_LAST_NAME,BILL_TO_ADDRESS_1,BILL_TO_ADDRESS_2,BILL_TO_ADDRESS_3,BILL_TO_CITY,BILL_TO_STATE_ID,BILL_TO_ZIP_CODE,BILL_TO_COUNTRY_ID,BILL_TO_HOME_PHONE,EMAIL_ADDRESS,CARRIER_ID,RUSH_SHIPPING_IND,SHIP_COMPLETE_IND,,SHIPPING_CHARGES_TOTAL,TAX_TOTAL,,TRANSACTION_TOTAL,,POS_EQUIVALENCE,,,,,ORDER_DATE,ADDITIONAL_METADATA,SHIPPING_TAX1,SHIPPING_TAX1_DESCRIPTION,SHIPPING_TAX2,SHIPPING_TAX2_DESCRIPTION,SHIPPING_TAX3,SHIPPING_TAX3_DESCRIPTION,DESTINATION_SITE_ID,REQUESTER_SITE_ID,,,SERVICE_TYPE,LANGUAGE_NO,FREE_RETURN_IND,SIGNATURE_REQUIRED_IND,RELEASED
@@ -541,12 +811,12 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-H,990,67899,Harry,Rosen,,82 Bloor St W,,,Toronto,ON,M5S1L9,CA,48be3e25-9cc0-4c8c-9fa1-35d0bf6c2aa7,Harry,Rosen,82 Bloor St W,,,Toronto,ON,M5S1L9,CA,(416) 972-0556,test@example.com,FDX,Y,N,,5.65,15.08,,71.18,,,,,,,2020-05-05 20:54,,0,HST-ON,,,,,,990,,,EXPRESS,1,,,N
-D,990,1,67899,,,,1,57.99,,57.99,0,7.54,65.53,aleksBarcodeTest-009,N,63ac6446-aa81-4aa5-8527-255ac00dc74a,Y,,,,,UPCE
-D,990,2,67899,,,,1,57.99,,57.99,0,7.54,65.53,38211393-102,N,d64aad3b-c0af-45e1-9b35-c800d50d75be,Y,,,,,UPCE
-T,1,1,67899,,7.54,HST-ON
-T,1,2,67899,,7.54,HST-ON
-N,990,1,67899,1.52,06,,,,,
+H,990,122004,Harry,Rosen,,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,,Harry,Rosen,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,(416) 598-8885,example01@example.com,FDX,Y,N,,10,70.52,,543.8,,,,,,,2020-05-27 17:46,,1.3,HST-ON,,,,,,990,,,EXPEDITED PARCEL,1,,,N
+D,990,1,122004,,,,2,225,,337.5,5.5,43.87,381.37,22360227-05,N,db2f65b2-e231-4197-abf5-3186290ff46a,Y,,,,,UPCE
+D,990,2,122004,,,,1,260,,195,5.5,25.35,220.35,22360227-05,N,328613b8-9f8a-4de6-95c4-f1d6ef7da755,N,,,,,UPCE
+T,1,1,122004,,43.87,HST-ON
+T,1,2,122004,,25.35,HST-ON
+N,990,1,122004,543.8,05,19,0525,,1212,12345
 `.split('\n').join('\r\n')
 
     expect(generateCsvStringFromOrder(orderWithFailedPayment)).toEqual(expectedOrderCsv)

@@ -28,9 +28,13 @@ const mockOrder = {
         }]
       }
     }
-  }]
+  }],
+  custom: {
+    fields: {}
+  }
 }
 
+// TODO: clean up -- remove values we don't care about, etc.
 const ctMockResponse = {
   version: 1,
   masterData: {
