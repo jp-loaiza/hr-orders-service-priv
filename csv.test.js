@@ -1,6 +1,6 @@
 const { generateCsvStringFromOrder } = require('./csv')
 
-const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
+const completeOrderEnglishUntyped = {
   type: 'Order',
   id: '3d7a60fd-3108-497d-bb4a-def424b53553',
   version: 2,
@@ -755,7 +755,11 @@ const completeOrderEnglish =  /** @type {import('./orders').Order} */ ({
   },
   itemShippingAddresses: [],
   refusedGifts: [],
-})
+}
+
+/** @type {import('./orders').Order} */
+// @ts-ignore re-assigning to get around excess property checks
+const completeOrderEnglish = completeOrderEnglishUntyped
 
 describe('generateCsvStringFromOrder', () => {
   it('returns the correct CSV string when given a complete order whose locale is en-CA', () => {
