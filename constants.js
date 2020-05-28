@@ -4,31 +4,6 @@ const LOCALES_TO_JESTA_LANGUAGE_NUMBERS = {
   'en-CA': 1,
   'fr-CA': 3
 }
-
-const CT_PAYMENT_STATES = {
-  BALANCE_DUE: 'BalanceDue',
-  FAILED: 'Failed',
-  PENDING: 'Pending',
-  PAID: 'Paid',
-  CREDIT_OWED: 'CreditOwed'
-}
-
-const SHIPPING_SERVICE_TYPES = {
-  EXPRESS: 'EXPRESS',
-  SHIPMENT: 'SHIPMENT',
-  EXPEDITED_PARCEL: 'EXPEDITED PARCEL', 
-  XPRESSPOST: 'XPRESSPOST'
-}
-
-const CARRIER_NAMES_TO_IDS = {
-  'Canada Post': 'CP',
-  FedEx: 'FDX',
-  Purolator: 'PRL',
-  DHL: 'DHL',
-  USPS: 'USPS',
-  UPS: 'UPS'
-}
-
 const ONLINE_SITE_ID = '990'
 
 const HEADER_ROWS_ENUM = {
@@ -261,8 +236,6 @@ const GENERAL_CSV_OPTIONS = {
 }
 
 module.exports = {
-  CARRIER_NAMES_TO_IDS,
-  CT_PAYMENT_STATES,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
   GENERAL_CSV_OPTIONS,
@@ -272,7 +245,6 @@ module.exports = {
   KEEP_ALIVE_INTERVAL,
   MISC_ROWS,
   ONLINE_SITE_ID,
-  SHIPPING_SERVICE_TYPES,
   TAXES_ROWS,
   TAXES_ROWS_ENUM,
   TENDER_ROWS,
