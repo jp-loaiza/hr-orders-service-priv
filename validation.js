@@ -19,7 +19,11 @@ const paymentSchema = {
   properties: {
     obj: {
       type: 'object',
-      required: ['paymentMethodInfo', 'amountPlanned']
+      properties: {
+        type: 'object',
+        required: ['cardReferenceNumber', 'cardExpiryDate', 'cardNumber', 'authorizationNumber']
+      },
+      required: ['paymentMethodInfo', 'amountPlanned', 'custom']
     }
   },
   required: ['obj']
@@ -58,7 +62,7 @@ const orderSchema = {
       values: lineItemSchema
     }
   },
-  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'locale']
+  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'locale', 'paymentInfo']
 }
 
 const validateOrder = ajv.compile(orderSchema)
