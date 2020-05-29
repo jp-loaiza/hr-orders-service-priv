@@ -60,9 +60,19 @@ const orderSchema = {
     lineItems: {
       type: 'array',
       values: lineItemSchema
+    },
+    custom: {
+      type: 'object',
+      properties: {
+        fields: {
+          type: 'object',
+          required: ['shippingTax', 'shippingTaxDescription', 'paymentIsReleased', 'shippingCost', 'shippingIsRush', 'transactionTotal', 'signatureIsRequired', 'totalOrderTax', 'carrierId', 'shippingServiceType', 'returnsAreFree']
+        }
+      },
+      required: ['fields']
     }
   },
-  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'locale', 'paymentInfo']
+  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'locale', 'paymentInfo', 'custom']
 }
 
 const validateOrder = ajv.compile(orderSchema)
