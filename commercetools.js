@@ -80,14 +80,14 @@ const fetchFullOrder = async orderId => {
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
 
-/**
- * @explain Fetches all orders that we haven't already tried (successfully or
- *          unsuccessfully) to send to the OMS
+/** Fetches all orders that that we should try to send to the OMS. Includes
+ *  both orders that we have never tried to send to the OMS, and ones that
+ *  it is time to re-try sending to the OMS.
  * @returns {Promise<Array<(import('./orders').Order)>>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  // TODO: change to get orders (i) whose sentToOmsStatus is `PENDING` and (ii) whose nextRetryAt is either undefined or not in the future
-  const query = 'not custom(fields(sentToOMS = true)) and custom(fields(errorMessage is not defined))'
+  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))`
+  console.log(query)
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
