@@ -87,7 +87,6 @@ const fetchFullOrder = async orderId => {
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))`
-  console.log(query)
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
@@ -99,31 +98,6 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
 }
 
 /**
- * @param {string} name
- * @param {any} value
- * @param {boolean} createCustomType
- */
-const getCustomFieldUpdateAction = (name, value, createCustomType) => {
-  if (createCustomType) {
-    return {
-      action: 'setCustomType',
-      type: {
-        key: 'orderCustomFields'
-      },
-      fields: {
-        [name]:  value
-      }
-    }
-  }
-  return {
-    action: 'setCustomField',
-    name,
-    value
-  }
-}
-
-// TODO: Update to use new `sentToOmsStatus` custom field
-/**
  * @param {import('./orders').Order} order
  */
 const setOrderAsSentToOms = order => {
@@ -132,25 +106,11 @@ const setOrderAsSentToOms = order => {
   const body = JSON.stringify({
     version: order.version,
     actions: [
-      getCustomFieldUpdateAction('sentToOMS', true, !(order.custom))
-    ]
-  })
-
-  return ctClient.execute({ method: 'POST', uri, body })
-}
-
-// TODO: Deprecate in favour of `setOrderErrorFields`
-/**
- * @param {import('./orders').Order} order 
- * @param {string} errorMessage 
- */
-const setOrderErrorMessage = async (order, errorMessage) => {
-  const uri = requestBuilder.orders.byId(order.id).build()
-
-  const body = JSON.stringify({
-    version: order.version,
-    actions: [
-      getCustomFieldUpdateAction('errorMessage', errorMessage, !(order.custom))
+      {
+        action: 'setCustomField',
+        name: 'sentToOmsStatus',
+        value: SENT_TO_OMS_STATUSES.SUCCESS
+      }
     ]
   })
 
@@ -190,9 +150,6 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount) : null
   const sentToOmsStatus = shouldRetry ? SENT_TO_OMS_STATUSES.PENDING : SENT_TO_OMS_STATUSES.FAILURE
 
-  // TODO (maybe--think about whether it's necessary):
-  // Handle case when order doesn't already have custom type set. (Though this should never arise.)
-
   const actions = getActionsFromCustomFields({
     retryCount,
     nextRetryAt,
@@ -207,5 +164,5 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
 module.exports = {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
-  setOrderErrorMessage
+  setOrderErrorFields
 }

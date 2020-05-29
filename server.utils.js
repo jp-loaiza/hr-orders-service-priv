@@ -5,7 +5,7 @@ const { validateOrder } = require('./validation')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
-  setOrderErrorMessage
+  setOrderErrorFields,
 } = require('./commercetools')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
@@ -48,14 +48,14 @@ const createAndUploadCsvs = async () => {
         console.error(`Unable to generate CSV for order ${order.orderNumber}`)
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
         console.error(errorMessage)
-        setOrderErrorMessage(order, errorMessage)
+        setOrderErrorFields(order, errorMessage, false)
         continue
       }
       try {
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
-        setOrderErrorMessage(order, 'Unable to upload CSV to JESTA')
+        setOrderErrorFields(order, 'Unable to upload CSV to JESTA', true)
         continue
       }
       setOrderAsSentToOms(order)
