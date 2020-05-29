@@ -152,9 +152,9 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
 
   const actions = getActionsFromCustomFields({
     retryCount,
-    nextRetryAt,
     errorMessage,
-    sentToOmsStatus
+    sentToOmsStatus,
+    ...errorIsRecoverable ? { nextRetryAt } : {},
   })
   const body = JSON.stringify({ version: order.version, actions })
 
