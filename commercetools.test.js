@@ -1,4 +1,4 @@
-const { getActionsFromCustomFields, getNextRetryDateFromRetryCount } = require('./commercetools')
+const { getActionsFromCustomFields, getNextRetryDateFromRetryCount, setOrderErrorFields } = require('./commercetools')
 const { BACKOFF } = require('./constants')
 
 describe('getNextRetryDateFromRetryCount', () => {
@@ -63,5 +63,20 @@ describe('getActionsFromCustomFields', () => {
     ]
 
     expect(getActionsFromCustomFields({ foo: 1, bar: 'value', baz: null })).toEqual(expected)
+  })
+})
+
+describe('setOrderErrorFields', () => {
+  it('does not throw an error when given a valid order', async () => {
+    const mockOrder = {
+      custom: {
+        fields: {
+          retryCount: 2
+        }
+      }
+    }
+
+    // @ts-ignore mockOrder doesn't need to have all CT order fields
+    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true)).resolves.toBeTruthy()
   })
 })
