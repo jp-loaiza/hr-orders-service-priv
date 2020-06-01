@@ -1,6 +1,6 @@
 const KEEP_ALIVE_INTERVAL = 300000 // 5 minutes in milliseconds
 
-const BACKOFF = 150000 // retry exponential backoff interval in milliseconds
+const BACKOFF = 600000 // retry exponential backoff rate in milliseconds
 
 const LOCALES_TO_JESTA_LANGUAGE_NUMBERS = {
   'en-CA': 1,
