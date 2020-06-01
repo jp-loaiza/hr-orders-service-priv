@@ -1,5 +1,7 @@
 const KEEP_ALIVE_INTERVAL = 300000 // 5 minutes in milliseconds
 
+const BACKOFF = 600000 // retry exponential backoff rate in milliseconds
+
 const LOCALES_TO_JESTA_LANGUAGE_NUMBERS = {
   'en-CA': 1,
   'fr-CA': 3
@@ -235,7 +237,16 @@ const GENERAL_CSV_OPTIONS = {
   eol: '\r\n' // The CSVs will be processed by a Windows machine
 }
 
+const SENT_TO_OMS_STATUSES = {
+  SUCCESS: 'SUCCESS',
+  PENDING: 'PENDING',
+  FAILURE: 'FAILURE'
+}
+
+const SEND_ORDER_RETRY_LIMIT = 5
+
 module.exports = {
+  BACKOFF,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
   GENERAL_CSV_OPTIONS,
@@ -245,6 +256,8 @@ module.exports = {
   KEEP_ALIVE_INTERVAL,
   MISC_ROWS,
   ONLINE_SITE_ID,
+  SEND_ORDER_RETRY_LIMIT,
+  SENT_TO_OMS_STATUSES,
   TAXES_ROWS,
   TAXES_ROWS_ENUM,
   TENDER_ROWS,

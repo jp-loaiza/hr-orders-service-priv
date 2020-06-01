@@ -764,5 +764,5 @@ module.exports = {
     .mockImplementationOnce(() => [validOrder])
     .mockImplementationOnce(() => []),
   setOrderAsSentToOms: jest.fn(),
-  setOrderErrorMessage: jest.fn()  
+  setOrderErrorFields: jest.fn()  
 }

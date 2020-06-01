@@ -1,6 +1,11 @@
 const dotenv = require('dotenv')
 
-const { KEEP_ALIVE_INTERVAL } = require('./constants')
+const {
+  BACKOFF,
+  KEEP_ALIVE_INTERVAL,
+  SEND_ORDER_RETRY_LIMIT,
+  SENT_TO_OMS_STATUSES
+} = require('./constants')
 
 dotenv.config()
 
@@ -75,13 +80,13 @@ const fetchFullOrder = async orderId => {
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
 
-/**
- * @explain Fetches all orders that we haven't already tried (successfully or
- *          unsuccessfully) to send to the OMS
+/** Fetches all orders that that we should try to send to the OMS. Includes
+ *  both orders that we have never tried to send to the OMS, and ones that
+ *  it is time to re-try sending to the OMS.
  * @returns {Promise<Array<(import('./orders').Order)>>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  const query = 'not custom(fields(sentToOMS = true)) and custom(fields(errorMessage is not defined))'
+  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
@@ -93,30 +98,6 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
 }
 
 /**
- * @param {string} name
- * @param {any} value
- * @param {boolean} createCustomType
- */
-const getCustomFieldUpdateAction = (name, value, createCustomType) => {
-  if (createCustomType) {
-    return {
-      action: 'setCustomType',
-      type: {
-        key: 'orderCustomFields'
-      },
-      fields: {
-        [name]:  value
-      }
-    }
-  }
-  return {
-    action: 'setCustomField',
-    name,
-    value
-  }
-}
-
-/**
  * @param {import('./orders').Order} order
  */
 const setOrderAsSentToOms = order => {
@@ -125,7 +106,11 @@ const setOrderAsSentToOms = order => {
   const body = JSON.stringify({
     version: order.version,
     actions: [
-      getCustomFieldUpdateAction('sentToOMS', true, !(order.custom))
+      {
+        action: 'setCustomField',
+        name: 'sentToOmsStatus',
+        value: SENT_TO_OMS_STATUSES.SUCCESS
+      }
     ]
   })
 
@@ -133,24 +118,53 @@ const setOrderAsSentToOms = order => {
 }
 
 /**
- * @param {import('./orders').Order} order 
- * @param {string} errorMessage 
+ * @param {number} retryCount 
  */
-const setOrderErrorMessage = async (order, errorMessage) => {
-  const uri = requestBuilder.orders.byId(order.id).build()
+const getNextRetryDateFromRetryCount = (retryCount = 0) => {
+  const now = new Date().valueOf()
+  return new Date(now + Math.pow(2, retryCount) * BACKOFF)
+}
 
-  const body = JSON.stringify({
-    version: order.version,
-    actions: [
-      getCustomFieldUpdateAction('errorMessage', errorMessage, !(order.custom))
-    ]
+/**
+ * 
+ * @param {{[name: string]: any}} customFields 
+ */
+const getActionsFromCustomFields = customFields => (
+  Object.entries(customFields).map(([name, value]) => {
+    if (value === null || value === undefined) {
+      return { action: 'setCustomField', name }
+    }
+    return { action: 'setCustomField', name, value }
   })
+)
+
+/**
+ * @param {import('./orders').Order} order 
+ * @param {string} errorMessage
+ * @param {boolean} errorIsRecoverable
+ */
+const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
+  const uri = requestBuilder.orders.byId(order.id).build()
+  const retryCount =  order.custom.fields.retryCount === undefined ? 0 : order.custom.fields.retryCount + 1
+  const shouldRetry = errorIsRecoverable && (retryCount < SEND_ORDER_RETRY_LIMIT)
+  const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount) : null
+  const sentToOmsStatus = shouldRetry ? SENT_TO_OMS_STATUSES.PENDING : SENT_TO_OMS_STATUSES.FAILURE
+
+  const actions = getActionsFromCustomFields({
+    retryCount,
+    errorMessage,
+    sentToOmsStatus,
+    ...errorIsRecoverable ? { nextRetryAt } : {},
+  })
+  const body = JSON.stringify({ version: order.version, actions })
 
   return ctClient.execute({ method: 'POST', uri, body })
 }
 
 module.exports = {
   fetchOrdersThatShouldBeSentToOms,
+  getActionsFromCustomFields,
+  getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
-  setOrderErrorMessage
+  setOrderErrorFields
 }

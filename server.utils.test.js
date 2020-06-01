@@ -1,7 +1,7 @@
 // @ts-nocheck The linter gets confused by Jest mocks
 
 const { generateFilenameFromOrder, createAndUploadCsvs } = require('./server.utils')
-const { setOrderAsSentToOms, setOrderErrorMessage } = require('./commercetools')
+const { setOrderAsSentToOms, setOrderErrorFields } = require('./commercetools')
 
 jest.mock('./config')
 jest.mock('./commercetools')
@@ -25,7 +25,7 @@ describe('generateFilenameFromOrder', () => {
 
 describe('createAndUploadCsvs', () => {
   afterEach(() => {
-    setOrderErrorMessage.mockClear()
+    setOrderErrorFields.mockClear()
     setOrderAsSentToOms.mockClear()
   })
 
@@ -35,24 +35,24 @@ describe('createAndUploadCsvs', () => {
   it('processes [validOrder, invalidOrder] correctly', async () => {
     await createAndUploadCsvs()
     expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
-    expect(setOrderErrorMessage.mock.calls.length).toBe(1)
+    expect(setOrderErrorFields.mock.calls.length).toBe(1)
   })
 
   it('processes [invalidOrder, validOrder] correctly', async () => {
     await createAndUploadCsvs()
     expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
-    expect(setOrderErrorMessage.mock.calls.length).toBe(1)
+    expect(setOrderErrorFields.mock.calls.length).toBe(1)
   })
 
   it('processes [validOrder] correctly', async () => {
     await createAndUploadCsvs()
     expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
-    expect(setOrderErrorMessage.mock.calls.length).toBe(0)
+    expect(setOrderErrorFields.mock.calls.length).toBe(0)
   })
 
   it('processes [] correctly', async () => {
     await createAndUploadCsvs()
     expect(setOrderAsSentToOms.mock.calls.length).toBe(0)
-    expect(setOrderErrorMessage.mock.calls.length).toBe(0)
+    expect(setOrderErrorFields.mock.calls.length).toBe(0)
   })
 })

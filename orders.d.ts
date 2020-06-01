@@ -115,7 +115,7 @@ type Order = {
   },
   custom: {
     fields: {
-      sentToOMS?: boolean,
+      sentToOmsStatus?: 'PENDING' | 'SUCCESS' | 'FAILURE',
       errorMessage?: string,
       shippingTax: Price,
       shippingTaxDescription: string,
@@ -129,6 +129,8 @@ type Order = {
       shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
       returnsAreFree: boolean,
       destinationSiteId?: string,
+      retryCount?: number,
+      nextRetryAt?: string
     }
   }
 }
