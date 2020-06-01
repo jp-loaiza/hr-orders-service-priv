@@ -163,6 +163,8 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
 
 module.exports = {
   fetchOrdersThatShouldBeSentToOms,
+  getActionsFromCustomFields,
+  getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
   setOrderErrorFields
 }
