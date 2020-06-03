@@ -68,6 +68,18 @@ source deploy.sh
 
 - Note: SFTP hosts for kubernetes and local environments are different
 
+# CICD (IBM Cloud Toolchain)
+- If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.
+
 # Troubleshooting
 ## To redeploying using the same image
 - First delete the current deployment with `kubectl delete deployment hr-orders-service`
+
+## Code run doesn't match the code commited
+- Make sure your docker image is not stale
+
+## Environmental variables are missing their values
+- Make sure environmental variables for the toolchain are up to date
+
+## Couldn't find key ... in ConfigMap default/hr-orders-service
+- Possibly a mismatch between enviroment variables set in `deploy.sh` and those defined in `deployment.yaml`. Make sure that, for each enviroment variable defined in `deployment.yaml`, there is a corresponding enviroment variable set in `deploy.sh`
