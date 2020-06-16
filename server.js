@@ -15,11 +15,13 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // Parse application/json
 app.use(bodyParser.json())
 
-app.get('/', async function(_, res) {
-  res.send('ok')
-})
-
-app.get('/health', async function(_, res) {
+/**
+ * Can be used to setup a health endpoint
+ * Disabled for now for reducing attack vektor
+ */
+// @ts-ignore
+// eslint-disable-next-line no-unused-vars
+async function health (_, res) {
   try {
     const sftp = new client()
     await sftp.connect({
@@ -34,9 +36,15 @@ app.get('/health', async function(_, res) {
     res.status(500)
     res.send()
   }
-})
+}
 
-app.get('/list', async function(req, res) {
+/**
+ * Can be used to setup an endpoint to retrieve list of orders
+ * Disabled for now for reducing attack vektor
+ */
+// @ts-ignore
+// eslint-disable-next-line no-unused-vars
+async function list (req, res) {
   try {
     const config = await req.body.config
     const sftp = new client()
@@ -52,7 +60,7 @@ app.get('/list', async function(req, res) {
     res.status(400)
     res.send()
   }
-})
+}
 
 if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
 setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
