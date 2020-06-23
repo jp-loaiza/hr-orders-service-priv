@@ -130,7 +130,8 @@ type Order = {
       returnsAreFree: boolean,
       destinationSiteId?: string,
       retryCount?: number,
-      nextRetryAt?: string
+      nextRetryAt?: string,
+      loginRadiusUid: string
     }
   }
 }
