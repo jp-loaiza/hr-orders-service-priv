@@ -61,6 +61,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(custom.fields.totalOrderTax.centAmount),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(custom.fields.transactionTotal.centAmount),
   [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
+  [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(custom.fields.shippingTax.centAmount),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: custom.fields.shippingTaxDescription,
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
