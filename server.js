@@ -21,15 +21,17 @@ app.use(bodyParser.json())
  */
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
-async function health (_, res) {
+async function health (res) {
   try {
     const sftp = new client()
+    console.log('Initiating health check...')
     await sftp.connect({
       ...sftpConfig,
       privateKey: Buffer.from(sftpConfig.privateKey,'base64')
     })
     await sftp.list(SFTP_INCOMING_ORDERS_PATH)
     sftp.end()
+    console.log('Health check successful.')
     res.send('ok')
   } catch (error) {
     console.error('Health check failed: ', error)
@@ -37,6 +39,10 @@ async function health (_, res) {
     res.send()
   }
 }
+
+app.get('/health', async function(_, res) {
+  await health(res)
+})
 
 /**
  * Can be used to setup an endpoint to retrieve list of orders
