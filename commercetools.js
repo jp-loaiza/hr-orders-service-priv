@@ -52,12 +52,16 @@ const ctClient = createClient({
   ],
 })
 
-const keepAlive = async () => {
+async function keepAliveRequest () {
   const uri = requestBuilder.customers.build()
   await ctClient.execute({
     uri,
     method: 'GET'
   })
+}
+
+const keepAlive = async () => {
+  await keepAliveRequest()
     .then(() => {
       console.log('CommerceTools client success.')
     })
@@ -118,7 +122,7 @@ const setOrderAsSentToOms = order => {
 }
 
 /**
- * @param {number} retryCount 
+ * @param {number} retryCount
  */
 const getNextRetryDateFromRetryCount = (retryCount = 0) => {
   const now = new Date().valueOf()
@@ -126,8 +130,8 @@ const getNextRetryDateFromRetryCount = (retryCount = 0) => {
 }
 
 /**
- * 
- * @param {{[name: string]: any}} customFields 
+ *
+ * @param {{[name: string]: any}} customFields
  */
 const getActionsFromCustomFields = customFields => (
   Object.entries(customFields).map(([name, value]) => {
@@ -139,7 +143,7 @@ const getActionsFromCustomFields = customFields => (
 )
 
 /**
- * @param {import('./orders').Order} order 
+ * @param {import('./orders').Order} order
  * @param {string} errorMessage
  * @param {boolean} errorIsRecoverable
  */
@@ -166,5 +170,6 @@ module.exports = {
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
-  setOrderErrorFields
+  setOrderErrorFields,
+  keepAliveRequest
 }

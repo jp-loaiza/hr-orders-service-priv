@@ -6,6 +6,7 @@ const client = require('ssh2-sftp-client')
 
 const { createAndUploadCsvs } = require('./server.utils')
 const { sftpConfig } = require('./config')
+const { keepAliveRequest } = require('./commercetools')
 
 const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL} = (/** @type {import('./orders').Env} */ (process.env))
 
@@ -21,22 +22,30 @@ app.use(bodyParser.json())
  */
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
-async function health (_, res) {
+async function health (res) {
   try {
     const sftp = new client()
+    console.log('Initiating health check...')
     await sftp.connect({
       ...sftpConfig,
       privateKey: Buffer.from(sftpConfig.privateKey,'base64')
     })
-    await sftp.list(SFTP_INCOMING_ORDERS_PATH)
+    await Promise.all([
+      keepAliveRequest(),
+      sftp.list(SFTP_INCOMING_ORDERS_PATH)
+    ])
     sftp.end()
-    res.send('ok')
+    console.log('Health check successful.')
+    res.status(200).send('ok')
   } catch (error) {
     console.error('Health check failed: ', error)
-    res.status(500)
-    res.send()
+    res.status(500).send('failed')
   }
 }
+
+app.get('/healthz', async function(_, res) {
+  await health(res)
+})
 
 /**
  * Can be used to setup an endpoint to retrieve list of orders

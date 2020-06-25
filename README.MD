@@ -28,12 +28,12 @@ ibmcloud ks cluster config --cluster {clusterId}
 source deploy.sh
 ```
 
-4. (optional) Expose the deployment as a service for debugging
+4. (avoid doing this due to security reasons) Expose the deployment as a service for debugging
 ```
 kubectl expose deployment hr-orders-service --type=LoadBalancer --name=hr-orders-service
 ```
 - Note: you can check health by using EXTERNAL-IP from `kubectl get services` and then pinging `EXTERNAL-IP:8080/health` from your local machine or sending requests to `EXTERNAL-IP:8080/list` and `EXTERNAL-IP:8080/put` with proper credentials
-- Note: since load balancers are not free ($0.02 per hour as of May 2020), delete if deployed but not needed with `kubectl delete service hr-orders-service `
+- Note: since load balancers are not free ($0.02 per hour as of May 2020), delete if deployed but not needed with `kubectl delete service hr-orders-service`
 
 # Delivery Pipeline
 - Build script:
@@ -70,6 +70,41 @@ source deploy.sh
 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.
+
+# Logs
+## Guide for adding tags to logDNA logs
+Official guide can be found here:
+https://cloud.ibm.com/docs/Log-Analysis-with-LogDNA?topic=Log-Analysis-with-LogDNA-adding_tags#adding_tags_kube
+
+Alternatively, for a one time setup, you can update the configuration of logDNA daemon-sets by going through IBM Cloud cluster’s UI Workloads >  Daemon Sets > logdna-agent and then updating the env field of the manifest. It will look like this e.g.
+```javascript
+"env": [{
+    "name": "LOGDNA_AGENT_KEY",
+    "valueFrom": {
+      "secretKeyRef": {
+        "name": "logdna-agent-key",
+        "key": "logdna-agent-key"
+      }
+    }
+  },
+  {
+    "name": "LDAPIHOST",
+    "value": "api.us-south.logging.cloud.ibm.com"
+  },
+  {
+    "name": "LDLOGHOST",
+    "value": "logs.us-south.logging.cloud.ibm.com"
+  },
+  {
+    "name": "LOGDNA_PLATFORM",
+    "value": "k8s"
+  },
+  {
+    "name": "LOGDNA_TAGS",
+    "value": "development,myplanet-cluster-development"
+  }
+]
+```
 
 # Troubleshooting
 ## To redeploying using the same image

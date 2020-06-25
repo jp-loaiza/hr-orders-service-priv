@@ -26,6 +26,13 @@ spec:
           requests:
             cpu: 500m
             memory: 500m
+        livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 120
+          timeoutSeconds: 60
+          httpGet:
+            path: '/healthz'
+            port: 8080
         env:
         - name: SFTP_USERNAME
           valueFrom:
