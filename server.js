@@ -40,7 +40,7 @@ async function health (res) {
   }
 }
 
-app.get('/health', async function(_, res) {
+app.get('/healthz', async function(_, res) {
   await health(res)
 })
 
