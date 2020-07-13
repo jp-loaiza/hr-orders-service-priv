@@ -38,7 +38,7 @@ const ctClient = createClient({
         clientId,
         clientSecret,
       },
-      scopes: [`manage_project:${projectKey}`],
+      scopes: [`manage_orders:${projectKey}`, `view_payments:${projectKey}`],
       fetch,
     }),
     createHttpMiddleware({
@@ -53,7 +53,7 @@ const ctClient = createClient({
 })
 
 async function keepAliveRequest () {
-  const uri = requestBuilder.customers.build()
+  const uri = requestBuilder.orders.build()
   await ctClient.execute({
     uri,
     method: 'GET'
