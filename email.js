@@ -35,14 +35,16 @@ const sendOrderEmailNotificationByOrderId = async orderId => {
     throw new Error(`Order could not be fetched from commercetools: ${err.message}`)
   }
 
-  const body = JSON.stringify(formatEmailApiRequestBodyFromOrder(order))
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Basic ${Buffer.from(EMAIL_API_USERNAME + ':' + EMAIL_API_PASSWORD).toString('base64')}`
-  }
-
-  const response = await fetch(EMAIL_API_URL, { method: 'POST', body, headers })
+  const response = await fetch(EMAIL_API_URL, {
+    body: JSON.stringify(formatEmailApiRequestBodyFromOrder(order)),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${Buffer.from(EMAIL_API_USERNAME + ':' + EMAIL_API_PASSWORD).toString('base64')}`
+    }, 
+    method: 'POST'
+  })
   if (response.status === 200) return true
+
   throw new Error(`Email API service responded with status ${response.status}: ${response}`)
 }
 
