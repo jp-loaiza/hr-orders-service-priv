@@ -9,7 +9,8 @@ interface Env {
   ORDER_UPLOAD_INTERVAL: string,
   EMAIL_API_URL: string,
   EMAIL_API_USERNAME: string,
-  EMAIL_API_PASSWORD: string
+  EMAIL_API_PASSWORD: string,
+  CT_API_EXTENSION_BEARER_TOKEN: string
 }
 
 type Price = {

@@ -9,7 +9,7 @@ const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 
-const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL, CT_API_EXTENSION_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -48,6 +48,18 @@ app.get('/healthz', async function(_, res) {
   await health(res)
 })
 
+app.use('/commercetools', (req, res, next) => {
+  const authorization = req.header('authorization') || ''
+  const [, bearerToken] = authorization.split(' ')
+
+  if (bearerToken === CT_API_EXTENSION_BEARER_TOKEN) { // configured when adding commercetools API extension
+    next()
+    return
+  }
+
+  res.status(401).send('Invalid authorization')
+})
+
 app.post('/commercetools/create-order', async (req, res) => {
   // Since the email API is slow and commercetools API extensions timeout after
   // 2 seconds, we respond immeditately with a 200 response
@@ -57,6 +69,7 @@ app.post('/commercetools/create-order', async (req, res) => {
   try {
     orderId = req.body.resource.id
     await sendOrderEmailNotificationByOrderId(orderId)
+    console.log(`Sent email notification for order ${orderId}`)
   } catch (err) {
     console.error(`Unable to send confirmation email for order ${orderId}: ${err.message}`)
   }
