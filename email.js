@@ -32,7 +32,7 @@ const sendOrderEmailNotificationByOrderId = async orderId => {
   try {
     order = await fetchFullOrder(orderId)
   } catch (err) {
-    throw new Error(`Unable to send email notification for order ${orderId} because order could not be fetched from commercetools: ${err.message}`)
+    throw new Error(`Order could not be fetched from commercetools: ${err.message}`)
   }
 
   const body = JSON.stringify(formatEmailApiRequestBodyFromOrder(order))
@@ -43,7 +43,7 @@ const sendOrderEmailNotificationByOrderId = async orderId => {
 
   const response = await fetch(EMAIL_API_URL, { method: 'POST', body, headers })
   if (response.status === 200) return true
-  throw new Error(`Unable to send email notification for order ${orderId} because email API service responded with status ${response.status}: ${response}`)
+  throw new Error(`Email API service responded with status ${response.status}: ${response}`)
 }
 
 module.exports = {

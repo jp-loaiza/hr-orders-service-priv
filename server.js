@@ -7,8 +7,9 @@ const client = require('ssh2-sftp-client')
 const { createAndUploadCsvs } = require('./server.utils')
 const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
+const { sendOrderEmailNotificationByOrderId } = require('./email')
 
-const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL} = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -45,6 +46,20 @@ async function health (res) {
 
 app.get('/healthz', async function(_, res) {
   await health(res)
+})
+
+app.post('/commercetools/create-order', async (req, res) => {
+  // Since the email API is slow and commercetools API extensions timeout after
+  // 2 seconds, we respond immeditately with a 200 response
+  res.status(200).send()
+
+  let orderId
+  try {
+    orderId = req.body.resource.id
+    await sendOrderEmailNotificationByOrderId(orderId)
+  } catch (err) {
+    console.error(`Unable to send confirmation email for order ${orderId}: ${err.message}`)
+  }
 })
 
 /**
