@@ -1,8 +1,5 @@
 const { formatEmailApiRequestBodyFromOrder } = require('./email')
 
-// { formatEmailApiRequestBodyFromOrder } = require('./email')
-
-
 const completeOrderEnglishUntyped = {
   type: 'Order',
   id: '3d7a60fd-3108-497d-bb4a-def424b53553',
