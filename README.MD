@@ -57,6 +57,10 @@ source deploy.sh
   - REGISTRY_URL
   - REGISTRY_NAMESPACE
   - IMAGE_NAME
+  - EMAIL_API_USERNAME
+  - EMAIL_API_PASSWORD
+  - EMAIL_API_URL
+  - CT_API_EXTENSION_BEARER_TOKEN
 
 - Note: These environmental variables are automatically set by the build stage if you configure it properly:
   - BUILD_NUMBER

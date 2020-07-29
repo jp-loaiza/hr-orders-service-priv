@@ -19,6 +19,9 @@ const formatEmailApiRequestBodyFromOrder = order => ({
       address: order.customerEmail,
       locale: order.locale
     }),
+    // Required even though it's blank. From CRM's documentation: "Not
+    // currently implemented - This parameter will eventually be used to
+    // override the sender for the communication"
     Sender: '',
     Data: JSON.stringify(order)
   }
