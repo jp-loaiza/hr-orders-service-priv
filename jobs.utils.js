@@ -66,14 +66,15 @@ const createAndUploadCsvs = async () => {
     console.error(err)
   } finally {
     try {
-      sftp && sftp.end()
+      if (sftp) {
+        await sftp.end()
+      }
     } catch (err) {
       console.error('Unable to close SFTP connection:')
       console.error(err)
     }
   }
 }
-
 
 module.exports = {
   createAndUploadCsvs,

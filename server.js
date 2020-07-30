@@ -4,12 +4,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
 
-const { createAndUploadCsvs } = require('./server.utils')
+require('./jobs')
 const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 
-const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL, CT_API_EXTENSION_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, CT_API_EXTENSION_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -111,9 +111,6 @@ async function list (req, res) {
     res.send()
   }
 }
-
-if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
-setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
 
 const port = process.env.PORT || 8080
 app.listen(port, function() {
