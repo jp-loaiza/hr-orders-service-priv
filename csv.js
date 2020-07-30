@@ -14,7 +14,7 @@ const {
   TENDER_ROWS,
   TENDER_ROWS_ENUM
 } = require('./constants')
-const  { convertToDollars, formatDate } = require('./csv.utils')
+const  { convertToDollars, formatDate, getCardReferenceNumberFromPayment, formatCardExpiryDate } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
 // we can feed into the CSV generator to create the CSV
@@ -106,10 +106,10 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),
   [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: payment.obj.paymentMethodInfo.method,
-  [TENDER_ROWS_ENUM.REFERENCENO]: payment.obj.custom.fields.cardReferenceNumber,
-  [TENDER_ROWS_ENUM.EXPDATE]: payment.obj.custom.fields.cardExpiryDate,
-  [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.cardNumber,
-  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.authorizationNumber
+  [TENDER_ROWS_ENUM.REFERENCENO]: getCardReferenceNumberFromPayment(payment),
+  [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDate(payment.obj.custom.fields.transaction_card_expiry),
+  [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.transaction_card_last4,
+  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.auth_number
 })
 
 // The actual CSV string creation happens below
