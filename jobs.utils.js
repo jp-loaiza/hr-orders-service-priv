@@ -13,6 +13,50 @@ const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (pr
 
 /**
  * 
+ * @param {number} ms time to sleep in ms
+ */
+async function sleep(ms) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, ms)
+  })
+}
+
+const NoResponse = Symbol.for('no-response')
+
+// TODO implement retry as a generic function so that the type of args matches the parameters expected by fn
+/**
+ * 
+ * @param {Function} fn 
+ * @param {number} retries 
+ * @param {number} backoff in ms
+ */
+function retry (fn, retries = 3, backoff = 1000) {
+  return ( /** @param {any[]} args */ async function (...args){
+    let tries = 0
+    let error = null
+    let response = NoResponse
+    while (response === NoResponse && tries < retries) {
+      tries++
+      error = null
+      response = NoResponse
+      try {
+        if (tries > 1) {
+          await sleep(tries * backoff)
+        }
+        response = await fn(...args)
+      } catch (err) {
+        error = err
+      }
+    }
+    if (error) {
+      throw error
+    }
+    return response
+  })
+}
+
+/**
+ * 
  * @param {import('./orders').Order} order
  * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS-<orderNumber>.csv`.
  */
@@ -48,17 +92,19 @@ const createAndUploadCsvs = async () => {
         console.error(`Unable to generate CSV for order ${order.orderNumber}`)
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
         console.error(errorMessage)
-        setOrderErrorFields(order, errorMessage, false)
+        // we retry in case the version of the order has changed by the notifications job
+        await retry(setOrderErrorFields)(order, errorMessage, false)
         continue
       }
       try {
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
-        setOrderErrorFields(order, 'Unable to upload CSV to JESTA', true)
+        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true)
         continue
       }
-      setOrderAsSentToOms(order)
+      // we retry in case the version of the order has changed by the notifications job
+      await retry(setOrderAsSentToOms)(order)
     }
     console.log('Done processing orders')
   } catch (err) {
@@ -77,6 +123,8 @@ const createAndUploadCsvs = async () => {
 }
 
 module.exports = {
+  sleep,
+  retry,
   createAndUploadCsvs,
-  generateFilenameFromOrder
+  generateFilenameFromOrder,
 }

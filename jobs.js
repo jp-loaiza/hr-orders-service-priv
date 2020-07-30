@@ -1,18 +1,10 @@
 
 require('dotenv').config()
 
-const { createAndUploadCsvs } = require('./jobs.utils')
-const { ORDER_UPLOAD_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
-
-/**
- * 
- * @param {number} ms time to sleep in ms
- */
-async function asleep(ms) {
-  return new Promise(function(resolve) {
-    setTimeout(resolve, ms)
-  })
-}
+const { ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
+const { fetchOrderIdsThatShouldBeSentToNs, setOrderSentToNsStatus } = require('./commercetools')
+const { sendOrderEmailNotificationByOrderId } = require('./email')
 
 async function createAndUploadCsvsJob () {
   if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
@@ -25,8 +17,34 @@ async function createAndUploadCsvsJob () {
       console.error('Failed to create and uploads CSVs: ', error)
     }
     console.timeEnd('Create and uploads CSVs')
-    await asleep(Number(ORDER_UPLOAD_INTERVAL))
+    await sleep(Number(ORDER_UPLOAD_INTERVAL))
+  }
+}
+
+async function sendOrderEmailNotificationJob () {
+  const interval = Number(SEND_NOTIFICATIONS_INTERVAL)
+  if (!(interval > 0)) throw new Error('SEND_NOTIFICATIONS_INTERVAL must be a positive number')
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const orderIds = await fetchOrderIdsThatShouldBeSentToNs()
+      await Promise.all(orderIds.map(async orderId => {
+        try {
+          await sendOrderEmailNotificationByOrderId(orderId)
+          // we retry in case the version of the order has changed by CSV job
+          await retry(setOrderSentToNsStatus)(orderId, true)
+        } catch (error) {
+          console.error('Failed to send notification for order ID: ', orderId)
+          // we retry in case the version of the order has changed by CSV job
+          await retry(setOrderSentToNsStatus)(orderId, false)
+        }
+      }))
+    } catch (error) {
+      console.error('Failed to create and uploads CSVs: ', error)
+    }
+    await sleep(interval)
   }
 }
 
 createAndUploadCsvsJob()
+sendOrderEmailNotificationJob()

@@ -246,6 +246,12 @@ const SENT_TO_OMS_STATUSES = {
 const SEND_ORDER_RETRY_LIMIT = 5
 
 
+const SENT_TO_NS_STATUSES = {
+  SUCCESS: 'SUCCESS',
+  PENDING: 'PENDING',
+  FAILURE: 'FAILURE'
+}
+
 // From CRM's docuemntation: "Determines the Division context of the email
 // (i.e. Canada Stores or Outlet Stores).  This may also be used to help select
 // the correct template when Division specific templates exist."
@@ -265,6 +271,7 @@ module.exports = {
   ONLINE_SITE_ID,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
+  SENT_TO_NS_STATUSES,
   TAXES_ROWS,
   TAXES_ROWS_ENUM,
   TENDER_ROWS,
