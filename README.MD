@@ -1,4 +1,4 @@
-# Initial Deployment Guide
+# Initial/Local Deployment Guide
 Since our kubernetes deployment is based off our docker image, we need to fist build the docker image and the push it to IBM Cloud registry.
 
 1. Setup the environment
@@ -28,7 +28,7 @@ ibmcloud ks cluster config --cluster {clusterId}
 source deploy.sh
 ```
 
-4. (avoid doing this due to security reasons) Expose the deployment as a service for debugging
+4. Expose the deployment as a service to accept requests for sending notifications
 ```
 kubectl expose deployment hr-orders-service --type=LoadBalancer --name=hr-orders-service
 ```
@@ -61,6 +61,7 @@ source deploy.sh
   - EMAIL_API_PASSWORD
   - EMAIL_API_URL
   - CT_API_EXTENSION_BEARER_TOKEN
+  - HEALTHZ_AUTHORIZATION
 
 - Note: These environmental variables are automatically set by the build stage if you configure it properly:
   - BUILD_NUMBER
@@ -70,7 +71,7 @@ source deploy.sh
 - Note: This environmental variables is created during build/deployment:
   - IMAGE
 
-- Note: SFTP hosts for kubernetes and local environments are different
+- Note: SFTP hosts for kubernetes and local environments are different. Refer to 'deploy.sh' for details of how it's set on kubernetes.
 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.

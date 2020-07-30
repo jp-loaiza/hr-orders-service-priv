@@ -28,11 +28,14 @@ spec:
             memory: 500m
         livenessProbe:
           initialDelaySeconds: 60
-          periodSeconds: 120
+          periodSeconds: 60
           timeoutSeconds: 60
           httpGet:
             path: '/healthz'
             port: 8080
+            httpHeaders:
+              - name: authorization
+                value: {HEALTHZ_AUTHORIZATION}
         env:
         - name: SFTP_USERNAME
           valueFrom:

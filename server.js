@@ -39,20 +39,32 @@ async function health (res) {
     console.log('Health check successful.')
     res.status(200).send('ok')
   } catch (error) {
-    console.error('Health check failed: ', error)
+    console.error('Health check failed: ')
+    if (error.body && Array.isArray(error.body.errors)) {
+      error.body.errors.forEach(console.error)
+    } else {
+      console.error(error)
+    }
     res.status(500).send('failed')
   }
 }
 
-app.get('/healthz', async function(_, res) {
-  await health(res)
+app.get('/healthz', async function(req, res) {
+  const healthzAuthorization = process.env.HEALTHZ_AUTHORIZATION
+  const authorization = req.headers.authorization
+  if (authorization && healthzAuthorization && authorization === healthzAuthorization) {
+    console.log('Kubernetes initiating liveliness probe...')
+    await health(res)
+  } else {
+    res.status(404).send()
+  }
 })
 
-app.use('/commercetools', (req, res, next) => {
+app.use('/notifications/commercetools', (req, res, next) => {
   const authorization = req.header('authorization') || ''
   const [, bearerToken] = authorization.split(' ')
 
-  if (bearerToken === CT_API_EXTENSION_BEARER_TOKEN) { // configured when adding commercetools API extension
+  if (bearerToken && CT_API_EXTENSION_BEARER_TOKEN && bearerToken === CT_API_EXTENSION_BEARER_TOKEN) { // configured when adding commercetools API extension
     next()
     return
   }
@@ -60,9 +72,10 @@ app.use('/commercetools', (req, res, next) => {
   res.status(401).send('Invalid authorization')
 })
 
-app.post('/commercetools/create-order', async (req, res) => {
-  // Since the email API is slow and commercetools API extensions timeout after
-  // 2 seconds, we respond immeditately with a 200 response
+app.post('/notifications/commercetools/order-created', async (req, res) => {
+  // a. we do not want to fail and order even if we fail to send a notification and
+  // b. the email API is slow and commercetools API extensions timeout after 2 seconds
+  // so we respond immeditately with a 200 response.
   res.status(200).send()
 
   let orderId

@@ -10,7 +10,8 @@ interface Env {
   EMAIL_API_URL: string,
   EMAIL_API_USERNAME: string,
   EMAIL_API_PASSWORD: string,
-  CT_API_EXTENSION_BEARER_TOKEN: string
+  CT_API_EXTENSION_BEARER_TOKEN: string,
+  HEALTHZ_AUTHORIZATION: string
 }
 
 type Price = {

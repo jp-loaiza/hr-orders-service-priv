@@ -65,8 +65,13 @@ const keepAlive = async () => {
     .then(() => {
       console.log('CommerceTools client success.')
     })
-    .catch((/** @type {Error} */error) => {
-      console.error('CommerceTools client failed: ', error)
+    .catch((/** @type {any} */error) => {
+      console.error('CommerceTools client failed: ')
+      if (error.body && Array.isArray(error.body.errors)) {
+        error.body.errors.forEach(console.error)
+      } else {
+        console.error(error)
+      }
     })
 }
 

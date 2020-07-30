@@ -7,7 +7,6 @@ kubectl create configmap hr-orders-service \
   --from-literal=CT_OAUTH_HOST=$CT_OAUTH_HOST \
   --from-literal=CT_HOST=$CT_HOST \
   --from-literal=ORDER_UPLOAD_INTERVAL=$ORDER_UPLOAD_INTERVAL \
-  --from-literal=EMAIL_API_USERNAME=$EMAIL_API_USERNAME \
   --from-literal=EMAIL_API_URL=$EMAIL_API_URL \
   -o yaml --dry-run | kubectl apply -f -
 
@@ -17,11 +16,12 @@ kubectl create secret generic hr-orders-service \
   --from-literal=SFTP_PRIVATE_KEY=$SFTP_PRIVATE_KEY \
   --from-literal=CT_CLIENT_ID=$CT_CLIENT_ID \
   --from-literal=CT_CLIENT_SECRET=$CT_CLIENT_SECRET \
+  --from-literal=EMAIL_API_USERNAME=$EMAIL_API_USERNAME \
   --from-literal=EMAIL_API_PASSWORD=$EMAIL_API_PASSWORD \
-  --from-literal=CT_API_EXTENSION_BEARER_TOKEN=$CT_API_EXTENSION_BEARER_TOKEN \
-  -o yaml --dry-run | kubectl apply -f -
+  --from-literal=HEALTHZ_AUTHORIZATION=$HEALTHZ_AUTHORIZATION \
+  -o yaml --dry-run | kubectl apply -f -  
 
-sed "s~{IMAGE}~$IMAGE~g" ./deployment.yaml > ./deployment-populated.yaml
+sed "s~{IMAGE}~$IMAGE~g; s~{HEALTHZ_AUTHORIZATION}~$HEALTHZ_AUTHORIZATION~g;" ./deployment.yaml > ./deployment-populated.yaml
 kubectl apply -f ./deployment-populated.yaml
 
 # cleanup temporary files
