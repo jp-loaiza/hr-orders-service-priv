@@ -18,7 +18,12 @@ type Price = {
 
 type TaxedPrice = {
   totalNet: Price,
-  totalGross: Price
+  totalGross: Price,
+  taxPortions: Array<{
+    rate: number,
+    amount: Price,
+    name: string
+  }>
 }
 
 type TaxRate = {
@@ -115,6 +120,7 @@ type Order = {
   paymentInfo: {
     payments: Array<Payment>
   },
+  shippingInfo: ShippingInfo, 
   taxedPrice: TaxedPrice
   custom: {
     fields: {
@@ -122,11 +128,9 @@ type Order = {
       errorMessage?: string,
       shippingTaxes: string, // stringified JSON
       paymentIsReleased: boolean,
-      shippingCost: Price,
       shippingIsRush: boolean,
       transactionTotal: Price,
       signatureIsRequired: boolean,
-      totalOrderTax: Price,
       carrierId:  'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
       shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
       returnsAreFree: boolean,
@@ -144,5 +148,6 @@ export {
   LineItem,
   Order,
   Payment,
-  ShippingInfo
+  ShippingInfo,
+  TaxedPrice
 }

@@ -7,6 +7,9 @@ const {
   getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getShippingTaxAmountsFromShippingTaxes,
+  getShippingTaxDescriptionsFromShippingTaxes,
+  getTaxTotalFromTaxedPrice
 } = require('./csv.utils')
 
 describe('convertToDollars', () => {
@@ -107,5 +110,75 @@ describe('getLineTaxDescriptionFromLineItem', () => {
   it('returns the correct description', () => {
     // @ts-ignore incomplete line for testing only tax related things
     expect(getLineTaxDescriptionFromLineItem(incompleteLine)).toBe('GST')
+  })
+})
+
+const twoShippingTaxes = JSON.stringify({
+  'HST': '12',
+  'PST': '23'
+})
+
+const oneShippingTax = JSON.stringify({ 'HST': '12' })
+
+describe('getShippingTaxAmountsFromShippingTaxes', () => {
+  it('returns an array of numbers that correspond to the given shipping taxes', () => {
+    expect(getShippingTaxAmountsFromShippingTaxes(twoShippingTaxes)).toEqual([12, 23])
+  })
+
+  it('returns an array of one value when given a string that has just one shipping tax set', () => {
+    expect(getShippingTaxAmountsFromShippingTaxes(oneShippingTax)).toEqual([12])
+  })
+})
+
+describe('getShippingTaxDescriptionsFromShippingTaxes', () => {
+  it('returns an array of strings that correspond to the given tax descriptions', () => {
+    expect(getShippingTaxDescriptionsFromShippingTaxes(twoShippingTaxes)).toEqual(['HST', 'PST'])
+  })
+
+  it('returns an array of one value when given a string that has just one shipping tax set', () => {
+    expect(getShippingTaxDescriptionsFromShippingTaxes(oneShippingTax)).toEqual(['HST'])
+  })
+})
+
+
+describe('getTaxTotalFromTaxedPrice', () => {
+  const taxedPrice = {
+    totalNet: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 10000,
+      fractionDigits: 2
+    },
+    totalGross: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 11800,
+      fractionDigits: 2
+    },
+    taxPortions: [
+      {
+        rate: 0.13,
+        amount: {
+          type: 'centPrecision',
+          currencyCode: 'CAD',
+          centAmount: 1400,
+          fractionDigits: 2
+        },
+        name: 'HST'
+      },
+      {
+        rate: 0.09,
+        amount: {
+          type: 'centPrecision',
+          currencyCode: 'CAD',
+          centAmount: 400,
+          fractionDigits: 2
+        },
+        name: 'GST'
+      },
+    ]
+  }
+  it('returns the correct tax total when given a valid taxedPrice object', () => {
+    expect(getTaxTotalFromTaxedPrice(taxedPrice)).toBe(1800)
   })
 })

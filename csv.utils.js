@@ -39,12 +39,21 @@ const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ 
 const getLineTaxDescriptionFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
   const boldTaxDescription = Object.keys(taxes)[0]
-
-  // TODO: Figure out mapping from the tax descriptions that Bold gives us to
-  // the tax descriptions expected by JESTA
-  return boldTaxDescription
+  return boldTaxDescription // TODO: Map to JESTA tax description
 }
 
+const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes) => {
+  const shippingTaxes = JSON.parse(rawShippingTaxes)
+  return Object.values(shippingTaxes).map(Number)
+}
+
+const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes) => {
+  const shippingTaxes = JSON.parse(rawShippingTaxes)
+  const boldShippingTaxDescriptions = Object.keys(shippingTaxes)
+  return boldShippingTaxDescriptions // TODO: Map to JESTA tax descriptions
+}
+
+const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => sum(taxedPrice.taxPortions.map(portion => portion.amount.centAmount))
 
 module.exports = {
   convertToDollars,
@@ -54,5 +63,8 @@ module.exports = {
   getLineOneFromAddress,
   getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
-  getLineTwoFromAddress
+  getLineTwoFromAddress,
+  getShippingTaxAmountsFromShippingTaxes,
+  getShippingTaxDescriptionsFromShippingTaxes,
+  getTaxTotalFromTaxedPrice
 }
