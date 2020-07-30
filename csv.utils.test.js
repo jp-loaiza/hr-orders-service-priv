@@ -4,7 +4,9 @@ const {
   formatCardExpiryDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
-  getLineTwoFromAddress
+  getLineTaxDescriptionFromLineItem,
+  getLineTotalTaxFromLineItem,
+  getLineTwoFromAddress,
 } = require('./csv.utils')
 
 describe('convertToDollars', () => {
@@ -79,5 +81,31 @@ describe('getLineOneFromAddress', () => {
 describe('getLineTwoFromAddress', () => {
   it('returns the street number followed by the street name', () => {
     expect(getLineTwoFromAddress(address)).toEqual('900')
+  })
+})
+
+
+const incompleteLine = {
+  custom: {
+    fields: {
+      itemTaxes: JSON.stringify({
+        GST: '12',
+        PST: '23'
+      })
+    }
+  }
+}
+
+describe('getLineTotalTaxFromLineItem', () => {
+  it('calculates taxes correctly', () => {
+    // @ts-ignore incomplete line for testing only tax related things
+    expect(getLineTotalTaxFromLineItem(incompleteLine)).toBe(35)
+  })
+})
+
+describe('getLineTaxDescriptionFromLineItem', () => {
+  it('returns the correct description', () => {
+    // @ts-ignore incomplete line for testing only tax related things
+    expect(getLineTaxDescriptionFromLineItem(incompleteLine)).toBe('GST')
   })
 })

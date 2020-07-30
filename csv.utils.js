@@ -1,3 +1,5 @@
+const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num)
+
 /**
  * CT stores prices in cents, but JESTA expects them to be given in dollars
  * @param {number} cents
@@ -24,10 +26,25 @@ const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Paymen
  */
 const formatCardExpiryDate = unformattedExpiryDate => unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 
-
 const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => `${address.streetNumber} ${address.streetName}`
 
 const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => address.apartment
+
+const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
+  const taxAmounts = Object.values(taxes).map(Number) 
+  return sum(taxAmounts)
+}
+
+const getLineTaxDescriptionFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
+  const boldTaxDescription = Object.keys(taxes)[0]
+
+  // TODO: Figure out mapping from the tax descriptions that Bold gives us to
+  // the tax descriptions expected by JESTA
+  return boldTaxDescription
+}
+
 
 module.exports = {
   convertToDollars,
@@ -35,5 +52,7 @@ module.exports = {
   formatCardExpiryDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
+  getLineTaxDescriptionFromLineItem,
+  getLineTotalTaxFromLineItem,
   getLineTwoFromAddress
 }

@@ -19,6 +19,8 @@ const  {
   formatDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
+  getLineTaxDescriptionFromLineItem,
+  getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   formatCardExpiryDate
 } = require('./csv.utils')
@@ -87,7 +89,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.price.value.centAmount),
   [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: convertToDollars(lineItem.totalPrice.centAmount),
   [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: lineItem.custom.fields.lineShippingCharges ? convertToDollars(lineItem.custom.fields.lineShippingCharges.centAmount) : 0,
-  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(lineItem.custom.fields.lineTotalTax.centAmount),
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(getLineTotalTaxFromLineItem(lineItem)),
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
@@ -102,8 +104,8 @@ const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order}
   [TAXES_ROWS_ENUM.LINE]: index + 1,
   [TAXES_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TAXES_ROWS_ENUM.SITE_ID]: 1, // From JESTA's docs: "1 if one tax. 1 and 2 if two tax lines"
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(lineItem.custom.fields.lineTotalTax.centAmount),
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.custom.fields.lineTaxDescription
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(getLineTotalTaxFromLineItem(lineItem)),
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: getLineTaxDescriptionFromLineItem(lineItem)
 })
 
 const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
@@ -166,10 +168,9 @@ const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} 
 }
 
 /**
- * @explain Generates comma separated header names, which are the same for
- *          every order. Not to be confused with `generateHeadersCsvStringFromOrder`,
- *          which generates the string of the *row* that JESTA classifies as
- *          "header" data.
+ * Generates comma separated header names, which are the same for every order.
+ * Not to be confused with `generateHeadersCsvStringFromOrder`, which generates
+ * the string of the *row* that JESTA classifies as "header" data.
  */
 const generateCsvHeaderNamesString = () => {
   const options = {
