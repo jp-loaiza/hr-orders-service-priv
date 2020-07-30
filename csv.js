@@ -14,7 +14,14 @@ const {
   TENDER_ROWS,
   TENDER_ROWS_ENUM
 } = require('./constants')
-const  { convertToDollars, formatDate, getCardReferenceNumberFromPayment, formatCardExpiryDate } = require('./csv.utils')
+const  {
+  convertToDollars,
+  formatDate,
+  getCardReferenceNumberFromPayment,
+  getLineOneFromAddress,
+  getLineTwoFromAddress,
+  formatCardExpiryDate
+} = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
 // we can feed into the CSV generator to create the CSV
@@ -37,8 +44,8 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
   [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: shippingAddress.firstName,
   [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: shippingAddress.lastName,
-  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: shippingAddress.additionalStreetInfo.split('\n')[0],
-  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: shippingAddress.additionalStreetInfo.split('\n')[1],
+  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: getLineOneFromAddress(shippingAddress),
+  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: getLineTwoFromAddress(shippingAddress),
   [HEADER_ROWS_ENUM.SHIP_TO_CITY]: shippingAddress.city,
   [HEADER_ROWS_ENUM.SHIP_TO_STATE_ID]: shippingAddress.state,
   [HEADER_ROWS_ENUM.SHIP_TO_ZIP_CODE]: shippingAddress.postalCode,
@@ -46,8 +53,8 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.WFE_CUSTOMER_ID]: customerId,
   [HEADER_ROWS_ENUM.BILL_TO_FIRST_NAME]: billingAddress.firstName,
   [HEADER_ROWS_ENUM.BILL_TO_LAST_NAME]: billingAddress.lastName,
-  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_1]: billingAddress.additionalStreetInfo.split('\n')[0],
-  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_2]: billingAddress.additionalStreetInfo.split('\n')[1],
+  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_1]: getLineOneFromAddress(billingAddress),
+  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_2]: getLineTwoFromAddress(billingAddress),
   [HEADER_ROWS_ENUM.BILL_TO_CITY]: billingAddress.city,
   [HEADER_ROWS_ENUM.BILL_TO_STATE_ID]: billingAddress.state,
   [HEADER_ROWS_ENUM.BILL_TO_ZIP_CODE]: billingAddress.postalCode,

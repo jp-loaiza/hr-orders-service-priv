@@ -1,4 +1,11 @@
-const { convertToDollars, formatDate, formatCardExpiryDate, getCardReferenceNumberFromPayment } = require('./csv.utils')
+const {
+  convertToDollars,
+  formatDate,
+  formatCardExpiryDate,
+  getCardReferenceNumberFromPayment,
+  getLineOneFromAddress,
+  getLineTwoFromAddress
+} = require('./csv.utils')
 
 describe('convertToDollars', () => {
   it('works when the resulting dollar amount is an integer', () => {
@@ -48,5 +55,29 @@ describe('getCardReferenceNumberFromPayment', () => {
 
   it('returns a string that is the first and last digits of the payment cart', () => {
     expect(getCardReferenceNumberFromPayment(payment)).toBe('19')
+  })
+})
+
+const address = {
+  streetName: 'Fake St.',
+  streetNumber: '123',
+  postalCode: 'A1B 2C3',
+  apartment: '900',
+  city: 'Toronto',
+  state: 'ON',
+  country: 'CA',
+  firstName: 'First',
+  lastName: 'Last',
+  phone: '555-5555'
+}
+describe('getLineOneFromAddress', () => {
+  it('returns the street number followed by the street name', () => {
+    expect(getLineOneFromAddress(address)).toEqual('123 Fake St.')
+  })
+})
+
+describe('getLineTwoFromAddress', () => {
+  it('returns the street number followed by the street name', () => {
+    expect(getLineTwoFromAddress(address)).toEqual('900')
   })
 })

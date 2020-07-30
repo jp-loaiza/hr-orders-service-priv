@@ -139,6 +139,7 @@ type Order = {
 }
 
 export {
+  Address,
   Env,
   LineItem,
   Order,

@@ -1,13 +1,12 @@
 /**
- * @param {number} cents 
- * @explain CT stores prices in cents, but JESTA expects them to be given in
- *          dollars.
+ * CT stores prices in cents, but JESTA expects them to be given in dollars
+ * @param {number} cents
  */
 const convertToDollars = cents => cents / 100
 
 /**
+ * CT dates are JSON dates, but JESTA expects dates to be of the form `yyyy-MM-dd HH24:MI`
  * @param {string} jsonDateString 
- * @explain CT dates are JSON dates, but JESTA expects dates to be of the form `yyyy-MM-dd HH24:MI`
  */
 const formatDate = jsonDateString => (
   jsonDateString.slice(0, 10) + ' ' + jsonDateString.slice(11, 16)
@@ -25,9 +24,16 @@ const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Paymen
  */
 const formatCardExpiryDate = unformattedExpiryDate => unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 
+
+const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => `${address.streetNumber} ${address.streetName}`
+
+const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => address.apartment
+
 module.exports = {
   convertToDollars,
   formatDate,
   formatCardExpiryDate,
-  getCardReferenceNumberFromPayment
+  getCardReferenceNumberFromPayment,
+  getLineOneFromAddress,
+  getLineTwoFromAddress
 }
