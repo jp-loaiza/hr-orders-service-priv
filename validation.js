@@ -11,7 +11,7 @@ const addressSchema = {
       minLength: 2
     }
   },
-  required: ['firstName', 'lastName', 'additionalStreetInfo', 'postalCode', 'city', 'country', 'phone']
+  required: ['firstName', 'lastName', 'streetName', 'postalCode', 'city', 'country']
 }
 
 const paymentSchema = {
@@ -21,7 +21,7 @@ const paymentSchema = {
       type: 'object',
       properties: {
         type: 'object',
-        required: ['cardReferenceNumber', 'cardExpiryDate', 'cardNumber', 'authorizationNumber']
+        required: ['auth_number', 'bin', 'transaction_card_expiry', 'transaction_card_last4', 'transaction_card_type']
       },
       required: ['paymentMethodInfo', 'amountPlanned', 'custom']
     }
@@ -66,7 +66,7 @@ const orderSchema = {
       properties: {
         fields: {
           type: 'object',
-          required: ['shippingTax', 'shippingTaxDescription', 'paymentIsReleased', 'shippingCost', 'shippingIsRush', 'transactionTotal', 'signatureIsRequired', 'totalOrderTax', 'carrierId', 'shippingServiceType', 'returnsAreFree']
+          required: ['shippingTaxes', 'paymentIsReleased', 'shippingIsRush', 'transactionTotal', 'signatureIsRequired', 'carrierId', 'shippingServiceType', 'returnsAreFree']
         }
       },
       required: ['fields']
