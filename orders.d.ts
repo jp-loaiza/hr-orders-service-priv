@@ -49,9 +49,8 @@ type LineItem = {
         }
       }>,
       salespersonId?: number,
-      lineTaxDescription: string,
-      lineTotalTax: Price,
-      lineShippingCharges: Price
+      itemTaxes: string // stringified JSON
+      lineShippingCharges?: Price
     }
   },
   taxedPrice: TaxedPrice,
@@ -59,8 +58,10 @@ type LineItem = {
 }
 
 type Address = {
-  additionalStreetInfo: string,
+  streetName: string,
+  streetNumber: string,
   postalCode: string,
+  apartment: string,
   city: string,
   state: string,
   country: string,
@@ -87,10 +88,11 @@ type Payment = {
     },
     custom: {
       fields: {
-        cardReferenceNumber: string,
-        cardExpiryDate: string,
-        cardNumber: string,
-        authorizationNumber: string
+        auth_number: string,
+        bin: string,
+        transaction_card_expiry: string,
+        transaction_card_last4: string,
+        transaction_card_type: string
       }
     }
   }
@@ -113,12 +115,12 @@ type Order = {
   paymentInfo: {
     payments: Array<Payment>
   },
+  taxedPrice: TaxedPrice
   custom: {
     fields: {
-      sentToOmsStatus?: 'PENDING' | 'SUCCESS' | 'FAILURE',
+      sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
       errorMessage?: string,
-      shippingTax: Price,
-      shippingTaxDescription: string,
+      shippingTaxes: string, // stringified JSON
       paymentIsReleased: boolean,
       shippingCost: Price,
       shippingIsRush: boolean,
