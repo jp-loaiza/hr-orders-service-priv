@@ -16,6 +16,8 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 // Parse application/json
 app.use(bodyParser.json())
+// remove x-powered-by header
+app.disable('x-powered-by')
 
 /**
  * Can be used to setup a health endpoint
