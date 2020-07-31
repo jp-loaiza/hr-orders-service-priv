@@ -8,6 +8,7 @@ kubectl create configmap hr-orders-service \
   --from-literal=CT_HOST=$CT_HOST \
   --from-literal=ORDER_UPLOAD_INTERVAL=$ORDER_UPLOAD_INTERVAL \
   --from-literal=EMAIL_API_URL=$EMAIL_API_URL_KUBERNETES \
+  --from-literal=SHOULD_RUN_JOBS=$SHOULD_RUN_JOBS \
   -o yaml --dry-run | kubectl apply -f -
 
 # update existing secret

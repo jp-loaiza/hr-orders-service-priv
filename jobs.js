@@ -49,5 +49,7 @@ async function sendOrderEmailNotificationJob () {
   }
 }
 
-createAndUploadCsvsJob()
-sendOrderEmailNotificationJob()
+if (process.env.SHOULD_RUN_JOBS === 'true') {
+  createAndUploadCsvsJob()
+  sendOrderEmailNotificationJob()
+}

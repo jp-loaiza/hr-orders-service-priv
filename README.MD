@@ -63,6 +63,7 @@ source deploy.sh
   - CT_API_EXTENSION_BEARER_TOKEN
   - HEALTHZ_AUTHORIZATION
   - SEND_NOTIFICATIONS_INTERVAL
+  - SHOULD_RUN_JOBS
 
 - Note: These environmental variables are automatically set by the build stage if you configure it properly:
   - BUILD_NUMBER
