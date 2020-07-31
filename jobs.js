@@ -37,7 +37,7 @@ async function sendOrderEmailNotificationJob () {
           // we retry in case the version of the order has changed by CSV job
           await retry(setOrderSentToCrmStatus)(orderId, true)
         } catch (error) {
-          console.error('Failed to send notification for order ID: ', orderId)
+          console.error(`Failed to send notification for order ID: ${orderId}: `, error)
           // we retry in case the version of the order has changed by CSV job
           await retry(setOrderSentToCrmStatus)(orderId, false)
         }

@@ -47,8 +47,10 @@ const sendOrderEmailNotificationByOrderId = async orderId => {
     method: 'POST'
   })
   if (response.status === 200) return true
-
-  throw new Error(`Email API service responded with status ${response.status}: ${response}`)
+  const error = new Error(`Email API service responded with status ${response.status}: ${response}.`)
+  console.error(error)
+  console.error(response)
+  throw error
 }
 
 module.exports = {

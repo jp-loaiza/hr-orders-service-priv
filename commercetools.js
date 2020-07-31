@@ -84,8 +84,9 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
  * @returns {Promise<Array<string>>}
  */
 async function fetchOrderIdsThatShouldBeSentToCrm () {
-  const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}"))`
-  const uri = requestBuilder.orders.where(query).build()
+  const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined))`
+  // CRM is easily overloaded, so we limit the number of parallel requests to one.
+  const uri = requestBuilder.orders.perPage(1).where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   /**
    * @type Array<string>
