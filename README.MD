@@ -72,7 +72,9 @@ source deploy.sh
 - Note: This environmental variables is created during build/deployment:
   - IMAGE
 
-- Note: SFTP hosts for kubernetes and local environments are different. Refer to 'deploy.sh' for details of how it's set on kubernetes.
+- Note: SFTP and Email API hosts for kubernetes and local environments are different. Refer to 'deploy.sh' for details of how it's set on kubernetes.
+
+TODO: Currently all the traffic on Kubernetes is being routed via the Internet, instead of through the Vyatta and so HarryRosen has to manually add the IP address of each of our clusters to their white list so we can connect to their service via their public IP addresses. However, we already have a VPN setup that obviates the need for whitelisting, which is what we are using locally and so the reason behind having different IP addresses. We need to add a route that says all 10.210.x.x traffic routes through the eth0 or eth1 nic.
 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.
