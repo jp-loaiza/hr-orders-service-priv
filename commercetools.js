@@ -5,7 +5,7 @@ const {
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
-  SENT_TO_CRM_STATUSES
+  SENT_TO_CRM_STATUS
 } = require('./constants')
 
 dotenv.config()
@@ -84,7 +84,7 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
  * @returns {Promise<Array<string>>}
  */
 async function fetchOrderIdsThatShouldBeSentToCrm () {
-  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_CRM_STATUSES.PENDING}"))`
+  const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}"))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   /**
@@ -107,7 +107,7 @@ async function setOrderSentToCrmStatus (orderId, status) {
       {
         action: 'setCustomField',
         name: 'sentToCrmStatus',
-        value: SENT_TO_CRM_STATUSES[status ? 'SUCCESS' : 'FAILURE']
+        value: SENT_TO_CRM_STATUS[status ? 'SUCCESS' : 'FAILURE']
       }
     ]
   })
