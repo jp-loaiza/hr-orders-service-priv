@@ -5,7 +5,7 @@ const {
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
-  SENT_TO_NS_STATUSES
+  SENT_TO_CRM_STATUSES
 } = require('./constants')
 
 dotenv.config()
@@ -83,8 +83,8 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
  * Fetches all orders that that we should try to send to the Notification Service.
  * @returns {Promise<Array<string>>}
  */
-async function fetchOrderIdsThatShouldBeSentToNs () {
-  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_NS_STATUSES.PENDING}"))`
+async function fetchOrderIdsThatShouldBeSentToCrm () {
+  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_CRM_STATUSES.PENDING}"))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   /**
@@ -98,7 +98,7 @@ async function fetchOrderIdsThatShouldBeSentToNs () {
  * @param {string} orderId
  * @param {boolean} status
  */
-async function setOrderSentToNsStatus (orderId, status) {
+async function setOrderSentToCrmStatus (orderId, status) {
   const uri = requestBuilder.orders.byId(orderId).build()
   const { version } = (await ctClient.execute({ method: 'GET', uri })).body
   const body = JSON.stringify({
@@ -106,8 +106,8 @@ async function setOrderSentToNsStatus (orderId, status) {
     actions: [
       {
         action: 'setCustomField',
-        name: 'sentToNsStatus',
-        value: SENT_TO_NS_STATUSES[status ? 'SUCCESS' : 'FAILURE']
+        name: 'sentToCrmStatus',
+        value: SENT_TO_CRM_STATUSES[status ? 'SUCCESS' : 'FAILURE']
       }
     ]
   })
@@ -219,7 +219,7 @@ module.exports = {
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
   setOrderErrorFields,
-  fetchOrderIdsThatShouldBeSentToNs,
-  setOrderSentToNsStatus,
+  fetchOrderIdsThatShouldBeSentToCrm,
+  setOrderSentToCrmStatus,
   keepAliveRequest
 }

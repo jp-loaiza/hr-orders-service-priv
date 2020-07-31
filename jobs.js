@@ -3,7 +3,7 @@ require('dotenv').config()
 
 const { ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
 const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
-const { fetchOrderIdsThatShouldBeSentToNs, setOrderSentToNsStatus } = require('./commercetools')
+const { fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 
 async function createAndUploadCsvsJob () {
@@ -27,20 +27,23 @@ async function sendOrderEmailNotificationJob () {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      const orderIds = await fetchOrderIdsThatShouldBeSentToNs()
+      const orderIds = await fetchOrderIdsThatShouldBeSentToCrm()
+      if (orderIds.length) {
+        console.log(`Sending ${orderIds.length} orders to CRM: ${orderIds}`)
+      }
       await Promise.all(orderIds.map(async orderId => {
         try {
           await sendOrderEmailNotificationByOrderId(orderId)
           // we retry in case the version of the order has changed by CSV job
-          await retry(setOrderSentToNsStatus)(orderId, true)
+          await retry(setOrderSentToCrmStatus)(orderId, true)
         } catch (error) {
           console.error('Failed to send notification for order ID: ', orderId)
           // we retry in case the version of the order has changed by CSV job
-          await retry(setOrderSentToNsStatus)(orderId, false)
+          await retry(setOrderSentToCrmStatus)(orderId, false)
         }
       }))
     } catch (error) {
-      console.error('Failed to create and uploads CSVs: ', error)
+      console.error('Failed to send orders to CRM: ', error)
     }
     await sleep(interval)
   }
