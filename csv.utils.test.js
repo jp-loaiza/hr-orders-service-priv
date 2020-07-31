@@ -3,6 +3,7 @@ const {
   flatten,
   formatDate,
   formatCardExpiryDate,
+  formatJestaTaxDescriptionFromBoldTaxDescription,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
@@ -208,5 +209,14 @@ describe('getParsedTaxesFromLineItem', () => {
         dollarAmount: 0.23
       }
     ])
+  })
+})
+
+describe('formatJestaTaxDescriptionFromBoldTaxDescription', () => {
+  it('returns the correct description when given a Bold tax description and a valid two-character province code', () => {
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'ON')).toEqual('GST CANADA')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'PE')).toEqual('GST CANADA')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('HST', 'ON')).toEqual('HST-ON')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('PST', 'MB')).toEqual('PST-MB')
   })
 })

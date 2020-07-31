@@ -1,3 +1,5 @@
+const { JESTA_TAX_DESCRIPTIONS } = require('./constants')
+
 const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num)
 
 /**
@@ -70,11 +72,23 @@ const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ l
   }))
 }
 
+/**
+ * @param {'GST' | 'HST' | 'PST' | 'QST'} boldTaxDescription 
+ * @param {import('./orders').StateCode} stateCode
+ */
+const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, stateCode) => {
+  if (boldTaxDescription === 'GST') return JESTA_TAX_DESCRIPTIONS.GST
+  // @ts-ignore
+  /** @type {import('./orders').TaxDescriptionKey} */ const key = `${boldTaxDescription}_${stateCode}`
+  return JESTA_TAX_DESCRIPTIONS[key]
+}
+
 module.exports = {
   convertToDollars,
   flatten,
   formatDate,
   formatCardExpiryDate,
+  formatJestaTaxDescriptionFromBoldTaxDescription,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,

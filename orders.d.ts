@@ -147,6 +147,10 @@ type ParsedTax = {
   description: string
 }
 
+type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
+
+type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
+
 export {
   Address,
   Env,
@@ -155,5 +159,7 @@ export {
   ParsedTax,
   Payment,
   ShippingInfo,
+  StateCode,
+  TaxDescriptionKey,
   TaxedPrice
 }
