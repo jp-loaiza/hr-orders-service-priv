@@ -1,6 +1,16 @@
 const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num)
 
 /**
+ * @returns {any}
+ */
+const flatten = ( /** @type {any} */ x) => {
+  if (!Array.isArray(x)) return x
+  return x.reduce((flattenedArray, item) => (
+    [...flattenedArray, ...Array.isArray(item) ? flatten(item) : [item] ]) , []
+  )
+}
+
+/**
  * CT stores prices in cents, but JESTA expects them to be given in dollars
  * @param {number} cents
  */
@@ -55,8 +65,20 @@ const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawSh
 
 const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => sum(taxedPrice.taxPortions.map(portion => portion.amount.centAmount))
 
+/**
+ * @returns {Array<import('./orders').ParsedTax>}
+ */
+const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
+  return Object.entries(taxes).map(([ boldTaxDescription, centAmount]) => ({
+    description: boldTaxDescription, // TODO: Map to JESTA tax description
+    dollarAmount: convertToDollars(centAmount)
+  }))
+}
+
 module.exports = {
   convertToDollars,
+  flatten,
   formatDate,
   formatCardExpiryDate,
   getCardReferenceNumberFromPayment,
@@ -64,6 +86,7 @@ module.exports = {
   getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getParsedTaxesFromLineItem,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice

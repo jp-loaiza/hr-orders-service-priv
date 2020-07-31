@@ -1,5 +1,6 @@
 const {
   convertToDollars,
+  flatten,
   formatDate,
   formatCardExpiryDate,
   getCardReferenceNumberFromPayment,
@@ -7,10 +8,28 @@ const {
   getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getParsedTaxesFromLineItem,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice
 } = require('./csv.utils')
+
+describe('flatten', () => {
+  it('returns its argument when given a non-nested array', () => {
+    expect(flatten([1,2,3])).toEqual([1,2,3])
+  })
+
+  it('returns a flattened array when given a nested array', () => {
+    expect(flatten([1,[2,3]])).toEqual([1,2,3])
+    expect(flatten([1,[2,[3]]])).toEqual([1,2,3])
+    expect(flatten([[1,[[[2]],[3]]]])).toEqual([1,2,3])
+  })
+
+  it('returns its argument when given a non-array', () => {
+    expect(flatten(1)).toEqual(1)
+    expect(flatten('foo')).toEqual('foo')
+  })
+})
 
 describe('convertToDollars', () => {
   it('works when the resulting dollar amount is an integer', () => {
@@ -88,7 +107,7 @@ describe('getLineTwoFromAddress', () => {
 })
 
 
-const incompleteLine = {
+const incompleteLineItem = {
   custom: {
     fields: {
       itemTaxes: JSON.stringify({
@@ -102,14 +121,14 @@ const incompleteLine = {
 describe('getLineTotalTaxFromLineItem', () => {
   it('calculates taxes correctly', () => {
     // @ts-ignore incomplete line for testing only tax related things
-    expect(getLineTotalTaxFromLineItem(incompleteLine)).toBe(35)
+    expect(getLineTotalTaxFromLineItem(incompleteLineItem)).toBe(35)
   })
 })
 
 describe('getLineTaxDescriptionFromLineItem', () => {
   it('returns the correct description', () => {
     // @ts-ignore incomplete line for testing only tax related things
-    expect(getLineTaxDescriptionFromLineItem(incompleteLine)).toBe('GST')
+    expect(getLineTaxDescriptionFromLineItem(incompleteLineItem)).toBe('GST')
   })
 })
 
@@ -180,5 +199,22 @@ describe('getTaxTotalFromTaxedPrice', () => {
   }
   it('returns the correct tax total when given a valid taxedPrice object', () => {
     expect(getTaxTotalFromTaxedPrice(taxedPrice)).toBe(1800)
+  })
+})
+
+
+describe('getParsedTaxesFromLineItem', () => {
+  it('returns an array of parsed tax objects with the tax amount in dollars', () => {
+    // @ts-ignore incomplete line for testing only tax related things
+    expect(getParsedTaxesFromLineItem(incompleteLineItem)).toEqual([
+      {
+        description: 'GST',
+        dollarAmount: 0.12,
+      },
+      {
+        description: 'PST',
+        dollarAmount: 0.23
+      }
+    ])
   })
 })

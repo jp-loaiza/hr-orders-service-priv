@@ -142,11 +142,17 @@ type Order = {
   }
 }
 
+type ParsedTax = {
+  dollarAmount: number,
+  description: string
+}
+
 export {
   Address,
   Env,
   LineItem,
   Order,
+  ParsedTax,
   Payment,
   ShippingInfo,
   TaxedPrice

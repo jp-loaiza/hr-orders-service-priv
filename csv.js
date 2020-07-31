@@ -16,12 +16,14 @@ const {
 } = require('./constants')
 const  {
   convertToDollars,
+  flatten,
   formatDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
   getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getParsedTaxesFromLineItem,
   formatCardExpiryDate,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
@@ -105,15 +107,26 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
 })
 
-const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
+/**
+ * @param {{ index: number, orderNumber: string, tax: import('./orders').ParsedTax }} lineItemTaxInfo
+ */
+const getSingleTaxesObject = ({ index, orderNumber, tax }) => ({
   [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
   [TAXES_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
   [TAXES_ROWS_ENUM.LINE]: index + 1,
-  [TAXES_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
-  [TAXES_ROWS_ENUM.SITE_ID]: 1, // From JESTA's docs: "1 if one tax. 1 and 2 if two tax lines"
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(getLineTotalTaxFromLineItem(lineItem)),
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: getLineTaxDescriptionFromLineItem(lineItem)
+  [TAXES_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: tax.dollarAmount,
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: tax.description
 })
+
+const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => {
+  const taxes = getParsedTaxesFromLineItem(lineItem)
+  return taxes.map(tax => getSingleTaxesObject({
+    tax,
+    index,
+    orderNumber: order.orderNumber
+  }))
+}
 
 const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
   [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
@@ -160,7 +173,7 @@ const generateTaxCsvStringFromOrder = (/** @type {import('./orders').Order} */ o
     fields: TAXES_ROWS
   }
 
-  const taxesObjects = order.lineItems.map(getTaxesObjectFromOrderAndLineItem(order))
+  const taxesObjects = flatten(order.lineItems.map(getallTaxesObjectsFromOrderAndLineItem(order)))
   return parse(taxesObjects, options)
 }
 
