@@ -20,7 +20,6 @@ const  {
   formatDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
-  getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   getParsedTaxesFromLineItem,

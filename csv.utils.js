@@ -46,12 +46,6 @@ const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ 
   return sum(taxAmounts)
 }
 
-const getLineTaxDescriptionFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
-  const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
-  const boldTaxDescription = Object.keys(taxes)[0]
-  return boldTaxDescription // TODO: Map to JESTA tax description
-}
-
 const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes) => {
   const shippingTaxes = JSON.parse(rawShippingTaxes)
   return Object.values(shippingTaxes).map(Number)
@@ -83,7 +77,6 @@ module.exports = {
   formatCardExpiryDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
-  getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   getParsedTaxesFromLineItem,

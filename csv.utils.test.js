@@ -5,7 +5,6 @@ const {
   formatCardExpiryDate,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
-  getLineTaxDescriptionFromLineItem,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   getParsedTaxesFromLineItem,
@@ -122,13 +121,6 @@ describe('getLineTotalTaxFromLineItem', () => {
   it('calculates taxes correctly', () => {
     // @ts-ignore incomplete line for testing only tax related things
     expect(getLineTotalTaxFromLineItem(incompleteLineItem)).toBe(35)
-  })
-})
-
-describe('getLineTaxDescriptionFromLineItem', () => {
-  it('returns the correct description', () => {
-    // @ts-ignore incomplete line for testing only tax related things
-    expect(getLineTaxDescriptionFromLineItem(incompleteLineItem)).toBe('GST')
   })
 })
 
