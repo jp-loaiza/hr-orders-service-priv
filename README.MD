@@ -3,7 +3,7 @@ Since our kubernetes deployment is based off our docker image, we need to fist b
 
 1. Setup the environment
 ```
-ENVIRONMENT=development && BUILD_NUMBER=0
+ENVIRONMENT=development && BUILD_NUMBER=0.5
 ```
 ```
 source .env && source environment.sh
@@ -64,6 +64,10 @@ source deploy.sh
   - HEALTHZ_AUTHORIZATION
   - SEND_NOTIFICATIONS_INTERVAL
   - SHOULD_RUN_JOBS
+
+- Note: Each added environmntal variable should be set in '.env-template', 'deployment.yaml' and 'deploy.sh' and toolchain pipeline.
+
+- Note: In kubernetes deployment, values of confidential info should be read from secretKeyRef and value of configurations should be read from configMapKeyRef.
 
 - Note: These environmental variables are automatically set by the build stage if you configure it properly:
   - BUILD_NUMBER

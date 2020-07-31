@@ -92,3 +92,28 @@ spec:
             configMapKeyRef:
               key: ORDER_UPLOAD_INTERVAL
               name: hr-orders-service
+        - name: SHOULD_RUN_JOBS
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_RUN_JOBS
+              name: hr-orders-service
+        - name: EMAIL_API_URL
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_API_URL
+              name: hr-orders-service
+        - name: EMAIL_API_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: EMAIL_API_USERNAME
+              name: hr-orders-service
+        - name: EMAIL_API_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: EMAIL_API_PASSWORD
+              name: hr-orders-service
+        - name: SEND_NOTIFICATIONS_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SEND_NOTIFICATIONS_INTERVAL
+              name: hr-orders-service
