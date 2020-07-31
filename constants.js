@@ -33,7 +33,7 @@ const PAYMENT_METHODS_TO_JESTA_CODES = {
   // TODO: complete after given info from Bold
 }
 
-const ONLINE_SITE_ID = '990'
+const ONLINE_SITE_ID = '00990'
 
 const HEADER_ROWS_ENUM = {
   RECORD_TYPE: 'RecordType H',
