@@ -88,7 +88,8 @@ const address = {
   postalCode: 'A1B 2C3',
   apartment: '900',
   city: 'Toronto',
-  state: 'ON',
+  // @ts-ignore
+  /** @type {import('./orders').StateCode} */ state: 'ON',
   country: 'CA',
   firstName: 'First',
   lastName: 'Last',
@@ -112,7 +113,7 @@ const incompleteLineItem = {
     fields: {
       itemTaxes: JSON.stringify({
         GST: '12',
-        PST: '23'
+        HST: '23'
       })
     }
   }
@@ -126,11 +127,11 @@ describe('getLineTotalTaxFromLineItem', () => {
 })
 
 const twoShippingTaxes = JSON.stringify({
-  'HST': '12',
-  'PST': '23'
+  GST: '12',
+  HST: '23'
 })
 
-const oneShippingTax = JSON.stringify({ 'HST': '12' })
+const oneShippingTax = JSON.stringify({ HST: '12' })
 
 describe('getShippingTaxAmountsFromShippingTaxes', () => {
   it('returns an array of numbers that correspond to the given shipping taxes', () => {
@@ -144,11 +145,11 @@ describe('getShippingTaxAmountsFromShippingTaxes', () => {
 
 describe('getShippingTaxDescriptionsFromShippingTaxes', () => {
   it('returns an array of strings that correspond to the given tax descriptions', () => {
-    expect(getShippingTaxDescriptionsFromShippingTaxes(twoShippingTaxes)).toEqual(['HST', 'PST'])
+    expect(getShippingTaxDescriptionsFromShippingTaxes(twoShippingTaxes, 'ON')).toEqual(['GST CANADA', 'HST-ON'])
   })
 
   it('returns an array of one value when given a string that has just one shipping tax set', () => {
-    expect(getShippingTaxDescriptionsFromShippingTaxes(oneShippingTax)).toEqual(['HST'])
+    expect(getShippingTaxDescriptionsFromShippingTaxes(oneShippingTax, 'ON')).toEqual(['HST-ON'])
   })
 })
 
@@ -199,13 +200,13 @@ describe('getTaxTotalFromTaxedPrice', () => {
 describe('getParsedTaxesFromLineItem', () => {
   it('returns an array of parsed tax objects with the tax amount in dollars', () => {
     // @ts-ignore incomplete line for testing only tax related things
-    expect(getParsedTaxesFromLineItem(incompleteLineItem)).toEqual([
+    expect(getParsedTaxesFromLineItem(incompleteLineItem, 'ON')).toEqual([
       {
-        description: 'GST',
+        description: 'GST CANADA',
         dollarAmount: 0.12,
       },
       {
-        description: 'PST',
+        description: 'HST-ON',
         dollarAmount: 0.23
       }
     ])

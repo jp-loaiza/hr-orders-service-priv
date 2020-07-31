@@ -53,10 +53,11 @@ const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippin
   return Object.values(shippingTaxes).map(Number)
 }
 
-const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes) => {
+const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes, /** @type {import('./orders').StateCode} */ stateCode) => {
   const shippingTaxes = JSON.parse(rawShippingTaxes)
   const boldShippingTaxDescriptions = Object.keys(shippingTaxes)
-  return boldShippingTaxDescriptions // TODO: Map to JESTA tax descriptions
+  // @ts-ignore
+  return boldShippingTaxDescriptions.map(boldTaxDescription => formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode))
 }
 
 const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => sum(taxedPrice.taxPortions.map(portion => portion.amount.centAmount))
@@ -64,16 +65,17 @@ const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ 
 /**
  * @returns {Array<import('./orders').ParsedTax>}
  */
-const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem, /** @type {import('./orders').StateCode} */ stateCode) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
   return Object.entries(taxes).map(([ boldTaxDescription, centAmount]) => ({
-    description: boldTaxDescription, // TODO: Map to JESTA tax description
+    // @ts-ignore
+    description: formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode),
     dollarAmount: convertToDollars(centAmount)
   }))
 }
 
 /**
- * @param {'GST' | 'HST' | 'PST' | 'QST'} boldTaxDescription 
+ * @param {import('./orders').BoldTaxDescription} boldTaxDescription 
  * @param {import('./orders').StateCode} stateCode
  */
 const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, stateCode) => {

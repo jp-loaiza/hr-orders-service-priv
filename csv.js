@@ -78,9 +78,9 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
   [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0]),
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes)[0],
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
   [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] ? convertToDollars(getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1]) : undefined,
-  [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes)[1],
+  [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
   [HEADER_ROWS_ENUM.SERVICE_TYPE]: custom.fields.shippingServiceType,
@@ -119,7 +119,7 @@ const getSingleTaxesObject = ({ index, orderNumber, tax }) => ({
 })
 
 const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => {
-  const taxes = getParsedTaxesFromLineItem(lineItem)
+  const taxes = getParsedTaxesFromLineItem(lineItem, order.shippingAddress.state)
   return taxes.map(tax => getSingleTaxesObject({
     tax,
     index,
