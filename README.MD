@@ -3,7 +3,7 @@ Since our kubernetes deployment is based off our docker image, we need to fist b
 
 1. Setup the environment
 ```
-ENVIRONMENT=development && BUILD_NUMBER=0.5
+ENVIRONMENT=development && BUILD_NUMBER=1
 ```
 ```
 source .env && source environment.sh

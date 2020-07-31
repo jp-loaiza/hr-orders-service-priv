@@ -117,3 +117,8 @@ spec:
             configMapKeyRef:
               key: SEND_NOTIFICATIONS_INTERVAL
               name: hr-orders-service
+        - name: HEALTHZ_AUTHORIZATION
+          valueFrom:
+            secretKeyRef:
+              key: HEALTHZ_AUTHORIZATION
+              name: hr-orders-service             
