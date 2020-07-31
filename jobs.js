@@ -6,8 +6,10 @@ const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
 const { fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 
-async function createAndUploadCsvsJob () {
-  if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
+/**
+ * @param {number} orderUploadInterval interval between each job in ms
+ */
+async function createAndUploadCsvsJob (orderUploadInterval) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     console.time('Create and uploads CSVs')
@@ -17,13 +19,14 @@ async function createAndUploadCsvsJob () {
       console.error('Failed to create and uploads CSVs: ', error)
     }
     console.timeEnd('Create and uploads CSVs')
-    await sleep(Number(ORDER_UPLOAD_INTERVAL))
+    await sleep(orderUploadInterval)
   }
 }
 
-async function sendOrderEmailNotificationJob () {
-  const interval = Number(SEND_NOTIFICATIONS_INTERVAL)
-  if (!(interval > 0)) throw new Error('SEND_NOTIFICATIONS_INTERVAL must be a positive number')
+/**
+ * @param {*} sendNotificationsInterval interval between each job in ms
+ */
+async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
@@ -45,11 +48,16 @@ async function sendOrderEmailNotificationJob () {
     } catch (error) {
       console.error('Failed to send orders to CRM: ', error)
     }
-    await sleep(interval)
+    await sleep(sendNotificationsInterval)
   }
 }
 
 if (process.env.SHOULD_RUN_JOBS === 'true') {
-  createAndUploadCsvsJob()
-  sendOrderEmailNotificationJob()
+  const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
+  if (!(orderUploadInterval > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
+  createAndUploadCsvsJob(orderUploadInterval)
+
+  const sendNotificationsInterval = Number(SEND_NOTIFICATIONS_INTERVAL)
+  if (!(sendNotificationsInterval > 0)) throw new Error('SEND_NOTIFICATIONS_INTERVAL must be a positive number')
+  sendOrderEmailNotificationJob(sendNotificationsInterval)
 }
