@@ -14,7 +14,7 @@ const {
   TENDER_ROWS,
   TENDER_ROWS_ENUM
 } = require('./constants')
-const  {
+const {
   convertToDollars,
   flatten,
   formatDate,
@@ -23,6 +23,7 @@ const  {
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   getParsedTaxesFromLineItem,
+  getPosEquivelenceFromPayment,
   formatCardExpiryDate,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
@@ -133,7 +134,7 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),
-  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: payment.obj.paymentMethodInfo.method,
+  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: getPosEquivelenceFromPayment(payment),
   [TENDER_ROWS_ENUM.REFERENCENO]: getCardReferenceNumberFromPayment(payment),
   [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDate(payment.obj.custom.fields.transaction_card_expiry),
   [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.transaction_card_last4,

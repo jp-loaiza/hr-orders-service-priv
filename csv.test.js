@@ -24,6 +24,20 @@ const completeOrderEnglishUntyped = {
     centAmount: 53250,
     fractionDigits: 2,
   },
+  taxedPrice: {
+    taxPortions: [
+      {
+        'rate': 0.05,
+        'amount': {
+          'type': 'centPrecision',
+          'currencyCode': 'CAD',
+          'centAmount': 1040,
+          'fractionDigits': 2
+        },
+        'name': 'GST'
+      }
+    ]
+  },
   orderState: 'Open',
   syncInfo: [],
   returnInfo: [],
@@ -592,13 +606,7 @@ const completeOrderEnglishUntyped = {
         fields: {
           salespersonId: 355216,
           isGift: false,
-          lineTaxDescription: 'HST-ON',
-          lineTotalTax: {
-            type: 'centPrecision',
-            currencyCode: 'CAD',
-            centAmount: 2535,
-            fractionDigits: 2,
-          },
+          lineTaxes: JSON.stringify({ HST: 123 }),
           barcodeData: [
             {
               typeId: 'key-value-document',
@@ -660,12 +668,6 @@ const completeOrderEnglishUntyped = {
         type: 'centPrecision',
       },
       paymentIsReleased: true,
-      shippingCost: {
-        fractionDigits: 2,
-        centAmount: 1000,
-        currencyCode: 'CAD',
-        type: 'centPrecision',
-      },
       shippingIsRush: true,
       transactionTotal: {
         fractionDigits: 2,
@@ -673,14 +675,8 @@ const completeOrderEnglishUntyped = {
         currencyCode: 'CAD',
         type: 'centPrecision',
       },
+      shippingTaxes: JSON.stringify({ HST: 123 }),
       signatureIsRequired: false,
-      shippingTaxDescription: 'HST-ON',
-      totalOrderTax: {
-        fractionDigits: 2,
-        centAmount: 7052,
-        currencyCode: 'CAD',
-        type: 'centPrecision',
-      },
       carrierId: 'FDX',
       returnsAreFree: false,
       shippingServiceType: 'EXPEDITED PARCEL',
@@ -721,10 +717,16 @@ const completeOrderEnglishUntyped = {
               id: 'c9a81e31-3fa6-4e73-8267-72cc3fd901b7',
             },
             fields: {
-              cardReferenceNumber: '19',
-              cardExpiryDate: '0525',
-              cardNumber: '1212',
-              authorizationNumber: '12345',
+              'transaction_card_last4': '1111',
+              'transaction_card_expiry': '09-2023',
+              'user_agent_string': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+              'avs_result': 'X',
+              'auth_number': '480',
+              'user_ip_address': '45.42.13.188',
+              'transaction_card_type': 'visa',
+              'transaction_time': '',
+              'bin': '4111',
+              'transaction_date': ''
             },
           },
           paymentStatus: {},

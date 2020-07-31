@@ -20,6 +20,19 @@ const JESTA_TAX_DESCRIPTIONS = {
   HST_PE: 'HST-PEI'
 }
 
+const CARD_TYPES_TO_JESTA_CODES = {
+  visa: '05',
+  mastercard: '06',
+  'american-express': '07',
+  'diners-club': '09',
+  discover: '08',
+  jcb: '10'
+}
+
+const PAYMENT_METHODS_TO_JESTA_CODES = {
+  // TODO: complete after given info from Bold
+}
+
 const ONLINE_SITE_ID = '990'
 
 const HEADER_ROWS_ENUM = {
@@ -261,6 +274,7 @@ const SEND_ORDER_RETRY_LIMIT = 5
 
 module.exports = {
   BACKOFF,
+  CARD_TYPES_TO_JESTA_CODES,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
   GENERAL_CSV_OPTIONS,
@@ -271,6 +285,7 @@ module.exports = {
   KEEP_ALIVE_INTERVAL,
   MISC_ROWS,
   ONLINE_SITE_ID,
+  PAYMENT_METHODS_TO_JESTA_CODES,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
   TAXES_ROWS,

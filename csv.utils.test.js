@@ -71,7 +71,8 @@ describe('getCardReferenceNumberFromPayment', () => {
           bin: '1234', // first four digits of card
           transaction_card_expiry: '01-2020',
           transaction_card_last4: '6789',
-          transaction_card_type: 'visa'
+          // @ts-ignore casting to Card type
+          /** @type {import('./orders').Card} */ transaction_card_type: 'visa'
         }
       }
     }

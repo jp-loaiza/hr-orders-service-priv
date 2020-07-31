@@ -1,3 +1,8 @@
+type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
+type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
+type BoldTaxDescription = 'GST' | 'HST' | 'PST' | 'QST'
+type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discover' | 'jcb'
+
 interface Env {
   [key: string]: string,
   PORT: string,
@@ -97,7 +102,7 @@ type Payment = {
         bin: string,
         transaction_card_expiry: string,
         transaction_card_last4: string,
-        transaction_card_type: string
+        transaction_card_type: Card
       }
     }
   }
@@ -147,15 +152,10 @@ type ParsedTax = {
   description: string
 }
 
-type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
-
-type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
-
-type BoldTaxDescription = 'GST' | 'HST' | 'PST' | 'QST'
-
 export {
   Address,
   BoldTaxDescription,
+  Card,
   Env,
   LineItem,
   Order,

@@ -1,4 +1,8 @@
-const { JESTA_TAX_DESCRIPTIONS } = require('./constants')
+const {
+  CARD_TYPES_TO_JESTA_CODES,
+  JESTA_TAX_DESCRIPTIONS,
+  PAYMENT_METHODS_TO_JESTA_CODES
+} = require('./constants')
 
 const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num)
 
@@ -80,9 +84,21 @@ const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ l
  */
 const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, stateCode) => {
   if (boldTaxDescription === 'GST') return JESTA_TAX_DESCRIPTIONS.GST
-  // @ts-ignore
+  // @ts-ignore casting to TaxDescriptionKey
   /** @type {import('./orders').TaxDescriptionKey} */ const key = `${boldTaxDescription}_${stateCode}`
   return JESTA_TAX_DESCRIPTIONS[key]
+}
+
+/**
+ * @param {import('./orders').Payment} payment 
+ */
+const getPosEquivelenceFromPayment = payment => {
+  const isCreditCardPayment = Boolean(payment.obj.custom.fields.transaction_card_type)
+  if (isCreditCardPayment) {
+    return CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
+  }
+  // @ts-ignore TODO: complete PAYMENT_METHODS_TO_JESTA_CODES
+  return PAYMENT_METHODS_TO_JESTA_CODES[payment.obj.paymentMethodInfo.method]
 }
 
 module.exports = {
@@ -96,6 +112,7 @@ module.exports = {
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   getParsedTaxesFromLineItem,
+  getPosEquivelenceFromPayment,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice
