@@ -78,7 +78,7 @@ app.use('/notifications', (req, res, next) => {
 app.post('/notifications/order-created', async (req, res) => {
   let orderId
   try {
-    orderId = req.body.resource.id
+    orderId = req.body.orderId
     await sendOrderEmailNotificationByOrderId(orderId)
     console.log(`Sent email notification for order ${orderId}`)
     res.send()
