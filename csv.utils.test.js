@@ -103,8 +103,17 @@ describe('getLineOneFromAddress', () => {
 })
 
 describe('getLineTwoFromAddress', () => {
-  it('returns the street number followed by the street name', () => {
+  it('returns the apartment number when the address has only an aparment number', () => {
     expect(getLineTwoFromAddress(address)).toEqual('900')
+  })
+
+  it('returns the PO box number when the address has only a PO box number', () => {
+    const addressThatHasAPOBoxNumber = {
+      ...address,
+      apartment: undefined,
+      pOBox: '326'
+    }
+    expect(getLineTwoFromAddress(addressThatHasAPOBoxNumber)).toEqual('326')
   })
 })
 

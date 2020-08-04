@@ -44,7 +44,10 @@ const formatCardExpiryDate = unformattedExpiryDate => unformattedExpiryDate.slic
 
 const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => `${address.streetNumber} ${address.streetName}`
 
-const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => address.apartment
+const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => {
+  const { building, apartment, pOBox} = address
+  return [building, apartment, pOBox].filter(Boolean).join(' ')
+}
 
 const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
