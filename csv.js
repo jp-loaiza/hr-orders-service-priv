@@ -80,7 +80,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0]),
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
-  [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] ? convertToDollars(getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1]) : undefined,
+  [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] && getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1],
   [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,

@@ -4,7 +4,7 @@ const {
   PAYMENT_METHODS_TO_JESTA_CODES
 } = require('./constants')
 
-const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num)
+const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num, 0)
 
 /**
  * @returns {any}
@@ -54,7 +54,7 @@ const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ 
 
 const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes) => {
   const shippingTaxes = JSON.parse(rawShippingTaxes)
-  return Object.values(shippingTaxes).map(Number)
+  return Object.values(shippingTaxes).map(Number) // dollars
 }
 
 const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes, /** @type {import('./orders').StateCode} */ stateCode) => {
@@ -71,10 +71,10 @@ const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ 
  */
 const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem, /** @type {import('./orders').StateCode} */ stateCode) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
-  return Object.entries(taxes).map(([ boldTaxDescription, centAmount]) => ({
+  return Object.entries(taxes).map(([boldTaxDescription, dollarAmount]) => ({
     // @ts-ignore
     description: formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode),
-    dollarAmount: convertToDollars(centAmount)
+    dollarAmount: Number(dollarAmount)
   }))
 }
 
