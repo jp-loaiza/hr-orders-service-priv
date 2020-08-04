@@ -204,11 +204,11 @@ describe('getParsedTaxesFromLineItem', () => {
     expect(getParsedTaxesFromLineItem(incompleteLineItem, 'ON')).toEqual([
       {
         description: 'GST CANADA',
-        dollarAmount: 0.12,
+        dollarAmount: 12,
       },
       {
         description: 'HST-ON',
-        dollarAmount: 0.23
+        dollarAmount: 23
       }
     ])
   })

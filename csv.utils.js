@@ -59,8 +59,8 @@ const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippin
 
 const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes, /** @type {import('./orders').StateCode} */ stateCode) => {
   const shippingTaxes = JSON.parse(rawShippingTaxes)
-  const boldShippingTaxDescriptions = Object.keys(shippingTaxes)
-  // @ts-ignore
+  // @ts-ignore casting to exact type
+  /** @type {Array<import('./orders').BoldTaxDescription>} */ const boldShippingTaxDescriptions = Object.keys(shippingTaxes)
   return boldShippingTaxDescriptions.map(boldTaxDescription => formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode))
 }
 
@@ -72,8 +72,8 @@ const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ 
 const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem, /** @type {import('./orders').StateCode} */ stateCode) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
   return Object.entries(taxes).map(([boldTaxDescription, dollarAmount]) => ({
-    // @ts-ignore
-    description: formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode),
+    // @ts-ignore casting to exact type
+    description: formatJestaTaxDescriptionFromBoldTaxDescription(/** @type {import('./orders').BoldTaxDescription} */ boldTaxDescription, stateCode),
     dollarAmount: Number(dollarAmount)
   }))
 }
@@ -84,7 +84,7 @@ const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ l
  */
 const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, stateCode) => {
   if (boldTaxDescription === 'GST') return JESTA_TAX_DESCRIPTIONS.GST
-  // @ts-ignore casting to TaxDescriptionKey
+  // @ts-ignore casting to exact type
   /** @type {import('./orders').TaxDescriptionKey} */ const key = `${boldTaxDescription}_${stateCode}`
   return JESTA_TAX_DESCRIPTIONS[key]
 }

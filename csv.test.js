@@ -2,31 +2,108 @@ const { generateCsvStringFromOrder } = require('./csv')
 
 const completeOrderEnglishUntyped = {
   type: 'Order',
-  id: '3d7a60fd-3108-497d-bb4a-def424b53553',
-  version: 2,
+  id: '6feea16b-a8b1-4d3e-a602-8be1a70d0e05',
+  version: 5,
   lastMessageSequenceNumber: 1,
-  createdAt: '2020-05-27T17:46:34.019Z',
-  lastModifiedAt: '2020-05-27T17:57:09.255Z',
+  createdAt: '2020-08-04T15:39:23.259Z',
+  lastModifiedAt: '2020-08-04T15:39:39.299Z',
   lastModifiedBy: {
-    clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
-    isPlatformClient: false,
+    clientId: 'kCdIHF2Ojlv7-yp1Dq2itE4O',
+    isPlatformClient: false
   },
   createdBy: {
-    clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
-    isPlatformClient: false,
+    clientId: 'k6QQpXCp89k8R8k7rwxem-h-',
+    isPlatformClient: false
   },
-  orderNumber: '122004',
-  customerEmail: 'example01@example.com',
+  orderNumber: '23551711',
+  customerId: '2daf22a9-a8b9-4651-830a-1d9a216aab9b',
+  customerEmail: 'user@gmail.com',
+  anonymousId: '11081e3e-bf99-44c3-beb0-8f5137b3910d',
   locale: 'en-CA',
   totalPrice: {
     type: 'centPrecision',
     currencyCode: 'CAD',
-    centAmount: 53250,
-    fractionDigits: 2,
+    centAmount: 87800,
+    fractionDigits: 2
   },
+  taxedPrice: {
+    totalNet: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 87800,
+      fractionDigits: 2
+    },
+    totalGross: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 99214,
+      fractionDigits: 2
+    },
+    taxPortions: [
+      {
+        rate: 0.13,
+        amount: {
+          type: 'centPrecision',
+          currencyCode: 'CAD',
+          centAmount: 11414,
+          fractionDigits: 2
+        },
+        name: 'HST'
+      }
+    ]
+  },
+  country: 'CA',
   orderState: 'Open',
+  shipmentState: 'Pending',
+  paymentState: 'Pending',
   syncInfo: [],
   returnInfo: [],
+  shippingInfo: {
+    shippingMethodName: 'FedEx Priority Overnight',
+    price: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 2800,
+      fractionDigits: 2
+    },
+    shippingRate: {
+      price: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 2800,
+        fractionDigits: 2
+      },
+      tiers: []
+    },
+    taxRate: {
+      name: '',
+      amount: 0.13,
+      includedInPrice: true,
+      country: 'CA',
+      subRates: [
+        {
+          name: 'HST',
+          amount: 0.13
+        }
+      ]
+    },
+    deliveries: [],
+    taxedPrice: {
+      totalNet: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 2800,
+        fractionDigits: 2
+      },
+      totalGross: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 3164,
+        fractionDigits: 2
+      }
+    },
+    shippingMethodState: 'MatchesCart'
+  },
   taxMode: 'ExternalAmount',
   inventoryMode: 'None',
   taxRoundingMode: 'HalfEven',
@@ -34,572 +111,253 @@ const completeOrderEnglishUntyped = {
   origin: 'Customer',
   lineItems: [
     {
-      id: 'db2f65b2-e231-4197-abf5-3186290ff46a',
-      productId: '0733f9d0-f49e-44fb-8941-7263f9e37b1e',
+      id: '496332a3-45d9-4ed8-ae44-5b55693c89ce',
+      productId: 'b238f925-d071-4ac5-a00b-e2b5c335c74e',
       name: {
-        'en-CA': 'Embossed Leather Belt',
-        'fr-CA': 'Ceinture en cuir estampé',
+        'fr-CA': 'Complet Huge6/Genius5',
+        'en-CA': 'Huge6/Genius5 Suit '
       },
       productType: {
         typeId: 'product-type',
-        id: '3f69b1dd-631c-4913-b015-c20c083a7940',
+        id: '3f69b1dd-631c-4913-b015-c20c083a7940'
       },
       productSlug: {
-        'en-CA': '20046187',
-        'fr-CA': '20046187',
+        'en-CA': '20052807',
+        'fr-CA': '20052807'
       },
       variant: {
-        id: 24,
-        sku: '-2864801',
+        id: 20,
+        sku: '-2998709',
         prices: [
           {
             value: {
               type: 'centPrecision',
               currencyCode: 'CAD',
-              centAmount: 22500,
-              fractionDigits: 2,
+              centAmount: 85000,
+              fractionDigits: 2
             },
-            id: 'dd02d3af-a828-4e95-a665-488cc034043c',
-          },
+            id: '1160c52f-c16d-4390-8018-e26b2f96e1ff',
+            country: 'CA',
+            custom: {
+              type: {
+                typeId: 'type',
+                id: 'af9c14ac-6b56-48d4-b152-2b751d2c9c24'
+              },
+              fields: {
+                priceType: 'originalPrice'
+              }
+            }
+          }
         ],
-        images: [],
+        images: [
+          {
+            url: 'https://i1.adis.ws/i/harryrosen/20052807?$prp-4col-xl$',
+            dimensions: {
+              w: 242,
+              h: 288
+            }
+          }
+        ],
         attributes: [
           {
             name: 'brandName',
             value: {
-              'fr-CA': 'Anderson\'s',
-              'en-CA': 'Anderson\'s',
-            },
+              'en-CA': 'BOSS',
+              'fr-CA': 'BOSS'
+            }
           },
           {
             name: 'construction',
             value: {
-              'fr-CA': '<li> Boucle ardillon\n<li> Fabriquée en Italie',
-              'en-CA': '<li> Pin buckle\n<li> Made in Italy',
-            },
+              'en-CA':
+                '<li> Huge6/Genius5\n<li> Single-breasted, Two-button, Two-piece Suit\n<li> Notch lapel\n<li> Fully lined\n<li> Double vent\n<li> Flat front pant with 1/4 top pockets and besom back pockets\n<li> Unfinished hems',
+              'fr-CA':
+                '<li> Modèle Huge6/Genius5\n<li> Complet deux-pièces (veston à deux boutons, simple boutonnage)\n<li> Revers cranté\n<li> Entièrement doublé\n<li> Fente double\n<li> Pantalon sans plis avec poches en biais et poches arrière passepoilées\n<li> Bords inférieurs non finis'
+            }
           },
           {
             name: 'fabricAndMaterials',
             value: {
-              'fr-CA':
-                  '<li> Cuir\n<li> Effet bruni\n<li> Motif botanique estampé\n<li> Brun foncé',
-              'en-CA':
-                  '<li> Leather\n<li> Burnished finish\n<li> Embossed botanical pattern\n<li> Dark brown',
-            },
+              'en-CA': '<li> 100% virgin wool\n<li> Midnight blue',
+              'fr-CA': '<li> 100 % laine vierge\n<li> Bleu foncé'
+            }
           },
           {
             name: 'styleAndMeasurements',
             value: {
-              'fr-CA':
-                  '<li> Largeur : 3,2 cm (1,25 po)\n<li> Sélectionnez la ceinture qui mesure 2 po de plus (ou le nombre entier le plus proche) que le tour de taille de votre pantalon.',
               'en-CA':
-                  '<li> Width: 1.25 in\n<li> Select one size (2 inches, to nearest even number) up from your trouser waist size for a standard fit',
-            },
+                '<li> Slim fit\n<li> BOSS Huge6/Genius5 Slim fit\n<li> Back length: 29.5 in\n<li> Measurement is based on size 40R',
+              'fr-CA':
+                '<li> Coupe amincie\n<li> Coupe amincie Huge6/Genius5 de BOSS\n<li> Longueur du dos : 74,9 cm (29,5 po)\n<li> Mesure(s) prise(s) sur la taille 40R'
+            }
           },
           {
             name: 'careInstructions',
             value: {
-              'fr-CA': '',
-              'en-CA': '',
-            },
+              'en-CA': '<li> Dry clean only',
+              'fr-CA': '<li> Nettoyage à sec seulement'
+            }
           },
           {
             name: 'advice',
             value: {
-              'fr-CA': '',
               'en-CA': '',
-            },
+              'fr-CA': ''
+            }
           },
           {
             name: 'webStatus',
-            value: true,
+            value: true
           },
           {
             name: 'season',
-            value: 'FA-19',
-          },
-          {
-            name: 'originalPrice',
-            value: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 22500,
-              fractionDigits: 2,
-            },
+            value: 'FA-19'
           },
           {
             name: 'vsn',
-            value: 'A3387-AF3790/14-PL152-M1',
+            value: '50418716'
           },
           {
             name: 'relatedProductId',
-            value: 'A3387-AF3790/14-PL152-M1375366Anderson\'s',
+            value: '50418716030305BOSS'
           },
           {
             name: 'styleLastModifiedInternal',
-            value: '2019-09-06T04:09:45.000Z',
+            value: '2020-07-28T01:10:33.000Z'
+          },
+          {
+            name: 'isOutlet',
+            value: false
+          },
+          {
+            name: 'styleOutletLastModifiedInternal',
+            value: '2020-07-27T14:05:00.000Z'
           },
           {
             name: 'colorId',
-            value: '068',
+            value: '402'
+          },
+          {
+            name: 'dimensionId',
+            value: 'R'
           },
           {
             name: 'skuLastModifiedInternal',
-            value: '2019-05-10T16:03:35.000Z',
+            value: '2020-07-09T14:09:52.000Z'
           },
           {
             name: 'size',
             value: {
-              'en-CA': '38',
-            },
+              'fr-CA': '40',
+              'en-CA': '40'
+            }
           },
           {
             name: 'sizeId',
-            value: '99',
-          },
-          {
-            name: 'isOnlineSale',
-            value: false,
-          },
-          {
-            name: 'onlineDiscount',
-            value: 0,
-          },
-          {
-            name: 'isOutlet',
-            value: false,
-          },
-          {
-            name: 'styleOutletLastModifiedInternal',
-            value: '2019-10-15T14:50:00.000Z',
-          },
-        ],
-        assets: [],
-      },
-      price: {
-        value: {
-          type: 'centPrecision',
-          currencyCode: 'CAD',
-          centAmount: 22500,
-          fractionDigits: 2,
-        },
-        id: 'dd02d3af-a828-4e95-a665-488cc034043c',
-      },
-      quantity: 2,
-      discountedPrice: {
-        value: {
-          type: 'centPrecision',
-          currencyCode: 'CAD',
-          centAmount: 16875,
-          fractionDigits: 2,
-        },
-        includedDiscounts: [
-          {
-            discount: {
-              typeId: 'cart-discount',
-              id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
-            },
-            discountedAmount: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 5625,
-              fractionDigits: 2,
-            },
-          },
-        ],
-      },
-      discountedPricePerQuantity: [
-        {
-          quantity: 2,
-          discountedPrice: {
-            value: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 16875,
-              fractionDigits: 2,
-            },
-            includedDiscounts: [
-              {
-                discount: {
-                  typeId: 'cart-discount',
-                  id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
-                },
-                discountedAmount: {
-                  type: 'centPrecision',
-                  currencyCode: 'CAD',
-                  centAmount: 5625,
-                  fractionDigits: 2,
-                },
-              },
-            ],
-          },
-        },
-      ],
-      taxRate: {
-        name: 'HST',
-        amount: 0.13,
-        includedInPrice: false,
-        country: 'CA',
-        state: 'ON',
-        subRates: [],
-      },
-      state: [
-        {
-          quantity: 2,
-          state: {
-            typeId: 'state',
-            id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629',
-          },
-        },
-      ],
-      priceMode: 'Platform',
-      totalPrice: {
-        type: 'centPrecision',
-        currencyCode: 'CAD',
-        centAmount: 33750,
-        fractionDigits: 2,
-      },
-      taxedPrice: {
-        totalNet: {
-          type: 'centPrecision',
-          currencyCode: 'CAD',
-          centAmount: 33750,
-          fractionDigits: 2,
-        },
-        totalGross: {
-          type: 'centPrecision',
-          currencyCode: 'CAD',
-          centAmount: 38137,
-          fractionDigits: 2,
-        },
-      },
-      custom: {
-        type: {
-          typeId: 'type',
-          id: '72953947-9bf8-4d31-8a2e-9a9c22d40649',
-        },
-        fields: {
-          salespersonId: 355216,
-          isGift: true,
-          lineTaxDescription: 'HST-ON',
-          lineTotalTax: {
-            fractionDigits: 2,
-            centAmount: 4387,
-            currencyCode: 'CAD',
-            type: 'centPrecision',
-          },
-          barcodeData: [
-            {
-              typeId: 'key-value-document',
-              id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
-              obj: {
-                id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
-                version: 1,
-                container: 'barcodes',
-                key: '22360227-05',
-                value: {
-                  id: '22360227-05',
-                  styleId: '22360227',
-                  skuId: '-754864',
-                  subType: 'UPCE',
-                  barcode: '22360227-05',
-                  lastModifiedDate: 1459699210000,
-                },
-                createdAt: '2020-03-31T16:55:02.111Z',
-                lastModifiedAt: '2020-03-31T16:55:02.111Z',
-                lastModifiedBy: {
-                  clientId: '9YnDCNDg16EER7mWlMjXeHkF',
-                  isPlatformClient: false,
-                },
-                createdBy: {
-                  clientId: '9YnDCNDg16EER7mWlMjXeHkF',
-                  isPlatformClient: false,
-                },
-              },
-            },
-          ],
-          lineShippingCharges: {
-            fractionDigits: 2,
-            centAmount: 550,
-            currencyCode: 'CAD',
-            type: 'centPrecision',
-          },
-        },
-      },
-      lineItemMode: 'Standard',
-    },
-    {
-      id: '328613b8-9f8a-4de6-95c4-f1d6ef7da755',
-      productId: 'f6b5a911-69e8-4d00-85a6-958ab72d2ede',
-      name: {
-        'en-CA': 'The Tellis Modern Slim Fit Jeans',
-        'fr-CA': 'Jean de coupe moderne amincie\\, modèle Tellis',
-      },
-      productType: {
-        typeId: 'product-type',
-        id: '3f69b1dd-631c-4913-b015-c20c083a7940',
-      },
-      productSlug: {
-        'en-CA': '20034684',
-        'fr-CA': '20034684',
-      },
-      variant: {
-        id: 2,
-        sku: '-2651290',
-        prices: [
-          {
-            value: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 26000,
-              fractionDigits: 2,
-            },
-            id: '55af6537-e55a-48d9-8f28-1fd7ec554433',
-          },
-        ],
-        images: [],
-        attributes: [
-          {
-            name: 'brandName',
-            value: {
-              'fr-CA': 'AG',
-              'en-CA': 'AG',
-            },
-          },
-          {
-            name: 'construction',
-            value: {
-              'fr-CA': '<li> Braguette à glissière\n<li> Cinq poches',
-              'en-CA': '<li> Zipper fly\n<li> Five-pocket style',
-            },
-          },
-          {
-            name: 'fabricAndMaterials',
-            value: {
-              'fr-CA':
-                  '<li> 98 % coton, 2 % polyuréthane\n<li> Écusson-logo en cuir sur la taille\n<li> Délavage foncé\n<li> Bleu marine',
-              'en-CA':
-                  '<li> 98% cotton, 2% polyurethane\n<li> Leather logo patch on waistband\n<li> Dark wash\n<li> Navy',
-            },
-          },
-          {
-            name: 'styleAndMeasurements',
-            value: {
-              'fr-CA':
-                  '<li> Coupe amincie\n<li> Coupe moderne amincie Tellis d¿AG\n<li> Taille moyenne\n<li> Fourche avant de 25,4 cm (10 po)\n<li> Fourche arrière de 35,6 cm (14 po)\n<li> Entrejambe de 83,8 cm (33 po)\n<li> Mesures prises sur la taille 32',
-              'en-CA':
-                  '<li> Slim fit\n<li> AG The Tellis Modern Slim fit\n<li> Mid-rise style\n<li> Front rise: 10 in\n<li> Back rise: 14 in\n<li> Inseam: 33 in\n<li> Measurements are based on size 32',
-            },
-          },
-          {
-            name: 'careInstructions',
-            value: {
-              'fr-CA':
-                  '<li> Laver à la machine à l¿eau froide\n<li> Sécher par culbutage à température moyenne\n<li> Repasser à température moyenne\n<li> Ne pas nettoyer à sec',
-              'en-CA':
-                  '<li> Machine wash, cold\n<li> Tumble dry, medium\n<li> Iron, medium\n<li> Do not dry clean',
-            },
-          },
-          {
-            name: 'advice',
-            value: {
-              'fr-CA': '',
-              'en-CA': '',
-            },
-          },
-          {
-            name: 'webStatus',
-            value: true,
-          },
-          {
-            name: 'season',
-            value: 'BASIC',
-          },
-          {
-            name: 'originalPrice',
-            value: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 26000,
-              fractionDigits: 2,
-            },
-          },
-          {
-            name: 'vsn',
-            value: 'TLS',
-          },
-          {
-            name: 'relatedProductId',
-            value: 'TLS465437AG',
-          },
-          {
-            name: 'styleLastModifiedInternal',
-            value: '2020-05-07T08:20:57.000Z',
-          },
-          {
-            name: 'colorId',
-            value: '049',
-          },
-          {
-            name: 'skuLastModifiedInternal',
-            value: '2018-08-23T20:03:18.000Z',
-          },
-          {
-            name: 'size',
-            value: {
-              'en-CA': '36',
-            },
-          },
-          {
-            name: 'sizeId',
-            value: '95',
-          },
-          {
-            name: 'isOnlineSale',
-            value: false,
-          },
-          {
-            name: 'onlineDiscount',
-            value: 0,
-          },
-          {
-            name: 'isOutlet',
-            value: false,
-          },
-          {
-            name: 'styleOutletLastModifiedInternal',
-            value: '2019-12-19T18:48:26.000Z',
+            value: '110'
           },
           {
             name: 'colour',
             value: {
-              'en-CA': 'Indigo',
-              'fr-CA': 'Bleu indigo',
-            },
+              'en-CA': 'Dark Blue',
+              'fr-CA': 'Bleu marine'
+            }
           },
           {
             name: 'colourGroup',
             value: {
               'en-CA': 'Blue',
-              'fr-CA': 'Bleu',
-            },
+              'fr-CA': 'Bleu'
+            }
           },
+          {
+            name: 'sizeChart',
+            value: 5
+          },
+          {
+            name: 'originalPrice',
+            value: {
+              type: 'centPrecision',
+              currencyCode: 'CAD',
+              centAmount: 85000,
+              fractionDigits: 2
+            }
+          }
         ],
-        assets: [],
+        assets: []
       },
       price: {
         value: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 26000,
-          fractionDigits: 2,
+          centAmount: 85000,
+          fractionDigits: 2
         },
-        id: '55af6537-e55a-48d9-8f28-1fd7ec554433',
+        id: '1160c52f-c16d-4390-8018-e26b2f96e1ff',
+        country: 'CA',
+        custom: {
+          type: {
+            typeId: 'type',
+            id: 'af9c14ac-6b56-48d4-b152-2b751d2c9c24'
+          },
+          fields: {
+            priceType: 'originalPrice'
+          }
+        }
       },
       quantity: 1,
-      discountedPrice: {
-        value: {
-          type: 'centPrecision',
-          currencyCode: 'CAD',
-          centAmount: 19500,
-          fractionDigits: 2,
-        },
-        includedDiscounts: [
-          {
-            discount: {
-              typeId: 'cart-discount',
-              id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
-            },
-            discountedAmount: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 6500,
-              fractionDigits: 2,
-            },
-          },
-        ],
-      },
-      discountedPricePerQuantity: [
-        {
-          quantity: 1,
-          discountedPrice: {
-            value: {
-              type: 'centPrecision',
-              currencyCode: 'CAD',
-              centAmount: 19500,
-              fractionDigits: 2,
-            },
-            includedDiscounts: [
-              {
-                discount: {
-                  typeId: 'cart-discount',
-                  id: '9b40c0c6-80f8-4b48-b1d2-43df8cf15d26',
-                },
-                discountedAmount: {
-                  type: 'centPrecision',
-                  currencyCode: 'CAD',
-                  centAmount: 6500,
-                  fractionDigits: 2,
-                },
-              },
-            ],
-          },
-        },
-      ],
+      discountedPricePerQuantity: [],
       taxRate: {
-        name: 'HST',
+        name: '',
         amount: 0.13,
         includedInPrice: false,
         country: 'CA',
-        state: 'ON',
-        subRates: [],
+        subRates: [
+          {
+            name: 'HST',
+            amount: 0.13
+          }
+        ]
       },
       state: [
         {
           quantity: 1,
           state: {
             typeId: 'state',
-            id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629',
-          },
-        },
+            id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629'
+          }
+        }
       ],
       priceMode: 'Platform',
       totalPrice: {
         type: 'centPrecision',
         currencyCode: 'CAD',
-        centAmount: 19500,
-        fractionDigits: 2,
+        centAmount: 85000,
+        fractionDigits: 2
       },
       taxedPrice: {
         totalNet: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 19500,
-          fractionDigits: 2,
+          centAmount: 85000,
+          fractionDigits: 2
         },
         totalGross: {
           type: 'centPrecision',
           currencyCode: 'CAD',
-          centAmount: 22035,
-          fractionDigits: 2,
-        },
+          centAmount: 85000,
+          fractionDigits: 2
+        }
       },
       custom: {
         type: {
           typeId: 'type',
-          id: '72953947-9bf8-4d31-8a2e-9a9c22d40649',
+          id: '72953947-9bf8-4d31-8a2e-9a9c22d40649'
         },
         fields: {
-          salespersonId: 355216,
+          itemTaxes: '{"HST":110.5}',
           isGift: false,
-          lineTaxDescription: 'HST-ON',
-          lineTotalTax: {
-            type: 'centPrecision',
-            currencyCode: 'CAD',
-            centAmount: 2535,
-            fractionDigits: 2,
-          },
-          barcodeData: [
+          barcodeData: [ // Note: manually set because barcode because this item was missing a barcode
             {
               typeId: 'key-value-document',
               id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
@@ -629,133 +387,168 @@ const completeOrderEnglishUntyped = {
               },
             },
           ],
-          lineShippingCharges: {
-            type: 'centPrecision',
-            currencyCode: 'CAD',
-            centAmount: 550,
-            fractionDigits: 2,
-          },
-        },
+        }
       },
       lineItemMode: 'Standard',
-    },
+      shippingDetails: {
+        targets: [
+          {
+            addressKey: '9ee04fc1-17a5-4a83-9416-5cde81258c97',
+            quantity: 1
+          }
+        ],
+        valid: true
+      }
+    }
   ],
   customLineItems: [],
   transactionFee: true,
   discountCodes: [],
   cart: {
     typeId: 'cart',
-    id: '2b8ba61e-2ac9-4142-9efd-49c4b80e04c3',
+    id: '4907963f-f36c-4874-83af-4c7b3c106594'
   },
   custom: {
     type: {
       typeId: 'type',
-      id: '4525a9be-e60e-4d48-b27f-8c5d12b6aada',
+      id: '4525a9be-e60e-4d48-b27f-8c5d12b6aada'
     },
     fields: {
-      shippingTax: {
-        fractionDigits: 2,
-        centAmount: 130,
-        currencyCode: 'CAD',
-        type: 'centPrecision',
-      },
+      sentToOmsStatus: 'PENDING',
       paymentIsReleased: true,
-      shippingCost: {
-        fractionDigits: 2,
-        centAmount: 1000,
-        currencyCode: 'CAD',
-        type: 'centPrecision',
-      },
-      shippingIsRush: true,
       transactionTotal: {
         fractionDigits: 2,
-        centAmount: 54380,
+        centAmount: 99214,
         currencyCode: 'CAD',
-        type: 'centPrecision',
+        type: 'centPrecision'
       },
-      signatureIsRequired: false,
-      shippingTaxDescription: 'HST-ON',
-      totalOrderTax: {
-        fractionDigits: 2,
-        centAmount: 7052,
-        currencyCode: 'CAD',
-        type: 'centPrecision',
-      },
+      signatureIsRequired: true,
+      loginRadiusUid: 'ed6c636af37a4d738ba8d374fa219cbc',
+      returnsAreFree: true,
+      shippingServiceType: 'EXPRESS',
+      shippingIsRush: false,
+      retryCount: 0,
       carrierId: 'FDX',
-      returnsAreFree: false,
-      shippingServiceType: 'EXPEDITED PARCEL',
-      loginRadiusUid: '5338a1ad522b47198682616ba6804a29'
-    },
+      shippingTaxes: '{"HST":3.64}'
+    }
   },
   paymentInfo: {
     payments: [
       {
         typeId: 'payment',
-        id: '2843b6d1-8497-45b3-a9a5-cc01a187ba51',
+        id: 'e507ad6d-4293-40da-a14a-9a8e7fa71bcc',
         obj: {
-          id: '2843b6d1-8497-45b3-a9a5-cc01a187ba51',
-          version: 2,
+          id: 'e507ad6d-4293-40da-a14a-9a8e7fa71bcc',
+          version: 1,
           lastMessageSequenceNumber: 1,
-          createdAt: '2020-05-26T18:53:57.098Z',
-          lastModifiedAt: '2020-05-26T19:21:23.444Z',
+          createdAt: '2020-08-04T15:39:23.004Z',
+          lastModifiedAt: '2020-08-04T15:39:23.004Z',
           lastModifiedBy: {
-            clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
-            isPlatformClient: false,
+            clientId: 'k6QQpXCp89k8R8k7rwxem-h-',
+            isPlatformClient: false
           },
           createdBy: {
-            clientId: 'fWYPIVCZfSLvWu1GtNWc-Vbb',
-            isPlatformClient: false,
+            clientId: 'k6QQpXCp89k8R8k7rwxem-h-',
+            isPlatformClient: false
           },
           amountPlanned: {
             type: 'centPrecision',
             currencyCode: 'CAD',
-            centAmount: 54380,
-            fractionDigits: 2,
+            centAmount: 99214,
+            fractionDigits: 2
           },
           paymentMethodInfo: {
-            method: '05',
+            paymentInterface: 'cybersource',
+            method: 'credit',
+            name: {
+              en: 'CyberSource : cybersource'
+            }
           },
           custom: {
             type: {
               typeId: 'type',
-              id: 'c9a81e31-3fa6-4e73-8267-72cc3fd901b7',
+              id: 'c9a81e31-3fa6-4e73-8267-72cc3fd901b7'
             },
             fields: {
-              cardReferenceNumber: '19',
-              cardExpiryDate: '0525',
-              cardNumber: '1212',
-              authorizationNumber: '12345',
-            },
+              transaction_card_last4: '1111',
+              transaction_card_expiry: '11-2022',
+              user_agent_string:
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+              avs_result: 'X',
+              auth_number: '480',
+              user_ip_address: '99.239.75.75',
+              transaction_card_type: 'visa',
+              transaction_time: '',
+              bin: '4111',
+              transaction_date: ''
+            }
           },
-          paymentStatus: {},
-          transactions: [],
-          interfaceInteractions: [],
-        },
-      },
-    ],
+          paymentStatus: {
+            interfaceCode: 'preauthed',
+            interfaceText: 'preauthed'
+          },
+          transactions: [
+            {
+              id: 'c3ab7cbb-d28f-4d82-9760-e9eaa317d33c',
+              timestamp: '2020-08-04T15:39:18.076Z',
+              type: 'Charge',
+              amount: {
+                type: 'centPrecision',
+                currencyCode: 'CAD',
+                centAmount: 99214,
+                fractionDigits: 2
+              },
+              interactionId:
+                '5965555601086316404009:Axj/7wSTQ2S2/FHfyd0pABEg3cMHDBm1bNIkGw3j2XKiOEbhdQQFRHCNwuoI+EcHHAbK8GkmXoxYg4kwJyaGyW34o7+TulIAMx4k',
+              state: 'Pending'
+            }
+          ],
+          interfaceInteractions: []
+        }
+      }
+    ]
   },
   shippingAddress: {
     firstName: 'Harry',
     lastName: 'Rosen',
-    additionalStreetInfo: '218 Young Street\n#1246',
-    postalCode: 'M5B 2H6',
-    state: 'ON',
+    streetName: 'Fake St',
+    streetNumber: '55',
+    postalCode: 'M4V 1H6',
     city: 'Toronto',
+    state: 'ON',
     country: 'CA',
-    phone: '(416) 598-8885',
+    phone: '5551231234',
+    email: 'user@gmail.com',
+    key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
   },
   billingAddress: {
     firstName: 'Harry',
     lastName: 'Rosen',
-    additionalStreetInfo: '218 Young Street\n#1246',
-    postalCode: 'M5B 2H6',
+    streetName: 'Fake St',
+    streetNumber: '55',
+    postalCode: 'M4V 1H6',
     city: 'Toronto',
     state: 'ON',
     country: 'CA',
-    phone: '(416) 598-8885',
+    phone: '5551231234',
+    email: 'user@gmail.com'
   },
-  itemShippingAddresses: [],
-  refusedGifts: [],
+  itemShippingAddresses: [
+    {
+      firstName: 'Harry',
+      lastName: 'Rosen',
+      streetName: 'Fake St',
+      streetNumber: '55',
+      postalCode: 'M4V 1H6',
+      city: 'Toronto',
+      state: 'ON',
+      country: 'CA',
+      phone: '5551231234',
+      email: 'user@gmail.com',
+      key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
+    }
+  ],
+  refusedGifts: []
 }
 
 /** @type {import('./orders').Order} */
@@ -769,12 +562,10 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-H,990,122004,Harry,Rosen,,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,,Harry,Rosen,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,(416) 598-8885,example01@example.com,FDX,Y,N,,10,70.52,,543.8,,,,,,,2020-05-27 17:46,5338a1ad522b47198682616ba6804a29,1.3,HST-ON,,,,,,990,,,EXPEDITED PARCEL,1,,,Y
-D,990,1,122004,,,,2,225,,337.5,5.5,43.87,381.37,22360227-05,N,db2f65b2-e231-4197-abf5-3186290ff46a,Y,,,,,UPCE
-D,990,2,122004,,,,1,260,,195,5.5,25.35,220.35,22360227-05,N,328613b8-9f8a-4de6-95c4-f1d6ef7da755,N,,,,,UPCE
-T,1,1,122004,,43.87,HST-ON
-T,1,2,122004,,25.35,HST-ON
-N,990,1,122004,543.8,05,19,0525,,1212,12345
+H,00990,23551711,Harry,Rosen,,55 Fake St,,,Toronto,ON,M4V 1H6,CA,2daf22a9-a8b9-4651-830a-1d9a216aab9b,Harry,Rosen,55 Fake St,,,Toronto,ON,M4V 1H6,CA,5551231234,user@gmail.com,FDX,N,N,,28,114.14,,992.14,,,,,,,2020-08-04 15:39,ed6c636af37a4d738ba8d374fa219cbc,0.0364,HST-ON,,,,,,00990,,,EXPRESS,1,,,Y
+D,00990,1,23551711,,,,1,850,,850,0,1.105,850,22360227-05,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
+T,00990,1,23551711,,110.5,HST-ON
+N,00990,1,23551711,992.14,05,41,1122,,1111,480
 `.split('\n').join('\r\n') // the expected string has Windows line breaks
     expect(generateCsvStringFromOrder(completeOrderEnglish)).toEqual(expectedOrderCsv)
   })
@@ -790,12 +581,10 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-H,990,122004,Harry,Rosen,,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,,Harry,Rosen,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,(416) 598-8885,example01@example.com,FDX,Y,N,,10,70.52,,543.8,,,,,,,2020-05-27 17:46,5338a1ad522b47198682616ba6804a29,1.3,HST-ON,,,,,,990,,,EXPEDITED PARCEL,3,,,Y
-D,990,1,122004,,,,2,225,,337.5,5.5,43.87,381.37,22360227-05,N,db2f65b2-e231-4197-abf5-3186290ff46a,Y,,,,,UPCE
-D,990,2,122004,,,,1,260,,195,5.5,25.35,220.35,22360227-05,N,328613b8-9f8a-4de6-95c4-f1d6ef7da755,N,,,,,UPCE
-T,1,1,122004,,43.87,HST-ON
-T,1,2,122004,,25.35,HST-ON
-N,990,1,122004,543.8,05,19,0525,,1212,12345
+H,00990,23551711,Harry,Rosen,,55 Fake St,,,Toronto,ON,M4V 1H6,CA,2daf22a9-a8b9-4651-830a-1d9a216aab9b,Harry,Rosen,55 Fake St,,,Toronto,ON,M4V 1H6,CA,5551231234,user@gmail.com,FDX,N,N,,28,114.14,,992.14,,,,,,,2020-08-04 15:39,ed6c636af37a4d738ba8d374fa219cbc,0.0364,HST-ON,,,,,,00990,,,EXPRESS,3,,,Y
+D,00990,1,23551711,,,,1,850,,850,0,1.105,850,22360227-05,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
+T,00990,1,23551711,,110.5,HST-ON
+N,00990,1,23551711,992.14,05,41,1122,,1111,480
 `.split('\n').join('\r\n')
     expect(generateCsvStringFromOrder(completeOrderFrench)).toEqual(expectedOrderCsv)
   })
@@ -816,12 +605,10 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-H,990,122004,Harry,Rosen,,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,,Harry,Rosen,218 Young Street,#1246,,Toronto,ON,M5B 2H6,CA,(416) 598-8885,example01@example.com,FDX,Y,N,,10,70.52,,543.8,,,,,,,2020-05-27 17:46,5338a1ad522b47198682616ba6804a29,1.3,HST-ON,,,,,,990,,,EXPEDITED PARCEL,1,,,N
-D,990,1,122004,,,,2,225,,337.5,5.5,43.87,381.37,22360227-05,N,db2f65b2-e231-4197-abf5-3186290ff46a,Y,,,,,UPCE
-D,990,2,122004,,,,1,260,,195,5.5,25.35,220.35,22360227-05,N,328613b8-9f8a-4de6-95c4-f1d6ef7da755,N,,,,,UPCE
-T,1,1,122004,,43.87,HST-ON
-T,1,2,122004,,25.35,HST-ON
-N,990,1,122004,543.8,05,19,0525,,1212,12345
+H,00990,23551711,Harry,Rosen,,55 Fake St,,,Toronto,ON,M4V 1H6,CA,2daf22a9-a8b9-4651-830a-1d9a216aab9b,Harry,Rosen,55 Fake St,,,Toronto,ON,M4V 1H6,CA,5551231234,user@gmail.com,FDX,N,N,,28,114.14,,992.14,,,,,,,2020-08-04 15:39,ed6c636af37a4d738ba8d374fa219cbc,0.0364,HST-ON,,,,,,00990,,,EXPRESS,1,,,N
+D,00990,1,23551711,,,,1,850,,850,0,1.105,850,22360227-05,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
+T,00990,1,23551711,,110.5,HST-ON
+N,00990,1,23551711,992.14,05,41,1122,,1111,480
 `.split('\n').join('\r\n')
 
     expect(generateCsvStringFromOrder(orderWithFailedPayment)).toEqual(expectedOrderCsv)
