@@ -1,6 +1,6 @@
 // @ts-nocheck The linter gets confused by Jest mocks
 
-const { generateFilenameFromOrder, createAndUploadCsvs } = require('./server.utils')
+const { generateFilenameFromOrder, createAndUploadCsvs } = require('./jobs.utils')
 const { setOrderAsSentToOms, setOrderErrorFields } = require('./commercetools')
 
 jest.mock('./config')

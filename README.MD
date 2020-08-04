@@ -1,9 +1,9 @@
-# Initial Deployment Guide
+# Initial/Local Deployment Guide
 Since our kubernetes deployment is based off our docker image, we need to fist build the docker image and the push it to IBM Cloud registry.
 
 1. Setup the environment
 ```
-ENVIRONMENT=development && BUILD_NUMBER=0
+ENVIRONMENT=development && BUILD_NUMBER=1
 ```
 ```
 source .env && source environment.sh
@@ -28,7 +28,7 @@ ibmcloud ks cluster config --cluster {clusterId}
 source deploy.sh
 ```
 
-4. (avoid doing this due to security reasons) Expose the deployment as a service for debugging
+4. Expose the deployment as a service to accept requests for sending notifications
 ```
 kubectl expose deployment hr-orders-service --type=LoadBalancer --name=hr-orders-service
 ```
@@ -57,6 +57,17 @@ source deploy.sh
   - REGISTRY_URL
   - REGISTRY_NAMESPACE
   - IMAGE_NAME
+  - EMAIL_API_USERNAME
+  - EMAIL_API_PASSWORD
+  - EMAIL_API_URL
+  - NOTIFICATIONS_BEARER_TOKEN
+  - HEALTHZ_AUTHORIZATION
+  - SEND_NOTIFICATIONS_INTERVAL
+  - SHOULD_RUN_JOBS
+
+- Note: Each added environmntal variable should be set in '.env-template', 'deployment.yaml' and 'deploy.sh' and toolchain pipeline.
+
+- Note: In kubernetes deployment, values of confidential info should be read from secretKeyRef and value of configurations should be read from configMapKeyRef.
 
 - Note: These environmental variables are automatically set by the build stage if you configure it properly:
   - BUILD_NUMBER
@@ -66,7 +77,9 @@ source deploy.sh
 - Note: This environmental variables is created during build/deployment:
   - IMAGE
 
-- Note: SFTP hosts for kubernetes and local environments are different
+- Note: SFTP and Email API hosts for kubernetes and local environments are different. Refer to 'deploy.sh' for details of how it's set on kubernetes.
+
+TODO: Currently all the traffic on Kubernetes is being routed via the Internet, instead of through the Vyatta and so HarryRosen has to manually add the IP address of each of our clusters to their white list so we can connect to their service via their public IP addresses. However, we already have a VPN setup that obviates the need for whitelisting, which is what we are using locally and so the reason behind having different IP addresses. We need to add a route that says all 10.210.x.x traffic routes through the eth0 or eth1 nic.
 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.

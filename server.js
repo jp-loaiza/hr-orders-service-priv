@@ -4,17 +4,20 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
 
-const { createAndUploadCsvs } = require('./server.utils')
+require('./jobs')
 const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
+const { sendOrderEmailNotificationByOrderId } = require('./email')
 
-const { SFTP_INCOMING_ORDERS_PATH, ORDER_UPLOAD_INTERVAL} = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // Parse application/json
 app.use(bodyParser.json())
+// remove x-powered-by header
+app.disable('x-powered-by')
 
 /**
  * Can be used to setup a health endpoint
@@ -38,13 +41,51 @@ async function health (res) {
     console.log('Health check successful.')
     res.status(200).send('ok')
   } catch (error) {
-    console.error('Health check failed: ', error)
+    console.error('Health check failed: ')
+    if (error.body && Array.isArray(error.body.errors)) {
+      error.body.errors.forEach(console.error)
+    } else {
+      console.error(error)
+    }
     res.status(500).send('failed')
   }
 }
 
-app.get('/healthz', async function(_, res) {
-  await health(res)
+app.get('/healthz', async function(req, res) {
+  const healthzAuthorization = process.env.HEALTHZ_AUTHORIZATION
+  const authorization = req.headers.authorization
+  if (authorization && healthzAuthorization && authorization === healthzAuthorization) {
+    console.log('Kubernetes initiating liveliness probe...')
+    await health(res)
+  } else {
+    res.status(404).send()
+  }
+})
+
+app.use('/notifications', (req, res, next) => {
+  const authorization = req.header('authorization') || ''
+  const [, bearerToken] = authorization.split(' ')
+
+  if (bearerToken && NOTIFICATIONS_BEARER_TOKEN && bearerToken === NOTIFICATIONS_BEARER_TOKEN) { // configured when adding commercetools API extension
+    next()
+    return
+  }
+
+  res.status(401).send('Invalid authorization')
+})
+
+// Can be invoked to send the notification for a specific order e.g. in the case that we failed to send it via the job.
+app.post('/notifications/order-created', async (req, res) => {
+  let orderId
+  try {
+    orderId = req.body.orderId
+    await sendOrderEmailNotificationByOrderId(orderId)
+    console.log(`Sent email notification for order ${orderId}`)
+    res.send()
+  } catch (err) {
+    console.error(`Unable to send confirmation email for order ${orderId}: ${err.message}`)
+    res.status(400).send()
+  }
 })
 
 /**
@@ -70,9 +111,6 @@ async function list (req, res) {
     res.send()
   }
 }
-
-if (!(Number(ORDER_UPLOAD_INTERVAL) > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
-setInterval(createAndUploadCsvs, Number(ORDER_UPLOAD_INTERVAL))
 
 const port = process.env.PORT || 8080
 app.listen(port, function() {

@@ -245,10 +245,23 @@ const SENT_TO_OMS_STATUSES = {
 
 const SEND_ORDER_RETRY_LIMIT = 5
 
+
+const SENT_TO_CRM_STATUS = {
+  SUCCESS: 'SUCCESS',
+  PENDING: 'PENDING',
+  FAILURE: 'FAILURE'
+}
+
+// From CRM's docuemntation: "Determines the Division context of the email
+// (i.e. Canada Stores or Outlet Stores).  This may also be used to help select
+// the correct template when Division specific templates exist."
+const EMAIL_API_OWNER_ID = 'F6UJ9A000002' // Division 01 (Canada)
+
 module.exports = {
   BACKOFF,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
+  EMAIL_API_OWNER_ID,
   GENERAL_CSV_OPTIONS,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   HEADER_ROWS,
@@ -258,6 +271,7 @@ module.exports = {
   ONLINE_SITE_ID,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
+  SENT_TO_CRM_STATUS,
   TAXES_ROWS,
   TAXES_ROWS_ENUM,
   TENDER_ROWS,
