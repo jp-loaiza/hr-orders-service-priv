@@ -31,6 +31,7 @@ const formatDate = jsonDateString => (
 )
 
 const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Payment} */ payment)  => {
+  if (!payment.obj.custom.fields.bin || ! payment.obj.custom.fields.transaction_card_last4) return undefined // payment might not be from a credit card
   const firstDigit = payment.obj.custom.fields.bin[0]
   const lastDigit = payment.obj.custom.fields.transaction_card_last4[3]
   return `${firstDigit}${lastDigit}`
@@ -40,7 +41,10 @@ const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Paymen
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
  * @param {string} unformattedExpiryDate 
  */
-const formatCardExpiryDate = unformattedExpiryDate => unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
+const formatCardExpiryDate = unformattedExpiryDate => {
+  if (!unformattedExpiryDate) return undefined // some payment types (e.g. PayPal) lack expiry dates
+  return unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
+}
 
 const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => `${address.streetNumber} ${address.streetName}`
 

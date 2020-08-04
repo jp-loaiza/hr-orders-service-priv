@@ -19,10 +19,6 @@ const paymentSchema = {
   properties: {
     obj: {
       type: 'object',
-      properties: {
-        type: 'object',
-        required: ['auth_number', 'bin', 'transaction_card_expiry', 'transaction_card_last4', 'transaction_card_type']
-      },
       required: ['paymentMethodInfo', 'amountPlanned', 'custom']
     }
   },
