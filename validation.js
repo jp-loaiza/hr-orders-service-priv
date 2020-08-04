@@ -11,7 +11,15 @@ const addressSchema = {
       minLength: 2
     }
   },
-  required: ['firstName', 'lastName', 'streetName', 'postalCode', 'city', 'country']
+  required: [
+    'city',
+    'country',
+    'firstName',
+    'lastName',
+    'postalCode',
+    'state',
+    'streetName'
+  ]
 }
 
 const paymentSchema = {
@@ -19,7 +27,7 @@ const paymentSchema = {
   properties: {
     obj: {
       type: 'object',
-      required: ['paymentMethodInfo', 'amountPlanned', 'custom']
+      required: ['amountPlanned', 'custom', 'paymentMethodInfo']
     }
   },
   required: ['obj']
@@ -30,10 +38,10 @@ const lineItemSchema = {
   properties: {
     custom: {
       type: 'object',
-      required: ['barcodeData']
+      required: ['barcodeData', 'itemTaxes']
     }
   },
-  required: ['taxedPrice', 'custom', 'price']
+  required: ['custom', 'price', 'taxedPrice']
 }
 
 // Many values are guaranteed to exist or be of the correct form by CT, so we
@@ -62,13 +70,32 @@ const orderSchema = {
       properties: {
         fields: {
           type: 'object',
-          required: ['shippingTaxes', 'paymentIsReleased', 'shippingIsRush', 'transactionTotal', 'signatureIsRequired', 'carrierId', 'shippingServiceType', 'returnsAreFree']
+          required: [
+            'carrierId',
+            'paymentIsReleased',
+            'returnsAreFree',
+            'shippingIsRush',
+            'signatureIsRequired',
+            'shippingServiceType',
+            'shippingTaxes',
+            'transactionTotal'
+          ]
         }
       },
       required: ['fields']
     }
   },
-  required: ['customerEmail', 'shippingAddress', 'billingAddress', 'orderNumber', 'locale', 'paymentInfo', 'custom']
+  required: [
+    'billingAddress',
+    'custom',
+    'customerEmail',
+    'locale',
+    'orderNumber',
+    'paymentInfo',
+    'shippingAddress',
+    'shippingInfo',
+    'taxedPrice'
+  ]
 }
 
 const validateOrder = ajv.compile(orderSchema)
