@@ -27,15 +27,15 @@ const NoResponse = Symbol.for('no-response')
 /**
  * 
  * @param {Function} fn 
- * @param {number} retries 
+ * @param {number} maxRetries 
  * @param {number} backoff in ms
  */
-function retry (fn, retries = 3, backoff = 1000) {
+function retry (fn, maxRetries = 3, backoff = 1000) {
   return ( /** @param {any[]} args */ async function (...args){
     let tries = 0
     let error = null
     let response = NoResponse
-    while (response === NoResponse && tries < retries) {
+    while (response === NoResponse && tries < maxRetries) {
       tries++
       error = null
       response = NoResponse

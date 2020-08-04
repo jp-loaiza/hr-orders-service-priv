@@ -9,7 +9,7 @@ const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 
-const { SFTP_INCOMING_ORDERS_PATH, CT_API_EXTENSION_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -62,11 +62,11 @@ app.get('/healthz', async function(req, res) {
   }
 })
 
-app.use('/notifications/commercetools', (req, res, next) => {
+app.use('/notifications', (req, res, next) => {
   const authorization = req.header('authorization') || ''
   const [, bearerToken] = authorization.split(' ')
 
-  if (bearerToken && CT_API_EXTENSION_BEARER_TOKEN && bearerToken === CT_API_EXTENSION_BEARER_TOKEN) { // configured when adding commercetools API extension
+  if (bearerToken && NOTIFICATIONS_BEARER_TOKEN && bearerToken === NOTIFICATIONS_BEARER_TOKEN) { // configured when adding commercetools API extension
     next()
     return
   }
@@ -74,19 +74,17 @@ app.use('/notifications/commercetools', (req, res, next) => {
   res.status(401).send('Invalid authorization')
 })
 
-app.post('/notifications/commercetools/order-created', async (req, res) => {
-  // a. we do not want to fail and order even if we fail to send a notification and
-  // b. the email API is slow and commercetools API extensions timeout after 2 seconds
-  // so we respond immeditately with a 200 response.
-  res.status(200).send()
-
+// Can be invoked to send the notification for a specific order e.g. in the case that we failed to send it via the job.
+app.post('/notifications/order-created', async (req, res) => {
   let orderId
   try {
     orderId = req.body.resource.id
     await sendOrderEmailNotificationByOrderId(orderId)
     console.log(`Sent email notification for order ${orderId}`)
+    res.send()
   } catch (err) {
     console.error(`Unable to send confirmation email for order ${orderId}: ${err.message}`)
+    res.status(400).send()
   }
 })
 
