@@ -44,11 +44,24 @@ type TaxRate = {
   includedInPrice: boolean
 }
 
+type Barcode = {
+  obj: {
+    value: {
+      subType: string,
+      barcode: string
+    }
+  }
+}
+
 type LineItem = {
   id: string,
   variant: {
     sku: string,
-    prices: Array<{ value: Price }>
+    prices: Array<{ value: Price }>,
+    attributes: Array<{
+      name: string,
+      value: any
+    }>
   },
   price: { value: Price },
   totalPrice: Price,
@@ -56,14 +69,6 @@ type LineItem = {
   custom: {
     fields: {
       isGift: boolean
-      barcodeData: Array<{
-        obj: {
-          value: {
-            subType: string,
-            barcode: string
-          }
-        }
-      }>,
       salespersonId?: number,
       itemTaxes: string // stringified JSON
       lineShippingCharges?: Price
@@ -162,6 +167,7 @@ type ParsedTax = {
 
 export {
   Address,
+  Barcode,
   BoldTaxDescription,
   Card,
   Env,

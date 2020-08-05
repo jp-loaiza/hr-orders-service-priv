@@ -122,7 +122,7 @@ async function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
-  const expansionParams = '?expand=lineItems[*].custom.fields.barcodeData[*]&expand=paymentInfo.payments[*]'
+  const expansionParams = '?expand=lineItems[*].variant.attributes[*].value[*]&expand=paymentInfo.payments[*]'
   const uri = requestBuilder.orders.byId(orderId).build() + expansionParams
   return (await ctClient.execute({ method: 'GET', uri })).body
 }

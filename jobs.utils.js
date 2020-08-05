@@ -92,6 +92,7 @@ const createAndUploadCsvs = async () => {
         console.error(`Unable to generate CSV for order ${order.orderNumber}`)
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
         console.error(errorMessage)
+        console.error(err)
         // we retry in case the version of the order has changed by the notifications job
         await retry(setOrderErrorFields)(order, errorMessage, false)
         continue

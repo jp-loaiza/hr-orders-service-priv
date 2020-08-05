@@ -108,12 +108,24 @@ const getPosEquivelenceFromPayment = payment => {
   return PAYMENT_METHODS_TO_JESTA_CODES[payment.obj.paymentMethodInfo.method]
 }
 
+const getBarcodeInfoFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  // @ts-ignore casting to Barcode type
+  /** @type {Array<import('./orders').Barcode>} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes').value
+  const barcode = barcodes[0] // each SKU has only one barcode
+  
+  return {
+    number: barcode.obj.value.barcode,
+    type: barcode.obj.value.subType
+  }
+}
+
 module.exports = {
   convertToDollars,
   flatten,
   formatDate,
   formatCardExpiryDate,
   formatJestaTaxDescriptionFromBoldTaxDescription,
+  getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,

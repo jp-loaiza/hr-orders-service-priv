@@ -18,6 +18,7 @@ const {
   convertToDollars,
   flatten,
   formatDate,
+  getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
@@ -100,11 +101,11 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: lineItem.custom.fields.lineShippingCharges ? convertToDollars(lineItem.custom.fields.lineShippingCharges.centAmount) : 0,
   [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(getLineTotalTaxFromLineItem(lineItem)),
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
-  [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
+  [DETAILS_ROWS_ENUM.BAR_CODE_ID]: getBarcodeInfoFromLineItem(lineItem).number,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
-  [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
+  [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
 })
 
 /**

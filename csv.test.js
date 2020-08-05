@@ -282,6 +282,39 @@ const completeOrderEnglishUntyped = {
               centAmount: 85000,
               fractionDigits: 2
             }
+          },
+          {
+            name: 'barcodes',
+            value: [
+              {
+                typeId: 'key-value-document',
+                id: '8a14a95e-7628-495f-85f7-9553478b82ea',
+                obj: {
+                  id: '8a14a95e-7628-495f-85f7-9553478b82ea',
+                  version: 1,
+                  container: 'barcodes',
+                  key: '89950453-01',
+                  value: {
+                    id: '89950453-01',
+                    styleId: '20048361',
+                    skuId: '-2913407',
+                    subType: 'UPCE',
+                    barcode: '89950453-01',
+                    lastModifiedDate: 1560197040000
+                  },
+                  createdAt: '2020-03-31T20:27:02.045Z',
+                  lastModifiedAt: '2020-03-31T20:27:02.045Z',
+                  lastModifiedBy: {
+                    clientId: '9YnDCNDg16EER7mWlMjXeHkF',
+                    isPlatformClient: false
+                  },
+                  createdBy: {
+                    clientId: '9YnDCNDg16EER7mWlMjXeHkF',
+                    isPlatformClient: false
+                  }
+                }
+              }
+            ]
           }
         ],
         assets: []
@@ -356,37 +389,7 @@ const completeOrderEnglishUntyped = {
         },
         fields: {
           itemTaxes: '{"HST":110.5}',
-          isGift: false,
-          barcodeData: [ // Note: manually set because barcode because this item was missing a barcode
-            {
-              typeId: 'key-value-document',
-              id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
-              obj: {
-                id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
-                version: 1,
-                container: 'barcodes',
-                key: '22360227-05',
-                value: {
-                  id: '22360227-05',
-                  styleId: '22360227',
-                  skuId: '-754864',
-                  subType: 'UPCE',
-                  barcode: '22360227-05',
-                  lastModifiedDate: 1459699210000,
-                },
-                createdAt: '2020-03-31T16:55:02.111Z',
-                lastModifiedAt: '2020-03-31T16:55:02.111Z',
-                lastModifiedBy: {
-                  clientId: '9YnDCNDg16EER7mWlMjXeHkF',
-                  isPlatformClient: false,
-                },
-                createdBy: {
-                  clientId: '9YnDCNDg16EER7mWlMjXeHkF',
-                  isPlatformClient: false,
-                },
-              },
-            },
-          ],
+          isGift: false
         }
       },
       lineItemMode: 'Standard',
@@ -563,7 +566,7 @@ RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDI
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
 H,00990,23551711,Harry,Rosen,,55 Fake St,,,Toronto,ON,M4V 1H6,CA,2daf22a9-a8b9-4651-830a-1d9a216aab9b,Harry,Rosen,55 Fake St,,,Toronto,ON,M4V 1H6,CA,5551231234,user@gmail.com,FDX,N,N,,28,114.14,,992.14,,,,,,,2020-08-04 15:39,ed6c636af37a4d738ba8d374fa219cbc,0.0364,HST-ON,,,,,,00990,,,EXPRESS,1,,,Y
-D,00990,1,23551711,,,,1,850,,850,0,1.105,850,22360227-05,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
+D,00990,1,23551711,,,,1,850,,850,0,1.105,850,89950453-01,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
 T,00990,1,23551711,,110.5,HST-ON
 N,00990,1,23551711,992.14,05,41,1122,,1111,480
 `.split('\n').join('\r\n') // the expected string has Windows line breaks
@@ -582,7 +585,7 @@ RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDI
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
 H,00990,23551711,Harry,Rosen,,55 Fake St,,,Toronto,ON,M4V 1H6,CA,2daf22a9-a8b9-4651-830a-1d9a216aab9b,Harry,Rosen,55 Fake St,,,Toronto,ON,M4V 1H6,CA,5551231234,user@gmail.com,FDX,N,N,,28,114.14,,992.14,,,,,,,2020-08-04 15:39,ed6c636af37a4d738ba8d374fa219cbc,0.0364,HST-ON,,,,,,00990,,,EXPRESS,3,,,Y
-D,00990,1,23551711,,,,1,850,,850,0,1.105,850,22360227-05,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
+D,00990,1,23551711,,,,1,850,,850,0,1.105,850,89950453-01,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
 T,00990,1,23551711,,110.5,HST-ON
 N,00990,1,23551711,992.14,05,41,1122,,1111,480
 `.split('\n').join('\r\n')
@@ -606,7 +609,7 @@ RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDI
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
 H,00990,23551711,Harry,Rosen,,55 Fake St,,,Toronto,ON,M4V 1H6,CA,2daf22a9-a8b9-4651-830a-1d9a216aab9b,Harry,Rosen,55 Fake St,,,Toronto,ON,M4V 1H6,CA,5551231234,user@gmail.com,FDX,N,N,,28,114.14,,992.14,,,,,,,2020-08-04 15:39,ed6c636af37a4d738ba8d374fa219cbc,0.0364,HST-ON,,,,,,00990,,,EXPRESS,1,,,N
-D,00990,1,23551711,,,,1,850,,850,0,1.105,850,22360227-05,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
+D,00990,1,23551711,,,,1,850,,850,0,1.105,850,89950453-01,N,496332a3-45d9-4ed8-ae44-5b55693c89ce,N,,,,,UPCE
 T,00990,1,23551711,,110.5,HST-ON
 N,00990,1,23551711,992.14,05,41,1122,,1111,480
 `.split('\n').join('\r\n')

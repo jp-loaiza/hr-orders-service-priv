@@ -280,6 +280,39 @@ const validOrder = {
               centAmount: 85000,
               fractionDigits: 2
             }
+          },
+          {
+            name: 'barcodes',
+            value: [
+              {
+                typeId: 'key-value-document',
+                id: '8a14a95e-7628-495f-85f7-9553478b82ea',
+                obj: {
+                  id: '8a14a95e-7628-495f-85f7-9553478b82ea',
+                  version: 1,
+                  container: 'barcodes',
+                  key: '89950453-01',
+                  value: {
+                    id: '89950453-01',
+                    styleId: '20048361',
+                    skuId: '-2913407',
+                    subType: 'UPCE',
+                    barcode: '89950453-01',
+                    lastModifiedDate: 1560197040000
+                  },
+                  createdAt: '2020-03-31T20:27:02.045Z',
+                  lastModifiedAt: '2020-03-31T20:27:02.045Z',
+                  lastModifiedBy: {
+                    clientId: '9YnDCNDg16EER7mWlMjXeHkF',
+                    isPlatformClient: false
+                  },
+                  createdBy: {
+                    clientId: '9YnDCNDg16EER7mWlMjXeHkF',
+                    isPlatformClient: false
+                  }
+                }
+              }
+            ]
           }
         ],
         assets: []
@@ -354,37 +387,7 @@ const validOrder = {
         },
         fields: {
           itemTaxes: '{"HST":110.5}',
-          isGift: false,
-          barcodeData: [ // Note: manually set because barcode because this item was missing a barcode
-            {
-              typeId: 'key-value-document',
-              id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
-              obj: {
-                id: '788f4dc4-049a-4cef-9cdd-eb13293714de',
-                version: 1,
-                container: 'barcodes',
-                key: '22360227-05',
-                value: {
-                  id: '22360227-05',
-                  styleId: '22360227',
-                  skuId: '-754864',
-                  subType: 'UPCE',
-                  barcode: '22360227-05',
-                  lastModifiedDate: 1459699210000,
-                },
-                createdAt: '2020-03-31T16:55:02.111Z',
-                lastModifiedAt: '2020-03-31T16:55:02.111Z',
-                lastModifiedBy: {
-                  clientId: '9YnDCNDg16EER7mWlMjXeHkF',
-                  isPlatformClient: false,
-                },
-                createdBy: {
-                  clientId: '9YnDCNDg16EER7mWlMjXeHkF',
-                  isPlatformClient: false,
-                },
-              },
-            },
-          ],
+          isGift: false
         }
       },
       lineItemMode: 'Standard',

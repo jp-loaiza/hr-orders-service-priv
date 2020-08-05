@@ -38,7 +38,7 @@ const lineItemSchema = {
   properties: {
     custom: {
       type: 'object',
-      required: ['barcodeData', 'itemTaxes']
+      required: ['itemTaxes']
     }
   },
   required: ['custom', 'price', 'taxedPrice']

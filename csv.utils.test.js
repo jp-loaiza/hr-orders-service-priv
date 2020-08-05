@@ -11,7 +11,8 @@ const {
   getParsedTaxesFromLineItem,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
-  getTaxTotalFromTaxedPrice
+  getTaxTotalFromTaxedPrice,
+  getBarcodeInfoFromLineItem
 } = require('./csv.utils')
 
 describe('flatten', () => {
@@ -126,6 +127,21 @@ const incompleteLineItem = {
         HST: '23'
       })
     }
+  },
+  variant: {
+    attributes: [
+      {
+        name: 'barcodes',
+        value: [{
+          obj: {
+            value: {
+              subType: 'UPCE',
+              barcode: '89950453-01'
+            }
+          }
+        }]
+      }
+    ]
   }
 }
 
@@ -229,5 +245,18 @@ describe('formatJestaTaxDescriptionFromBoldTaxDescription', () => {
     expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'PE')).toEqual('GST CANADA')
     expect(formatJestaTaxDescriptionFromBoldTaxDescription('HST', 'ON')).toEqual('HST-ON')
     expect(formatJestaTaxDescriptionFromBoldTaxDescription('PST', 'MB')).toEqual('PST-MB')
+  })
+})
+
+describe('getBarcodeInfoFromLineItem', () => {
+  // @ts-ignore incomplete line for testing only barcode related things
+  const { number, type } = getBarcodeInfoFromLineItem(incompleteLineItem)
+
+  it('returns the correct barcode number', () => {
+    expect(number).toBe('89950453-01')
+  })
+
+  it('returns the correct type', () => {
+    expect(type).toBe('UPCE')
   })
 })
