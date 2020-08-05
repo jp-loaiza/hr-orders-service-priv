@@ -4,7 +4,8 @@ const {
   BACKOFF,
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
-  SENT_TO_OMS_STATUSES
+  SENT_TO_OMS_STATUSES,
+  SENT_TO_CRM_STATUS
 } = require('./constants')
 
 dotenv.config()
@@ -65,13 +66,55 @@ const keepAlive = async () => {
     .then(() => {
       console.log('CommerceTools client success.')
     })
-    .catch((/** @type {Error} */error) => {
-      console.error('CommerceTools client failed: ', error)
+    .catch((/** @type {any} */error) => {
+      console.error('CommerceTools client failed: ')
+      if (error.body && Array.isArray(error.body.errors)) {
+        error.body.errors.forEach(console.error)
+      } else {
+        console.error(error)
+      }
     })
 }
 
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
+
+/** 
+ * Fetches all orders that that we should try to send to the Notification Service.
+ * @returns {Promise<Array<string>>}
+ */
+async function fetchOrderIdsThatShouldBeSentToCrm () {
+  const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined)) and custom is defined`
+  // CRM is easily overloaded, so we limit the number of parallel requests to one.
+  const uri = requestBuilder.orders.perPage(1).where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  /**
+   * @type Array<string>
+   */
+  const orderIds = body.results.map((/** @type {import('./orders').Order} */ order) => order.id)
+  return orderIds
+}
+
+/**
+ * @param {string} orderId
+ * @param {boolean} status
+ */
+async function setOrderSentToCrmStatus (orderId, status) {
+  const uri = requestBuilder.orders.byId(orderId).build()
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+  const body = JSON.stringify({
+    version: version,
+    actions: [
+      {
+        action: 'setCustomField',
+        name: 'sentToCrmStatus',
+        value: SENT_TO_CRM_STATUS[status ? 'SUCCESS' : 'FAILURE']
+      }
+    ]
+  })
+
+  return ctClient.execute({ method: 'POST', uri, body })
+}
 
 /**
  * @param {string} orderId
@@ -90,13 +133,16 @@ const fetchFullOrder = async orderId => {
  * @returns {Promise<Array<(import('./orders').Order)>>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))`
+  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined)) and custom is defined`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
   // The orders that we get back from the query aren't reference-expanded,
   // so we need to make an additional request to CT for each order to get the
   // reference-expanded version of the order
+  /**
+   * @type Array<string>
+   */
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
   return await Promise.all(orderIds.map(fetchFullOrder))
 }
@@ -104,11 +150,12 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
 /**
  * @param {import('./orders').Order} order
  */
-const setOrderAsSentToOms = order => {
+async function setOrderAsSentToOms (order) {
   const uri = requestBuilder.orders.byId(order.id).build()
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
 
   const body = JSON.stringify({
-    version: order.version,
+    version: version,
     actions: [
       {
         action: 'setCustomField',
@@ -149,6 +196,7 @@ const getActionsFromCustomFields = customFields => (
  */
 const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
   const uri = requestBuilder.orders.byId(order.id).build()
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
   const retryCount =  order.custom.fields.retryCount === undefined ? 0 : order.custom.fields.retryCount + 1
   const shouldRetry = errorIsRecoverable && (retryCount < SEND_ORDER_RETRY_LIMIT)
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount) : null
@@ -160,16 +208,19 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
     sentToOmsStatus,
     ...errorIsRecoverable ? { nextRetryAt } : {},
   })
-  const body = JSON.stringify({ version: order.version, actions })
+  const body = JSON.stringify({ version, actions })
 
   return ctClient.execute({ method: 'POST', uri, body })
 }
 
 module.exports = {
+  fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
   setOrderErrorFields,
+  fetchOrderIdsThatShouldBeSentToCrm,
+  setOrderSentToCrmStatus,
   keepAliveRequest
 }

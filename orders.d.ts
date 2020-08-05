@@ -11,7 +11,13 @@ interface Env {
   SFTP_USERNAME: string,
   SFTP_PRIVATE_KEY: string,
   SFTP_INCOMING_ORDERS_PATH: string,
-  ORDER_UPLOAD_INTERVAL: string
+  ORDER_UPLOAD_INTERVAL: string,
+  EMAIL_API_URL: string,
+  EMAIL_API_USERNAME: string,
+  EMAIL_API_PASSWORD: string,
+  NOTIFICATIONS_BEARER_TOKEN: string,
+  HEALTHZ_AUTHORIZATION: string,
+  SHOULD_RUN_JOBS: string
 }
 
 type Price = {
