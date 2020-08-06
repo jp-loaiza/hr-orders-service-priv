@@ -67,7 +67,7 @@ const generateFilenameFromOrder = order => {
     .map(timeComponent => timeComponent.toString().padStart(2, '0'))
     .join('')
 
-  return `Orders-${dateString}-${timeString}-${order.orderNumber}.csv`
+  return `Orders-${dateString}-${timeString}${order.orderNumber}.csv`
 }
 
 const createAndUploadCsvs = async () => {
