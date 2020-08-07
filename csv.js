@@ -107,23 +107,27 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
 })
 
 /**
- * @param {{ index: number, orderNumber: string, tax: import('./orders').ParsedTax }} lineItemTaxInfo
+ * @param {{ index: number, orderNumber: string, sequenceNumber: number, tax: import('./orders').ParsedTax }} lineItemTaxInfo
  */
-const getSingleTaxesObject = ({ index, orderNumber, tax }) => ({
+const getSingleTaxesObject = ({ index, orderNumber, sequenceNumber, tax }) => ({
   [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
   [TAXES_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
   [TAXES_ROWS_ENUM.LINE]: index + 1,
   [TAXES_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
+  [TAXES_ROWS_ENUM.SEQUENCE]: sequenceNumber, // From Jesta's docs: "1 if one tax. 1 and 2 if two tax lines"
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: tax.dollarAmount,
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: tax.description
 })
 
 const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => {
   const taxes = getParsedTaxesFromLineItem(lineItem, order.shippingAddress.state)
+  const sequenceNumber = taxes.length
+
   return taxes.map(tax => getSingleTaxesObject({
-    tax,
     index,
-    orderNumber: order.orderNumber
+    orderNumber: order.orderNumber,
+    sequenceNumber,
+    tax
   }))
 }
 
