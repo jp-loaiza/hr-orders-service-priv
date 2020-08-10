@@ -58,7 +58,7 @@ function retry (fn, maxRetries = 3, backoff = 1000) {
 /**
  * 
  * @param {import('./orders').Order} order
- * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS-<orderNumber>.csv`.
+ * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS<orderNumber>.csv`.
  */
 const generateFilenameFromOrder = order => {
   const orderDate = new Date(order.createdAt)
@@ -67,17 +67,14 @@ const generateFilenameFromOrder = order => {
     .map(timeComponent => timeComponent.toString().padStart(2, '0'))
     .join('')
 
-  return `Orders-${dateString}-${timeString}-${order.orderNumber}.csv`
+  return `Orders-${dateString}-${timeString}${order.orderNumber}.csv`
 }
 
 const createAndUploadCsvs = async () => {
   let sftp
   try {
     sftp = new client()
-    await sftp.connect({
-      ...sftpConfig,
-      privateKey: Buffer.from(sftpConfig.privateKey, 'base64')
-    })
+    await sftp.connect(sftpConfig)
     console.log('Connected to SFTP server')
 
     const orders = await fetchOrdersThatShouldBeSentToOms()
@@ -92,6 +89,7 @@ const createAndUploadCsvs = async () => {
         console.error(`Unable to generate CSV for order ${order.orderNumber}`)
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
         console.error(errorMessage)
+        console.error(err)
         // we retry in case the version of the order has changed by the notifications job
         await retry(setOrderErrorFields)(order, errorMessage, false)
         continue

@@ -29,10 +29,7 @@ async function health (res) {
   try {
     const sftp = new client()
     console.log('Initiating health check...')
-    await sftp.connect({
-      ...sftpConfig,
-      privateKey: Buffer.from(sftpConfig.privateKey,'base64')
-    })
+    await sftp.connect(sftpConfig)
     await Promise.all([
       keepAliveRequest(),
       sftp.list(SFTP_INCOMING_ORDERS_PATH)

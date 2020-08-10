@@ -122,7 +122,7 @@ async function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
-  const expansionParams = '?expand=lineItems[*].custom.fields.barcodeData[*]&expand=paymentInfo.payments[*]'
+  const expansionParams = '?expand=lineItems[*].variant.attributes[*].value[*]&expand=paymentInfo.payments[*]'
   const uri = requestBuilder.orders.byId(orderId).build() + expansionParams
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
@@ -133,7 +133,7 @@ const fetchFullOrder = async orderId => {
  * @returns {Promise<Array<(import('./orders').Order)>>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined)) and custom is defined`
+  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined)) and custom is defined` // TODO: add check to make loginRadiusUid is defined
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
