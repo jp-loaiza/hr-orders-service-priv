@@ -111,10 +111,11 @@ const getPosEquivelenceFromPayment = payment => {
 }
 
 const getBarcodeInfoFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
+  if (!barcodes || !barcodes.value[0]) throw new Error(`SKU ${lineItem.variant.sku} has no barcodes`)
+
   // @ts-ignore casting to Barcode type
-  /** @type {Array<import('./orders').Barcode>} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes').value
-  const barcode = barcodes[0] // each SKU has only one barcode
-  
+  /** @type {import('./orders').Barcode} **/ const barcode = barcodes.value[0] // each SKU has only one barcode
   return {
     number: barcode.obj.value.barcode,
     type: barcode.obj.value.subType

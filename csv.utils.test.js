@@ -82,20 +82,6 @@ describe('getCardReferenceNumberFromPayment', () => {
   })
 })
 
-const address = {
-  streetName: 'Fake St.',
-  streetNumber: '123',
-  postalCode: 'A1B 2C3',
-  apartment: '900',
-  city: 'Toronto',
-  // @ts-ignore
-  /** @type {import('./orders').StateCode} */ state: 'ON',
-  country: 'CA',
-  firstName: 'First',
-  lastName: 'Last',
-  phone: '555-5555'
-}
-
 const incompleteLineItem = {
   custom: {
     fields: {
@@ -155,7 +141,6 @@ describe('getShippingTaxDescriptionsFromShippingTaxes', () => {
     expect(getShippingTaxDescriptionsFromShippingTaxes(oneShippingTax, 'ON')).toEqual(['HST-ON'])
   })
 })
-
 
 describe('getTaxTotalFromTaxedPrice', () => {
   const taxedPrice = {
@@ -235,5 +220,11 @@ describe('getBarcodeInfoFromLineItem', () => {
 
   it('returns the correct type', () => {
     expect(type).toBe('UPCE')
+  })
+
+  it('throws an informative error if the line item lacks a barcode', () => {
+    const lineItemThatLacksBarcodes = {...incompleteLineItem, variant: { sku: '-123', attributes: [] } }
+    // @ts-ignore incomplete line for testing only barcode related things
+    expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksBarcodes)).toThrow('SKU -123 has no barcodes')
   })
 })
