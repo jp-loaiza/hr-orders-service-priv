@@ -10,7 +10,8 @@ const {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
-  getBarcodeInfoFromLineItem
+  getBarcodeInfoFromLineItem,
+  sumDollars
 } = require('./csv.utils')
 
 describe('flatten', () => {
@@ -226,5 +227,18 @@ describe('getBarcodeInfoFromLineItem', () => {
     const lineItemThatLacksBarcodes = {...incompleteLineItem, variant: { sku: '-123', attributes: [] } }
     // @ts-ignore incomplete line for testing only barcode related things
     expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksBarcodes)).toThrow('SKU -123 has no barcodes')
+  })
+})
+
+describe('sumDollars', () => {
+  it('sums whole dollar amounts correctly', () => {
+    expect(sumDollars([1, 2])).toEqual(3)
+    expect(sumDollars([1])).toEqual(1)
+    expect(sumDollars([1, 2, 3])).toEqual(6)
+  })
+
+  it('sums fractional dollar amounts correctly', () => {
+    expect(sumDollars([0.1, 0.1, 0.1])).toEqual(0.3)
+    expect(sumDollars([2.5, 1.5])).toEqual(4)
   })
 })
