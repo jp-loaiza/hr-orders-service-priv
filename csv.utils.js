@@ -46,12 +46,14 @@ const formatCardExpiryDate = unformattedExpiryDate => {
   return unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 }
 
-const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => `${address.streetNumber} ${address.streetName}`
-
-const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => {
-  const { building, apartment, pOBox} = address
-  return [building, apartment, pOBox].filter(Boolean).join(' ')
-}
+/**
+ * commercetools address are more fine-grained than LoginRadius or Bold
+ * addresses and lack line one or line two fields. To avoid possible
+ * parsing issues, line one is stored in `streetName` and line two is stored
+ * in `additionalAddressInfo`.
+ */
+const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => address.streetName
+const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => address.additionalAddressInfo
 
 const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)

@@ -514,8 +514,7 @@ const completeOrderEnglishUntyped = {
   shippingAddress: {
     firstName: 'Harry',
     lastName: 'Rosen',
-    streetName: 'Fake St',
-    streetNumber: '55',
+    streetName: '55 Fake St',
     postalCode: 'M4V 1H6',
     city: 'Toronto',
     state: 'ON',
@@ -527,8 +526,7 @@ const completeOrderEnglishUntyped = {
   billingAddress: {
     firstName: 'Harry',
     lastName: 'Rosen',
-    streetName: 'Fake St',
-    streetNumber: '55',
+    streetName: '55 Fake St',
     postalCode: 'M4V 1H6',
     city: 'Toronto',
     state: 'ON',
@@ -540,8 +538,7 @@ const completeOrderEnglishUntyped = {
     {
       firstName: 'Harry',
       lastName: 'Rosen',
-      streetName: 'Fake St',
-      streetNumber: '55',
+      streetName: '55 Fake St',
       postalCode: 'M4V 1H6',
       city: 'Toronto',
       state: 'ON',

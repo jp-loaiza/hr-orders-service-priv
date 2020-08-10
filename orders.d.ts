@@ -80,17 +80,14 @@ type LineItem = {
 
 type Address = {
   streetName: string,
-  streetNumber: string,
   postalCode: string,
-  apartment?: string,
-  building?: string,
-  pOBox?: string,
   city: string,
   state: StateCode,
   country: string,
   firstName: string,
   lastName: string,
-  phone: string
+  phone: string,
+  additionalAddressInfo?: string
 }
 
 type ShippingInfo = {

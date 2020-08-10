@@ -5,9 +5,7 @@ const {
   formatCardExpiryDate,
   formatJestaTaxDescriptionFromBoldTaxDescription,
   getCardReferenceNumberFromPayment,
-  getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
-  getLineTwoFromAddress,
   getParsedTaxesFromLineItem,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
@@ -97,27 +95,6 @@ const address = {
   lastName: 'Last',
   phone: '555-5555'
 }
-describe('getLineOneFromAddress', () => {
-  it('returns the street number followed by the street name', () => {
-    expect(getLineOneFromAddress(address)).toEqual('123 Fake St.')
-  })
-})
-
-describe('getLineTwoFromAddress', () => {
-  it('returns the apartment number when the address has only an aparment number', () => {
-    expect(getLineTwoFromAddress(address)).toEqual('900')
-  })
-
-  it('returns the PO box number when the address has only a PO box number', () => {
-    const addressThatHasAPOBoxNumber = {
-      ...address,
-      apartment: undefined,
-      pOBox: '326'
-    }
-    expect(getLineTwoFromAddress(addressThatHasAPOBoxNumber)).toEqual('326')
-  })
-})
-
 
 const incompleteLineItem = {
   custom: {
