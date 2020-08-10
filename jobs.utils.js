@@ -58,7 +58,7 @@ function retry (fn, maxRetries = 3, backoff = 1000) {
 /**
  * 
  * @param {import('./orders').Order} order
- * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS-<orderNumber>.csv`.
+ * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS<orderNumber>.csv`.
  */
 const generateFilenameFromOrder = order => {
   const orderDate = new Date(order.createdAt)
@@ -74,10 +74,7 @@ const createAndUploadCsvs = async () => {
   let sftp
   try {
     sftp = new client()
-    await sftp.connect({
-      ...sftpConfig,
-      privateKey: Buffer.from(sftpConfig.privateKey, 'base64')
-    })
+    await sftp.connect(sftpConfig)
     console.log('Connected to SFTP server')
 
     const orders = await fetchOrdersThatShouldBeSentToOms()
