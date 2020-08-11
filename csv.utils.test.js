@@ -1,7 +1,7 @@
 const {
+  convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatDate,
   formatCardExpiryDate,
   formatJestaTaxDescriptionFromBoldTaxDescription,
   getCardReferenceNumberFromPayment,
@@ -42,10 +42,11 @@ describe('convertToDollars', () => {
   })
 })
 
-describe('formatDate', () => {
-  it('formats dates correctly ', () => {
-    expect(formatDate('2020-05-13T13:33:21.290Z')).toBe('2020-05-13 13:33')
-    expect(formatDate('2020-05-13T09:33:21.290Z')).toBe('2020-05-13 09:33')
+describe('convertAndFormatDate', () => {
+  it('returns a string in the format `yyyy-MM-dd HH:mm` converted to Eastern when given a valid UTC datetime string', () => {
+    expect(convertAndFormatDate('2020-05-13T13:33:21.290Z')).toBe('2020-05-13 09:33')
+    expect(convertAndFormatDate('2020-05-13T09:33:21.290Z')).toBe('2020-05-13 05:33')
+    expect(convertAndFormatDate('2020-05-13T20:33:21.290Z')).toBe('2020-05-13 16:33')
   })
 })
 
