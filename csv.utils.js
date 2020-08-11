@@ -1,3 +1,4 @@
+const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
   JESTA_TAX_DESCRIPTIONS,
@@ -34,11 +35,17 @@ const convertToDollars = cents => cents / 100
 
 /**
  * CT dates are JSON dates, but JESTA expects dates to be of the form `yyyy-MM-dd HH24:MI`
+ * JESTA also expects dates to be in Eastern time, but CT dates are in UTC.
  * @param {string} jsonDateString 
  */
-const formatDate = jsonDateString => (
-  jsonDateString.slice(0, 10) + ' ' + jsonDateString.slice(11, 16)
-)
+const convertAndFormatDate = jsonDateString => {
+  const utcDate = new Date(jsonDateString)
+  const timeZone = 'America/New_York' // Eastern time
+  const easternDate = utcToZonedTime(utcDate, timeZone)
+  const template = 'yyyy-MM-dd HH:mm'
+
+  return format(easternDate, template, { timeZone })
+}
 
 const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Payment} */ payment)  => {
   if (!payment.obj.custom.fields.bin || ! payment.obj.custom.fields.transaction_card_last4) return undefined // payment might not be from a credit card
@@ -133,9 +140,9 @@ const getBarcodeInfoFromLineItem = (/** @type {import('./orders').LineItem} */ l
 }
 
 module.exports = {
+  convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatDate,
   formatCardExpiryDate,
   formatJestaTaxDescriptionFromBoldTaxDescription,
   getBarcodeInfoFromLineItem,

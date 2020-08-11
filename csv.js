@@ -15,9 +15,9 @@ const {
   TENDER_ROWS_ENUM
 } = require('./constants')
 const {
+  convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatDate,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
   getLineOneFromAddress,
@@ -75,7 +75,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
   [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(custom.fields.transactionTotal.centAmount),
-  [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
+  [HEADER_ROWS_ENUM.ORDER_DATE]: convertAndFormatDate(createdAt),
   [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0],
   [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
