@@ -4,6 +4,7 @@ const {
   flatten,
   formatCardExpiryDate,
   formatJestaTaxDescriptionFromBoldTaxDescription,
+  getAuthorizationNumberFromPayment,
   getCardReferenceNumberFromPayment,
   getLastFourDigitsOfCardFromPayment,
   getLineTotalTaxFromLineItem,
@@ -99,6 +100,16 @@ describe('getLastFourDigitsOfCardFromPayment', () => {
 
   it('returns `undefined` when given a non-credit card payment', () => {
     expect(getLastFourDigitsOfCardFromPayment(nonCreditCardPayment)).toBeUndefined()
+  })
+})
+
+describe('getAuthorizationNumberFromPayment', () => {
+  it('returns the authorization number of the payment when given a credit card payment', () => {
+    expect(getAuthorizationNumberFromPayment(creditCardPayment)).toBe('authNumber')
+  })
+
+  it('returns `undefined` when given a non-credit card payment', () => {
+    expect(getAuthorizationNumberFromPayment(nonCreditCardPayment)).toBeUndefined()
   })
 })
 

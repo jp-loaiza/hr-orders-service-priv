@@ -64,6 +64,12 @@ const getLastFourDigitsOfCardFromPayment = (/** @type {import('./orders').Paymen
     : undefined
 )
 
+const getAuthorizationNumberFromPayment = (/** @type {import('./orders').Payment} */ payment) => (
+  paymentIsByCreditCard(payment)
+    ? payment.obj.custom.fields.auth_number
+    : undefined
+)
+
 /**
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
  * @param {string} unformattedExpiryDate 
@@ -149,6 +155,7 @@ module.exports = {
   flatten,
   formatCardExpiryDate,
   formatJestaTaxDescriptionFromBoldTaxDescription,
+  getAuthorizationNumberFromPayment,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
   getLastFourDigitsOfCardFromPayment,

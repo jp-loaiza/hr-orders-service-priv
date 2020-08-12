@@ -18,6 +18,7 @@ const {
   convertAndFormatDate,
   convertToDollars,
   flatten,
+  getAuthorizationNumberFromPayment,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
   getLastFourDigitsOfCardFromPayment,
@@ -142,7 +143,7 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.REFERENCENO]: getCardReferenceNumberFromPayment(payment),
   [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDate(payment.obj.custom.fields.transaction_card_expiry),
   [TENDER_ROWS_ENUM.CARD_NO]: getLastFourDigitsOfCardFromPayment(payment),
-  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.auth_number
+  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: getAuthorizationNumberFromPayment(payment)
 })
 
 // The actual CSV string creation happens below
