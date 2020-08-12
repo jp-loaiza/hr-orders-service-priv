@@ -26,11 +26,9 @@ const CARD_TYPES_TO_JESTA_CODES = {
   'american-express': '07',
   'diners-club': '09',
   discover: '08',
-  jcb: '10'
-}
-
-const PAYMENT_METHODS_TO_JESTA_CODES = {
-  // TODO: complete after given info from Bold
+  jcb: '10',
+  'Harry Rosen Giftcard': '26',
+  'Harry Rosen Loyalty': '49'
 }
 
 const ONLINE_SITE_ID = '00990'
@@ -298,7 +296,6 @@ module.exports = {
   KEEP_ALIVE_INTERVAL,
   MISC_ROWS,
   ONLINE_SITE_ID,
-  PAYMENT_METHODS_TO_JESTA_CODES,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
   SENT_TO_CRM_STATUS,

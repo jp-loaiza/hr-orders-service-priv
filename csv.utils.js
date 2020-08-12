@@ -1,8 +1,7 @@
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
-  JESTA_TAX_DESCRIPTIONS,
-  PAYMENT_METHODS_TO_JESTA_CODES
+  JESTA_TAX_DESCRIPTIONS
 } = require('./constants')
 
 const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num, 0)
@@ -118,14 +117,7 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivelenceFromPayment = payment => {
-  const isCreditCardPayment = Boolean(payment.obj.custom.fields.transaction_card_type)
-  if (isCreditCardPayment) {
-    return CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
-  }
-  // @ts-ignore TODO: complete PAYMENT_METHODS_TO_JESTA_CODES
-  return PAYMENT_METHODS_TO_JESTA_CODES[payment.obj.paymentMethodInfo.method]
-}
+const getPosEquivelenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
 
 const getBarcodeInfoFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
   const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
