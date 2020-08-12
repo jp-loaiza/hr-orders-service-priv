@@ -2,7 +2,7 @@ const {
   convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatCardExpiryDate,
+  formatCardExpiryDateFromPayment,
   formatJestaTaxDescriptionFromBoldTaxDescription,
   getAuthorizationNumberFromPayment,
   getCardReferenceNumberFromPayment,
@@ -52,13 +52,6 @@ describe('convertAndFormatDate', () => {
   })
 })
 
-describe('formatCardExpiryDate', () => {
-  it('formats dates correctly', () => {
-    expect(formatCardExpiryDate('01-2020')).toEqual('0120')
-    expect(formatCardExpiryDate('12-1939')).toEqual('1239')
-  })
-})
-
 const creditCardPayment = {
   obj: {
     paymentMethodInfo: {
@@ -82,6 +75,15 @@ const creditCardPayment = {
 
 const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
 
+describe('formatCardExpiryDateFromPayment', () => {
+  it('formats credit cart dates correctly when given credit card payments', () => {
+    expect(formatCardExpiryDateFromPayment(creditCardPayment)).toEqual('0120')
+  })
+
+  it('returns `undefined` when given non-credit card payments', () => {
+    expect(formatCardExpiryDateFromPayment(nonCreditCardPayment)).toBeUndefined()
+  })
+})
 
 describe('getCardReferenceNumberFromPayment', () => {
   it('returns a string that is the first and last digits of the payment cart', () => {

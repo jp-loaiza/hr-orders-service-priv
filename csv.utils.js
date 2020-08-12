@@ -72,11 +72,11 @@ const getAuthorizationNumberFromPayment = (/** @type {import('./orders').Payment
 
 /**
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
- * @param {string} unformattedExpiryDate 
+ * @param {import('./orders').Payment} payment
  */
-const formatCardExpiryDate = unformattedExpiryDate => {
-  // TODO: Take entire payment object as an object and return undefined if payment isn't credit
-  if (!unformattedExpiryDate) return undefined // some payment types (e.g. gift card) lack expiry dates
+const formatCardExpiryDateFromPayment = payment => {
+  if (!paymentIsByCreditCard(payment)) return undefined
+  const unformattedExpiryDate = payment.obj.custom.fields.transaction_card_expiry
   return unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 }
 
@@ -153,7 +153,7 @@ module.exports = {
   convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatCardExpiryDate,
+  formatCardExpiryDateFromPayment,
   formatJestaTaxDescriptionFromBoldTaxDescription,
   getAuthorizationNumberFromPayment,
   getBarcodeInfoFromLineItem,
