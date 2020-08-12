@@ -58,13 +58,18 @@ const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Paymen
   return `${firstDigit}${lastDigit}`
 }
 
-const getLastFourDigitsOfCardFromPayment = (/** @type {import('./orders').Payment} */ payment) => payment.obj.custom.fields.transaction_card_last4
+const getLastFourDigitsOfCardFromPayment = (/** @type {import('./orders').Payment} */ payment) => (
+  paymentIsByCreditCard(payment)
+    ? payment.obj.custom.fields.transaction_card_last4
+    : undefined
+)
 
 /**
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
  * @param {string} unformattedExpiryDate 
  */
 const formatCardExpiryDate = unformattedExpiryDate => {
+  // TODO: Take entire payment object as an object and return undefined if payment isn't credit
   if (!unformattedExpiryDate) return undefined // some payment types (e.g. gift card) lack expiry dates
   return unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 }
