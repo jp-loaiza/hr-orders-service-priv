@@ -20,6 +20,7 @@ const {
   flatten,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
+  getLastFourDigitsOfCardFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
@@ -140,7 +141,7 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: getPosEquivelenceFromPayment(payment),
   [TENDER_ROWS_ENUM.REFERENCENO]: getCardReferenceNumberFromPayment(payment),
   [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDate(payment.obj.custom.fields.transaction_card_expiry),
-  [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.transaction_card_last4,
+  [TENDER_ROWS_ENUM.CARD_NO]: getLastFourDigitsOfCardFromPayment(payment),
   [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.auth_number
 })
 

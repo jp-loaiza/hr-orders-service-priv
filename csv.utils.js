@@ -46,19 +46,26 @@ const convertAndFormatDate = jsonDateString => {
   return format(easternDate, template, { timeZone })
 }
 
+const paymentIsByCreditCard =  (/** @type {import('./orders').Payment} */ payment) => (
+  payment.obj.paymentMethodInfo.method
+  && payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit'
+)
+
 const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Payment} */ payment)  => {
-  if (!payment.obj.custom.fields.bin || ! payment.obj.custom.fields.transaction_card_last4) return undefined // payment might not be from a credit card
+  if (!paymentIsByCreditCard(payment)) return undefined
   const firstDigit = payment.obj.custom.fields.bin[0]
   const lastDigit = payment.obj.custom.fields.transaction_card_last4[3]
   return `${firstDigit}${lastDigit}`
 }
+
+const getLastFourDigitsOfCardFromPayment = (/** @type {import('./orders').Payment} */ payment) => payment.obj.custom.fields.transaction_card_last4
 
 /**
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
  * @param {string} unformattedExpiryDate 
  */
 const formatCardExpiryDate = unformattedExpiryDate => {
-  if (!unformattedExpiryDate) return undefined // some payment types (e.g. PayPal) lack expiry dates
+  if (!unformattedExpiryDate) return undefined // some payment types (e.g. gift card) lack expiry dates
   return unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 }
 
@@ -139,6 +146,7 @@ module.exports = {
   formatJestaTaxDescriptionFromBoldTaxDescription,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
+  getLastFourDigitsOfCardFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
