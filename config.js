@@ -1,0 +1,12 @@
+const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY } = (/** @type {import('./orders').Env} */ (process.env))
+
+const sftpConfig = {
+  host: SFTP_HOST,
+  port: Number(SFTP_PORT),
+  username: SFTP_USERNAME,
+  privateKey: Buffer.from(SFTP_PRIVATE_KEY, 'base64')
+}
+
+module.exports = {
+  sftpConfig
+}
