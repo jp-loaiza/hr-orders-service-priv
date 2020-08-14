@@ -27,7 +27,7 @@ const CARD_TYPES_TO_JESTA_CODES = {
   'diners-club': '09',
   discover: '08',
   jcb: '10',
-  'Harry Rosen Giftcard': '26',
+  'Harry Rosen Giftcard': '14',
   'Harry Rosen Loyalty': '49'
 }
 
