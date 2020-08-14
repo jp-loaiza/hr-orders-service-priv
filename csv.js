@@ -18,14 +18,16 @@ const {
   convertAndFormatDate,
   convertToDollars,
   flatten,
+  getAuthorizationNumberFromPayment,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
+  getLastFourDigitsOfCardFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
   getParsedTaxesFromLineItem,
   getPosEquivelenceFromPayment,
-  formatCardExpiryDate,
+  formatCardExpiryDateFromPayment,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice
@@ -139,9 +141,9 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),
   [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: getPosEquivelenceFromPayment(payment),
   [TENDER_ROWS_ENUM.REFERENCENO]: getCardReferenceNumberFromPayment(payment),
-  [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDate(payment.obj.custom.fields.transaction_card_expiry),
-  [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.transaction_card_last4,
-  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.auth_number
+  [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDateFromPayment(payment),
+  [TENDER_ROWS_ENUM.CARD_NO]: getLastFourDigitsOfCardFromPayment(payment),
+  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: getAuthorizationNumberFromPayment(payment)
 })
 
 // The actual CSV string creation happens below

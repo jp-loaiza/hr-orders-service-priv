@@ -1,8 +1,7 @@
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
-  JESTA_TAX_DESCRIPTIONS,
-  PAYMENT_METHODS_TO_JESTA_CODES
+  JESTA_TAX_DESCRIPTIONS
 } = require('./constants')
 
 const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num, 0)
@@ -47,19 +46,37 @@ const convertAndFormatDate = jsonDateString => {
   return format(easternDate, template, { timeZone })
 }
 
+const paymentIsByCreditCard =  (/** @type {import('./orders').Payment} */ payment) => (
+  payment.obj.paymentMethodInfo.method
+  && payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit'
+)
+
 const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Payment} */ payment)  => {
-  if (!payment.obj.custom.fields.bin || ! payment.obj.custom.fields.transaction_card_last4) return undefined // payment might not be from a credit card
+  if (!paymentIsByCreditCard(payment)) return undefined
   const firstDigit = payment.obj.custom.fields.bin[0]
   const lastDigit = payment.obj.custom.fields.transaction_card_last4[3]
   return `${firstDigit}${lastDigit}`
 }
 
+const getLastFourDigitsOfCardFromPayment = (/** @type {import('./orders').Payment} */ payment) => (
+  paymentIsByCreditCard(payment)
+    ? payment.obj.custom.fields.transaction_card_last4
+    : undefined
+)
+
+const getAuthorizationNumberFromPayment = (/** @type {import('./orders').Payment} */ payment) => (
+  paymentIsByCreditCard(payment)
+    ? payment.obj.custom.fields.auth_number
+    : undefined
+)
+
 /**
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
- * @param {string} unformattedExpiryDate 
+ * @param {import('./orders').Payment} payment
  */
-const formatCardExpiryDate = unformattedExpiryDate => {
-  if (!unformattedExpiryDate) return undefined // some payment types (e.g. PayPal) lack expiry dates
+const formatCardExpiryDateFromPayment = payment => {
+  if (!paymentIsByCreditCard(payment)) return undefined
+  const unformattedExpiryDate = payment.obj.custom.fields.transaction_card_expiry
   return unformattedExpiryDate.slice(0, 2) + unformattedExpiryDate.slice(5)
 }
 
@@ -118,14 +135,7 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivelenceFromPayment = payment => {
-  const isCreditCardPayment = Boolean(payment.obj.custom.fields.transaction_card_type)
-  if (isCreditCardPayment) {
-    return CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
-  }
-  // @ts-ignore TODO: complete PAYMENT_METHODS_TO_JESTA_CODES
-  return PAYMENT_METHODS_TO_JESTA_CODES[payment.obj.paymentMethodInfo.method]
-}
+const getPosEquivelenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
 
 const getBarcodeInfoFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
   const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
@@ -143,10 +153,12 @@ module.exports = {
   convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatCardExpiryDate,
+  formatCardExpiryDateFromPayment,
   formatJestaTaxDescriptionFromBoldTaxDescription,
+  getAuthorizationNumberFromPayment,
   getBarcodeInfoFromLineItem,
   getCardReferenceNumberFromPayment,
+  getLastFourDigitsOfCardFromPayment,
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,

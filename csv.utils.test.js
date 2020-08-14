@@ -2,9 +2,11 @@ const {
   convertAndFormatDate,
   convertToDollars,
   flatten,
-  formatCardExpiryDate,
+  formatCardExpiryDateFromPayment,
   formatJestaTaxDescriptionFromBoldTaxDescription,
+  getAuthorizationNumberFromPayment,
   getCardReferenceNumberFromPayment,
+  getLastFourDigitsOfCardFromPayment,
   getLineTotalTaxFromLineItem,
   getParsedTaxesFromLineItem,
   getShippingTaxAmountsFromShippingTaxes,
@@ -50,37 +52,66 @@ describe('convertAndFormatDate', () => {
   })
 })
 
-describe('formatCardExpiryDate', () => {
-  it('formats dates correctly', () => {
-    expect(formatCardExpiryDate('01-2020')).toEqual('0120')
-    expect(formatCardExpiryDate('12-1939')).toEqual('1239')
+const creditCardPayment = {
+  obj: {
+    paymentMethodInfo: {
+      method: 'Credit'
+    },
+    amountPlanned: {
+      centAmount: 120
+    },
+    custom: {
+      fields: {
+        auth_number: 'authNumber',
+        bin: '1234', // first four digits of card
+        transaction_card_expiry: '01-2020',
+        transaction_card_last4: '6789',
+        // @ts-ignore casting to Card type
+        /** @type {import('./orders').Card} */ transaction_card_type: 'visa'
+      }
+    }
+  }
+}
+
+const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
+
+describe('formatCardExpiryDateFromPayment', () => {
+  it('formats credit cart dates correctly when given credit card payments', () => {
+    expect(formatCardExpiryDateFromPayment(creditCardPayment)).toEqual('0120')
+  })
+
+  it('returns `undefined` when given non-credit card payments', () => {
+    expect(formatCardExpiryDateFromPayment(nonCreditCardPayment)).toBeUndefined()
   })
 })
 
 describe('getCardReferenceNumberFromPayment', () => {
-  const payment = {
-    obj: {
-      paymentMethodInfo: {
-        method: 'Credit'
-      },
-      amountPlanned: {
-        centAmount: 120
-      },
-      custom: {
-        fields: {
-          auth_number: 'authNumber',
-          bin: '1234', // first four digits of card
-          transaction_card_expiry: '01-2020',
-          transaction_card_last4: '6789',
-          // @ts-ignore casting to Card type
-          /** @type {import('./orders').Card} */ transaction_card_type: 'visa'
-        }
-      }
-    }
-  }
-
   it('returns a string that is the first and last digits of the payment cart', () => {
-    expect(getCardReferenceNumberFromPayment(payment)).toBe('19')
+    expect(getCardReferenceNumberFromPayment(creditCardPayment)).toBe('19')
+  })
+
+  it('returns `undefined` when given a non-credit card payment', () => {
+    expect(getCardReferenceNumberFromPayment(nonCreditCardPayment)).toBeUndefined()
+  })
+})
+
+describe('getLastFourDigitsOfCardFromPayment', () => {
+  it('returns the last four digits of the card when given a credit card payment', () => {
+    expect(getLastFourDigitsOfCardFromPayment(creditCardPayment)).toBe('6789')
+  })
+
+  it('returns `undefined` when given a non-credit card payment', () => {
+    expect(getLastFourDigitsOfCardFromPayment(nonCreditCardPayment)).toBeUndefined()
+  })
+})
+
+describe('getAuthorizationNumberFromPayment', () => {
+  it('returns the authorization number of the payment when given a credit card payment', () => {
+    expect(getAuthorizationNumberFromPayment(creditCardPayment)).toBe('authNumber')
+  })
+
+  it('returns `undefined` when given a non-credit card payment', () => {
+    expect(getAuthorizationNumberFromPayment(nonCreditCardPayment)).toBeUndefined()
   })
 })
 
