@@ -107,7 +107,7 @@ const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawSh
   return boldShippingTaxDescriptions.map(boldTaxDescription => formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode))
 }
 
-const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => sum(taxedPrice.taxPortions.map(portion => portion.amount.centAmount))
+const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount - taxedPrice.totalNet.centAmount
 
 /**
  * @returns {Array<import('./orders').ParsedTax>}

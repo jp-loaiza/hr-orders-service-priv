@@ -212,8 +212,13 @@ describe('getTaxTotalFromTaxedPrice', () => {
       },
     ]
   }
-  it('returns the correct tax total when given a valid taxedPrice object', () => {
+  it('returns the difference between the total gross and total net prices', () => {
     expect(getTaxTotalFromTaxedPrice(taxedPrice)).toBe(1800)
+  })
+
+  it('does not calculate the tax total from the `taxPortions` array', () => { // `taxedPortions` as set by Bold may be missing shipping taxes
+    const taxedPriceWithoutTaxPoritions = {...taxedPrice, taxPortions: [] }
+    expect(getTaxTotalFromTaxedPrice(taxedPriceWithoutTaxPoritions)).toBe(1800)
   })
 })
 
