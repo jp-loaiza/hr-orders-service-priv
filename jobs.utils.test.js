@@ -18,8 +18,8 @@ describe('generateFilenameFromOrder', () => {
   }
 
   it('returns the correct filename', () => {
-    expect(generateFilenameFromOrder(mockOrder1)).toBe('Orders-2020-05-05-205407-12345.csv')
-    expect(generateFilenameFromOrder(mockOrder2)).toBe('Orders-2020-01-01-010417-00001.csv')
+    expect(generateFilenameFromOrder(mockOrder1)).toBe('Orders-2020-05-05-20540712345.csv')
+    expect(generateFilenameFromOrder(mockOrder2)).toBe('Orders-2020-01-01-01041700001.csv')
   })
 })
 

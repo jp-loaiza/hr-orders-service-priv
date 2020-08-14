@@ -14,7 +14,24 @@ const {
   TENDER_ROWS,
   TENDER_ROWS_ENUM
 } = require('./constants')
-const  { convertToDollars, formatDate } = require('./csv.utils')
+const {
+  convertAndFormatDate,
+  convertToDollars,
+  flatten,
+  getAuthorizationNumberFromPayment,
+  getBarcodeInfoFromLineItem,
+  getCardReferenceNumberFromPayment,
+  getLastFourDigitsOfCardFromPayment,
+  getLineOneFromAddress,
+  getLineTotalTaxFromLineItem,
+  getLineTwoFromAddress,
+  getParsedTaxesFromLineItem,
+  getPosEquivelenceFromPayment,
+  formatCardExpiryDateFromPayment,
+  getShippingTaxAmountsFromShippingTaxes,
+  getShippingTaxDescriptionsFromShippingTaxes,
+  getTaxTotalFromTaxedPrice
+} = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
 // we can feed into the CSV generator to create the CSV
@@ -25,29 +42,29 @@ const  { convertToDollars, formatDate } = require('./csv.utils')
 const getHeaderObjectFromOrder = ({
   billingAddress,
   createdAt,
+  custom,
   customerEmail,
-  customerId,
   locale,
   orderNumber,
   shippingAddress,
-  custom
+  shippingInfo,
+  taxedPrice
 }) => ({
   [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
   [HEADER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
   [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: shippingAddress.firstName,
   [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: shippingAddress.lastName,
-  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: shippingAddress.additionalStreetInfo.split('\n')[0],
-  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: shippingAddress.additionalStreetInfo.split('\n')[1],
+  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: getLineOneFromAddress(shippingAddress),
+  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: getLineTwoFromAddress(shippingAddress),
   [HEADER_ROWS_ENUM.SHIP_TO_CITY]: shippingAddress.city,
   [HEADER_ROWS_ENUM.SHIP_TO_STATE_ID]: shippingAddress.state,
   [HEADER_ROWS_ENUM.SHIP_TO_ZIP_CODE]: shippingAddress.postalCode,
   [HEADER_ROWS_ENUM.SHIP_TO_COUNTRY_ID]: shippingAddress.country,
-  [HEADER_ROWS_ENUM.WFE_CUSTOMER_ID]: customerId,
   [HEADER_ROWS_ENUM.BILL_TO_FIRST_NAME]: billingAddress.firstName,
   [HEADER_ROWS_ENUM.BILL_TO_LAST_NAME]: billingAddress.lastName,
-  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_1]: billingAddress.additionalStreetInfo.split('\n')[0],
-  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_2]: billingAddress.additionalStreetInfo.split('\n')[1],
+  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_1]: getLineOneFromAddress(billingAddress),
+  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_2]: getLineTwoFromAddress(billingAddress),
   [HEADER_ROWS_ENUM.BILL_TO_CITY]: billingAddress.city,
   [HEADER_ROWS_ENUM.BILL_TO_STATE_ID]: billingAddress.state,
   [HEADER_ROWS_ENUM.BILL_TO_ZIP_CODE]: billingAddress.postalCode,
@@ -57,17 +74,21 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.CARRIER_ID]: custom.fields.carrierId,
   [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: custom.fields.shippingIsRush ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
-  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(custom.fields.shippingCost.centAmount),
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(custom.fields.totalOrderTax.centAmount),
+  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
+  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
   [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(custom.fields.transactionTotal.centAmount),
-  [HEADER_ROWS_ENUM.ORDER_DATE]: formatDate(createdAt),
+  [HEADER_ROWS_ENUM.ORDER_DATE]: convertAndFormatDate(createdAt),
   [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: convertToDollars(custom.fields.shippingTax.centAmount),
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: custom.fields.shippingTaxDescription,
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0],
+  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
+  [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] && getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1],
+  [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
   [HEADER_ROWS_ENUM.SERVICE_TYPE]: custom.fields.shippingServiceType,
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
+  [HEADER_ROWS_ENUM.FREE_RETURN_IND]: custom.fields.returnsAreFree ? 'Y' : 'N',
+  [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: custom.fields.signatureIsRequired ? 'Y' : 'N',
   [HEADER_ROWS_ENUM.RELEASED]: custom.fields.paymentIsReleased ? 'Y' : 'N'
 })
 
@@ -80,24 +101,38 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.price.value.centAmount),
   [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: convertToDollars(lineItem.totalPrice.centAmount),
   [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: lineItem.custom.fields.lineShippingCharges ? convertToDollars(lineItem.custom.fields.lineShippingCharges.centAmount) : 0,
-  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: convertToDollars(lineItem.custom.fields.lineTotalTax.centAmount),
+  [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: getLineTotalTaxFromLineItem(lineItem),
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
-  [DETAILS_ROWS_ENUM.BAR_CODE_ID]: lineItem.custom.fields.barcodeData[0].obj.value.barcode,
+  [DETAILS_ROWS_ENUM.BAR_CODE_ID]: getBarcodeInfoFromLineItem(lineItem).number,
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
-  [DETAILS_ROWS_ENUM.SUB_TYPE]: lineItem.custom.fields.barcodeData[0].obj.value.subType
+  [DETAILS_ROWS_ENUM.SALESPERSON_ID]: lineItem.custom.fields.salespersonId,
+  [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
 })
 
-const getTaxesObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
+/**
+ * @param {{ lineNumber: number, orderNumber: string, sequenceNumber: number, tax: import('./orders').ParsedTax }} lineItemTaxInfo
+ */
+const getSingleTaxesObject = ({ lineNumber, orderNumber, sequenceNumber, tax }) => ({
   [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
   [TAXES_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
-  [TAXES_ROWS_ENUM.LINE]: index + 1,
-  [TAXES_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
-  [TAXES_ROWS_ENUM.SITE_ID]: 1, // From JESTA's docs: "1 if one tax. 1 and 2 if two tax lines"
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: convertToDollars(lineItem.custom.fields.lineTotalTax.centAmount),
-  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: lineItem.custom.fields.lineTaxDescription
+  [TAXES_ROWS_ENUM.LINE]: lineNumber,
+  [TAXES_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
+  [TAXES_ROWS_ENUM.SEQUENCE]: sequenceNumber,
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_AMOUNT]: tax.dollarAmount,
+  [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: tax.description
 })
+
+const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ lineIndex) => {
+  const taxes = getParsedTaxesFromLineItem(lineItem, order.shippingAddress.state)
+  return taxes.map((tax, taxIndex) => getSingleTaxesObject({
+    lineNumber: lineIndex + 1,
+    orderNumber: order.orderNumber,
+    sequenceNumber: taxIndex + 1,
+    tax
+  }))
+}
 
 const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
   [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
@@ -105,11 +140,11 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
   [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),
-  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: payment.obj.paymentMethodInfo.method,
-  [TENDER_ROWS_ENUM.REFERENCENO]: payment.obj.custom.fields.cardReferenceNumber,
-  [TENDER_ROWS_ENUM.EXPDATE]: payment.obj.custom.fields.cardExpiryDate,
-  [TENDER_ROWS_ENUM.CARD_NO]: payment.obj.custom.fields.cardNumber,
-  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: payment.obj.custom.fields.authorizationNumber
+  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: getPosEquivelenceFromPayment(payment),
+  [TENDER_ROWS_ENUM.REFERENCENO]: getCardReferenceNumberFromPayment(payment),
+  [TENDER_ROWS_ENUM.EXPDATE]: formatCardExpiryDateFromPayment(payment),
+  [TENDER_ROWS_ENUM.CARD_NO]: getLastFourDigitsOfCardFromPayment(payment),
+  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: getAuthorizationNumberFromPayment(payment)
 })
 
 // The actual CSV string creation happens below
@@ -144,7 +179,7 @@ const generateTaxCsvStringFromOrder = (/** @type {import('./orders').Order} */ o
     fields: TAXES_ROWS
   }
 
-  const taxesObjects = order.lineItems.map(getTaxesObjectFromOrderAndLineItem(order))
+  const taxesObjects = flatten(order.lineItems.map(getallTaxesObjectsFromOrderAndLineItem(order)))
   return parse(taxesObjects, options)
 }
 
@@ -159,10 +194,9 @@ const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} 
 }
 
 /**
- * @explain Generates comma separated header names, which are the same for
- *          every order. Not to be confused with `generateHeadersCsvStringFromOrder`,
- *          which generates the string of the *row* that JESTA classifies as
- *          "header" data.
+ * Generates comma separated header names, which are the same for every order.
+ * Not to be confused with `generateHeadersCsvStringFromOrder`, which generates
+ * the string of the *row* that JESTA classifies as "header" data.
  */
 const generateCsvHeaderNamesString = () => {
   const options = {

@@ -122,18 +122,19 @@ async function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
-  const expansionParams = '?expand=lineItems[*].custom.fields.barcodeData[*]&expand=paymentInfo.payments[*]'
+  const expansionParams = '?expand=lineItems[*].variant.attributes[*].value[*]&expand=paymentInfo.payments[*]'
   const uri = requestBuilder.orders.byId(orderId).build() + expansionParams
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
 
 /** Fetches all orders that that we should try to send to the OMS. Includes
  *  both orders that we have never tried to send to the OMS, and ones that
- *  it is time to re-try sending to the OMS.
+ *  it is time to re-try sending to the OMS. Excludes orders that lack
+ *  LoginRadius UIDs.
  * @returns {Promise<Array<(import('./orders').Order)>>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined)) and custom is defined`
+  const query = `custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) and (custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))) and custom(fields(loginRadiusUid is defined))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 

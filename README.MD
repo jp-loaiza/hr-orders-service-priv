@@ -60,6 +60,7 @@ source deploy.sh
   - EMAIL_API_USERNAME
   - EMAIL_API_PASSWORD
   - EMAIL_API_URL
+  - EMAIL_API_URL_KUBERNETES
   - NOTIFICATIONS_BEARER_TOKEN
   - HEALTHZ_AUTHORIZATION
   - SEND_NOTIFICATIONS_INTERVAL
@@ -78,6 +79,8 @@ source deploy.sh
   - IMAGE
 
 - Note: SFTP and Email API hosts for kubernetes and local environments are different. Refer to 'deploy.sh' for details of how it's set on kubernetes.
+
+- Note: If there are characters in the value of the environmental variables which need to be escaped e.g. `$service` you need to escape them once if deploying locally to kubernetes i.e. use `\$services` in '.env' and escape them twice if setting the variable in the toolchain i.e. use `\\\$services`
 
 TODO: Currently all the traffic on Kubernetes is being routed via the Internet, instead of through the Vyatta and so HarryRosen has to manually add the IP address of each of our clusters to their white list so we can connect to their service via their public IP addresses. However, we already have a VPN setup that obviates the need for whitelisting, which is what we are using locally and so the reason behind having different IP addresses. We need to add a route that says all 10.210.x.x traffic routes through the eth0 or eth1 nic.
 

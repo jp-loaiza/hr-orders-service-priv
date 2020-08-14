@@ -6,7 +6,32 @@ const LOCALES_TO_JESTA_LANGUAGE_NUMBERS = {
   'en-CA': 1,
   'fr-CA': 3
 }
-const ONLINE_SITE_ID = '990'
+
+const JESTA_TAX_DESCRIPTIONS = {
+  GST: 'GST CANADA',
+  PST_BC: 'PST-BC',
+  PST_SK: 'PST-SK',
+  PST_MB: 'PST-MB',
+  HST_ON: 'HST-ON',
+  QST_QC: 'QST-QC',
+  HST_NB: 'HST-NB',
+  HST_NL: 'HST-NFL',
+  HST_NS: 'HST-NS',
+  HST_PE: 'HST-PEI'
+}
+
+const CARD_TYPES_TO_JESTA_CODES = {
+  visa: '05',
+  mastercard: '06',
+  'american-express': '07',
+  'diners-club': '09',
+  discover: '08',
+  jcb: '10',
+  'Harry Rosen Giftcard': '14',
+  'Harry Rosen Loyalty': '49'
+}
+
+const ONLINE_SITE_ID = '00990'
 
 const HEADER_ROWS_ENUM = {
   RECORD_TYPE: 'RecordType H',
@@ -259,10 +284,12 @@ const EMAIL_API_OWNER_ID = 'F6UJ9A000002' // Division 01 (Canada)
 
 module.exports = {
   BACKOFF,
+  CARD_TYPES_TO_JESTA_CODES,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
   EMAIL_API_OWNER_ID,
   GENERAL_CSV_OPTIONS,
+  JESTA_TAX_DESCRIPTIONS,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   HEADER_ROWS,
   HEADER_ROWS_ENUM,

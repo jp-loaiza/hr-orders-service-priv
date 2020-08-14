@@ -1,3 +1,8 @@
+type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
+type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
+type BoldTaxDescription = 'GST' | 'HST' | 'PST' | 'QST'
+type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discover' | 'jcb'
+
 interface Env {
   [key: string]: string,
   PORT: string,
@@ -24,7 +29,12 @@ type Price = {
 
 type TaxedPrice = {
   totalNet: Price,
-  totalGross: Price
+  totalGross: Price,
+  taxPortions: Array<{
+    rate: number,
+    amount: Price,
+    name: string
+  }>
 }
 
 type TaxRate = {
@@ -34,11 +44,24 @@ type TaxRate = {
   includedInPrice: boolean
 }
 
+type Barcode = {
+  obj: {
+    value: {
+      subType: string,
+      barcode: string
+    }
+  }
+}
+
 type LineItem = {
   id: string,
   variant: {
     sku: string,
-    prices: Array<{ value: Price }>
+    prices: Array<{ value: Price }>,
+    attributes: Array<{
+      name: string,
+      value: any
+    }>
   },
   price: { value: Price },
   totalPrice: Price,
@@ -46,18 +69,9 @@ type LineItem = {
   custom: {
     fields: {
       isGift: boolean
-      barcodeData: Array<{
-        obj: {
-          value: {
-            subType: string,
-            barcode: string
-          }
-        }
-      }>,
       salespersonId?: number,
-      lineTaxDescription: string,
-      lineTotalTax: Price,
-      lineShippingCharges: Price
+      itemTaxes: string // stringified JSON
+      lineShippingCharges?: Price
     }
   },
   taxedPrice: TaxedPrice,
@@ -65,14 +79,15 @@ type LineItem = {
 }
 
 type Address = {
-  additionalStreetInfo: string,
+  streetName: string,
   postalCode: string,
   city: string,
-  state: string,
+  state: StateCode,
   country: string,
   firstName: string,
   lastName: string,
-  phone: string
+  phone: string,
+  additionalAddressInfo?: string
 }
 
 type ShippingInfo = {
@@ -93,10 +108,11 @@ type Payment = {
     },
     custom: {
       fields: {
-        cardReferenceNumber: string,
-        cardExpiryDate: string,
-        cardNumber: string,
-        authorizationNumber: string
+        auth_number: string,
+        bin: string,
+        transaction_card_expiry: string,
+        transaction_card_last4: string,
+        transaction_card_type: Card
       }
     }
   }
@@ -119,18 +135,17 @@ type Order = {
   paymentInfo: {
     payments: Array<Payment>
   },
+  shippingInfo: ShippingInfo, 
+  taxedPrice: TaxedPrice
   custom: {
     fields: {
-      sentToOmsStatus?: 'PENDING' | 'SUCCESS' | 'FAILURE',
+      sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
       errorMessage?: string,
-      shippingTax: Price,
-      shippingTaxDescription: string,
+      shippingTaxes: string, // stringified JSON
       paymentIsReleased: boolean,
-      shippingCost: Price,
       shippingIsRush: boolean,
       transactionTotal: Price,
       signatureIsRequired: boolean,
-      totalOrderTax: Price,
       carrierId:  'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
       shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
       returnsAreFree: boolean,
@@ -142,10 +157,23 @@ type Order = {
   }
 }
 
+type ParsedTax = {
+  dollarAmount: number,
+  description: string
+}
+
 export {
+  Address,
+  Barcode,
+  BoldTaxDescription,
+  Card,
   Env,
   LineItem,
   Order,
+  ParsedTax,
   Payment,
-  ShippingInfo
+  ShippingInfo,
+  StateCode,
+  TaxDescriptionKey,
+  TaxedPrice
 }

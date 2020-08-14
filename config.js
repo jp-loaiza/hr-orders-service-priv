@@ -4,7 +4,7 @@ const sftpConfig = {
   host: SFTP_HOST,
   port: Number(SFTP_PORT),
   username: SFTP_USERNAME,
-  privateKey: SFTP_PRIVATE_KEY
+  privateKey: Buffer.from(SFTP_PRIVATE_KEY, 'base64')
 }
 
 module.exports = {
