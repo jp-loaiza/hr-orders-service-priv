@@ -212,7 +212,7 @@ describe('getTaxTotalFromTaxedPrice', () => {
       },
     ]
   }
-  it('returns the correct tax total when given a valid taxedPrice object', () => {
+  it('returns the difference between the total gross and total net prices', () => {
     expect(getTaxTotalFromTaxedPrice(taxedPrice)).toBe(1800)
   })
 
