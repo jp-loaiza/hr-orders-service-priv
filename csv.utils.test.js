@@ -268,15 +268,18 @@ describe('getBarcodeInfoFromLineItem', () => {
 })
 
 describe('sumMoney', () => {
-  it('sums whole numbers correctly', () => {
+  it('sums whole dollars correctly', () => {
     expect(sumMoney([1, 2])).toEqual(3)
     expect(sumMoney([1])).toEqual(1)
     expect(sumMoney([1, 2, 3])).toEqual(6)
   })
 
-  it('sums floating point numbers correctly', () => {
+  it('sums dollars with whole cent values correctly', () => {
     expect(sumMoney([0.1, 0.1, 0.1])).toEqual(0.3)
     expect(sumMoney([2.5, 1.5])).toEqual(4)
+  })
+
+  it('sums dollars with fractional cent values correctly', () => {
     expect(sumMoney([0.001, 0.001])).toEqual(0.002)
   })
 })
