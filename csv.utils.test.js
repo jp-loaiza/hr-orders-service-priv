@@ -13,7 +13,7 @@ const {
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
-  sumDollars
+  sumMoney
 } = require('./csv.utils')
 
 describe('flatten', () => {
@@ -267,15 +267,19 @@ describe('getBarcodeInfoFromLineItem', () => {
   })
 })
 
-describe('sumDollars', () => {
-  it('sums whole dollar amounts correctly', () => {
-    expect(sumDollars([1, 2])).toEqual(3)
-    expect(sumDollars([1])).toEqual(1)
-    expect(sumDollars([1, 2, 3])).toEqual(6)
+describe('sumMoney', () => {
+  it('sums whole dollars correctly', () => {
+    expect(sumMoney([1, 2])).toEqual(3)
+    expect(sumMoney([1])).toEqual(1)
+    expect(sumMoney([1, 2, 3])).toEqual(6)
   })
 
-  it('sums fractional dollar amounts correctly', () => {
-    expect(sumDollars([0.1, 0.1, 0.1])).toEqual(0.3)
-    expect(sumDollars([2.5, 1.5])).toEqual(4)
+  it('sums dollars with whole cent values correctly', () => {
+    expect(sumMoney([0.1, 0.1, 0.1])).toEqual(0.3)
+    expect(sumMoney([2.5, 1.5])).toEqual(4)
+  })
+
+  it('sums dollars with fractional cent values correctly', () => {
+    expect(sumMoney([0.001, 0.001])).toEqual(0.002)
   })
 })
