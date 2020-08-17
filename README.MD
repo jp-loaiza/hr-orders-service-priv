@@ -65,6 +65,8 @@ source deploy.sh
   - HEALTHZ_AUTHORIZATION
   - SEND_NOTIFICATIONS_INTERVAL
   - SHOULD_RUN_JOBS
+  - NEWRELIC_APP_NAME
+  - NEWRELIC_LICENSE_KEY
 
 - Note: Each added environmntal variable should be set in '.env-template', 'deployment.yaml' and 'deploy.sh' and toolchain pipeline.
 
