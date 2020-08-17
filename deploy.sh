@@ -10,6 +10,7 @@ kubectl create configmap hr-orders-service \
   --from-literal=EMAIL_API_URL=$EMAIL_API_URL_KUBERNETES \
   --from-literal=SHOULD_RUN_JOBS=$SHOULD_RUN_JOBS \
   --from-literal=SEND_NOTIFICATIONS_INTERVAL=$SEND_NOTIFICATIONS_INTERVAL \
+  --from-literal=NEWRELIC_APP_NAME=$NEWRELIC_APP_NAME \
   -o yaml --dry-run | kubectl apply -f -
 
 # update existing secret
@@ -21,6 +22,7 @@ kubectl create secret generic hr-orders-service \
   --from-literal=EMAIL_API_USERNAME=$EMAIL_API_USERNAME \
   --from-literal=EMAIL_API_PASSWORD=$EMAIL_API_PASSWORD \
   --from-literal=HEALTHZ_AUTHORIZATION=$HEALTHZ_AUTHORIZATION \
+  --from-literal=NEWRELIC_LICENSE_KEY=$NEWRELIC_LICENSE_KEY \
   -o yaml --dry-run | kubectl apply -f -  
 
 sed "s~{IMAGE}~$IMAGE~g; s~{HEALTHZ_AUTHORIZATION}~$HEALTHZ_AUTHORIZATION~g;" ./deployment.yaml > ./deployment-populated.yaml

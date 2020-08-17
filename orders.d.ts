@@ -17,7 +17,9 @@ interface Env {
   EMAIL_API_PASSWORD: string,
   NOTIFICATIONS_BEARER_TOKEN: string,
   HEALTHZ_AUTHORIZATION: string,
-  SHOULD_RUN_JOBS: string
+  SHOULD_RUN_JOBS: string,
+  NEWRELIC_APP_NAME: string,
+  NEWRELIC_LICENSE_KEY: string
 }
 
 type Price = {
