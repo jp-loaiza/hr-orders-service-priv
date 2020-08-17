@@ -1,20 +1,13 @@
+const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
   JESTA_TAX_DESCRIPTIONS
 } = require('./constants')
 
-const sum  = (/** @type {Array<number>} */ nums) => nums.reduce((total, num) => total + num, 0)
-
-/**
- * Assumes that there are no fractional cent values. (For example, it can be
- * given [1.23], but not [1.234].) Bold will not give us amounts that have
- * fractional cent values.
- */
-const sumDollars = (/** @type {Array<number>} */ dollarAmounts) => {
-  const centAmounts = dollarAmounts.map(dollarAmount => dollarAmount * 100)
-  return convertToDollars(sum(centAmounts))
-}
+const sumMoney  = (/** @type {Array<number>} */ nums) => (
+  nums.reduce((total, num) => currency(total, { precision: 4 }).add(num), currency(0))
+).value
 
 /**
  * @returns {any}
@@ -92,7 +85,7 @@ const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address
 const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
   const taxAmounts = Object.values(taxes).map(Number) 
-  return sumDollars(taxAmounts)
+  return sumMoney(taxAmounts)
 }
 
 const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes) => {
@@ -167,5 +160,5 @@ module.exports = {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
-  sumDollars
+  sumMoney
 }
