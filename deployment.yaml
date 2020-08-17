@@ -122,3 +122,13 @@ spec:
             secretKeyRef:
               key: HEALTHZ_AUTHORIZATION
               name: hr-orders-service             
+        - name: NEWRELIC_APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: NEWRELIC_APP_NAME
+              name: hr-orders-service
+        - name: NEWRELIC_LICENSE_KEY 
+          valueFrom:
+            secretKeyRef:
+              key: NEWRELIC_LICENSE_KEY
+              name: hr-orders-service             
