@@ -137,7 +137,7 @@ const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) =>
 
 /**
  * If more than one barcode exists on the line item, returns the information
- * from the UPCE barcode.
+ * from the non-UPCE barcode.
  * @param {import('./orders').LineItem} lineItem 
  * @returns {{number: string, type: string}}
  */
@@ -146,8 +146,8 @@ const getBarcodeInfoFromLineItem = lineItem => {
   /** @type {{name: any, value: Array<import('./orders').Barcode>} | undefined} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
   if (!barcodes || barcodes.value.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has no barcodes`)
 
-  const upceBarcode = barcodes.value.find(barcode => barcode.obj.value.subType === 'UPCE')
-  if (upceBarcode) return formatBarcodeInfo(upceBarcode)
+  const nonUpceBarcode = barcodes.value.find(barcode => barcode.obj.value.subType !== 'UPCE')
+  if (nonUpceBarcode) return formatBarcodeInfo(nonUpceBarcode)
   return formatBarcodeInfo(barcodes.value[0])
 }
 

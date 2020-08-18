@@ -303,7 +303,7 @@ describe('getBarcodeInfoFromLineItem', () => {
     expect(type).toBe('UPCA')
   })
 
-  it('returns the barcode number and type of the UPCE barcode when the given line item has both a UPCE barcode and a UPCA barcode', () => {
+  it('returns the barcode number and type of the UPCA barcode when the given line item has both a UPCE barcode and a UPCA barcode', () => {
     const lineItemWithTwoBarcodes = {
       variant: {
         attributes: [
@@ -317,8 +317,8 @@ describe('getBarcodeInfoFromLineItem', () => {
 
     // @ts-ignore incomplete line for testing only barcode related things
     const { number, type } = getBarcodeInfoFromLineItem(lineItemWithTwoBarcodes)
-    expect(number).toBe('89950453-01')
-    expect(type).toBe('UPCE')
+    expect(number).toBe('557391553')
+    expect(type).toBe('UPCA')
   })
 
   it('throws an informative error if the line item has no barcodes', () => {
