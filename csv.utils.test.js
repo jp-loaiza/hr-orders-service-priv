@@ -282,4 +282,10 @@ describe('sumMoney', () => {
   it('sums dollars with fractional cent values correctly', () => {
     expect(sumMoney([0.001, 0.001])).toEqual(0.002)
   })
+
+  it('rounds to four decimal places, rounding x.xxxx5 up', () => {
+    expect(sumMoney([0.00004])).toEqual(0)
+    expect(sumMoney([0.00005])).toEqual(0.0001)
+    expect(sumMoney([0.00006])).toEqual(0.0001)
+  })
 })
