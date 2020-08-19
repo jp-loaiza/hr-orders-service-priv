@@ -130,16 +130,25 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
  */
 const getPosEquivelenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
 
-const getBarcodeInfoFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
-  const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
-  if (!barcodes || !barcodes.value[0]) throw new Error(`SKU ${lineItem.variant.sku} has no barcodes`)
+const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
+  number: barcode.obj.value.barcode,
+  type: barcode.obj.value.subType
+})
 
-  // @ts-ignore casting to Barcode type
-  /** @type {import('./orders').Barcode} **/ const barcode = barcodes.value[0] // each SKU has only one barcode
-  return {
-    number: barcode.obj.value.barcode,
-    type: barcode.obj.value.subType
-  }
+/**
+ * If more than one barcode exists on the line item, returns the information
+ * from the non-UPCE barcode.
+ * @param {import('./orders').LineItem} lineItem 
+ * @returns {{number: string, type: string}}
+ */
+const getBarcodeInfoFromLineItem = lineItem => {
+  // @ts-ignore casting to known type
+  /** @type {{name: any, value: Array<import('./orders').Barcode>} | undefined} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
+  if (!barcodes || barcodes.value.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has no barcodes`)
+
+  const nonUpceBarcode = barcodes.value.find(barcode => barcode.obj.value.subType !== 'UPCE')
+  if (nonUpceBarcode) return formatBarcodeInfo(nonUpceBarcode)
+  return formatBarcodeInfo(barcodes.value[0])
 }
 
 module.exports = {

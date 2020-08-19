@@ -249,18 +249,79 @@ describe('formatJestaTaxDescriptionFromBoldTaxDescription', () => {
 })
 
 describe('getBarcodeInfoFromLineItem', () => {
-  // @ts-ignore incomplete line for testing only barcode related things
-  const { number, type } = getBarcodeInfoFromLineItem(incompleteLineItem)
+  const upceBarcode = {
+    obj: {
+      value: {
+        subType: 'UPCE',
+        barcode: '89950453-01'
+      }
+    }
+  }
 
-  it('returns the correct barcode number', () => {
+  const upcaBarcode = {
+    obj: {
+      value: {
+        subType: 'UPCA',
+        barcode: '557391553'
+      }
+    }
+  }
+
+  it('returns the barcode number and type of the barcode when the given line item has a single barcode which is of type UPCE', () => {
+    const lineItemWithOneUpceBarcode = {
+      variant: {
+        attributes: [
+          {
+            name: 'barcodes',
+            value: [upceBarcode]
+          }
+        ]
+      }
+    }
+
+    // @ts-ignore incomplete line for testing only barcode related things
+    const { number, type } = getBarcodeInfoFromLineItem(lineItemWithOneUpceBarcode)
     expect(number).toBe('89950453-01')
-  })
-
-  it('returns the correct type', () => {
     expect(type).toBe('UPCE')
   })
 
-  it('throws an informative error if the line item lacks a barcode', () => {
+  it('returns the barcode number and type of the barcode when the given line item has a single barcode which is of type UPCA', () => {
+    const lineItemWithOneUpcaBarcode = {
+      variant: {
+        attributes: [
+          {
+            name: 'barcodes',
+            value: [upcaBarcode]
+          }
+        ]
+      }
+    }
+
+    // @ts-ignore incomplete line for testing only barcode related things
+    const { number, type } = getBarcodeInfoFromLineItem(lineItemWithOneUpcaBarcode)
+    expect(number).toBe('557391553')
+    expect(type).toBe('UPCA')
+  })
+
+  it('returns the barcode number and type of the UPCA barcode when the given line item has both a UPCE barcode and a UPCA barcode', () => {
+    const lineItemWithTwoBarcodes = {
+      variant: {
+        attributes: [
+          {
+            name: 'barcodes',
+            value: [upcaBarcode, upceBarcode]
+          }
+        ]
+      }
+    }
+
+    // @ts-ignore incomplete line for testing only barcode related things
+    const { number, type } = getBarcodeInfoFromLineItem(lineItemWithTwoBarcodes)
+    expect(number).toBe('557391553')
+    expect(type).toBe('UPCA')
+  })
+
+  it('throws an informative error if the line item has no barcodes', () => {
     const lineItemThatLacksBarcodes = {...incompleteLineItem, variant: { sku: '-123', attributes: [] } }
     // @ts-ignore incomplete line for testing only barcode related things
     expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksBarcodes)).toThrow('SKU -123 has no barcodes')
