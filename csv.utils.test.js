@@ -237,6 +237,20 @@ describe('getParsedTaxesFromLineItem', () => {
       }
     ])
   })
+
+  it('rounds to four decimal places', () => {
+    const lineItemWithVeryPreciseTaxes = {
+      custom: {
+        fields: {
+          itemTaxes: JSON.stringify({
+            GST: 12.123456789
+          })
+        }
+      }
+    }
+    // @ts-ignore incomplete line for testing only tax related things
+    expect(getParsedTaxesFromLineItem(lineItemWithVeryPreciseTaxes)).toEqual([ { description: 'GST CANADA', dollarAmount: 12.1235 } ])
+  })
 })
 
 describe('formatJestaTaxDescriptionFromBoldTaxDescription', () => {

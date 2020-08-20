@@ -201,7 +201,9 @@ const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} 
 const generateCsvHeaderNamesString = () => {
   const options = {
     ...GENERAL_CSV_OPTIONS,
-    header: true
+    header: true,
+    quote: '', // JESTA can't process the CSV if its headers are quoted
+    escapedQuote: ''
   }
 
   const headerHeaders = parse({}, { ...options, fields: HEADER_ROWS })

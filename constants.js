@@ -258,7 +258,8 @@ const MISC_ROWS = [
 
 const GENERAL_CSV_OPTIONS = {
   header: false,
-  quote: '',
+  quote: '"',
+  escapedQuote: '""',
   eol: '\r\n' // The CSVs will be processed by a Windows machine
 }
 
