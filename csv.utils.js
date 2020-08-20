@@ -107,10 +107,10 @@ const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ 
  */
 const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem, /** @type {import('./orders').StateCode} */ stateCode) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
-  return Object.entries(taxes).map(([boldTaxDescription, dollarAmount]) => ({
+  return Object.entries(taxes).map(([boldTaxDescription, unroundedDollarAmount]) => ({
     // @ts-ignore casting to exact type
     description: formatJestaTaxDescriptionFromBoldTaxDescription(/** @type {import('./orders').BoldTaxDescription} */ boldTaxDescription, stateCode),
-    dollarAmount: Number(dollarAmount)
+    dollarAmount: currency(unroundedDollarAmount, { precision: 4 }).value
   }))
 }
 
