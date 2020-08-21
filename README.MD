@@ -64,9 +64,10 @@ source deploy.sh
   - NOTIFICATIONS_BEARER_TOKEN
   - HEALTHZ_AUTHORIZATION
   - SEND_NOTIFICATIONS_INTERVAL
-  - SHOULD_RUN_JOBS
   - NEWRELIC_APP_NAME
   - NEWRELIC_LICENSE_KEY
+  - SHOULD_UPLOAD_ORDERS
+  - SHOULD_SEND_NOTIFICATIONS
 
 - Note: Each added environmntal variable should be set in '.env-template', 'deployment.yaml' and 'deploy.sh' and toolchain pipeline.
 
