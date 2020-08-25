@@ -12,7 +12,7 @@ const timeoutSymbol = Symbol('timeout')
 const jobTotalTimeout = (MAXIMUM_RETRIES + 1) *  JOB_TASK_TIMEOUT
 console.log(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
 
-let lastJobsRunTime = {
+const lastJobsRunTime = {
   createAndUploadCsvsJob: new Date(),
   sendOrderEmailNotificationJob: new Date()
 }
@@ -26,7 +26,7 @@ async function createAndUploadCsvsJob (orderUploadInterval) {
     console.time('Create and uploads CSVs')
     try {
       const result = await Promise.race([
-        await createAndUploadCsvs(),
+        createAndUploadCsvs(),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
