@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
- 
+const { MAXIMUM_RETRIES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -30,7 +30,7 @@ const NoResponse = Symbol.for('no-response')
  * @param {number} maxRetries 
  * @param {number} backoff in ms
  */
-function retry (fn, maxRetries = 3, backoff = 1000) {
+function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
   return ( /** @param {any[]} args */ async function (...args){
     let tries = 0
     let error = null
@@ -41,6 +41,7 @@ function retry (fn, maxRetries = 3, backoff = 1000) {
       response = NoResponse
       try {
         if (tries > 1) {
+          console.warn(`Retrying failed call to function ${fn.name} with arguments ${args}`)
           await sleep(tries * backoff)
         }
         response = await fn(...args)

@@ -2,6 +2,28 @@ const KEEP_ALIVE_INTERVAL = 300000 // 5 minutes in milliseconds
 
 const BACKOFF = 600000 // retry exponential backoff rate in milliseconds
 
+let JOB_TASK_TIMEOUT = 2 * 60 * 1000
+const jobTaskTimeoutFromEnv = Number(process.env.JOB_TASK_TIMEOUT)
+if (jobTaskTimeoutFromEnv) {
+  if (jobTaskTimeoutFromEnv > 0 && jobTaskTimeoutFromEnv < 10 * 60 * 1000) {
+    JOB_TASK_TIMEOUT = jobTaskTimeoutFromEnv
+  } else {
+    throw new Error(`Invalid JOB_TASK_TIMEOUT passed as environmental variable: ${jobTaskTimeoutFromEnv}`)
+  }
+}
+console.log('JOB_TASK_TIMEOUT set to: ', JOB_TASK_TIMEOUT)
+
+let MAXIMUM_RETRIES = 3
+let maximumRetriesFromEnv = Number(process.env.MAXIMUM_RETRIES)
+if (maximumRetriesFromEnv) {
+  if (maximumRetriesFromEnv > 0 && maximumRetriesFromEnv < 6) {
+    MAXIMUM_RETRIES = maximumRetriesFromEnv 
+  } else {
+    throw new Error(`Invalid MAXIMUM_RETRIES passed as environmental variable: ${maximumRetriesFromEnv}`)
+  }
+}
+console.log('MAXIMUM_RETRIES set to: ', MAXIMUM_RETRIES)
+
 const LOCALES_TO_JESTA_LANGUAGE_NUMBERS = {
   'en-CA': 1,
   'fr-CA': 3
@@ -303,5 +325,7 @@ module.exports = {
   TAXES_ROWS,
   TAXES_ROWS_ENUM,
   TENDER_ROWS,
-  TENDER_ROWS_ENUM
+  TENDER_ROWS_ENUM,
+  JOB_TASK_TIMEOUT,
+  MAXIMUM_RETRIES
 }
