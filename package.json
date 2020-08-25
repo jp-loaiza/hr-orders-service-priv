@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.6",
+    "@types/newrelic": "^6.4.0",
     "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.7",
     "eslint": "^6.8.0"

@@ -12,6 +12,11 @@ const timeoutSymbol = Symbol('timeout')
 const jobTotalTimeout = (MAXIMUM_RETRIES + 1) *  JOB_TASK_TIMEOUT
 console.log(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
 
+let lastJobsRunTime = {
+  createAndUploadCsvsJob: new Date(),
+  sendOrderEmailNotificationJob: new Date()
+}
+
 /**
  * @param {number} orderUploadInterval interval between each job in ms
  */
@@ -32,6 +37,7 @@ async function createAndUploadCsvsJob (orderUploadInterval) {
     }
     console.timeEnd('Create and uploads CSVs')
     await sleep(orderUploadInterval)
+    lastJobsRunTime.createAndUploadCsvsJob = new Date()
   }
 }
 
@@ -71,6 +77,7 @@ async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
       console.error('Failed to send orders to CRM: ', error)
     }
     await sleep(sendNotificationsInterval)
+    lastJobsRunTime.createAndUploadCsvsJob = new Date()
   }
 }
 
@@ -86,4 +93,9 @@ if (process.env.SHOULD_SEND_NOTIFICATIONS === 'true') {
   console.log('Processing notifications job at interval: ', sendNotificationsInterval)
   if (!(sendNotificationsInterval > 0)) throw new Error('SEND_NOTIFICATIONS_INTERVAL must be a positive number')
   sendOrderEmailNotificationJob(sendNotificationsInterval)
+}
+
+module.exports = {
+  getJobsLastExecutionTime: () => lastJobsRunTime,
+  jobTotalTimeout
 }
