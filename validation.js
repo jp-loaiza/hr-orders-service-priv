@@ -71,14 +71,8 @@ const orderSchema = {
         fields: {
           type: 'object',
           required: [
-            'carrierId',
-            'paymentIsReleased',
-            'returnsAreFree',
-            'shippingIsRush',
-            'signatureIsRequired',
-            'shippingServiceType',
             'shippingTaxes',
-            'transactionTotal'
+            'loginRadiusUid'
           ]
         }
       },
