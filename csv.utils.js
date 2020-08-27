@@ -151,6 +151,14 @@ const getBarcodeInfoFromLineItem = lineItem => {
   return formatBarcodeInfo(barcodes.value[0])
 }
 
+/**
+ * @param {{payments: Array<import('./orders').Payment>}} paymentInfo 
+ * @returns Sum of the payments in cents
+ */
+const getPaymentTotalFromPaymentInfo = paymentInfo => (
+  paymentInfo.payments.reduce((total, payment) => total + payment.obj.amountPlanned.centAmount, 0)
+)
+
 module.exports = {
   convertAndFormatDate,
   convertToDollars,
@@ -164,6 +172,7 @@ module.exports = {
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
   getPosEquivelenceFromPayment,
   getShippingTaxAmountsFromShippingTaxes,

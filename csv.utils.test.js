@@ -8,6 +8,7 @@ const {
   getCardReferenceNumberFromPayment,
   getLastFourDigitsOfCardFromPayment,
   getLineTotalTaxFromLineItem,
+  getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
@@ -362,5 +363,56 @@ describe('sumMoney', () => {
     expect(sumMoney([0.00004])).toEqual(0)
     expect(sumMoney([0.00005])).toEqual(0.0001)
     expect(sumMoney([0.00006])).toEqual(0.0001)
+  })
+})
+
+describe('getPaymentTotalFromPaymentInfo', () => {
+  const payment1 = {
+    obj: {
+      amountPlanned: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 1000,
+        fractionDigits: 2
+      }
+    }
+  }
+
+  const payment2 = {
+    obj: {
+      amountPlanned: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 2000,
+        fractionDigits: 2
+      }
+    }
+  }
+
+  it('returns the payment amount in cents when given a payment info object that has only one payment', () => {
+    const paymentInfo = {
+      payments: [payment1]
+    }
+
+    // @ts-ignore incomplete payment info object for testing purposes
+    expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(1000)
+  })
+
+
+  it('returns the sum of the payments in cents when given a payment info object that has only two payments', () => {
+    const paymentInfo = {
+      payments: [payment1, payment2]
+    }
+
+    // @ts-ignore incomplete payment info object for testing purposes
+    expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(3000)
+  })
+
+  it('returns 0 when given a payment info object that has no payments', () => {
+    const paymentInfo = {
+      payments: []
+    }
+
+    expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(0)
   })
 })
