@@ -25,11 +25,13 @@ const {
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
   getPosEquivelenceFromPayment,
   formatCardExpiryDateFromPayment,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
+  getSignatureIsRequiredFromTaxedPrice,
   getTaxTotalFromTaxedPrice
 } = require('./csv.utils')
 
@@ -46,6 +48,8 @@ const getHeaderObjectFromOrder = ({
   customerEmail,
   locale,
   orderNumber,
+  paymentInfo,
+  paymentState,
   shippingAddress,
   shippingInfo,
   taxedPrice
@@ -71,12 +75,12 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.BILL_TO_COUNTRY_ID]: billingAddress.country,
   [HEADER_ROWS_ENUM.BILL_TO_HOME_PHONE]: billingAddress.phone || shippingAddress.phone, // From JESTA's docs: "Both [BILL_TO_HOME_PHONE and SHIP_TO_HOME_PHONE] are copied from this field"
   [HEADER_ROWS_ENUM.EMAIL_ADDRESS]: customerEmail,
-  [HEADER_ROWS_ENUM.CARRIER_ID]: custom.fields.carrierId,
-  [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: custom.fields.shippingIsRush ? 'Y' : 'N',
+  [HEADER_ROWS_ENUM.CARRIER_ID]: custom.fields.carrierId, // TODO: update
+  [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: custom.fields.shippingIsRush ? 'Y' : 'N', // TODO: update
   [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
   [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
   [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
-  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(custom.fields.transactionTotal.centAmount),
+  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(getPaymentTotalFromPaymentInfo(paymentInfo)),
   [HEADER_ROWS_ENUM.ORDER_DATE]: convertAndFormatDate(createdAt),
   [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
   [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0],
@@ -85,11 +89,11 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
   [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
-  [HEADER_ROWS_ENUM.SERVICE_TYPE]: custom.fields.shippingServiceType,
+  [HEADER_ROWS_ENUM.SERVICE_TYPE]: custom.fields.shippingServiceType, // TODO: update
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
-  [HEADER_ROWS_ENUM.FREE_RETURN_IND]: custom.fields.returnsAreFree ? 'Y' : 'N',
-  [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: custom.fields.signatureIsRequired ? 'Y' : 'N',
-  [HEADER_ROWS_ENUM.RELEASED]: custom.fields.paymentIsReleased ? 'Y' : 'N'
+  [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'Y', // All returns are free
+  [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: getSignatureIsRequiredFromTaxedPrice(taxedPrice) ? 'Y' : 'N',
+  [HEADER_ROWS_ENUM.RELEASED]: paymentState === 'Paid' ? 'Y' : 'N' // TODO: confirm this logic is correct
 })
 
 const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({

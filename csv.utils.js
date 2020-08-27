@@ -102,6 +102,8 @@ const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawSh
 
 const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount - taxedPrice.totalNet.centAmount
 
+const getSignatureIsRequiredFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount > 50000
+
 /**
  * @returns {Array<import('./orders').ParsedTax>}
  */
@@ -177,6 +179,7 @@ module.exports = {
   getPosEquivelenceFromPayment,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
+  getSignatureIsRequiredFromTaxedPrice,
   getTaxTotalFromTaxedPrice,
   sumMoney
 }
