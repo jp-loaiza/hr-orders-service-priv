@@ -10,6 +10,7 @@ const {
   getLineTotalTaxFromLineItem,
   getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
+  getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
@@ -414,5 +415,33 @@ describe('getPaymentTotalFromPaymentInfo', () => {
     }
 
     expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(0)
+  })
+})
+
+describe('getShippingInfoFromShippingName', () => {
+  it('returns correctly parsed carrier ID when given a valid shipping name', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').carrierId).toEqual('CP')
+    expect(getShippingInfoFromShippingName('FedEx Ground').carrierId).toEqual('FDX')
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').carrierId).toEqual('PRL')
+  })
+
+  it('returns correctly parsed shipping service type when given a valid shipping name', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingServiceType).toEqual('EXPEDITED PARCEL')
+    expect(getShippingInfoFromShippingName('FedEx Ground').shippingServiceType).toEqual('GROUND')
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toEqual('EXPRESS')
+  })
+
+  it('classifies all shipping types as rush except for `Canada Post Expedited`', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toEqual(false)
+    expect(getShippingInfoFromShippingName('FedEx Ground').shippingIsRush).toEqual(true)
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toEqual(true)
+  })
+
+  it('throws an error when given a shipping name that lacks a valid carrier name', () => {
+    expect(() => getShippingInfoFromShippingName('INVALID_CARRIER Expedited')).toThrow('Shipping name \'INVALID_CARRIER Expedited\' is invalid: does not include recognized carrier')
+  })
+
+  it('throws an error when given a shipping name that lacks a valid shipping service type', () => {
+    expect(() => getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE')).toThrow('Shipping name \'Canada Post INVALID_SHIPPING_TYPE\' is invalid: does not include recognized shipping service type')
   })
 })
