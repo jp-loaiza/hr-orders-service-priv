@@ -110,13 +110,11 @@ const createAndUploadCsvs = async () => {
     console.error('Unable to process orders:')
     console.error(err)
   } finally {
-    try {
-      if (sftp) {
-        await sftp.end()
-      }
-    } catch (err) {
-      console.error('Unable to close SFTP connection:')
-      console.error(err)
+    if (sftp) {
+      await sftp.end()
+        .catch(function (err) {
+          console.error('Unable to close SFTP connection: ', err)
+        })
     }
   }
 }

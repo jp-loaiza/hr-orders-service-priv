@@ -305,6 +305,9 @@ const SENT_TO_CRM_STATUS = {
 // the correct template when Division specific templates exist."
 const EMAIL_API_OWNER_ID = 'F6UJ9A000002' // Division 01 (Canada)
 
+// ms
+const FETCH_ABORT_TIMEOUT = 120 * 1000
+
 module.exports = {
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,
@@ -327,5 +330,6 @@ module.exports = {
   TENDER_ROWS,
   TENDER_ROWS_ENUM,
   JOB_TASK_TIMEOUT,
-  MAXIMUM_RETRIES
+  MAXIMUM_RETRIES,
+  FETCH_ABORT_TIMEOUT
 }
