@@ -68,6 +68,8 @@ source deploy.sh
   - NEWRELIC_LICENSE_KEY
   - SHOULD_UPLOAD_ORDERS
   - SHOULD_SEND_NOTIFICATIONS
+  - JOB_TASK_TIMEOUT
+  - MAXIMUM_RETRIES
 
 - Note: Each added environmntal variable should be set in '.env-template', 'deployment.yaml' and 'deploy.sh' and toolchain pipeline.
 

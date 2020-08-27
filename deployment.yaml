@@ -132,8 +132,18 @@ spec:
             configMapKeyRef:
               key: NEWRELIC_APP_NAME
               name: hr-orders-service
-        - name: NEWRELIC_LICENSE_KEY 
+        - name: NEWRELIC_LICENSE_KEY
           valueFrom:
             secretKeyRef:
               key: NEWRELIC_LICENSE_KEY
               name: hr-orders-service             
+        - name: JOB_TASK_TIMEOUT 
+          valueFrom:
+            secretKeyRef:
+              key: JOB_TASK_TIMEOUT
+              name: hr-orders-service
+        - name: MAXIMUM_RETRIES 
+          valueFrom:
+            secretKeyRef:
+              key: MAXIMUM_RETRIES
+              name: hr-orders-service
