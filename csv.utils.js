@@ -2,7 +2,11 @@ const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
-  JESTA_TAX_DESCRIPTIONS
+  CARRIER_IDS,
+  CARRIER_IDS_TO_NAMES,
+  JESTA_TAX_DESCRIPTIONS,
+  SHIPPING_SERVICE_TYPES,
+  SHIPPING_SERVICE_TYPES_TO_NAMES
 } = require('./constants')
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
@@ -102,6 +106,8 @@ const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawSh
 
 const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount - taxedPrice.totalNet.centAmount
 
+const getSignatureIsRequiredFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount > 50000
+
 /**
  * @returns {Array<import('./orders').ParsedTax>}
  */
@@ -151,6 +157,48 @@ const getBarcodeInfoFromLineItem = lineItem => {
   return formatBarcodeInfo(barcodes.value[0])
 }
 
+/**
+ * @param {{payments: Array<import('./orders').Payment>}} paymentInfo 
+ * @returns Sum of the payments in cents
+ */
+const getPaymentTotalFromPaymentInfo = paymentInfo => (
+  paymentInfo.payments.reduce((total, payment) => total + payment.obj.amountPlanned.centAmount, 0)
+)
+
+const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
+  if (!name) throw new Error('Shipping name is undefined')
+
+  for (const [carrierId, carrierName] of Object.entries(CARRIER_IDS_TO_NAMES)) {
+    if (name.includes(carrierName)) {
+      return carrierId
+    }
+  }
+  throw new Error(`Shipping name '${name}' is invalid: does not include recognized carrier`)
+}
+
+const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
+  if (!name) throw new Error('Shipping name is undefined')
+
+  for (const [shippingServiceType, shippingServiceName] of Object.entries(SHIPPING_SERVICE_TYPES_TO_NAMES)) {
+    if (name.includes(shippingServiceName)) {
+      return shippingServiceType
+    }
+  }
+  throw new Error(`Shipping name '${name}' is invalid: does not include recognized shipping service type`);
+}
+
+const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
+  const carrierId = getCarrierIdFromShippingName(name)
+  const shippingServiceType = getShippingServiceTypeFromShippingName(name)
+  const shippingIsRush = !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
+
+  return {
+    carrierId,
+    shippingServiceType,
+    shippingIsRush
+  }
+}
+
 module.exports = {
   convertAndFormatDate,
   convertToDollars,
@@ -164,10 +212,13 @@ module.exports = {
   getLineOneFromAddress,
   getLineTotalTaxFromLineItem,
   getLineTwoFromAddress,
+  getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
   getPosEquivelenceFromPayment,
+  getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
+  getSignatureIsRequiredFromTaxedPrice,
   getTaxTotalFromTaxedPrice,
   sumMoney
 }

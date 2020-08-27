@@ -8,7 +8,9 @@ const {
   getCardReferenceNumberFromPayment,
   getLastFourDigitsOfCardFromPayment,
   getLineTotalTaxFromLineItem,
+  getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
+  getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
@@ -362,5 +364,84 @@ describe('sumMoney', () => {
     expect(sumMoney([0.00004])).toEqual(0)
     expect(sumMoney([0.00005])).toEqual(0.0001)
     expect(sumMoney([0.00006])).toEqual(0.0001)
+  })
+})
+
+describe('getPaymentTotalFromPaymentInfo', () => {
+  const payment1 = {
+    obj: {
+      amountPlanned: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 1000,
+        fractionDigits: 2
+      }
+    }
+  }
+
+  const payment2 = {
+    obj: {
+      amountPlanned: {
+        type: 'centPrecision',
+        currencyCode: 'CAD',
+        centAmount: 2000,
+        fractionDigits: 2
+      }
+    }
+  }
+
+  it('returns the payment amount in cents when given a payment info object that has only one payment', () => {
+    const paymentInfo = {
+      payments: [payment1]
+    }
+
+    // @ts-ignore incomplete payment info object for testing purposes
+    expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(1000)
+  })
+
+
+  it('returns the sum of the payments in cents when given a payment info object that has only two payments', () => {
+    const paymentInfo = {
+      payments: [payment1, payment2]
+    }
+
+    // @ts-ignore incomplete payment info object for testing purposes
+    expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(3000)
+  })
+
+  it('returns 0 when given a payment info object that has no payments', () => {
+    const paymentInfo = {
+      payments: []
+    }
+
+    expect(getPaymentTotalFromPaymentInfo(paymentInfo)).toBe(0)
+  })
+})
+
+describe('getShippingInfoFromShippingName', () => {
+  it('returns correctly parsed carrier ID when given a valid shipping name', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').carrierId).toEqual('CP')
+    expect(getShippingInfoFromShippingName('FedEx Ground').carrierId).toEqual('FDX')
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').carrierId).toEqual('PRL')
+  })
+
+  it('returns correctly parsed shipping service type when given a valid shipping name', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingServiceType).toEqual('EXPEDITED PARCEL')
+    expect(getShippingInfoFromShippingName('FedEx Ground').shippingServiceType).toEqual('GROUND')
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toEqual('EXPRESS')
+  })
+
+  it('classifies all shipping types as rush except for `Canada Post Expedited`', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toEqual(false)
+    expect(getShippingInfoFromShippingName('FedEx Ground').shippingIsRush).toEqual(true)
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toEqual(true)
+  })
+
+  it('throws an error when given a shipping name that lacks a valid carrier name', () => {
+    expect(() => getShippingInfoFromShippingName('INVALID_CARRIER Expedited')).toThrow('Shipping name \'INVALID_CARRIER Expedited\' is invalid: does not include recognized carrier')
+  })
+
+  it('throws an error when given a shipping name that lacks a valid shipping service type', () => {
+    expect(() => getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE')).toThrow('Shipping name \'Canada Post INVALID_SHIPPING_TYPE\' is invalid: does not include recognized shipping service type')
   })
 })
