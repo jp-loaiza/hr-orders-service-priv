@@ -1,6 +1,7 @@
 const fetch = require('node-fetch').default
+const AbortController = require('abort-controller')
 const { fetchFullOrder } = require('./commercetools')
-const { EMAIL_API_OWNER_ID } = require('./constants')
+const { EMAIL_API_OWNER_ID, FETCH_ABORT_TIMEOUT } = require('./constants')
 
 const { EMAIL_API_USERNAME,
   EMAIL_API_URL,
@@ -38,14 +39,28 @@ const sendOrderEmailNotificationByOrderId = async orderId => {
     throw new Error(`Order could not be fetched from commercetools: ${err.message}`)
   }
 
+  // @ts-ignore
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, FETCH_ABORT_TIMEOUT)
+
   const response = await fetch(EMAIL_API_URL, {
     body: JSON.stringify(formatEmailApiRequestBodyFromOrder(order)),
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Basic ${Buffer.from(EMAIL_API_USERNAME + ':' + EMAIL_API_PASSWORD).toString('base64')}`
     }, 
-    method: 'POST'
+    method: 'POST',
+    signal: controller.signal
   })
+    .catch(error => {
+      if (error.name === 'AbortError') {
+        console.log('Send order email notification request was aborted.')
+      }
+      throw error
+    })
+    .finally(() => { clearTimeout(timeout) })
   if (response.status === 200) return true
   const error = new Error(`Email API service responded with status ${response.status}: ${response}.`)
   console.error(error)

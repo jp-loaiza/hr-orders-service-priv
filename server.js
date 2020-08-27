@@ -9,6 +9,7 @@ require('./jobs')
 const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
+const { getJobsLastExecutionTime, jobTotalTimeout } = require('./jobs')
 
 const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
@@ -21,12 +22,9 @@ app.use(bodyParser.json())
 app.disable('x-powered-by')
 
 /**
- * Can be used to setup a health endpoint
- * Disabled for now for reducing attack vektor
+ * @param {Express.Response} res 
  */
-// @ts-ignore
-// eslint-disable-next-line no-unused-vars
-async function health (res) {
+async function checkServicesHealth (res) {
   try {
     const sftp = new client()
     console.log('Initiating health check...')
@@ -49,12 +47,33 @@ async function health (res) {
   }
 }
 
+/**
+ * @param {Express.Response} res 
+ */
+function checkJobsHealth (res) {
+  const jobsLastExecutionTime = getJobsLastExecutionTime()
+  const currentTime = new Date()
+  for (const job in jobsLastExecutionTime) {
+    const lastExectuionTime = (jobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'} */ (job)]).getTime()
+    if ((currentTime.getTime() - lastExectuionTime) > jobTotalTimeout) {
+      console.error(`${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExectuionTime}.`)
+      res.status(500).send('failed')
+      return false
+    }
+  }
+  return true
+}
+
 app.get('/healthz', async function(req, res) {
   const healthzAuthorization = process.env.HEALTHZ_AUTHORIZATION
   const authorization = req.headers.authorization
   if (authorization && healthzAuthorization && authorization === healthzAuthorization) {
     console.log('Kubernetes initiating liveliness probe...')
-    await health(res)
+    // jobs have not ran in the expected time
+    if(checkJobsHealth(res)) {
+      // some of the outgoing calls cannot be made
+      await checkServicesHealth(res)
+    }
   } else {
     res.status(404).send()
   }

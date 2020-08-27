@@ -12,6 +12,8 @@ kubectl create configmap hr-orders-service \
   --from-literal=SHOULD_SEND_NOTIFICATIONS=$SHOULD_SEND_NOTIFICATIONS \
   --from-literal=SEND_NOTIFICATIONS_INTERVAL=$SEND_NOTIFICATIONS_INTERVAL \
   --from-literal=NEWRELIC_APP_NAME=$NEWRELIC_APP_NAME \
+  --from-literal=MAXIMUM_RETRIES=$MAXIMUM_RETRIES \
+  --from-literal=JOB_TASK_TIMEOUT=$JOB_TASK_TIMEOUT \
   -o yaml --dry-run | kubectl apply -f -
 
 # update existing secret
