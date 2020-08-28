@@ -184,7 +184,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => 
       return shippingServiceType
     }
   }
-  throw new Error(`Shipping name '${name}' is invalid: does not include recognized shipping service type`);
+  throw new Error(`Shipping name '${name}' is invalid: does not include recognized shipping service type`)
 }
 
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {

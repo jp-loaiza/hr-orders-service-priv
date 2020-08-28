@@ -1,3 +1,5 @@
+const path = require('path')
+const { readFileSync } = require('fs')
 const { generateCsvStringFromOrder } = require('./csv')
 
 const completeOrderEnglishUntyped = {
@@ -594,11 +596,20 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
 "T","00990",1,"23551711",1,110.5,"HST-ON"
 "N","00990",1,"23551711",992.14,"05","41","1122",,"1111","480"
 `.split('\n').join('\r\n')
+    // @ts-ignore
     expect(generateCsvStringFromOrder(orderWithFailedPayment)).toEqual(expectedOrderCsv)
   })
 
-  // Placeholders
-  test.todo('returns the correct CSV string when given an order that has only one line item of one quantity')
-  test.todo('returns the correct CSV string when given an order that has only one line item of a quantity greater than one')
-  test.todo('returns the correct CSV string when given an order that has a gift')
+  it('returns strings that match example CSVs that were processed correctly by JESTA', () => {
+    const exampleOrderNumbers = ['24600493', '24600955', '24839685', '24845933', '25068048', '24596603', '24738417', '24846490']
+
+    for (const orderNumber of exampleOrderNumbers) {
+      const rawOrderJson = readFileSync(path.join(__dirname, 'example-orders', `${orderNumber}.json`), 'utf8')
+      const parsedOrderJson = JSON.parse(rawOrderJson)
+      const expectedOrderCsvString = readFileSync(path.join(__dirname, 'example-orders', `${orderNumber}.csv`), 'utf8')
+      const actualOrderCsvString = generateCsvStringFromOrder(parsedOrderJson)
+
+      expect(actualOrderCsvString).toEqual(expectedOrderCsvString)
+    }
+  })
 })

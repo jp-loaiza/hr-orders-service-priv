@@ -1,0 +1,1287 @@
+{
+    "type": "Order",
+    "id": "3f738305-a705-48e1-8e57-fe60a3a759a0",
+    "version": 6,
+    "lastMessageSequenceNumber": 4,
+    "createdAt": "2020-08-24T19:31:57.167Z",
+    "lastModifiedAt": "2020-08-24T19:32:11.919Z",
+    "lastModifiedBy": {
+        "clientId": "kCdIHF2Ojlv7-yp1Dq2itE4O",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+        "isPlatformClient": false
+    },
+    "orderNumber": "24845933",
+    "customerId": "44cac6aa-82f1-4efa-902d-f1721177f29a",
+    "customerEmail": "ss_discounttest@mailinator.com",
+    "customerGroup": {
+        "typeId": "customer-group",
+        "id": "3a618148-2a21-491d-9cb3-5ef02183189f"
+    },
+    "locale": "en-CA",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "CAD",
+        "centAmount": 58473,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 58473,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 67230,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.05,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2824,
+                    "fractionDigits": 2
+                },
+                "name": "GST"
+            },
+            {
+                "rate": 0.09975,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 5633,
+                    "fractionDigits": 2
+                },
+                "name": "QST"
+            }
+        ]
+    },
+    "country": "CA",
+    "orderState": "Confirmed",
+    "shipmentState": "Pending",
+    "paymentState": "Paid",
+    "syncInfo": [],
+    "returnInfo": [],
+    "shippingInfo": {
+        "shippingMethodName": "Canada Post XpressPost",
+        "price": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 2000,
+            "fractionDigits": 2
+        },
+        "shippingRate": {
+            "price": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2000,
+                "fractionDigits": 2
+            },
+            "tiers": []
+        },
+        "taxRate": {
+            "name": "",
+            "amount": 0.14975,
+            "includedInPrice": false,
+            "country": "CA",
+            "subRates": [
+                {
+                    "name": "GST",
+                    "amount": 0.05
+                },
+                {
+                    "name": "QST",
+                    "amount": 0.09975
+                }
+            ]
+        },
+        "deliveries": [],
+        "taxedPrice": {
+            "totalNet": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2000,
+                "fractionDigits": 2
+            },
+            "totalGross": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2300,
+                "fractionDigits": 2
+            }
+        },
+        "shippingMethodState": "MatchesCart"
+    },
+    "taxMode": "ExternalAmount",
+    "inventoryMode": "None",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "origin": "Customer",
+    "lineItems": [
+        {
+            "id": "1a806be5-a7a7-4183-853b-cf9ae6ceabf0",
+            "productId": "50af2b85-00c9-4432-aaa3-69a287dc3c65",
+            "name": {
+                "fr-CA": "Chemise habillée en coton extensible de coupe contemporaine",
+                "en-CA": "Contemporary Fit Stretch-Cotton Dress Shirt"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20047537",
+                "fr-CA": "20047537"
+            },
+            "variant": {
+                "id": 11,
+                "sku": "-2893170",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 33699,
+                            "fractionDigits": 2
+                        },
+                        "id": "22c1246f-87d2-480b-b76d-728cc2605b8c",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceChangeId": "4175",
+                                "processDateCreated": "2019-10-08T15:35:28.000Z",
+                                "priceType": "permanentMarkdown"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20047537?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "fr-CA": "Emporio Armani",
+                            "en-CA": "Emporio Armani"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "fr-CA": "<li> Col italien\n<li> Poignets biseautés boutonnés\n<li> Étiquette de marque sur la couture gauche",
+                            "en-CA": "<li> Spread collar\n<li> Single button mitred cuffs\n<li> Logo tab on left side seam"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "fr-CA": "<li> 97 % coton, 3 % élasthanne\n<li> Blanche",
+                            "en-CA": "<li> 97% cotton, 3% elastane\n<li> White"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "fr-CA": "<li> Coupe contemporaine",
+                            "en-CA": "<li> Contemporary fit\n"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "fr-CA": "<li> Lavage à la machine à l¿eau froide\n<li> Séchage à plat\n<li> Repassage à basse température\n<li> Nettoyage à sec possible",
+                            "en-CA": "<li> Machine wash, cold\n<li> Dry flat\n<li> Iron, low\n<li> Dry clean safe"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "fr-CA": "",
+                            "en-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "FA-19"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "41SS0L 415F1"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "41SS0L 415F1346834Emporio Armani"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2019-10-18T06:18:15.000Z"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "White",
+                            "fr-CA": "Blanc"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "White",
+                            "fr-CA": "Blanc"
+                        }
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "180"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:07:54.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "fr-CA": "M",
+                            "en-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 3
+                    },
+                    {
+                        "name": "onSale",
+                        "value": true
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 45000,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "155047bc-3461-45db-aa69-a50ff2de59c9",
+                                "obj": {
+                                    "id": "155047bc-3461-45db-aa69-a50ff2de59c9",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "8055180953945",
+                                    "value": {
+                                        "id": "8055180953945",
+                                        "styleId": "20047537",
+                                        "skuId": "-2893170",
+                                        "subType": "EAN",
+                                        "barcode": "8055180953945",
+                                        "lastModifiedDate": 1559535461000
+                                    },
+                                    "createdAt": "2020-03-31T17:13:39.079Z",
+                                    "lastModifiedAt": "2020-08-08T18:30:32.520Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            },
+                            {
+                                "typeId": "key-value-document",
+                                "id": "fecafd2a-c478-48c5-a7f4-ceb66fd2c159",
+                                "obj": {
+                                    "id": "fecafd2a-c478-48c5-a7f4-ceb66fd2c159",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89949589-03",
+                                    "value": {
+                                        "id": "89949589-03",
+                                        "styleId": "20047537",
+                                        "skuId": "-2893170",
+                                        "subType": "UPCE",
+                                        "barcode": "89949589-03",
+                                        "lastModifiedDate": 1570565112000
+                                    },
+                                    "createdAt": "2020-03-31T17:23:36.913Z",
+                                    "lastModifiedAt": "2020-08-09T01:00:14.317Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 33699,
+                    "fractionDigits": 2
+                },
+                "id": "22c1246f-87d2-480b-b76d-728cc2605b8c",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceChangeId": "4175",
+                        "processDateCreated": "2019-10-08T15:35:28.000Z",
+                        "priceType": "permanentMarkdown"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPrice": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 25274,
+                    "fractionDigits": 2
+                },
+                "includedDiscounts": [
+                    {
+                        "discount": {
+                            "typeId": "cart-discount",
+                            "id": "38abe462-9374-420b-88cf-af67a7b9cfca"
+                        },
+                        "discountedAmount": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 8425,
+                            "fractionDigits": 2
+                        }
+                    }
+                ]
+            },
+            "discountedPricePerQuantity": [
+                {
+                    "quantity": 1,
+                    "discountedPrice": {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 25274,
+                            "fractionDigits": 2
+                        },
+                        "includedDiscounts": [
+                            {
+                                "discount": {
+                                    "typeId": "cart-discount",
+                                    "id": "38abe462-9374-420b-88cf-af67a7b9cfca"
+                                },
+                                "discountedAmount": {
+                                    "type": "centPrecision",
+                                    "currencyCode": "CAD",
+                                    "centAmount": 8425,
+                                    "fractionDigits": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "taxRate": {
+                "name": "",
+                "amount": 0.14975,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "GST",
+                        "amount": 0.05
+                    },
+                    {
+                        "name": "QST",
+                        "amount": 0.09975
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:23:59.975Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 25274,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 25274,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 29059,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "isGift": false,
+                    "itemTaxes": "{\"GST\":12.637,\"QST\":25.210814999999997}"
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "ee1e32cf-9f53-4a4b-9f06-4bb42cde8737",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        },
+        {
+            "id": "fa3ed45c-b3b7-48ad-b166-83f5cbc02ee8",
+            "productId": "e36e80d6-1a18-475b-a42b-41345da9c994",
+            "name": {
+                "en-CA": "Slim Fit Dress Pants",
+                "fr-CA": "Pantalon habillé de coupe amincie"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20041790",
+                "fr-CA": "20041790"
+            },
+            "variant": {
+                "id": 81,
+                "sku": "-2786734",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 13699,
+                            "fractionDigits": 2
+                        },
+                        "id": "356192fd-a76a-4268-88e3-ed2981396167",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceType": "permanentMarkdown",
+                                "processDateCreated": "2019-07-04T10:11:47.000Z",
+                                "priceChangeId": "3941"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20041790?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "BOSS",
+                            "fr-CA": "BOSS"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Pleated front dress pants\n<li> 1/4 top pockets\n<li> Besom back pockets\n",
+                            "fr-CA": "<li> Pantalon habillé à plis\n<li> Poches en biais\n<li> Poches arrière passepoilées"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "<li> 100% virgin wool\n<li> Navy\n",
+                            "fr-CA": "<li> 100 % laine vierge\n<li> Bleu marine"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "<li> Slim fit\n<li> Cuffed bottoms\n\n",
+                            "fr-CA": "<li> Coupe amincie\n<li> Bords inférieurs à revers\n"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "<li> Dry clean only",
+                            "fr-CA": "<li> Nettoyer à sec seulement"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "SP-19"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "50404466"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "50404466010311BOSS"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "cf2ae4f7-7cdb-444d-b2a3-b60c1d31de68",
+                                "obj": {
+                                    "id": "cf2ae4f7-7cdb-444d-b2a3-b60c1d31de68",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89943790-68",
+                                    "value": {
+                                        "id": "89943790-68",
+                                        "styleId": "20041790",
+                                        "skuId": "-2786734",
+                                        "subType": "UPCE",
+                                        "barcode": "89943790-68",
+                                        "lastModifiedDate": 1562256264000
+                                    },
+                                    "createdAt": "2020-04-30T19:09:01.808Z",
+                                    "lastModifiedAt": "2020-08-08T19:57:28.158Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            },
+                            {
+                                "typeId": "key-value-document",
+                                "id": "f65eaf02-3485-4331-8a9c-51474ec1136c",
+                                "obj": {
+                                    "id": "f65eaf02-3485-4331-8a9c-51474ec1136c",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "747476271090",
+                                    "value": {
+                                        "id": "747476271090",
+                                        "styleId": "20041790",
+                                        "skuId": "-2786734",
+                                        "subType": "UPCA",
+                                        "barcode": "747476271090",
+                                        "lastModifiedDate": 1549074795000
+                                    },
+                                    "createdAt": "2020-03-31T17:11:16.186Z",
+                                    "lastModifiedAt": "2020-08-08T14:01:52.143Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2019-10-15T16:54:44.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "402"
+                    },
+                    {
+                        "name": "dimensionId",
+                        "value": "R"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:06:28.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "fr-CA": "36",
+                            "en-CA": "36"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "97"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Dark Blue",
+                            "fr-CA": "Bleu marine"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Blue",
+                            "fr-CA": "Bleu"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 21
+                    },
+                    {
+                        "name": "onSale",
+                        "value": true
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 27500,
+                            "fractionDigits": 2
+                        }
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 13699,
+                    "fractionDigits": 2
+                },
+                "id": "356192fd-a76a-4268-88e3-ed2981396167",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceType": "permanentMarkdown",
+                        "processDateCreated": "2019-07-04T10:11:47.000Z",
+                        "priceChangeId": "3941"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.14975,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "GST",
+                        "amount": 0.05
+                    },
+                    {
+                        "name": "QST",
+                        "amount": 0.09975
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:30:05.729Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 13699,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 13699,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 15750,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "isGift": false,
+                    "itemTaxes": "{\"GST\":6.849500000000001,\"QST\":13.664752499999999}"
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "ee1e32cf-9f53-4a4b-9f06-4bb42cde8737",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        },
+        {
+            "id": "0a47b9c5-bf53-4ca7-b3df-475cf6356040",
+            "productId": "65deceb2-ab1a-4d7d-8cda-a50c648301f5",
+            "name": {
+                "fr-CA": "T-shirt imprimé en coton",
+                "en-CA": "Tyson withTiger Printed Cotton T-Shirt"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20052889",
+                "fr-CA": "20052889"
+            },
+            "variant": {
+                "id": 6,
+                "sku": "-3000796",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 17500,
+                            "fractionDigits": 2
+                        },
+                        "id": "ad6435aa-0bd7-4f14-b6b9-0e927d0dfe46",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceType": "originalPrice"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20052889?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "fr-CA": "Bastille",
+                            "en-CA": "Bastille"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "fr-CA": "<li> Encolure ronde\n<li> Fabriqué en Italie",
+                            "en-CA": "<li> Crew neck\n<li> Made in Italy\n"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "fr-CA": "<li> 100 % coton\n<li> Détail imprimé \n<li> Blanche",
+                            "en-CA": "<li> 100% cotton\n<li> Silk-printed graphic\n<li> \"Tiger walking a tiger\" photograph print\n<li>White"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "fr-CA": "<li> Coupe contemporaine\n<li> Tour de poitrine : 104,1 cm (41 po)\n<li> Mesure(s) prise(s) sur la taille M",
+                            "en-CA": "<li> Contemporary fit\n<li> Chest circumference: 41 in\n<li> Measurement is based on size M\n"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "fr-CA": "<li> Laver à la main\n<li> Sécher à plat\n<li> Repasser à basse température\n<li> Ne pas nettoyer à sec",
+                            "en-CA": "<li> Hand wash\n<li> Dry flat\n<li> Iron, low\n<li> Do not dry clean"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "fr-CA": "",
+                            "en-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "SP-20"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "SS ICON SS"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "SS ICON SS355336Bastille"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "070"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:09:47.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "M",
+                            "fr-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2020-08-21T21:01:34.000Z"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "fr-CA": "Blanc/perle",
+                            "en-CA": "White/Pearl"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "fr-CA": "Blanc",
+                            "en-CA": "White"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 4
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 17500,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "8453e7dc-13f8-44b5-a201-50b5af91a9e2",
+                                "obj": {
+                                    "id": "8453e7dc-13f8-44b5-a201-50b5af91a9e2",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89955025-03",
+                                    "value": {
+                                        "id": "89955025-03",
+                                        "styleId": "20052889",
+                                        "skuId": "-3000796",
+                                        "subType": "UPCE",
+                                        "barcode": "89955025-03",
+                                        "lastModifiedDate": 1570197972000
+                                    },
+                                    "createdAt": "2020-03-31T17:18:14.488Z",
+                                    "lastModifiedAt": "2020-08-09T00:50:18.714Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 17500,
+                    "fractionDigits": 2
+                },
+                "id": "ad6435aa-0bd7-4f14-b6b9-0e927d0dfe46",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceType": "originalPrice"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.14975,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "GST",
+                        "amount": 0.05
+                    },
+                    {
+                        "name": "QST",
+                        "amount": 0.09975
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:30:52.556Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 17500,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 17500,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 20121,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "isGift": false,
+                    "itemTaxes": "{\"GST\":8.75,\"QST\":17.45625}"
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "ee1e32cf-9f53-4a4b-9f06-4bb42cde8737",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        }
+    ],
+    "customLineItems": [],
+    "transactionFee": true,
+    "discountCodes": [],
+    "cart": {
+        "typeId": "cart",
+        "id": "19273419-7cbb-4753-9492-5db7ef080bfe"
+    },
+    "custom": {
+        "type": {
+            "typeId": "type",
+            "id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada"
+        },
+        "fields": {
+            "paymentIsReleased": true,
+            "shippingIsRush": true,
+            "transactionTotal": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 67230,
+                "fractionDigits": 2
+            },
+            "signatureIsRequired": true,
+            "loginRadiusUid": "6dac98d38cc742429ee703cc919aa371",
+            "returnsAreFree": true,
+            "sentToCrmStatus": "SUCCESS",
+            "shippingServiceType": "XPRESSPOST",
+            "sentToOmsStatus": "SUCCESS",
+            "cartClaimed": true,
+            "carrierId": "CP",
+            "shippingTaxes": "{\"GST\":1,\"QST\":2}"
+        }
+    },
+    "paymentInfo": {
+        "payments": [
+            {
+                "typeId": "payment",
+                "id": "d7245370-a235-486b-bc30-bce718ecbd0d",
+                "obj": {
+                    "id": "d7245370-a235-486b-bc30-bce718ecbd0d",
+                    "version": 4,
+                    "lastMessageSequenceNumber": 3,
+                    "createdAt": "2020-08-24T19:31:56.853Z",
+                    "lastModifiedAt": "2020-08-24T19:31:59.299Z",
+                    "lastModifiedBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 67230,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "cybersource",
+                        "method": "credit",
+                        "name": {
+                            "en": "CyberSource : cybersource"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "c9a81e31-3fa6-4e73-8267-72cc3fd901b7"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "1111",
+                            "transaction_card_expiry": "10-2022",
+                            "user_agent_string": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0",
+                            "avs_result": "X",
+                            "auth_number": "100",
+                            "user_ip_address": "99.234.198.116",
+                            "transaction_card_type": "visa",
+                            "transaction_time": "",
+                            "bin": "4111",
+                            "transaction_date": ""
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "paid",
+                        "interfaceText": "paid"
+                    },
+                    "transactions": [
+                        {
+                            "id": "ce1a30e4-cf6e-4bdc-be3b-8a51ee0426e2",
+                            "timestamp": "2020-08-24T19:31:50.432Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 67230,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5982975132946948004009:Axj/7wSTRFZ1mEEiVZipABEg3ZtGbhi3ZS4rRnOh0oaiOEtUAngFRHCWqATw+EYNPAdsMmkmXoxYg4pwJyaIrOswgkSrMVIAxjB4",
+                            "state": "Success"
+                        },
+                        {
+                            "id": "3210105e-22ef-457e-8b48-21def9b2cbb6",
+                            "timestamp": "2020-08-24T19:31:59.000Z",
+                            "type": "Authorization",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 67230,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5982975132946948004009:Axj/7wSTRFZ1mEEiVZipABEg3ZtGbhi3ZS4rRnOh0oaiOEtUAngFRHCWqATw+EYNPAdsMmkmXoxYg4pwJyaIrOswgkSrMVIAxjB4",
+                            "state": "Success"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            }
+        ]
+    },
+    "shippingAddress": {
+        "firstName": "Sheetal",
+        "lastName": "Accept",
+        "streetName": "3-1900 Av De l'Église",
+        "postalCode": "H4E 1G8",
+        "city": "Montréal",
+        "state": "QC",
+        "country": "CA",
+        "phone": "3323332434",
+        "email": "ss_discounttest@mailinator.com",
+        "additionalAddressInfo": "3",
+        "key": "ee1e32cf-9f53-4a4b-9f06-4bb42cde8737"
+    },
+    "billingAddress": {
+        "firstName": "Sheetal",
+        "lastName": "Accept",
+        "streetName": "3-1900 Av De l'Église",
+        "postalCode": "H4E 1G8",
+        "city": "Montréal",
+        "state": "QC",
+        "country": "CA",
+        "phone": "3323332434",
+        "email": "ss_discounttest@mailinator.com",
+        "additionalAddressInfo": "3"
+    },
+    "itemShippingAddresses": [
+        {
+            "firstName": "Sheetal",
+            "lastName": "Accept",
+            "streetName": "3-1900 Av De l'Église",
+            "postalCode": "H4E 1G8",
+            "city": "Montréal",
+            "state": "QC",
+            "country": "CA",
+            "phone": "3323332434",
+            "email": "ss_discounttest@mailinator.com",
+            "additionalAddressInfo": "3",
+            "key": "ee1e32cf-9f53-4a4b-9f06-4bb42cde8737"
+        }
+    ],
+    "refusedGifts": []
+}

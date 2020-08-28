@@ -1,0 +1,1599 @@
+{
+    "type": "Order",
+    "id": "d065b794-4daf-4b11-bee5-ea1b5fb19bb2",
+    "version": 7,
+    "lastMessageSequenceNumber": 4,
+    "createdAt": "2020-08-24T19:43:30.127Z",
+    "lastModifiedAt": "2020-08-24T19:43:37.173Z",
+    "lastModifiedBy": {
+        "clientId": "kCdIHF2Ojlv7-yp1Dq2itE4O",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+        "isPlatformClient": false
+    },
+    "orderNumber": "24846490",
+    "customerEmail": "ejtestdc02@mailinator.com",
+    "anonymousId": "28af55cb-e21c-4b0d-b3fe-8ca540268df9",
+    "locale": "en-CA",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "CAD",
+        "centAmount": 52071,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 52071,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 58840,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.13,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 6444,
+                    "fractionDigits": 2
+                },
+                "name": "HST"
+            }
+        ]
+    },
+    "country": "CA",
+    "orderState": "Confirmed",
+    "shipmentState": "Pending",
+    "paymentState": "Paid",
+    "syncInfo": [],
+    "returnInfo": [],
+    "shippingInfo": {
+        "shippingMethodName": "FedEx Priority Overnight",
+        "price": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 2500,
+            "fractionDigits": 2
+        },
+        "shippingRate": {
+            "price": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2500,
+                "fractionDigits": 2
+            },
+            "tiers": []
+        },
+        "taxRate": {
+            "name": "",
+            "amount": 0.13,
+            "includedInPrice": false,
+            "country": "CA",
+            "subRates": [
+                {
+                    "name": "HST",
+                    "amount": 0.13
+                }
+            ]
+        },
+        "deliveries": [],
+        "taxedPrice": {
+            "totalNet": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2500,
+                "fractionDigits": 2
+            },
+            "totalGross": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2825,
+                "fractionDigits": 2
+            }
+        },
+        "shippingMethodState": "MatchesCart"
+    },
+    "taxMode": "ExternalAmount",
+    "inventoryMode": "None",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "origin": "Customer",
+    "lineItems": [
+        {
+            "id": "47c722ac-41d2-4c66-b756-edce7574dbda",
+            "productId": "607dc9da-6816-4227-abb3-8b30d7328eb3",
+            "name": {
+                "en-CA": "Cotton Socks",
+                "fr-CA": "Chaussettes en coton"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20008150",
+                "fr-CA": "20008150"
+            },
+            "variant": {
+                "id": 2,
+                "sku": "-2027853",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 2399,
+                            "fractionDigits": 2
+                        },
+                        "id": "d62bf26c-996c-43c1-9dc3-26002ed48cf8",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceChangeId": "4211",
+                                "processDateCreated": "2020-03-06T13:53:21.000Z",
+                                "priceType": "permanentMarkdown"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20008150?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "Ermenegildo Zegna",
+                            "fr-CA": "Ermenegildo Zegna"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Ribbed knit",
+                            "fr-CA": "<li> Tricot côtelé"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "<li> 100% cotton\n<li> Black",
+                            "fr-CA": "<li> 100 % coton\n<li> Noires"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "<li> Select your generic size",
+                            "fr-CA": "<li> Sélectionner la taille générique appropriée"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "BASIC"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "N4V100010"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "N4V100010600163Ermenegildo Zegna"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "075"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T13:55:06.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "fr-CA": "M",
+                            "en-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2020-03-06T18:52:33.000Z"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Black",
+                            "fr-CA": "Noir"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Black",
+                            "fr-CA": "Noir"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 25
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 3500,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "b7e85248-c2ea-41f6-8034-a2d84e968265",
+                                "obj": {
+                                    "id": "b7e85248-c2ea-41f6-8034-a2d84e968265",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89909798-02",
+                                    "value": {
+                                        "id": "89909798-02",
+                                        "styleId": "20008150",
+                                        "skuId": "-2027853",
+                                        "subType": "UPCE",
+                                        "barcode": "89909798-02",
+                                        "lastModifiedDate": 1583521254000
+                                    },
+                                    "createdAt": "2020-03-31T17:17:48.169Z",
+                                    "lastModifiedAt": "2020-08-09T01:41:15.264Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2399,
+                    "fractionDigits": 2
+                },
+                "id": "d62bf26c-996c-43c1-9dc3-26002ed48cf8",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceChangeId": "4211",
+                        "processDateCreated": "2020-03-06T13:53:21.000Z",
+                        "priceType": "permanentMarkdown"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:16:21.399Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2399,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2399,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2711,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "itemTaxes": "{\"HST\":3.1187}",
+                    "isGift": false
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "359a87b3-64f4-4a59-a779-2f710c74b8e7",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        },
+        {
+            "id": "02bca2e1-7ea1-4f22-9d72-20062dfd1022",
+            "productId": "31dca29f-b2bc-4f6d-ae52-9e85a90fe315",
+            "name": {
+                "en-CA": "Printed Wool-Blend Sweater",
+                "fr-CA": "Pull imprimé en lainage"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "2004760250",
+                "fr-CA": "2004760250"
+            },
+            "variant": {
+                "id": 5,
+                "sku": "-2892863",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 26199,
+                            "fractionDigits": 2
+                        },
+                        "id": "d62e2d2f-ec85-439b-943a-88618fea510c",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceType": "permanentMarkdown",
+                                "processDateCreated": "2019-10-08T15:35:28.000Z",
+                                "priceChangeId": "4175"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/2004760250?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "fr-CA": "Emporio Armani",
+                            "en-CA": "Emporio Armani"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "fr-CA": "<li> Encolure ronde",
+                            "en-CA": "<li> Crew neck"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "fr-CA": "<li> 50 % laine, 50 % acrylique\n<li> Rayures\n<li> Bordeaux, bleu marine et crème",
+                            "en-CA": "<li> 50% wool, 50% acrylic\n<li> Striped pattern\n<li> Burgundy, navy, cream"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "fr-CA": "<li> Coupe amincie\n<li> Tour de poitrine : 101,6 cm (40 po)\n<li> Mesure(s) prise(s) sur la taille M",
+                            "en-CA": "<li> Slim fit\n<li> Chest circumference: 40 in\n<li> Measurement is based on size M"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "fr-CA": "<li> Lavage à la machine à l¿eau tiède\n<li> Pas de séchage par culbutage\n<li> Repassage à basse température\n<li> Pas de nettoyage à sec",
+                            "en-CA": "<li> Machine wash, warm\n<li> Do not tumble dry\n<li> Iron, low\n<li> Do not dry clean"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "fr-CA": "",
+                            "en-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "FA-19"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "6G1MYA 1M8CZ"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "6G1MYA 1M8CZ036841Emporio Armani"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2019-12-19T23:48:32.000Z"
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "175d2e8d-cf70-4fbc-b2cf-63e0725828bc",
+                                "obj": {
+                                    "id": "175d2e8d-cf70-4fbc-b2cf-63e0725828bc",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "8055187372473",
+                                    "value": {
+                                        "id": "8055187372473",
+                                        "styleId": "2004760250",
+                                        "skuId": "-2892863",
+                                        "subType": "EAN",
+                                        "barcode": "8055187372473",
+                                        "lastModifiedDate": 1559535461000
+                                    },
+                                    "createdAt": "2020-04-30T19:11:37.685Z",
+                                    "lastModifiedAt": "2020-08-08T18:32:26.799Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            },
+                            {
+                                "typeId": "key-value-document",
+                                "id": "70679897-d2a3-4507-ae52-85ed1219c3d2",
+                                "obj": {
+                                    "id": "70679897-d2a3-4507-ae52-85ed1219c3d2",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89949667-03",
+                                    "value": {
+                                        "id": "89949667-03",
+                                        "styleId": "2004760250",
+                                        "skuId": "-2892863",
+                                        "subType": "UPCE",
+                                        "barcode": "89949667-03",
+                                        "lastModifiedDate": 1570565112000
+                                    },
+                                    "createdAt": "2020-03-31T17:16:05.501Z",
+                                    "lastModifiedAt": "2020-08-09T01:00:09.208Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Dark Purple",
+                            "fr-CA": "Violet foncé"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Purple",
+                            "fr-CA": "Violet"
+                        }
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "509"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:07:50.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "fr-CA": "M",
+                            "en-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 4
+                    },
+                    {
+                        "name": "onSale",
+                        "value": true
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "fractionDigits": 2,
+                            "centAmount": 35000,
+                            "currencyCode": "CAD",
+                            "type": "centPrecision"
+                        }
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 26199,
+                    "fractionDigits": 2
+                },
+                "id": "d62e2d2f-ec85-439b-943a-88618fea510c",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceType": "permanentMarkdown",
+                        "processDateCreated": "2019-10-08T15:35:28.000Z",
+                        "priceChangeId": "4175"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPrice": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 19649,
+                    "fractionDigits": 2
+                },
+                "includedDiscounts": [
+                    {
+                        "discount": {
+                            "typeId": "cart-discount",
+                            "id": "38abe462-9374-420b-88cf-af67a7b9cfca"
+                        },
+                        "discountedAmount": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 6550,
+                            "fractionDigits": 2
+                        }
+                    }
+                ]
+            },
+            "discountedPricePerQuantity": [
+                {
+                    "quantity": 1,
+                    "discountedPrice": {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 19649,
+                            "fractionDigits": 2
+                        },
+                        "includedDiscounts": [
+                            {
+                                "discount": {
+                                    "typeId": "cart-discount",
+                                    "id": "38abe462-9374-420b-88cf-af67a7b9cfca"
+                                },
+                                "discountedAmount": {
+                                    "type": "centPrecision",
+                                    "currencyCode": "CAD",
+                                    "centAmount": 6550,
+                                    "fractionDigits": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:17:22.162Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 19649,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 19649,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 22203,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "itemTaxes": "{\"HST\":25.543699999999998}",
+                    "isGift": false
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "359a87b3-64f4-4a59-a779-2f710c74b8e7",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        },
+        {
+            "id": "62a3e609-4e6d-4bcf-9ca2-18c2443b2569",
+            "productId": "229fc0f1-3556-45b2-bc74-49b43f6f4c3b",
+            "name": {
+                "en-CA": "Cotton Socks",
+                "fr-CA": "Chaussettes en coton"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20008153",
+                "fr-CA": "20008153"
+            },
+            "variant": {
+                "id": 5,
+                "sku": "-2027893",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 2099,
+                            "fractionDigits": 2
+                        },
+                        "id": "917ab2a4-bd6a-4ce3-bf05-9547e3a24f8a",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceChangeId": "4211",
+                                "processDateCreated": "2020-03-06T13:53:21.000Z",
+                                "priceType": "permanentMarkdown"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20008153?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "Ermenegildo Zegna",
+                            "fr-CA": "Ermenegildo Zegna"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Ribbed knit",
+                            "fr-CA": "<li> Tricot côtelé"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "<li> 100% cotton\n<li> Navy\n",
+                            "fr-CA": "<li> 100 % coton\n<li> Bleu marine"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "<li> Select your generic size",
+                            "fr-CA": "<li> Sélectionner la taille générique appropriée"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "BASIC"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "N4V400010"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "N4V400010000163Ermenegildo Zegna"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "048"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T13:54:52.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "fr-CA": "M",
+                            "en-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2020-03-06T18:52:33.000Z"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Navy",
+                            "fr-CA": "Bleu marine"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Blue",
+                            "fr-CA": "Bleu"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 25
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 3000,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "b6d7ce32-b3d5-464c-a5ed-66cf42db68ed",
+                                "obj": {
+                                    "id": "b6d7ce32-b3d5-464c-a5ed-66cf42db68ed",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89909801-02",
+                                    "value": {
+                                        "id": "89909801-02",
+                                        "styleId": "20008153",
+                                        "skuId": "-2027893",
+                                        "subType": "UPCE",
+                                        "barcode": "89909801-02",
+                                        "lastModifiedDate": 1583521254000
+                                    },
+                                    "createdAt": "2020-03-31T17:10:45.774Z",
+                                    "lastModifiedAt": "2020-08-09T01:41:15.156Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2099,
+                    "fractionDigits": 2
+                },
+                "id": "917ab2a4-bd6a-4ce3-bf05-9547e3a24f8a",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceChangeId": "4211",
+                        "processDateCreated": "2020-03-06T13:53:21.000Z",
+                        "priceType": "permanentMarkdown"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:19:16.883Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 2099,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2099,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2372,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "itemTaxes": "{\"HST\":2.7287}",
+                    "isGift": false
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "359a87b3-64f4-4a59-a779-2f710c74b8e7",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        },
+        {
+            "id": "f843bbd1-83ea-4961-933b-ed64ab89d140",
+            "productId": "f2fb39ac-ab5c-45fa-bfd6-2d131b37489f",
+            "name": {
+                "en-CA": "Acetate Sunglasses",
+                "fr-CA": "Lunettes de soleil en acétate"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20048333",
+                "fr-CA": "20048333"
+            },
+            "variant": {
+                "id": 2,
+                "sku": "-2913414",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 33899,
+                            "fractionDigits": 2
+                        },
+                        "id": "e78a236b-7970-48f1-8b30-05b7e146d939",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceType": "permanentMarkdown",
+                                "processDateCreated": "2020-03-06T13:53:21.000Z",
+                                "priceChangeId": "4211"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20048333?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "fr-CA": "Ermenegildo Zegna",
+                            "en-CA": "Ermenegildo Zegna"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "fr-CA": "<li> Protection complète contre les rayons UV\n<li> Fabriquées en Italie",
+                            "en-CA": "<li> 100% UV protection\n<li> Made in Italy\n"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "fr-CA": "<li> Acétate\n<li> Noir, brun et bleu",
+                            "en-CA": "<li> Acetate\n<li> Black, brown, blue\n"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "fr-CA": "<li> Taille unique",
+                            "en-CA": "<li> One size"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "fr-CA": "",
+                            "en-CA": ""
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "fr-CA": "",
+                            "en-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "BASIC"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "F"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "F750171Ermenegildo Zegna"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "075"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:09:37.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "O/S",
+                            "fr-CA": "Taille unique"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "179"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2020-03-06T18:52:35.000Z"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "fr-CA": "Noir",
+                            "en-CA": "Black"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "fr-CA": "Noir",
+                            "en-CA": "Black"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 0
+                    },
+                    {
+                        "name": "onSale",
+                        "value": true
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 48500,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "cb43abd2-92fd-4a7a-bb6e-7939bcbed6d1",
+                                "obj": {
+                                    "id": "cb43abd2-92fd-4a7a-bb6e-7939bcbed6d1",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "889214043948",
+                                    "value": {
+                                        "id": "889214043948",
+                                        "styleId": "20048333",
+                                        "skuId": "-2913414",
+                                        "subType": "UPCA",
+                                        "barcode": "889214043948",
+                                        "lastModifiedDate": 1560197040000
+                                    },
+                                    "createdAt": "2020-03-31T17:12:54.494Z",
+                                    "lastModifiedAt": "2020-08-08T19:03:16.802Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            },
+                            {
+                                "typeId": "key-value-document",
+                                "id": "f57035ed-1bbc-42e9-86e4-c95e76801c4a",
+                                "obj": {
+                                    "id": "f57035ed-1bbc-42e9-86e4-c95e76801c4a",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89950425-01",
+                                    "value": {
+                                        "id": "89950425-01",
+                                        "styleId": "20048333",
+                                        "skuId": "-2913414",
+                                        "subType": "UPCE",
+                                        "barcode": "89950425-01",
+                                        "lastModifiedDate": 1583521254000
+                                    },
+                                    "createdAt": "2020-03-31T17:13:15.323Z",
+                                    "lastModifiedAt": "2020-08-09T01:41:05.137Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 33899,
+                    "fractionDigits": 2
+                },
+                "id": "e78a236b-7970-48f1-8b30-05b7e146d939",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceType": "permanentMarkdown",
+                        "processDateCreated": "2020-03-06T13:53:21.000Z",
+                        "priceChangeId": "4211"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPrice": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 25424,
+                    "fractionDigits": 2
+                },
+                "includedDiscounts": [
+                    {
+                        "discount": {
+                            "typeId": "cart-discount",
+                            "id": "38abe462-9374-420b-88cf-af67a7b9cfca"
+                        },
+                        "discountedAmount": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 8475,
+                            "fractionDigits": 2
+                        }
+                    }
+                ]
+            },
+            "discountedPricePerQuantity": [
+                {
+                    "quantity": 1,
+                    "discountedPrice": {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 25424,
+                            "fractionDigits": 2
+                        },
+                        "includedDiscounts": [
+                            {
+                                "discount": {
+                                    "typeId": "cart-discount",
+                                    "id": "38abe462-9374-420b-88cf-af67a7b9cfca"
+                                },
+                                "discountedAmount": {
+                                    "type": "centPrecision",
+                                    "currencyCode": "CAD",
+                                    "centAmount": 8475,
+                                    "fractionDigits": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2020-08-24T19:22:38.845Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 25424,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 25424,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 28729,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "itemTaxes": "{\"HST\":33.0512}",
+                    "isGift": false
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "359a87b3-64f4-4a59-a779-2f710c74b8e7",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        }
+    ],
+    "customLineItems": [],
+    "transactionFee": true,
+    "discountCodes": [],
+    "cart": {
+        "typeId": "cart",
+        "id": "b9f1890b-887a-4a33-81c6-9199457a6ad3"
+    },
+    "custom": {
+        "type": {
+            "typeId": "type",
+            "id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada"
+        },
+        "fields": {
+            "paymentIsReleased": true,
+            "shippingIsRush": true,
+            "transactionTotal": {
+                "fractionDigits": 2,
+                "centAmount": 58840,
+                "currencyCode": "CAD",
+                "type": "centPrecision"
+            },
+            "signatureIsRequired": true,
+            "loginRadiusUid": "830d7707dc6241a5bb0de20728bb6908",
+            "returnsAreFree": true,
+            "sentToCrmStatus": "SUCCESS",
+            "shippingServiceType": "EXPRESS",
+            "sentToOmsStatus": "SUCCESS",
+            "cartClaimed": true,
+            "carrierId": "FDX",
+            "shippingTaxes": "{\"HST\":3.25}"
+        }
+    },
+    "paymentInfo": {
+        "payments": [
+            {
+                "typeId": "payment",
+                "id": "859fbb32-39b7-4589-b769-b6c43c16a867",
+                "obj": {
+                    "id": "859fbb32-39b7-4589-b769-b6c43c16a867",
+                    "version": 4,
+                    "lastMessageSequenceNumber": 3,
+                    "createdAt": "2020-08-24T19:43:29.856Z",
+                    "lastModifiedAt": "2020-08-24T19:43:31.970Z",
+                    "lastModifiedBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 58840,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "cybersource",
+                        "method": "credit",
+                        "name": {
+                            "en": "CyberSource : cybersource"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "c9a81e31-3fa6-4e73-8267-72cc3fd901b7"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "1111",
+                            "transaction_card_expiry": "05-2021",
+                            "user_agent_string": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
+                            "avs_result": "X",
+                            "auth_number": "100",
+                            "user_ip_address": "69.165.141.58",
+                            "transaction_card_type": "visa",
+                            "transaction_time": "",
+                            "bin": "4111",
+                            "transaction_date": ""
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "paid",
+                        "interfaceText": "paid"
+                    },
+                    "transactions": [
+                        {
+                            "id": "e63eeff7-81a7-4ee0-8590-100766900dcd",
+                            "timestamp": "2020-08-24T19:43:24.240Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 58840,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5982982068826718404008:Axj/7wSTRFaOPGZ8QP2oABEg3ZtGbly4Zy4rRnOiM2aiOEtUkHgFRHCWqSDw+EOXYA7YZNJMvRixBxTgTk0RWjjxmfED9qAA0R3O",
+                            "state": "Success"
+                        },
+                        {
+                            "id": "85c1b4d5-1e98-412e-99bb-40d8fc5e8e84",
+                            "timestamp": "2020-08-24T19:43:31.000Z",
+                            "type": "Authorization",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 58840,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5982982068826718404008:Axj/7wSTRFaOPGZ8QP2oABEg3ZtGbly4Zy4rRnOiM2aiOEtUkHgFRHCWqSDw+EOXYA7YZNJMvRixBxTgTk0RWjjxmfED9qAA0R3O",
+                            "state": "Success"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            }
+        ]
+    },
+    "shippingAddress": {
+        "firstName": "Elizabeth",
+        "lastName": "Accept",
+        "streetName": "34-2755 Windwood Dr",
+        "postalCode": "L5N 2C8",
+        "city": "Mississauga",
+        "state": "ON",
+        "country": "CA",
+        "phone": "5555555555",
+        "email": "ejtestdc02@mailinator.com",
+        "additionalAddressInfo": "34",
+        "key": "359a87b3-64f4-4a59-a779-2f710c74b8e7"
+    },
+    "billingAddress": {
+        "firstName": "Elizabeth",
+        "lastName": "Jacob",
+        "streetName": "76-6800 Lynas Lane",
+        "postalCode": "V7C 5E2",
+        "city": "Richmond",
+        "state": "BC",
+        "country": "CA",
+        "phone": "4444444444",
+        "email": "ejtestdc02@mailinator.com",
+        "additionalAddressInfo": "76"
+    },
+    "itemShippingAddresses": [
+        {
+            "firstName": "Elizabeth",
+            "lastName": "Accept",
+            "streetName": "34-2755 Windwood Dr",
+            "postalCode": "L5N 2C8",
+            "city": "Mississauga",
+            "state": "ON",
+            "country": "CA",
+            "phone": "5555555555",
+            "email": "ejtestdc02@mailinator.com",
+            "additionalAddressInfo": "34",
+            "key": "359a87b3-64f4-4a59-a779-2f710c74b8e7"
+        }
+    ],
+    "refusedGifts": []
+}
