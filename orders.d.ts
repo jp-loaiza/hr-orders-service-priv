@@ -20,7 +20,9 @@ interface Env {
   NEWRELIC_APP_NAME: string,
   NEWRELIC_LICENSE_KEY: string
   SHOULD_UPLOAD_ORDERS: string,
-  SHOULD_SEND_NOTIFICATIONS: string
+  SHOULD_SEND_NOTIFICATIONS: string,
+  JOB_TASK_TIMEOUT: string,
+  MAXIMUM_RETRIES: string
 }
 
 type Price = {
