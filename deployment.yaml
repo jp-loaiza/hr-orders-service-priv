@@ -139,11 +139,11 @@ spec:
               name: hr-orders-service             
         - name: JOB_TASK_TIMEOUT 
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               key: JOB_TASK_TIMEOUT
               name: hr-orders-service
         - name: MAXIMUM_RETRIES 
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               key: MAXIMUM_RETRIES
               name: hr-orders-service
