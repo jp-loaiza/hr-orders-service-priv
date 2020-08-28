@@ -55,7 +55,7 @@ function checkJobsHealth (res) {
   const currentTime = new Date()
   for (const job in jobsLastExecutionTime) {
     const lastExectuionTime = (jobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'} */ (job)]).getTime()
-    if ((currentTime.getTime() - lastExectuionTime) > jobTotalTimeout) {
+    if ((currentTime.getTime() - lastExectuionTime) > jobTotalTimeout + 1000) {
       console.error(`${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExectuionTime}.`)
       res.status(500).send('failed')
       return false

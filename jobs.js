@@ -77,7 +77,7 @@ async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
       console.error('Failed to send orders to CRM: ', error)
     }
     await sleep(sendNotificationsInterval)
-    lastJobsRunTime.createAndUploadCsvsJob = new Date()
+    lastJobsRunTime.sendOrderEmailNotificationJob = new Date()
   }
 }
 
