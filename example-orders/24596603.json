@@ -1,0 +1,563 @@
+{
+    "type": "Order",
+    "id": "8bd4276c-6bc1-47fd-9171-b31cf2e6c169",
+    "version": 6,
+    "lastMessageSequenceNumber": 4,
+    "createdAt": "2020-08-20T19:20:50.501Z",
+    "lastModifiedAt": "2020-08-20T19:21:07.462Z",
+    "lastModifiedBy": {
+        "clientId": "kCdIHF2Ojlv7-yp1Dq2itE4O",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+        "isPlatformClient": false
+    },
+    "orderNumber": "24596603",
+    "customerId": "1563a7c2-ca23-49bf-8aad-2e87b2773332",
+    "customerEmail": "ss_dev.hritest2@mailinator.com",
+    "customerGroup": {
+        "typeId": "customer-group",
+        "id": "3a618148-2a21-491d-9cb3-5ef02183189f"
+    },
+    "anonymousId": "f214f957-1272-4a5a-9646-07c9f1603a4b",
+    "locale": "en-CA",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "CAD",
+        "centAmount": 13500,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 13500,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 15255,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.13,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 1755,
+                    "fractionDigits": 2
+                },
+                "name": "HST"
+            }
+        ]
+    },
+    "country": "CA",
+    "orderState": "Confirmed",
+    "shipmentState": "Pending",
+    "paymentState": "Paid",
+    "syncInfo": [],
+    "returnInfo": [],
+    "shippingInfo": {
+        "shippingMethodName": "Canada Post Expedited",
+        "price": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 0,
+            "fractionDigits": 2
+        },
+        "shippingRate": {
+            "price": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "tiers": []
+        },
+        "taxRate": {
+            "name": "",
+            "amount": 0.13,
+            "includedInPrice": false,
+            "country": "CA",
+            "subRates": [
+                {
+                    "name": "HST",
+                    "amount": 0.13
+                }
+            ]
+        },
+        "deliveries": [],
+        "taxedPrice": {
+            "totalNet": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "totalGross": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            }
+        },
+        "shippingMethodState": "MatchesCart"
+    },
+    "taxMode": "ExternalAmount",
+    "inventoryMode": "None",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "origin": "Customer",
+    "lineItems": [
+        {
+            "id": "730f7041-716a-44ad-8535-23cd86901ea6",
+            "productId": "7f40e3ab-0c19-4922-ac94-6eae79faf4a2",
+            "name": {
+                "fr-CA": "Polo en coton piqué extensible à manches longues",
+                "en-CA": "Long-Sleeve Stretch-Cotton Piqué Polo"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20048877",
+                "fr-CA": "20048877"
+            },
+            "variant": {
+                "id": 6,
+                "sku": "-2924861",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 13500,
+                            "fractionDigits": 2
+                        },
+                        "id": "86ebb5cf-2751-4a0b-844f-b477e0c09c83",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceType": "originalPrice"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20048877?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "fr-CA": "Lacoste",
+                            "en-CA": "Lacoste"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "fr-CA": "<li> Col évasé\n<li> Fermeture boutonnée sous patte\n<li> Col et poignets en tricot côtelé\n<li> Écusson de marque sur la poitrine",
+                            "en-CA": "<li> Cutaway collar\n<li> Concealed 3-button placket \n<li> Ribbed knit collar and cuffs\n<li> Logo patch on left chest"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "fr-CA": "<li> 94 % coton, 6 % élasthanne\n<li> Blanc",
+                            "en-CA": "<li> 94% cotton, 6% elastane\n<li> White"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "fr-CA": "<li> Coupe contemporaine\n<li> Tour de poitrine : 106,7 cm (42 po)\n<li> Mesure(s) prise(s) sur la taille M",
+                            "en-CA": "<li> Contemporary fit\n<li> Chest circumference: 42 in\n<li> Measurement is based on size M"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "fr-CA": "<li> Lavage à la machine à l¿eau tiède\n<li> Pas de séchage par culbutage\n<li> Repassage à basse température\n<li> Pas de nettoyage à sec",
+                            "en-CA": "<li> Machine wash, warm\n<li> Do not tumble dry\n<li> Iron, low \n<li> Do not dry clean"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "fr-CA": "",
+                            "en-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "FA-19"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "PH2481"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "PH2481344936Lacoste"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-07-24T19:53:00.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "070"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:10:55.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "L",
+                            "fr-CA": "G"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "175"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2019-10-08T16:25:40.000Z"
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "2cb76858-b1d3-4c1d-a547-1428241d4ef4",
+                                "obj": {
+                                    "id": "2cb76858-b1d3-4c1d-a547-1428241d4ef4",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89950947-02",
+                                    "value": {
+                                        "id": "89950947-02",
+                                        "styleId": "20048877",
+                                        "skuId": "-2924861",
+                                        "subType": "UPCE",
+                                        "barcode": "89950947-02",
+                                        "lastModifiedDate": 1560881050000
+                                    },
+                                    "createdAt": "2020-04-30T19:18:17.298Z",
+                                    "lastModifiedAt": "2020-08-08T19:28:43.006Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "White/Pearl",
+                            "fr-CA": "Blanc/perle"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "White",
+                            "fr-CA": "Blanc"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 2
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 13500,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 13500,
+                    "fractionDigits": 2
+                },
+                "id": "86ebb5cf-2751-4a0b-844f-b477e0c09c83",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceType": "originalPrice"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2020-08-20T19:07:15.792Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 13500,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 13500,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 15255,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "isGift": false,
+                    "itemTaxes": "{\"HST\":17.55}"
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "97d4e9cc-d533-428c-a587-ed906b300f1b",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        }
+    ],
+    "customLineItems": [],
+    "transactionFee": true,
+    "discountCodes": [],
+    "cart": {
+        "typeId": "cart",
+        "id": "f0521ef6-e86c-41f2-b1e8-363df20c7a76"
+    },
+    "custom": {
+        "type": {
+            "typeId": "type",
+            "id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada"
+        },
+        "fields": {
+            "paymentIsReleased": true,
+            "shippingIsRush": false,
+            "transactionTotal": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 15255,
+                "fractionDigits": 2
+            },
+            "signatureIsRequired": false,
+            "loginRadiusUid": "695ffbc95e3f4061a83d0269d0714ae2",
+            "returnsAreFree": true,
+            "sentToCrmStatus": "SUCCESS",
+            "shippingServiceType": "EXPEDITED PARCEL",
+            "sentToOmsStatus": "SUCCESS",
+            "cartClaimed": true,
+            "carrierId": "CP",
+            "shippingTaxes": "{\"HST\":0}"
+        }
+    },
+    "paymentInfo": {
+        "payments": [
+            {
+                "typeId": "payment",
+                "id": "feaa40fd-de10-4f4c-80c3-981dae90ccf8",
+                "obj": {
+                    "id": "feaa40fd-de10-4f4c-80c3-981dae90ccf8",
+                    "version": 4,
+                    "lastMessageSequenceNumber": 3,
+                    "createdAt": "2020-08-20T19:20:50.224Z",
+                    "lastModifiedAt": "2020-08-20T19:20:52.417Z",
+                    "lastModifiedBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 15255,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "cybersource",
+                        "method": "credit",
+                        "name": {
+                            "en": "CyberSource : cybersource"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "c9a81e31-3fa6-4e73-8267-72cc3fd901b7"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "1111",
+                            "transaction_card_expiry": "04-2022",
+                            "user_agent_string": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0",
+                            "avs_result": "X",
+                            "auth_number": "100",
+                            "user_ip_address": "99.234.198.116",
+                            "transaction_card_type": "visa",
+                            "transaction_time": "",
+                            "bin": "4111",
+                            "transaction_date": ""
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "paid",
+                        "interfaceText": "paid"
+                    },
+                    "transactions": [
+                        {
+                            "id": "446644dd-4ec7-4c29-98b8-739d49050613",
+                            "timestamp": "2020-08-20T19:20:44.940Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 15255,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5979512473646154904012:Axj/7wSTRCZnwfdgW/HMABEg3ZNmjlqxbS4k+s3b1nCiOEpyR1QFRHCU5I6o+Du5cDphk0ky9GLEHFOBOTRCZnwfdgW/HMAAExoI",
+                            "state": "Success"
+                        },
+                        {
+                            "id": "3dc09923-6ebe-4a6f-806c-cd8755164c7f",
+                            "timestamp": "2020-08-20T19:20:52.000Z",
+                            "type": "Authorization",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 15255,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5979512473646154904012:Axj/7wSTRCZnwfdgW/HMABEg3ZNmjlqxbS4k+s3b1nCiOEpyR1QFRHCU5I6o+Du5cDphk0ky9GLEHFOBOTRCZnwfdgW/HMAAExoI",
+                            "state": "Success"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            }
+        ]
+    },
+    "shippingAddress": {
+        "firstName": "Sheetal",
+        "lastName": "Accept",
+        "streetName": "8 silver maple crt",
+        "postalCode": "L6X4N6",
+        "city": "Brampton",
+        "state": "ON",
+        "country": "CA",
+        "phone": "6473829010",
+        "email": "ss_dev.hritest2@mailinator.com",
+        "key": "97d4e9cc-d533-428c-a587-ed906b300f1b"
+    },
+    "billingAddress": {
+        "firstName": "Sheetal",
+        "lastName": "Accept",
+        "streetName": "8 silver maple crt",
+        "postalCode": "L6X4N6",
+        "city": "Brampton",
+        "state": "ON",
+        "country": "CA",
+        "phone": "6473829010",
+        "email": "ss_dev.hritest2@mailinator.com"
+    },
+    "itemShippingAddresses": [
+        {
+            "firstName": "Sheetal",
+            "lastName": "Accept",
+            "streetName": "8 silver maple crt",
+            "postalCode": "L6X4N6",
+            "city": "Brampton",
+            "state": "ON",
+            "country": "CA",
+            "phone": "6473829010",
+            "email": "ss_dev.hritest2@mailinator.com",
+            "key": "97d4e9cc-d533-428c-a587-ed906b300f1b"
+        }
+    ],
+    "refusedGifts": []
+}
