@@ -1,0 +1,552 @@
+{
+    "type": "Order",
+    "id": "5653c84f-4fa5-4b9e-a07f-e9f81d89e13e",
+    "version": 4027,
+    "lastMessageSequenceNumber": 1,
+    "createdAt": "2020-08-22T21:05:05.610Z",
+    "lastModifiedAt": "2020-08-24T17:48:15.476Z",
+    "lastModifiedBy": {
+        "clientId": "kCdIHF2Ojlv7-yp1Dq2itE4O",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+        "isPlatformClient": false
+    },
+    "orderNumber": "24738417",
+    "customerId": "28fb1043-9543-471b-b21b-068ef4efbcb9",
+    "customerEmail": "hri909900109156@mailinator.com",
+    "customerGroup": {
+        "typeId": "customer-group",
+        "id": "772383a9-8031-4501-8d9f-41ebb980d14b"
+    },
+    "locale": "en-CA",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "CAD",
+        "centAmount": 23000,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 23000,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 25990,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.13,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 2990,
+                    "fractionDigits": 2
+                },
+                "name": "HST"
+            }
+        ]
+    },
+    "country": "CA",
+    "orderState": "Open",
+    "shipmentState": "Pending",
+    "paymentState": "Pending",
+    "syncInfo": [],
+    "returnInfo": [],
+    "shippingInfo": {
+        "shippingMethodName": "Canada Post Expedited",
+        "price": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 0,
+            "fractionDigits": 2
+        },
+        "shippingRate": {
+            "price": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "tiers": []
+        },
+        "taxRate": {
+            "name": "",
+            "amount": 0.13,
+            "includedInPrice": false,
+            "country": "CA",
+            "subRates": [
+                {
+                    "name": "HST",
+                    "amount": 0.13
+                }
+            ]
+        },
+        "deliveries": [],
+        "taxedPrice": {
+            "totalNet": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "totalGross": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            }
+        },
+        "shippingMethodState": "MatchesCart"
+    },
+    "taxMode": "ExternalAmount",
+    "inventoryMode": "None",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "origin": "Customer",
+    "lineItems": [
+        {
+            "id": "d1a4cb70-493b-43b8-b1f7-e49bb5e9c5a9",
+            "productId": "5248545b-d409-42ec-aa88-4bff2c83210c",
+            "name": {
+                "en-CA": "990 Series Sneakers",
+                "fr-CA": "Chaussure sport 990"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "3f69b1dd-631c-4913-b015-c20c083a7940"
+            },
+            "productSlug": {
+                "en-CA": "20052967",
+                "fr-CA": "20052967"
+            },
+            "variant": {
+                "id": 16,
+                "sku": "-3002158",
+                "prices": [
+                    {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 23000,
+                            "fractionDigits": 2
+                        },
+                        "id": "688c1452-ddd4-409b-82db-4ce80c274aea",
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                            },
+                            "fields": {
+                                "priceType": "originalPrice"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20052967?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "New Balance",
+                            "fr-CA": "New Balance"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Patchwork upper\n<li> Colour-blocked sole\n<li> Logo patch on tongue\n<li> Logo on sides\n<li> Logo on heel\n<li> Made in the U.S.A.",
+                            "fr-CA": "<li> Tige sectionnée\n<li> Contraste de couleurs sur la semelle\n<li> Écusson de marque sur la languette\n<li> Logo sur les côtés\n<li> Logo à l¿arrière\n<li> Fabriquée aux États-Unis"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "<li> Leather, suede and textile upper\n<li> Textile lining\n<li> Rubber sole\n<li> Houndstooth pattern\n<li> Grey, white",
+                            "fr-CA": "<li> Tige en cuir, suède et tissu\n<li> Doublure en tissu\n<li> Semelle en caoutchouc\n<li> Pied-de-poule\n<li> Gris et blanc"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "<li> Select your North American size\n<li> Fits true-to-size",
+                            "fr-CA": "<li> Sélectionnez votre taille ou pointure nord-américaine habituelle.\n<li> Les mesures sont standard."
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "SP-20"
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "M990"
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "M990755377New Balance"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2020-08-22T05:09:56.000Z"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2020-08-21T15:01:42.000Z"
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "073"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2020-07-09T14:10:02.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "9",
+                            "fr-CA": "9"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "171"
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "fr-CA": "Gris moyen",
+                            "en-CA": "Mid Grey"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "fr-CA": "Gris",
+                            "en-CA": "Grey"
+                        }
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 16
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "fractionDigits": 2,
+                            "centAmount": 23000,
+                            "currencyCode": "CAD",
+                            "type": "centPrecision"
+                        }
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "e623bfa5-3536-4988-bec4-372f35415d4b",
+                                "obj": {
+                                    "id": "e623bfa5-3536-4988-bec4-372f35415d4b",
+                                    "version": 2,
+                                    "container": "barcodes",
+                                    "key": "89955100-18",
+                                    "value": {
+                                        "id": "89955100-18",
+                                        "styleId": "20052967",
+                                        "skuId": "-3002158",
+                                        "subType": "UPCE",
+                                        "barcode": "89955100-18",
+                                        "lastModifiedDate": 1570479025000
+                                    },
+                                    "createdAt": "2020-03-31T17:15:55.452Z",
+                                    "lastModifiedAt": "2020-08-09T00:58:02.077Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "TQEe6opbf6kTiHMxvDr8kGzj",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "9YnDCNDg16EER7mWlMjXeHkF",
+                                        "isPlatformClient": false
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 23000,
+                    "fractionDigits": 2
+                },
+                "id": "688c1452-ddd4-409b-82db-4ce80c274aea",
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "af9c14ac-6b56-48d4-b152-2b751d2c9c24"
+                    },
+                    "fields": {
+                        "priceType": "originalPrice"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2020-08-19T20:55:32.616Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "0e02ceb9-b46f-4e38-a494-38e67f2ae629"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 23000,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 23000,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 25990,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "72953947-9bf8-4d31-8a2e-9a9c22d40649"
+                },
+                "fields": {
+                    "itemTaxes": "{\"HST\":29.9}",
+                    "isGift": false
+                }
+            },
+            "lineItemMode": "Standard",
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "7eb3dcda-9866-45b6-bf8a-ec3b837473df",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        }
+    ],
+    "customLineItems": [],
+    "transactionFee": true,
+    "discountCodes": [],
+    "cart": {
+        "typeId": "cart",
+        "id": "833e1200-bdce-4dc7-a7db-ae5de667f419"
+    },
+    "custom": {
+        "type": {
+            "typeId": "type",
+            "id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada"
+        },
+        "fields": {
+            "paymentIsReleased": false,
+            "shippingIsRush": false,
+            "transactionTotal": {
+                "fractionDigits": 2,
+                "centAmount": 25990,
+                "currencyCode": "CAD",
+                "type": "centPrecision"
+            },
+            "signatureIsRequired": false,
+            "loginRadiusUid": "ebbacde5db5546dd8e75cfb68b5e0fbb",
+            "returnsAreFree": true,
+            "sentToCrmStatus": "SUCCESS",
+            "shippingServiceType": "EXPEDITED PARCEL",
+            "sentToOmsStatus": "SUCCESS",
+            "cartClaimed": true,
+            "carrierId": "CP",
+            "shippingTaxes": "{\"HST\":0}"
+        }
+    },
+    "paymentInfo": {
+        "payments": [
+            {
+                "typeId": "payment",
+                "id": "f26981b1-2609-420f-ae4f-75ddf6bd8106",
+                "obj": {
+                    "id": "f26981b1-2609-420f-ae4f-75ddf6bd8106",
+                    "version": 8,
+                    "lastMessageSequenceNumber": 4,
+                    "createdAt": "2020-08-22T21:05:05.361Z",
+                    "lastModifiedAt": "2020-08-22T21:08:06.776Z",
+                    "lastModifiedBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "k6QQpXCp89k8R8k7rwxem-h-",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 25990,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "cybersource",
+                        "method": "credit",
+                        "name": {
+                            "en": "CyberSource : cybersource"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "c9a81e31-3fa6-4e73-8267-72cc3fd901b7"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "1111",
+                            "transaction_card_expiry": "09-2034",
+                            "user_agent_string": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
+                            "avs_result": "X",
+                            "auth_number": "480",
+                            "user_ip_address": "174.88.75.249",
+                            "transaction_card_type": "visa",
+                            "transaction_time": "",
+                            "bin": "4111",
+                            "transaction_date": ""
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "cancelled",
+                        "interfaceText": "cancelled"
+                    },
+                    "transactions": [
+                        {
+                            "id": "b29c6895-5b3b-4616-80bc-7e93a8d7f326",
+                            "timestamp": "0001-01-01T00:00:00.000Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 25990,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "5981303027066850704011:Axj/7wSTRD9BFNDQSvqLABEg3ZsWLVuzZWIrRnRhVWyiOErsKUwFRHCV2FKY+D8sMB1rwaSZejFiDinAnJoh+gimhoJX1FgA1hAq",
+                            "state": "Failure"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            }
+        ]
+    },
+    "shippingAddress": {
+        "firstName": "Tovi",
+        "lastName": "Review",
+        "streetName": "6A-119 Rockford Road",
+        "postalCode": "M2R 3A9",
+        "city": "Toronto",
+        "state": "ON",
+        "country": "CA",
+        "phone": "2222222222",
+        "email": "hri909900109156@mailinator.com",
+        "additionalAddressInfo": "Company Name Here",
+        "key": "7eb3dcda-9866-45b6-bf8a-ec3b837473df"
+    },
+    "billingAddress": {
+        "firstName": "Tovi",
+        "lastName": "Review",
+        "streetName": "6A-119 Rockford Road",
+        "postalCode": "M2R 3A9",
+        "city": "Toronto",
+        "state": "ON",
+        "country": "CA",
+        "phone": "2222222222",
+        "email": "hri909900109156@mailinator.com",
+        "additionalAddressInfo": "Company Name Here"
+    },
+    "itemShippingAddresses": [
+        {
+            "firstName": "Tovi",
+            "lastName": "Review",
+            "streetName": "6A-119 Rockford Road",
+            "postalCode": "M2R 3A9",
+            "city": "Toronto",
+            "state": "ON",
+            "country": "CA",
+            "phone": "2222222222",
+            "email": "hri909900109156@mailinator.com",
+            "additionalAddressInfo": "Company Name Here",
+            "key": "7eb3dcda-9866-45b6-bf8a-ec3b837473df"
+        }
+    ],
+    "refusedGifts": []
+}

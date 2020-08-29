@@ -1,3 +1,5 @@
+const path = require('path')
+const { readFileSync } = require('fs')
 const { generateCsvStringFromOrder } = require('./csv')
 
 const completeOrderEnglishUntyped = {
@@ -55,7 +57,7 @@ const completeOrderEnglishUntyped = {
   country: 'CA',
   orderState: 'Open',
   shipmentState: 'Pending',
-  paymentState: 'Pending',
+  paymentState: 'Paid',
   syncInfo: [],
   returnInfo: [],
   shippingInfo: {
@@ -419,20 +421,8 @@ const completeOrderEnglishUntyped = {
     },
     fields: {
       sentToOmsStatus: 'PENDING',
-      paymentIsReleased: true,
-      transactionTotal: {
-        fractionDigits: 2,
-        centAmount: 99214,
-        currencyCode: 'CAD',
-        type: 'centPrecision'
-      },
-      signatureIsRequired: true,
       loginRadiusUid: 'ed6c636af37a4d738ba8d374fa219cbc',
-      returnsAreFree: true,
-      shippingServiceType: 'EXPRESS',
-      shippingIsRush: false,
       retryCount: 0,
-      carrierId: 'FDX',
       shippingTaxes: '{"HST":3.64}'
     }
   },
@@ -563,7 +553,7 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","N","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",1,"Y","Y","Y"
+"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","Y","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",1,"Y","Y","Y"
 "D","00990",1,"23551711",,,,1,850,,850,0,110.5,850,"89950453-01","N","496332a3-45d9-4ed8-ae44-5b55693c89ce","N",,,"sp-0001",,"UPCE"
 "T","00990",1,"23551711",1,110.5,"HST-ON"
 "N","00990",1,"23551711",992.14,"05","41","1122",,"1111","480"
@@ -582,7 +572,7 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","N","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",3,"Y","Y","Y"
+"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","Y","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",3,"Y","Y","Y"
 "D","00990",1,"23551711",,,,1,850,,850,0,110.5,850,"89950453-01","N","496332a3-45d9-4ed8-ae44-5b55693c89ce","N",,,"sp-0001",,"UPCE"
 "T","00990",1,"23551711",1,110.5,"HST-ON"
 "N","00990",1,"23551711",992.14,"05","41","1122",,"1111","480"
@@ -593,12 +583,7 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
   it('returns the correct CSV string when given an order whose payment is not released', () => {
     const orderWithFailedPayment = {
       ...completeOrderEnglish,
-      custom: {
-        fields: {
-          ...completeOrderEnglish.custom.fields,
-          paymentIsReleased: false
-        }
-      }
+      paymentState: 'Pending'
     }
 
     const expectedOrderCsv = `RecordType H,SITE_ID,WFE_TRANS_ID,SHIP_TO_FIRST_NAME,SHIP_TO_LAST_NAME,,SHIP_TO_ADDRESS_1,SHIP_TO_ADDRESS_2,SHIP_TO_ADDRESS_3,SHIP_TO_CITY,SHIP_TO_STATE_ID,SHIP_TO_ZIP_CODE,SHIP_TO_COUNTRY_ID,WFE_CUSTOMER_ID,BILL_TO_FIRST_NAME,BILL_TO_LAST_NAME,BILL_TO_ADDRESS_1,BILL_TO_ADDRESS_2,BILL_TO_ADDRESS_3,BILL_TO_CITY,BILL_TO_STATE_ID,BILL_TO_ZIP_CODE,BILL_TO_COUNTRY_ID,BILL_TO_HOME_PHONE,EMAIL_ADDRESS,CARRIER_ID,RUSH_SHIPPING_IND,SHIP_COMPLETE_IND,,SHIPPING_CHARGES_TOTAL,TAX_TOTAL,,TRANSACTION_TOTAL,,POS_EQUIVALENCE,,,,,ORDER_DATE,ADDITIONAL_METADATA,SHIPPING_TAX1,SHIPPING_TAX1_DESCRIPTION,SHIPPING_TAX2,SHIPPING_TAX2_DESCRIPTION,SHIPPING_TAX3,SHIPPING_TAX3_DESCRIPTION,DESTINATION_SITE_ID,REQUESTER_SITE_ID,,,SERVICE_TYPE,LANGUAGE_NO,FREE_RETURN_IND,SIGNATURE_REQUIRED_IND,RELEASED
@@ -606,16 +591,25 @@ RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOU
 RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
 RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
 RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
-"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","N","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",1,"Y","Y","N"
+"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","Y","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",1,"Y","Y","N"
 "D","00990",1,"23551711",,,,1,850,,850,0,110.5,850,"89950453-01","N","496332a3-45d9-4ed8-ae44-5b55693c89ce","N",,,"sp-0001",,"UPCE"
 "T","00990",1,"23551711",1,110.5,"HST-ON"
 "N","00990",1,"23551711",992.14,"05","41","1122",,"1111","480"
 `.split('\n').join('\r\n')
+    // @ts-ignore
     expect(generateCsvStringFromOrder(orderWithFailedPayment)).toEqual(expectedOrderCsv)
   })
 
-  // Placeholders
-  test.todo('returns the correct CSV string when given an order that has only one line item of one quantity')
-  test.todo('returns the correct CSV string when given an order that has only one line item of a quantity greater than one')
-  test.todo('returns the correct CSV string when given an order that has a gift')
+  it('returns strings that match example CSVs that were processed correctly by JESTA', () => {
+    const exampleOrderNumbers = ['24600493', '24600955', '24839685', '24845933', '25068048', '24596603', '24738417', '24846490']
+
+    for (const orderNumber of exampleOrderNumbers) {
+      const rawOrderJson = readFileSync(path.join(__dirname, 'example-orders', `${orderNumber}.json`), 'utf8')
+      const parsedOrderJson = JSON.parse(rawOrderJson)
+      const expectedOrderCsvString = readFileSync(path.join(__dirname, 'example-orders', `${orderNumber}.csv`), 'utf8')
+      const actualOrderCsvString = generateCsvStringFromOrder(parsedOrderJson)
+
+      expect(actualOrderCsvString).toEqual(expectedOrderCsvString)
+    }
+  })
 })
