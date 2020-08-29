@@ -137,6 +137,7 @@ type Order = {
   shippingAddress: Address,
   billingAddress: Address,
   locale: 'en-CA' | 'fr-CA',
+  paymentState: 'Pending' | 'Paid'
   paymentInfo: {
     payments: Array<Payment>
   },
