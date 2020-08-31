@@ -103,7 +103,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.LINE]: index + 1,
   [DETAILS_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [DETAILS_ROWS_ENUM.QTY_ORDERED]: lineItem.quantity,
-  [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.price.value.centAmount),
+  [DETAILS_ROWS_ENUM.UNIT_PRICE]: convertToDollars(lineItem.discountedPrice ? lineItem.discountedPrice.value.centAmount : lineItem.price.value.centAmount),
   [DETAILS_ROWS_ENUM.EXTENSION_AMOUNT]: convertToDollars(lineItem.totalPrice.centAmount),
   [DETAILS_ROWS_ENUM.LINE_SHIPPING_CHARGES]: lineItem.custom.fields.lineShippingCharges ? convertToDollars(lineItem.custom.fields.lineShippingCharges.centAmount) : 0,
   [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: getLineTotalTaxFromLineItem(lineItem),
