@@ -69,6 +69,7 @@ type LineItem = {
     }>
   },
   price: { value: Price },
+  discountedPrice?: { value: Price }
   totalPrice: Price,
   quantity: number,
   custom: {
