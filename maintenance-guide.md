@@ -61,9 +61,8 @@ LogDNA alerts are triggered when the Harry Rosen email notification server respo
 
 If a CSV for an order could not be generated:
 - First, figure out what the problem is. Check the `errorMessage` custom field on the commercetools order. Ths will either say that certain fields were missing, or simply say "Failed to generate CSV for order".
-	- If there is a message saying that certain fields were missing, then the Bold plugin probably failed to add these fields to the order (for example, because the plugin was down when the user was checking out).
+	- If there is a message saying that a certain field is missing, then Bold probably failed to set that field on the order.
 	- If the message simply says "Failed to generate CSV for order", check the logs in LogDNA for a more informative error message.
-	   - This was probably *not* caused by a failure of the Bold plugin.
 	   - In the past, we've seen this error when the order was missing a barcode.
 - Then fix the problem in one of two ways:
   - Modify the commercetools order (for example, to add the missing fields) and then set its `sentToOmsStatus` to `PENDING`. It then will be automatically re-processed by the orders service.
