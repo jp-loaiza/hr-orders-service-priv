@@ -190,7 +190,10 @@ const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => 
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const carrierId = getCarrierIdFromShippingName(name)
   const shippingServiceType = getShippingServiceTypeFromShippingName(name)
-  const shippingIsRush = !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
+  const shippingIsRush = (
+    !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
+    && !(carrierId === CARRIER_IDS.FDX && shippingServiceType === SHIPPING_SERVICE_TYPES.ECONOMY)
+  )
 
   return {
     carrierId,
