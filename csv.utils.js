@@ -134,7 +134,7 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivelenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
+const getPosEquivalenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
 
 const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
@@ -217,7 +217,7 @@ module.exports = {
   getLineTwoFromAddress,
   getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
-  getPosEquivelenceFromPayment,
+  getPosEquivalenceFromPayment,
   getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
