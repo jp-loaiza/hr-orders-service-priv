@@ -9,7 +9,7 @@ require('./jobs')
 const { sftpConfig } = require('./config')
 const { keepAliveRequest } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
-const { getJobsLastExecutionTime, jobTotalTimeout } = require('./jobs')
+const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./jobs')
 
 const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
@@ -51,10 +51,10 @@ async function checkServicesHealth (res) {
  * @param {Express.Response} res 
  */
 function checkJobsHealth (res) {
-  const jobsLastExecutionTime = getJobsLastExecutionTime()
+  const enabledJobsLastExecutionTime = getEnabledenabledJobsLastExecutionTime()
   const currentTime = new Date()
-  for (const job in jobsLastExecutionTime) {
-    const lastExectuionTime = (jobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'} */ (job)]).getTime()
+  for (const job in enabledJobsLastExecutionTime) {
+    const lastExectuionTime = (enabledJobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'} */ (job)]).getTime()
     if ((currentTime.getTime() - lastExectuionTime) > jobTotalTimeout + 1000) {
       console.error(`${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExectuionTime}.`)
       res.status(500).send('failed')
