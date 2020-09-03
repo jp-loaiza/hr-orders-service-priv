@@ -430,6 +430,7 @@ describe('getShippingInfoFromShippingName', () => {
     expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingServiceType).toBe('EXPEDITED PARCEL')
     expect(getShippingInfoFromShippingName('FedEx Ground').shippingServiceType).toBe('GROUND')
     expect(getShippingInfoFromShippingName('FedEx Economy').shippingServiceType).toBe('ECONOMY')
+    expect(getShippingInfoFromShippingName('FedEx Standard Overnight').shippingServiceType).toBe('OVERNIGHT')
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toBe('EXPRESS')
   })
 
