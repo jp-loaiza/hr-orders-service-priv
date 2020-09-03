@@ -51,7 +51,7 @@ async function checkServicesHealth (res) {
  * @param {Express.Response} res 
  */
 function checkJobsHealth (res) {
-  const enabledJobsLastExecutionTime = getEnabledenabledJobsLastExecutionTime()
+  const enabledJobsLastExecutionTime = getEnabledJobsLastExecutionTime()
   const currentTime = new Date()
   for (const job in enabledJobsLastExecutionTime) {
     const lastExectuionTime = (enabledJobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'} */ (job)]).getTime()
