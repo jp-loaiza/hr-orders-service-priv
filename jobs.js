@@ -81,14 +81,16 @@ async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
   }
 }
 
-if (process.env.SHOULD_UPLOAD_ORDERS === 'true') {
+const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
+if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
   console.log('Processing orders upload job at interval: ', orderUploadInterval)
   if (!(orderUploadInterval > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
   createAndUploadCsvsJob(orderUploadInterval)
 }
 
-if (process.env.SHOULD_SEND_NOTIFICATIONS === 'true') {
+const shouldSendNotifications = process.env.SHOULD_SEND_NOTIFICATIONS === 'true'
+if (shouldSendNotifications) {
   const sendNotificationsInterval = Number(SEND_NOTIFICATIONS_INTERVAL)
   console.log('Processing notifications job at interval: ', sendNotificationsInterval)
   if (!(sendNotificationsInterval > 0)) throw new Error('SEND_NOTIFICATIONS_INTERVAL must be a positive number')
@@ -96,6 +98,11 @@ if (process.env.SHOULD_SEND_NOTIFICATIONS === 'true') {
 }
 
 module.exports = {
-  getJobsLastExecutionTime: () => lastJobsRunTime,
+  getEnabledJobsLastExecutionTime: () => {
+    const lastEnabledJobsRunTime = {}
+    if (shouldUploadOrders) lastEnabledJobsRunTime.createAndUploadCsvsJob = lastJobsRunTime.createAndUploadCsvsJob
+    if (shouldSendNotifications) lastEnabledJobsRunTime.sendOrderEmailNotificationJob = lastJobsRunTime.sendOrderEmailNotificationJob
+    return lastEnabledJobsRunTime
+  },
   jobTotalTimeout
 }
