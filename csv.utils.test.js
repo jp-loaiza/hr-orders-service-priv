@@ -30,8 +30,8 @@ describe('flatten', () => {
   })
 
   it('returns its argument when given a non-array', () => {
-    expect(flatten(1)).toEqual(1)
-    expect(flatten('foo')).toEqual('foo')
+    expect(flatten(1)).toBe(1)
+    expect(flatten('foo')).toBe('foo')
   })
 })
 
@@ -79,7 +79,7 @@ const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.
 
 describe('formatCardExpiryDateFromPayment', () => {
   it('formats credit cart dates correctly when given credit card payments', () => {
-    expect(formatCardExpiryDateFromPayment(creditCardPayment)).toEqual('0120')
+    expect(formatCardExpiryDateFromPayment(creditCardPayment)).toBe('0120')
   })
 
   it('returns `undefined` when given non-credit card payments', () => {
@@ -257,10 +257,10 @@ describe('getParsedTaxesFromLineItem', () => {
 
 describe('formatJestaTaxDescriptionFromBoldTaxDescription', () => {
   it('returns the correct description when given a Bold tax description and a valid two-character province code', () => {
-    expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'ON')).toEqual('GST CANADA')
-    expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'PE')).toEqual('GST CANADA')
-    expect(formatJestaTaxDescriptionFromBoldTaxDescription('HST', 'ON')).toEqual('HST-ON')
-    expect(formatJestaTaxDescriptionFromBoldTaxDescription('PST', 'MB')).toEqual('PST-MB')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'ON')).toBe('GST CANADA')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('GST', 'PE')).toBe('GST CANADA')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('HST', 'ON')).toBe('HST-ON')
+    expect(formatJestaTaxDescriptionFromBoldTaxDescription('PST', 'MB')).toBe('PST-MB')
   })
 })
 
@@ -346,24 +346,24 @@ describe('getBarcodeInfoFromLineItem', () => {
 
 describe('sumMoney', () => {
   it('sums whole dollars correctly', () => {
-    expect(sumMoney([1, 2])).toEqual(3)
-    expect(sumMoney([1])).toEqual(1)
-    expect(sumMoney([1, 2, 3])).toEqual(6)
+    expect(sumMoney([1, 2])).toBe(3)
+    expect(sumMoney([1])).toBe(1)
+    expect(sumMoney([1, 2, 3])).toBe(6)
   })
 
   it('sums dollars with whole cent values correctly', () => {
-    expect(sumMoney([0.1, 0.1, 0.1])).toEqual(0.3)
-    expect(sumMoney([2.5, 1.5])).toEqual(4)
+    expect(sumMoney([0.1, 0.1, 0.1])).toBe(0.3)
+    expect(sumMoney([2.5, 1.5])).toBe(4)
   })
 
   it('sums dollars with fractional cent values correctly', () => {
-    expect(sumMoney([0.001, 0.001])).toEqual(0.002)
+    expect(sumMoney([0.001, 0.001])).toBe(0.002)
   })
 
   it('rounds to four decimal places, rounding x.xxxx5 up', () => {
-    expect(sumMoney([0.00004])).toEqual(0)
-    expect(sumMoney([0.00005])).toEqual(0.0001)
-    expect(sumMoney([0.00006])).toEqual(0.0001)
+    expect(sumMoney([0.00004])).toBe(0)
+    expect(sumMoney([0.00005])).toBe(0.0001)
+    expect(sumMoney([0.00006])).toBe(0.0001)
   })
 })
 
@@ -420,21 +420,26 @@ describe('getPaymentTotalFromPaymentInfo', () => {
 
 describe('getShippingInfoFromShippingName', () => {
   it('returns correctly parsed carrier ID when given a valid shipping name', () => {
-    expect(getShippingInfoFromShippingName('Canada Post Expedited').carrierId).toEqual('CP')
-    expect(getShippingInfoFromShippingName('FedEx Ground').carrierId).toEqual('FDX')
-    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').carrierId).toEqual('PRL')
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').carrierId).toBe('CP')
+    expect(getShippingInfoFromShippingName('FedEx Ground').carrierId).toBe('FDX')
+    expect(getShippingInfoFromShippingName('FedEx Economy').carrierId).toBe('FDX')
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').carrierId).toBe('PRL')
   })
 
   it('returns correctly parsed shipping service type when given a valid shipping name', () => {
-    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingServiceType).toEqual('EXPEDITED PARCEL')
-    expect(getShippingInfoFromShippingName('FedEx Ground').shippingServiceType).toEqual('GROUND')
-    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toEqual('EXPRESS')
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingServiceType).toBe('EXPEDITED PARCEL')
+    expect(getShippingInfoFromShippingName('FedEx Ground').shippingServiceType).toBe('GROUND')
+    expect(getShippingInfoFromShippingName('FedEx Economy').shippingServiceType).toBe('ECONOMY')
+    expect(getShippingInfoFromShippingName('FedEx Standard Overnight').shippingServiceType).toBe('OVERNIGHT')
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toBe('EXPRESS')
   })
 
-  it('classifies all shipping types as rush except for `Canada Post Expedited`', () => {
-    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toEqual(false)
-    expect(getShippingInfoFromShippingName('FedEx Ground').shippingIsRush).toEqual(true)
-    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toEqual(true)
+  it('classifies all shipping types as rush except for `Canada Post Expedited` and `FedEx Economy`', () => {
+    expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toBe(false)
+    expect(getShippingInfoFromShippingName('FedEx Economy').shippingIsRush).toBe(false)
+    expect(getShippingInfoFromShippingName('FedEx Ground').shippingIsRush).toBe(true)
+    expect(getShippingInfoFromShippingName('FedEx Standard Overnight').shippingIsRush).toBe(true)
+    expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toBe(true)
   })
 
   it('throws an error when given a shipping name that lacks a valid carrier name', () => {

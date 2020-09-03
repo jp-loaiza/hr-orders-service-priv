@@ -134,7 +134,7 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivelenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
+const getPosEquivalenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
 
 const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
@@ -190,7 +190,10 @@ const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => 
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const carrierId = getCarrierIdFromShippingName(name)
   const shippingServiceType = getShippingServiceTypeFromShippingName(name)
-  const shippingIsRush = !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
+  const shippingIsRush = (
+    !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
+    && !(carrierId === CARRIER_IDS.FDX && shippingServiceType === SHIPPING_SERVICE_TYPES.ECONOMY)
+  )
 
   return {
     carrierId,
@@ -214,7 +217,7 @@ module.exports = {
   getLineTwoFromAddress,
   getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
-  getPosEquivelenceFromPayment,
+  getPosEquivalenceFromPayment,
   getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,

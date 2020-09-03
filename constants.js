@@ -300,7 +300,7 @@ const SENT_TO_CRM_STATUS = {
   FAILURE: 'FAILURE'
 }
 
-// From CRM's docuemntation: "Determines the Division context of the email
+// From CRM's documentation: "Determines the Division context of the email
 // (i.e. Canada Stores or Outlet Stores).  This may also be used to help select
 // the correct template when Division specific templates exist."
 const EMAIL_API_OWNER_ID = 'F6UJ9A000002' // Division 01 (Canada)
@@ -313,7 +313,9 @@ const SHIPPING_SERVICE_TYPES = {
   SHIPMENT: 'SHIPMENT',
   GROUND: 'GROUND',
   EXPEDITED_PARCEL: 'EXPEDITED PARCEL',
-  XPRESSPOST: 'XPRESSPOST'
+  XPRESSPOST: 'XPRESSPOST',
+  ECONOMY: 'ECONOMY',
+  STANDARD_OVERNIGHT: 'OVERNIGHT'
 }
 
 const SHIPPING_SERVICE_TYPES_TO_NAMES = {
@@ -321,7 +323,9 @@ const SHIPPING_SERVICE_TYPES_TO_NAMES = {
   [SHIPPING_SERVICE_TYPES.SHIPMENT]: 'Shipment',
   [SHIPPING_SERVICE_TYPES.GROUND]: 'Ground',
   [SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL]: 'Expedited',
-  [SHIPPING_SERVICE_TYPES.XPRESSPOST]: 'XpressPost'
+  [SHIPPING_SERVICE_TYPES.XPRESSPOST]: 'XpressPost',
+  [SHIPPING_SERVICE_TYPES.ECONOMY]: 'Economy',
+  [SHIPPING_SERVICE_TYPES.STANDARD_OVERNIGHT]: 'Standard Overnight'
 }
 
 const CARRIER_IDS = {
