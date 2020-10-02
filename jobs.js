@@ -1,9 +1,9 @@
 
 require('dotenv').config()
 
-const { ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
 const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
-const { fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus } = require('./commercetools')
+const { fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus, fetchStuckOrderResults } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
 
@@ -14,7 +14,8 @@ console.log(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
 
 const lastJobsRunTime = {
   createAndUploadCsvsJob: new Date(),
-  sendOrderEmailNotificationJob: new Date()
+  sendOrderEmailNotificationJob: new Date(),
+  checkForStuckOrdersJob: new Date()
 }
 
 /**
@@ -81,6 +82,24 @@ async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
   }
 }
 
+/**
+ * @param {*} stuckOrderCheckInterval interval between each job in ms
+ */
+async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
+  // eslint-disable-next-line no-constant-condition
+  while(true) {
+    const { results: stuckOrders, total: stuckOrderCount } = await fetchStuckOrderResults()
+    if (stuckOrderCount > 0) {
+      const stringifiedStuckOrderNumbersAndIds = stuckOrders.map(order => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
+      console.warn(`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`)
+    } else {
+      console.log('No stuck orders')
+    }
+    lastJobsRunTime.checkForStuckOrdersJob = new Date()
+    await sleep(stuckOrderCheckInterval)
+  }
+}
+
 const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
 if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
@@ -97,11 +116,21 @@ if (shouldSendNotifications) {
   sendOrderEmailNotificationJob(sendNotificationsInterval)
 }
 
+const shouldCheckForStuckOrders = process.env.SHOULD_CHECK_FOR_STUCK_ORDERS === 'true'
+if (shouldCheckForStuckOrders) {
+  const stuckOrderCheckInterval = Number(STUCK_ORDER_CHECK_INTERVAL)
+  console.log('Processing stuck order check job at interval: ', stuckOrderCheckInterval)
+  if (!(stuckOrderCheckInterval > 0)) throw new Error('STUCK_ORDER_CHECK_INTERVAL must be a positive number')
+  checkForStuckOrdersJob(stuckOrderCheckInterval)
+}
+
+
 module.exports = {
   getEnabledJobsLastExecutionTime: () => {
     const lastEnabledJobsRunTime = {}
     if (shouldUploadOrders) lastEnabledJobsRunTime.createAndUploadCsvsJob = lastJobsRunTime.createAndUploadCsvsJob
     if (shouldSendNotifications) lastEnabledJobsRunTime.sendOrderEmailNotificationJob = lastJobsRunTime.sendOrderEmailNotificationJob
+    if (shouldCheckForStuckOrders) lastEnabledJobsRunTime.checkForStuckOrdersJob = lastJobsRunTime.checkForStuckOrdersJob
     return lastEnabledJobsRunTime
   },
   jobTotalTimeout
