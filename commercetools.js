@@ -2,6 +2,7 @@ const dotenv = require('dotenv')
 
 const {
   BACKOFF,
+  DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
@@ -149,12 +150,13 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
 }
 
 /**
- * An order counts as "stuck" if it's neither succeeded or failed to be processed within 10 minutes of its creation date.
+ * An order counts as "stuck" if it's neither succeeded or failed to be processed within a configurable time.
  * @returns {Promise<{results: Array<import('./orders').Order>, total: number}>}
  */
 const fetchStuckOrderResults = async () => {
-  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000)
-  const query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(tenMinutesAgo.toJSON())}"`
+  const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
+  const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
+  const query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
   const uri = requestBuilder.orders.where(query).build()
   return (await ctClient.execute({ method: 'GET', uri })).body
 }

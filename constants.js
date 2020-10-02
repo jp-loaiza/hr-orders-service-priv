@@ -2,6 +2,8 @@ const KEEP_ALIVE_INTERVAL = 300000 // 5 minutes in milliseconds
 
 const BACKOFF = 600000 // retry exponential backoff rate in milliseconds
 
+const DEFAULT_STALE_ORDER_CUTOFF_TIME_MS = 10 * 60 * 1000
+
 let JOB_TASK_TIMEOUT = 2 * 60 * 1000
 const jobTaskTimeoutFromEnv = Number(process.env.JOB_TASK_TIMEOUT)
 if (jobTaskTimeoutFromEnv) {
@@ -351,6 +353,7 @@ module.exports = {
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,
   CARRIER_IDS_TO_NAMES,
+  DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
   EMAIL_API_OWNER_ID,
