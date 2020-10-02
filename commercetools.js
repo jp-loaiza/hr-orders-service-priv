@@ -149,6 +149,17 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
 }
 
 /**
+ * An order counts as "stuck" if it's neither succeeded or failed to be processed within 10 minutes of its creation date.
+ * @returns {Promise<{results: Array<import('./orders').Order>, total: number}>}
+ */
+const fetchStuckOrderResults = async () => {
+  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000)
+  const query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(tenMinutesAgo.toJSON())}"`
+  const uri = requestBuilder.orders.where(query).build()
+  return (await ctClient.execute({ method: 'GET', uri })).body
+}
+
+/**
  * @param {import('./orders').Order} order
  */
 async function setOrderAsSentToOms (order) {
@@ -217,6 +228,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
+  fetchStuckOrderResults,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
