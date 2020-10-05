@@ -458,31 +458,38 @@ describe('getPaymentReleasedStatus', () => {
       obj: {
         paymentMethodInfo: {
           method: 'notcredit'
-        } 
+        },
+        paymentStatus: {
+          state: {
+            obj: {
+              key: 'paidPaymentState'
+            }
+          }
+        }
       }   
     }] 
   }
   it('returns "Y" if payment type is not credit no matter the payment state', () => {
-    expect(getPaymentReleasedStatus(paymentInfo, 'somepaymentstate')).toBe('Y')
+    expect(getPaymentReleasedStatus(paymentInfo)).toBe('Y')
   })
   it('returns "Y" if all payment types are not credit no matter the payment state', () => {
     const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'stillnotcredit' } } }] }
-    expect(getPaymentReleasedStatus(multiPaymentInfo, 'somepaymentstate')).toBe('Y')
+    expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('Y')
   })
   it('returns "Y" if payment type is credit and payment state is "Paid"', () => {
     const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
-    expect(getPaymentReleasedStatus(creditPaymentInfo, 'Paid')).toBe('Y')
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
   })
   it('returns "N" if payment type is credit and payment state is not "Paid"', () => {
-    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
-    expect(getPaymentReleasedStatus(creditPaymentInfo, 'nopaid')).toBe('N')
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { state: { obj: { key: 'notPaidPaymentState' } } } } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
   })
   it('returns "Y" if any payment type is credit and payment state is "Paid"', () => {
     const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
-    expect(getPaymentReleasedStatus(multiPaymentInfo, 'Paid')).toBe('Y')
+    expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('Y')
   })
   it('returns "N" if any payment type is credit and payment state is not "Paid"', () => {
-    const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
-    expect(getPaymentReleasedStatus(multiPaymentInfo, 'notpaid')).toBe('N')
+    const multiPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0] }, { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { state: { obj: { key: 'notPaidPaymentState' } } } } }] }
+    expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('N')
   })
 })

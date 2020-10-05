@@ -6,19 +6,19 @@ const {
   CARRIER_IDS_TO_NAMES,
   JESTA_TAX_DESCRIPTIONS,
   SHIPPING_SERVICE_TYPES,
-  SHIPPING_SERVICE_TYPES_TO_NAMES
+  SHIPPING_SERVICE_TYPES_TO_NAMES,
+  PAYMENT_STATES
 } = require('./constants')
 
 /**
  * Determines payment released status based on payment methods and current payment state 
  * @param {Object} paymentInfo
- * @param {String} paymentState
  */
-const getPaymentReleasedStatus = (paymentInfo, paymentState) => {
-  const isCredit = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit');
-  if (!isCredit) return 'Y' 
+const getPaymentReleasedStatus = (paymentInfo) => {
+  const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit');
+  if (!creditPaymentInfo) return 'Y' 
 
-  return paymentState === 'Paid' ? 'Y' : 'N'
+  return creditPaymentInfo.obj.paymentStatus.state.obj.key === PAYMENT_STATES.PAID ? 'Y' : 'N'
 }
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (

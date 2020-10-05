@@ -348,7 +348,12 @@ const CARRIER_IDS_TO_NAMES =  {
   [CARRIER_IDS.UPS]: 'UPS'
 }
 
+const PAYMENT_STATES = {
+  PAID: 'paidPaymentState' 
+}
+
 module.exports = {
+  PAYMENT_STATES,
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,

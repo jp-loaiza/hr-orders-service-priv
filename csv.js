@@ -95,7 +95,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
   [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'Y', // All returns are free
   [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: getSignatureIsRequiredFromTaxedPrice(taxedPrice) ? 'Y' : 'N',
-  [HEADER_ROWS_ENUM.RELEASED]: getPaymentReleasedStatus(paymentInfo, paymentState)
+  [HEADER_ROWS_ENUM.RELEASED]: getPaymentReleasedStatus(paymentInfo)
 })
 
 const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
