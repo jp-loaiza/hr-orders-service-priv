@@ -147,3 +147,18 @@ spec:
             configMapKeyRef:
               key: MAXIMUM_RETRIES
               name: hr-orders-service
+        - name: STALE_ORDER_CUTOFF_TIME_MS
+          valueFrom:
+            configMapKeyRef:
+              key: STALE_ORDER_CUTOFF_TIME_MS
+              name: hr-orders-service
+        - name: SHOULD_CHECK_FOR_STUCK_ORDERS
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_CHECK_FOR_STUCK_ORDERS
+              name: hr-orders-service
+        - name: STUCK_ORDER_CHECK_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: STUCK_ORDER_CHECK_INTERVAL
+              name: hr-orders-service
