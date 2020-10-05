@@ -15,7 +15,8 @@ const {
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
-  sumMoney
+  sumMoney,
+  getPaymentReleasedStatus
 } = require('./csv.utils')
 
 describe('flatten', () => {
@@ -448,5 +449,40 @@ describe('getShippingInfoFromShippingName', () => {
 
   it('throws an error when given a shipping name that lacks a valid shipping service type', () => {
     expect(() => getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE')).toThrow('Shipping name \'Canada Post INVALID_SHIPPING_TYPE\' is invalid: does not include recognized shipping service type')
+  })
+})
+
+describe('getPaymentReleasedStatus', () => {
+  const paymentInfo = {
+    payments: [{
+      obj: {
+        paymentMethodInfo: {
+          method: 'notcredit'
+        } 
+      }   
+    }] 
+  }
+  it('returns "Y" if payment type is not credit no matter the payment state', () => {
+    expect(getPaymentReleasedStatus(paymentInfo, 'somepaymentstate')).toBe('Y')
+  })
+  it('returns "Y" if all payment types are not credit no matter the payment state', () => {
+    const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'stillnotcredit' } } }] }
+    expect(getPaymentReleasedStatus(multiPaymentInfo, 'somepaymentstate')).toBe('Y')
+  })
+  it('returns "Y" if payment type is credit and payment state is "Paid"', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo, 'Paid')).toBe('Y')
+  })
+  it('returns "N" if payment type is credit and payment state is not "Paid"', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo, 'nopaid')).toBe('N')
+  })
+  it('returns "Y" if any payment type is credit and payment state is "Paid"', () => {
+    const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
+    expect(getPaymentReleasedStatus(multiPaymentInfo, 'Paid')).toBe('Y')
+  })
+  it('returns "N" if any payment type is credit and payment state is not "Paid"', () => {
+    const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
+    expect(getPaymentReleasedStatus(multiPaymentInfo, 'notpaid')).toBe('N')
   })
 })

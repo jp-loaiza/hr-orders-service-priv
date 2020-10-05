@@ -9,6 +9,18 @@ const {
   SHIPPING_SERVICE_TYPES_TO_NAMES
 } = require('./constants')
 
+/**
+ * Determines payment released status based on payment methods and current payment state 
+ * @param {Object} paymentInfo
+ * @param {String} paymentState
+ */
+const getPaymentReleasedStatus = (paymentInfo, paymentState) => {
+  const isCredit = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit');
+  if (!isCredit) return 'Y' 
+
+  return paymentState === 'Paid' ? 'Y' : 'N'
+}
+
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
   nums.reduce((total, num) => currency(total, { precision: 4 }).add(num), currency(0))
 ).value
@@ -223,5 +235,6 @@ module.exports = {
   getShippingTaxDescriptionsFromShippingTaxes,
   getSignatureIsRequiredFromTaxedPrice,
   getTaxTotalFromTaxedPrice,
-  sumMoney
+  sumMoney,
+  getPaymentReleasedStatus
 }

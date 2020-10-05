@@ -33,7 +33,8 @@ const {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getSignatureIsRequiredFromTaxedPrice,
-  getTaxTotalFromTaxedPrice
+  getTaxTotalFromTaxedPrice,
+  getPaymentReleasedStatus
 } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
@@ -94,7 +95,7 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
   [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'Y', // All returns are free
   [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: getSignatureIsRequiredFromTaxedPrice(taxedPrice) ? 'Y' : 'N',
-  [HEADER_ROWS_ENUM.RELEASED]: paymentState === 'Paid' ? 'Y' : 'N' // TODO: confirm with Bold that this can be relied on
+  [HEADER_ROWS_ENUM.RELEASED]: getPaymentReleasedStatus(paymentInfo, paymentState)
 })
 
 const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
