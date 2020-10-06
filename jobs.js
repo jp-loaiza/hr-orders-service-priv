@@ -1,9 +1,9 @@
 
 require('dotenv').config()
 
-const { ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
 const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
-const { fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus, fetchStuckOrderResults } = require('./commercetools')
+const { fetchOrderIdsThatShouldBeUpdatedInOMS, fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus, fetchStuckOrderResults } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
 
@@ -15,7 +15,8 @@ console.log(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
 const lastJobsRunTime = {
   createAndUploadCsvsJob: new Date(),
   sendOrderEmailNotificationJob: new Date(),
-  checkForStuckOrdersJob: new Date()
+  checkForStuckOrdersJob: new Date(),
+  sendOrderUpdatesJob: new Date()
 }
 
 /**
@@ -40,6 +41,47 @@ async function createAndUploadCsvsJob (orderUploadInterval) {
     await sleep(orderUploadInterval)
     lastJobsRunTime.createAndUploadCsvsJob = new Date()
   }
+}
+
+/**
+ * @param {number} orderUpdateInterval interval between each job in ms
+ */
+async function sendOrderUpdatesJob (orderUploadInterval) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const result = await Promise.race([
+        sendOrderUpdates(),
+        sleep(jobTotalTimeout).then(() => timeoutSymbol)
+      ])
+      if (result === timeoutSymbol) {
+        throw new Error(`Sending order update requests to OMS timedout after ${jobTotalTimeout}ms.`)
+      }
+    } catch (error) {
+      console.error('Failed to send order updates to OMS: ', error)
+    }
+    await sleep(orderUploadInterval)
+    lastJobsRunTime.sendOrderUpdatesJob = new Date()
+  }
+}
+
+async function sendOrderUpdates () {
+  const ordersToUpdate = await fetchOrderIdsThatShouldBeUpdatedInOMS()
+  console.log('ordersToUpdate', ordersToUpdate);
+  if (ordersToUpdate.length) {
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
+  }
+  /*await Promise.all(ordersToUpdate.map(async orderToUpdate => {
+    try {
+      await sendOrderEmailNotificationByOrderId(orderId)
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderSentToCrmStatus)(orderId, true)
+    } catch (error) {
+      console.error(`Failed to send notification for order ID: ${orderId}: `, error)
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderSentToCrmStatus)(orderId, false)
+    }
+  }))*/
 }
 
 async function sendOrderEmailNotification () {
@@ -108,6 +150,14 @@ if (shouldUploadOrders) {
   createAndUploadCsvsJob(orderUploadInterval)
 }
 
+const shouldSendOrderUpdates = process.env.SHOULD_SEND_ORDER_UPDATES === 'true'
+if (shouldSendOrderUpdates) {
+  const orderUpdateInterval = Number(ORDER_UPDATE_INTERVAL)
+  console.log('Processing orders update job at interval: ', orderUpdateInterval)
+  if (!(orderUpdateInterval > 0)) throw new Error('ORDER_UPDATE_INTERVAL must be a positive number')
+  sendOrderUpdatesJob(orderUpdateInterval)
+}
+
 const shouldSendNotifications = process.env.SHOULD_SEND_NOTIFICATIONS === 'true'
 if (shouldSendNotifications) {
   const sendNotificationsInterval = Number(SEND_NOTIFICATIONS_INTERVAL)
@@ -131,6 +181,7 @@ module.exports = {
     if (shouldUploadOrders) lastEnabledJobsRunTime.createAndUploadCsvsJob = lastJobsRunTime.createAndUploadCsvsJob
     if (shouldSendNotifications) lastEnabledJobsRunTime.sendOrderEmailNotificationJob = lastJobsRunTime.sendOrderEmailNotificationJob
     if (shouldCheckForStuckOrders) lastEnabledJobsRunTime.checkForStuckOrdersJob = lastJobsRunTime.checkForStuckOrdersJob
+    if (shouldSendOrderUpdates) lastEnabledJobsRunTime.sendOrderUpdatesJob = lastJobsRunTime.sendOrderUpdatesJob
     return lastEnabledJobsRunTime
   },
   jobTotalTimeout

@@ -6,6 +6,7 @@ const {
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
+  UPDATE_TO_OMS_STATUSES,
   SENT_TO_CRM_STATUS
 } = require('./constants')
 
@@ -79,6 +80,21 @@ const keepAlive = async () => {
 
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
+
+/** 
+ * Fetches all orders that need to be updated in OMS
+ * @returns {Promise<Array<string>>}
+ */
+async function fetchOrderIdsThatShouldBeUpdatedInOMS () {
+  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.RELEASE}")) or custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.CANCEL}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  /**
+   * @type Array<string>
+   */
+  const ordersToUpdate = body.results.map((/** @type {import('./orders').Order} */ order) => ({ orderNumber: order.orderNumber, status: order.custom.fields.omsUpdate }))
+  return ordersToUpdate
+}
 
 /** 
  * Fetches all orders that that we should try to send to the Notification Service.
@@ -236,6 +252,7 @@ module.exports = {
   setOrderAsSentToOms,
   setOrderErrorFields,
   fetchOrderIdsThatShouldBeSentToCrm,
+  fetchOrderIdsThatShouldBeUpdatedInOMS,
   setOrderSentToCrmStatus,
   keepAliveRequest
 }

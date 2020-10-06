@@ -92,10 +92,20 @@ spec:
             configMapKeyRef:
               key: ORDER_UPLOAD_INTERVAL
               name: hr-orders-service
+        - name: ORDER_UPDATE_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: ORDER_UPDATE_INTERVAL
+              name: hr-orders-service
         - name: SHOULD_UPLOAD_ORDERS
           valueFrom:
             configMapKeyRef:
               key: SHOULD_UPLOAD_ORDERS
+              name: hr-orders-service
+        - name: SHOULD_SEND_ORDER_UPDATES
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_ORDER_UPDATES
               name: hr-orders-service
         - name: SHOULD_SEND_NOTIFICATIONS
           valueFrom:
