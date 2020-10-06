@@ -815,7 +815,7 @@
                                     "clientId": "aPGUaMxkMVXpRJdxnjZlNYJ3",
                                     "isPlatformClient": false
                                 },
-                                "key": "paidPaymentState",
+                                "key": "paid",
                                 "type": "PaymentState",
                                 "roles": [],
                                 "name": {
@@ -912,7 +912,7 @@
                                     "clientId": "aPGUaMxkMVXpRJdxnjZlNYJ3",
                                     "isPlatformClient": false
                                 },
-                                "key": "cancelledPaymentState",
+                                "key": "cancelled",
                                 "type": "PaymentState",
                                 "roles": [],
                                 "name": {

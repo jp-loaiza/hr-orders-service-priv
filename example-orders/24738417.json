@@ -503,7 +503,7 @@
                                     "clientId": "aPGUaMxkMVXpRJdxnjZlNYJ3",
                                     "isPlatformClient": false
                                 },
-                                "key": "cancelledPaymentState",
+                                "key": "cancelled",
                                 "type": "PaymentState",
                                 "roles": [],
                                 "name": {

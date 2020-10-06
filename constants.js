@@ -349,7 +349,15 @@ const CARRIER_IDS_TO_NAMES =  {
 }
 
 const PAYMENT_STATES = {
-  PAID: 'paidPaymentState' 
+  CANCELLED: 'cancelled',
+  DISPUTED: 'disputed',
+  PAID: 'paid',
+  PARTIALLY_PAID: 'partially_paid',
+  PARTIALLY_REFUNDED: 'partially_refunded',
+  PENDING: 'pending',
+  PREAUTHED: 'preauthed',
+  REFUNDED: 'refunded',
+  HELD_FOR_REVIEW: 'held_for_review'
 }
 
 module.exports = {

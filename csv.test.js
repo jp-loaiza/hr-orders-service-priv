@@ -496,7 +496,7 @@ const completeOrderEnglishUntyped = {
                           clientId: "aPGUaMxkMVXpRJdxnjZlNYJ3",
                           isPlatformClient: false
                       },
-                      key: "paidPaymentState",
+                      key: "paid",
                       type: "PaymentState",
                       roles: [],
                       name: {

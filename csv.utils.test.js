@@ -462,7 +462,7 @@ describe('getPaymentReleasedStatus', () => {
         paymentStatus: {
           state: {
             obj: {
-              key: 'paidPaymentState'
+              key: 'paid'
             }
           }
         }
