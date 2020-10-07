@@ -1,31 +1,48 @@
 const fetch = require('node-fetch').default
 const AbortController = require('abort-controller')
-const { PAYMENT_STATES, FETCH_ABORT_TIMEOUT } = require('./constants')
+const { PAYMENT_STATES, FETCH_ABORT_TIMEOUT, ONLINE_SITE_ID } = require('./constants')
 
 const { JESTA_API_HOST,
   JESTA_API_USERNAME,
   JESTA_API_PASSWORD } = (/** @type {import('./orders').Env} */ (process.env))
 
-/**
- * @param {import('./orders').Order} order 
- */
-const formatEmailApiRequestBodyFromOrder = order => ({
-  request: {
-    OwnerId: EMAIL_API_OWNER_ID,
-    Channel: 'Email',
-    Subject: JSON.stringify({ Name: 'Salesorder', Id: order.orderNumber }),
-    Topic: 'Confirmation',
-    Recipient: JSON.stringify({
-      address: order.customerEmail,
-      locale: order.locale
+const updateJestaOrder = async (accessToken, orderUpdate) => {
+  // @ts-ignore
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, FETCH_ABORT_TIMEOUT)
+
+  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PAID ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
+
+  const response = await fetch(jestaUpdateOrderUrl, {
+    body: JSON.stringify({
+      WebTransactionId: orderUpdate.orderNumber,
+      BusinessUnitId: 1,
+      SiteId: ONLINE_SITE_ID
     }),
-    // Required even though it's blank. From CRM's documentation: "Not
-    // currently implemented - This parameter will eventually be used to
-    // override the sender for the communication"
-    Sender: '',
-    Data: JSON.stringify(order)
-  }
-})
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+      'OData-Version': '4.0',
+      Authorization: `Bearer ${accessToken}`
+    }, 
+    method: 'POST',
+    signal: controller.signal
+  })
+    .catch(error => {
+      if (error.name === 'AbortError') {
+        console.log('Get jesta api access token request was aborted.')
+      }
+      throw error
+    })
+    .finally(() => { clearTimeout(timeout) })
+  if (response.status === 200 && response.body.ReturnCode === 0) return true
+  const error = new Error(`Jesta Update API responded with status ${response.status}: ${response}.`)
+  console.error(error)
+  console.error(response)
+  throw error
+}
 
 const getJestaApiAccessToken = async () => {
   // @ts-ignore
@@ -45,7 +62,6 @@ const getJestaApiAccessToken = async () => {
     signal: controller.signal
   })
     .catch(error => {
-      return true
       if (error.name === 'AbortError') {
         console.log('Get jesta api access token request was aborted.')
       }
@@ -53,11 +69,10 @@ const getJestaApiAccessToken = async () => {
     })
     .finally(() => { clearTimeout(timeout) })
   if (response.status === 200) return response.body.access_token
-  /*const error = new Error(`Jesta API responded with status ${response.status}: ${response}.`)
+  const error = new Error(`Jesta OAuth API responded with status ${response.status}: ${response}.`)
   console.error(error)
   console.error(response)
-  throw error*/
-  return true
+  throw error
 }
 
 /**
@@ -65,11 +80,9 @@ const getJestaApiAccessToken = async () => {
  */
 const sendOrderUpdateToJesta = async orderUpdate => {
   const jestaApiAccessToken = await getJestaApiAccessToken ();
-  console.log('jestaApiAccessToken', jestaApiAccessToken);
-  return jestaApiAccessToken
+  return updateJestaOrder(jestaApiAccessToken, orderUpdate)
 }
 
 module.exports = {
-  formatEmailApiRequestBodyFromOrder,
   sendOrderUpdateToJesta
 }

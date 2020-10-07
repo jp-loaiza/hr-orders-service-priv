@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -93,9 +93,9 @@ const createAndUploadCsvs = async () => {
         console.error(err)
         // we retry in case the version of the order has changed by the notifications job
         await retry(setOrderErrorFields)(order, errorMessage, false, {
-          retryCountField: 'retryCount',
-          nextRetryAtField: 'nextRetryAt',
-          statusField: 'sentToOmsStatus'
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
         })
         continue
       }
@@ -104,14 +104,14 @@ const createAndUploadCsvs = async () => {
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
         await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
-          retryCountField: 'retryCount',
-          nextRetryAtField: 'nextRetryAt',
-          statusField: 'sentToOmsStatus'
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
         })
         continue
       }
       // we retry in case the version of the order has changed by the notifications job
-      await retry(setOrderAsSentToOms)(order, 'sentToOmsStatus')
+      await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
     console.log('Done processing orders')
   } catch (err) {

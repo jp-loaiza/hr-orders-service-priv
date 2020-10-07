@@ -13,7 +13,7 @@ const {
 } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 const { sendOrderUpdateToJesta } = require('./jesta')
-const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
+const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT, ORDER_CUSTOM_FIELDS } = require('./constants')
 
 const timeoutSymbol = Symbol('timeout')
 
@@ -75,7 +75,6 @@ async function sendOrderUpdatesJob (orderUploadInterval) {
 
 async function sendOrderUpdates () {
   const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
-  console.log('ordersToUpdate', ordersToUpdate);
   if (ordersToUpdate.length) {
     console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
   }
@@ -83,22 +82,22 @@ async function sendOrderUpdates () {
     try {
       if (orderToUpdate.errorMessage) {
         await retry(setOrderErrorFields)(orderToUpdate, orderToUpdate.errorMessage, false, {
-          retryCountField: 'omsUpdateRetryCount',
-          nextRetryAtField: 'omsUpdateNextRetryAt',
-          statusField: 'omsUpdate'
+          retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
         })
       } else {
         await sendOrderUpdateToJesta(orderToUpdate)
         // we retry in case the version of the order has changed by CSV job
-        await retry(setOrderAsSentToOms)(orderToUpdate, 'omsUpdate')
+        await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
       }
     } catch (error) {
       console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
       // we retry in case the version of the order has changed by CSV job
       await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
-        retryCountField: 'omsUpdateRetryCount',
-        nextRetryAtField: 'omsUpdateNextRetryAt',
-        statusField: 'omsUpdate'
+        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
       })
     }
   }))

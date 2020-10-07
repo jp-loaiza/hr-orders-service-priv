@@ -57,6 +57,15 @@ const CARD_TYPES_TO_JESTA_CODES = {
 
 const ONLINE_SITE_ID = '00990'
 
+const ORDER_CUSTOM_FIELDS = {
+  SENT_TO_OMS_STATUS: 'sentToOmsStatus',
+  OMS_UPDATE_RETRY_COUNT: 'omsUpdateRetryCount',
+  OMS_UPDATE_NEXT_RETRY_AT: 'omsUpdateNextRetryAt',
+  OMS_UPDATE_STATUS: 'omsUpdate',
+  RETRY_COUNT: 'retryCount',
+  NEXT_RETRY_AT: 'nextRetryAt'
+}
+
 const HEADER_ROWS_ENUM = {
   RECORD_TYPE: 'RecordType H',
   SITE_ID: 'SITE_ID',
@@ -398,4 +407,5 @@ module.exports = {
   TENDER_ROWS_ENUM,
   JOB_TASK_TIMEOUT,
   MAXIMUM_RETRIES,
+  ORDER_CUSTOM_FIELDS
 }

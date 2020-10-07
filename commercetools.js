@@ -9,7 +9,8 @@ const {
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_CRM_STATUS,
-  PAYMENT_STATES
+  PAYMENT_STATES,
+  ORDER_CUSTOM_FIELDS
 } = require('./constants')
 
 dotenv.config()
@@ -91,13 +92,12 @@ async function fetchOrdersThatShouldBeUpdatedInOMS () {
   const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
   const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  /**
-   * @type Array<string>
-   */
+
   const ordersToUpdate = body.results.map((/** @type {import('./orders').Order} */ order) => {
     const orderUpdate = {
       id: order.id,
-      orderNumber: order.orderNumber
+      orderNumber: order.orderNumber,
+      custom: order.custom
     }
 
     const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
@@ -203,7 +203,7 @@ async function setOrderAsSentToOms (order, statusField) {
   const uri = requestBuilder.orders.byId(order.id).build()
   const { version } = (await ctClient.execute({ method: 'GET', uri })).body
 
-  const availableStatuses = statusField === 'sentToOmsStatus' ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
+  const availableStatuses = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
 
   const body = JSON.stringify({
     version: version,
@@ -248,11 +248,10 @@ const getActionsFromCustomFields = customFields => (
  */
 const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { retryCountField, nextRetryAtField, statusField }) => {
   const uri = requestBuilder.orders.byId(order.id).build()
-  const orderBody = (await ctClient.execute({ method: 'GET', uri })).body
-  const version = orderBody.version
-  const retryCount =  orderBody.custom.fields[retryCountField] === undefined ? 0 : orderBody.custom.fields[retryCountField] + 1
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+  const retryCount =  order.custom.fields[retryCountField] === undefined ? 0 : order.custom.fields[retryCountField] + 1
 
-  const isOrderCreation = statusField === 'sentToOmsStatus'
+  const isOrderCreation = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS 
   const shouldRetry = errorIsRecoverable && (retryCount < (isOrderCreation ? SEND_ORDER_RETRY_LIMIT : SEND_ORDER_UPDATE_RETRY_LIMIT))
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount) : null
 
