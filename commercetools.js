@@ -86,13 +86,21 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
  * @returns {Promise<Array<string>>}
  */
 async function fetchOrderIdsThatShouldBeUpdatedInOMS () {
-  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.RELEASE}")) or custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.CANCEL}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
-  const uri = requestBuilder.orders.where(query).build()
+  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
+  const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   /**
    * @type Array<string>
    */
-  const ordersToUpdate = body.results.map((/** @type {import('./orders').Order} */ order) => ({ orderNumber: order.orderNumber, status: order.custom.fields.omsUpdate }))
+  const ordersToUpdate = body.results.map((/** @type {import('./orders').Order} */ order) => {
+    const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
+    if (!creditPayment) return new Error(`No credit card payment with payment release change`)
+
+    return {
+      orderNumber: order.orderNumber,
+      status: creditPayment.obj.paymentStatus.state.obj.key
+    }
+  })
   return ordersToUpdate
 }
 

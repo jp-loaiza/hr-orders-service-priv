@@ -71,7 +71,7 @@ async function sendOrderUpdates () {
   if (ordersToUpdate.length) {
     console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
   }
-  /*await Promise.all(ordersToUpdate.map(async orderToUpdate => {
+  await Promise.all(ordersToUpdate.map(async orderToUpdate => {
     try {
       await sendOrderEmailNotificationByOrderId(orderId)
       // we retry in case the version of the order has changed by CSV job
@@ -81,7 +81,7 @@ async function sendOrderUpdates () {
       // we retry in case the version of the order has changed by CSV job
       await retry(setOrderSentToCrmStatus)(orderId, false)
     }
-  }))*/
+  }))
 }
 
 async function sendOrderEmailNotification () {

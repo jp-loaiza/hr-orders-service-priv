@@ -123,6 +123,13 @@ type Payment = {
         transaction_card_last4: string,
         transaction_card_type: Card
       }
+    },
+    paymentStatus: {
+      state: {
+        obj: {
+          key: string
+        }
+      }
     }
   }
 }
@@ -150,6 +157,9 @@ type Order = {
   custom: {
     fields: {
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
+      omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
+      omsUpdateNextRetryAt?: string,
+      omsUpdateRetryCount?: number,
       errorMessage?: string,
       shippingTaxes: string, // stringified JSON
       paymentIsReleased: boolean,
