@@ -25,7 +25,12 @@ interface Env {
   STALE_ORDER_CUTOFF_TIME_MS: string,
   STUCK_ORDER_CHECK_INTERVAL: string,
   JOB_TASK_TIMEOUT: string,
-  MAXIMUM_RETRIES: string
+  MAXIMUM_RETRIES: string,
+  SHOULD_SEND_ORDER_UPDATES: string,
+  ORDER_UPLOAD_INTERVAL: number,
+  JESTA_API_HOST: string,
+  JESTA_API_USERNAME: string,
+  JESTA_API_PASSWORD: string
 }
 
 type Price = {

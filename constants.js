@@ -300,7 +300,7 @@ const UPDATE_TO_OMS_STATUSES = {
 }
 
 const SEND_ORDER_RETRY_LIMIT = 5
-
+const SEND_ORDER_UPDATE_RETRY_LIMIT = 5
 
 const SENT_TO_CRM_STATUS = {
   SUCCESS: 'SUCCESS',
@@ -354,7 +354,20 @@ const CARRIER_IDS_TO_NAMES =  {
   [CARRIER_IDS.UPS]: 'UPS'
 }
 
-module.exports = {
+const PAYMENT_STATES = { 
+  CANCELLED: 'cancelled',
+  DISPUTED: 'disputed',
+  PAID: 'paid',
+  PARTIALLY_PAID: 'partially_paid',
+  PARTIALLY_REFUNDED: 'partially_refunded',
+  PENDING: 'pending',
+  PREAUTHED: 'preauthed',
+  REFUNDED: 'refunded',
+  HELD_FOR_REVIEW: 'held_for_review'
+}
+
+module.exports = { 
+  PAYMENT_STATES,
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,
@@ -373,6 +386,7 @@ module.exports = {
   MISC_ROWS,
   ONLINE_SITE_ID,
   SEND_ORDER_RETRY_LIMIT,
+  SEND_ORDER_UPDATE_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_CRM_STATUS,

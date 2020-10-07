@@ -9,6 +9,7 @@ kubectl create configmap hr-orders-service \
   --from-literal=ORDER_UPLOAD_INTERVAL=$ORDER_UPLOAD_INTERVAL \
   --from-literal=ORDER_UPDATE_INTERVAL=$ORDER_UPDATE_INTERVAL \
   --from-literal=EMAIL_API_URL=$EMAIL_API_URL_KUBERNETES \
+  --from-literal=JESTA_API_HOST=$JESTA_API_HOST \
   --from-literal=SHOULD_CHECK_FOR_STUCK_ORDERS=$SHOULD_CHECK_FOR_STUCK_ORDERS \
   --from-literal=SHOULD_SEND_ORDER_UPDATES=$SHOULD_SEND_ORDER_UPDATES \
   --from-literal=SHOULD_UPLOAD_ORDERS=$SHOULD_UPLOAD_ORDERS \
@@ -29,6 +30,8 @@ kubectl create secret generic hr-orders-service \
   --from-literal=CT_CLIENT_SECRET=$CT_CLIENT_SECRET \
   --from-literal=EMAIL_API_USERNAME=$EMAIL_API_USERNAME \
   --from-literal=EMAIL_API_PASSWORD=$EMAIL_API_PASSWORD \
+  --from-literal=JESTA_API_USERNAME==$JESTA_API_USERNAME \
+  --from-literal=JESTA_API_PASSWORD=$JESTA_API_PASSWORD \
   --from-literal=HEALTHZ_AUTHORIZATION=$HEALTHZ_AUTHORIZATION \
   --from-literal=NEWRELIC_LICENSE_KEY=$NEWRELIC_LICENSE_KEY \
   -o yaml --dry-run | kubectl apply -f -  

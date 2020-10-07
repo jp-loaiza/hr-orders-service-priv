@@ -92,18 +92,26 @@ const createAndUploadCsvs = async () => {
         console.error(errorMessage)
         console.error(err)
         // we retry in case the version of the order has changed by the notifications job
-        await retry(setOrderErrorFields)(order, errorMessage, false)
+        await retry(setOrderErrorFields)(order, errorMessage, false, {
+          retryCountField: 'retryCount',
+          nextRetryAtField: 'nextRetryAt',
+          statusField: 'sentToOmsStatus'
+        })
         continue
       }
       try {
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
-        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true)
+        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
+          retryCountField: 'retryCount',
+          nextRetryAtField: 'nextRetryAt',
+          statusField: 'sentToOmsStatus'
+        })
         continue
       }
       // we retry in case the version of the order has changed by the notifications job
-      await retry(setOrderAsSentToOms)(order)
+      await retry(setOrderAsSentToOms)(order, 'sentToOmsStatus')
     }
     console.log('Done processing orders')
   } catch (err) {

@@ -3,8 +3,16 @@ require('dotenv').config()
 
 const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
 const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
-const { fetchOrderIdsThatShouldBeUpdatedInOMS, fetchOrderIdsThatShouldBeSentToCrm, setOrderSentToCrmStatus, fetchStuckOrderResults } = require('./commercetools')
+const {
+  fetchOrdersThatShouldBeUpdatedInOMS,
+  fetchOrderIdsThatShouldBeSentToCrm,
+  setOrderSentToCrmStatus,
+  fetchStuckOrderResults,
+  setOrderErrorFields,
+  setOrderAsSentToOms
+} = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
+const { sendOrderUpdateToJesta } = require('./jesta')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
 
 const timeoutSymbol = Symbol('timeout')
@@ -66,20 +74,32 @@ async function sendOrderUpdatesJob (orderUploadInterval) {
 }
 
 async function sendOrderUpdates () {
-  const ordersToUpdate = await fetchOrderIdsThatShouldBeUpdatedInOMS()
+  const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
   console.log('ordersToUpdate', ordersToUpdate);
   if (ordersToUpdate.length) {
     console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
   }
   await Promise.all(ordersToUpdate.map(async orderToUpdate => {
     try {
-      await sendOrderEmailNotificationByOrderId(orderId)
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, true)
+      if (orderToUpdate.errorMessage) {
+        await retry(setOrderErrorFields)(orderToUpdate, orderToUpdate.errorMessage, false, {
+          retryCountField: 'omsUpdateRetryCount',
+          nextRetryAtField: 'omsUpdateNextRetryAt',
+          statusField: 'omsUpdate'
+        })
+      } else {
+        await sendOrderUpdateToJesta(orderToUpdate)
+        // we retry in case the version of the order has changed by CSV job
+        await retry(setOrderAsSentToOms)(orderToUpdate, 'omsUpdate')
+      }
     } catch (error) {
-      console.error(`Failed to send notification for order ID: ${orderId}: `, error)
+      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
       // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, false)
+      await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
+        retryCountField: 'omsUpdateRetryCount',
+        nextRetryAtField: 'omsUpdateNextRetryAt',
+        statusField: 'omsUpdate'
+      })
     }
   }))
 }

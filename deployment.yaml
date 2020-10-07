@@ -37,6 +37,16 @@ spec:
               - name: authorization
                 value: {HEALTHZ_AUTHORIZATION}
         env:
+        - name: JESTA_API_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: JESTA_API_USERNAME
+              name: hr-orders-service
+        - name: JESTA_API_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: JESTA_API_PASSWORD
+              name: hr-orders-service
         - name: SFTP_USERNAME
           valueFrom:
             secretKeyRef:
@@ -116,6 +126,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: EMAIL_API_URL
+              name: hr-orders-service
+        - name: JESTA_API_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: JESTA_API_HOST
               name: hr-orders-service
         - name: EMAIL_API_USERNAME
           valueFrom:
