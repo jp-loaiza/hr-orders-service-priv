@@ -46,7 +46,7 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
     })
     .finally(() => { clearTimeout(timeout) })
   const jsonResponse = await response.json()
-  if (response.status === 200 && jsonResponse.ReturnCode === 1) return true
+  if (response.status === 200) return true
   const error = new Error(`Jesta Update API responded with status ${response.status}: ${jsonResponse}.`)
   console.error(error)
   console.error(response)
