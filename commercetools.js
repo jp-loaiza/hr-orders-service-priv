@@ -99,7 +99,7 @@ async function fetchOrdersThatShouldBeUpdatedInOMS () {
       orderNumber: order.orderNumber,
       custom: order.custom
     }
-
+ 
     const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
     if (!creditPayment) {
       orderUpdate.errorMessage = 'No credit card payment with payment release change'
@@ -264,7 +264,6 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
     [statusField]: status,
     ...errorIsRecoverable ? { [nextRetryAtField]: nextRetryAt } : {},
   })
-  console.log('actions', actions);
   const body = JSON.stringify({ version, actions })
 
   return ctClient.execute({ method: 'POST', uri, body })

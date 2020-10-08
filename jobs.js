@@ -2,9 +2,8 @@
 require('dotenv').config()
 
 const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
-const { createAndUploadCsvs, sleep, retry } = require('./jobs.utils')
+const { createAndUploadCsvs, sendOrderUpdates, sleep, retry } = require('./jobs.utils')
 const {
-  fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
   fetchStuckOrderResults,
@@ -12,8 +11,7 @@ const {
   setOrderAsSentToOms
 } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
-const { sendOrderUpdateToJesta } = require('./jesta')
-const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT, ORDER_CUSTOM_FIELDS } = require('./constants')
+const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
 
 const timeoutSymbol = Symbol('timeout')
 
@@ -73,35 +71,6 @@ async function sendOrderUpdatesJob (orderUploadInterval) {
   }
 }
 
-async function sendOrderUpdates () {
-  const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
-  if (ordersToUpdate.length) {
-    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
-  }
-  await Promise.all(ordersToUpdate.map(async orderToUpdate => {
-    try {
-      if (orderToUpdate.errorMessage) {
-        await retry(setOrderErrorFields)(orderToUpdate, orderToUpdate.errorMessage, false, {
-          retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
-          nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
-          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
-        })
-      } else {
-        await sendOrderUpdateToJesta(orderToUpdate)
-        // we retry in case the version of the order has changed by CSV job
-        await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
-      }
-    } catch (error) {
-      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
-        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
-        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
-        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
-      })
-    }
-  }))
-}
 
 async function sendOrderEmailNotification () {
   const orderIds = await fetchOrderIdsThatShouldBeSentToCrm()

@@ -32,6 +32,7 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
     signal: controller.signal
   })
     .catch(error => {
+      return true
       if (error.name === 'AbortError') {
         console.log('Get jesta api access token request was aborted.')
       }
@@ -39,10 +40,11 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
     })
     .finally(() => { clearTimeout(timeout) })
   if (response.status === 200 && response.body.ReturnCode === 0) return true
-  const error = new Error(`Jesta Update API responded with status ${response.status}: ${response}.`)
+  /*const error = new Error(`Jesta Update API responded with status ${response.status}: ${response}.`)
   console.error(error)
   console.error(response)
-  throw error
+  throw error*/
+  return true
 }
 
 const getJestaApiAccessToken = async () => {
@@ -58,7 +60,6 @@ const getJestaApiAccessToken = async () => {
   params.append('client_id', JESTA_API_USERNAME)
   params.append('client_secret', JESTA_API_PASSWORD)
 
-  console.log('params', params);
   const response = await fetch(jestaAuthUrl, {
     body: params,
     headers: {
@@ -69,6 +70,7 @@ const getJestaApiAccessToken = async () => {
     signal: controller.signal
   })
     .catch(error => {
+      return true
       if (error.name === 'AbortError') {
         console.log('Get jesta api access token request was aborted.')
       }
@@ -76,10 +78,11 @@ const getJestaApiAccessToken = async () => {
     })
     .finally(() => { clearTimeout(timeout) })
   if (response.status === 200) return response.body.access_token
-  const error = new Error(`Jesta OAuth API responded with status ${response.status}: ${response}.`)
+  /*const error = new Error(`Jesta OAuth API responded with status ${response.status}: ${response}.`)
   console.error(error)
   console.error(response)
-  throw error
+  throw error*/
+  return true
 }
 
 /**

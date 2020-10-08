@@ -6,7 +6,9 @@ const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
   setOrderErrorFields,
+  fetchOrdersThatShouldBeUpdatedInOMS
 } = require('./commercetools')
+const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
@@ -127,9 +129,40 @@ const createAndUploadCsvs = async () => {
   }
 }
 
+async function sendOrderUpdates () {
+  const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
+  if (ordersToUpdate.length) {
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
+  }
+  await Promise.all(ordersToUpdate.map(async orderToUpdate => {
+    try {
+      if (orderToUpdate.errorMessage) {
+        await retry(setOrderErrorFields)(orderToUpdate, orderToUpdate.errorMessage, false, {
+          retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+        })
+      } else {
+        await sendOrderUpdateToJesta(orderToUpdate)
+        // we retry in case the version of the order has changed by CSV job
+        await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
+      }
+    } catch (error) {
+      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+      })
+    }
+  }))
+}
+
 module.exports = {
   sleep,
   retry,
   createAndUploadCsvs,
   generateFilenameFromOrder,
+  sendOrderUpdates
 }

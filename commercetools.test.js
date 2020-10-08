@@ -1,5 +1,5 @@
-const { getActionsFromCustomFields, getNextRetryDateFromRetryCount, setOrderErrorFields } = require('./commercetools')
-const { BACKOFF } = require('./constants')
+const { getActionsFromCustomFields, getNextRetryDateFromRetryCount, setOrderErrorFields, fetchOrdersThatShouldBeUpdatedInOMS } = require('./commercetools')
+const { BACKOFF, ORDER_CUSTOM_FIELDS } = require('./constants')
 
 describe('getNextRetryDateFromRetryCount', () => {
   it('returns a date object', () => {
@@ -77,6 +77,34 @@ describe('setOrderErrorFields', () => {
     }
 
     // @ts-ignore mockOrder doesn't need to have all CT order fields
-    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true)).resolves.toBeTruthy()
+    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true, {
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+    })).resolves.toBeTruthy()
+  })
+
+  it('does not throw an error when given a valid order update', async () => {
+    const mockOrder = {
+      custom: {
+        fields: {
+          retryCount: 2
+        }
+      }
+    }
+
+    // @ts-ignore mockOrder doesn't need to have all CT order fields
+    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+    })).resolves.toBeTruthy()
+  })
+})
+
+describe('fetchOrdersThatShouldBeUpdatedInOMS', () => {
+  it('fetch valid orders for updates', async () => {
+    const result = await fetchOrdersThatShouldBeUpdatedInOMS()
+    expect(result).toEqual([{"custom": {"fields": {"carrierId": "FDX", "loginRadiusUid": "ed6c636af37a4d738ba8d374fa219cbc", "paymentIsReleased": true, "retryCount": 0, "returnsAreFree": true, "sentToOmsStatus": "PENDING", "shippingIsRush": false, "shippingServiceType": "EXPRESS", "shippingTaxes": "{\"HST\":3.64}", "signatureIsRequired": true, "transactionTotal": {"centAmount": 99214, "currencyCode": "CAD", "fractionDigits": 2, "type": "centPrecision"}}, "type": {"id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada", "typeId": "type"}}, "id": "1", "orderNumber": "23551711", "status": "paid"}]);
   })
 })
