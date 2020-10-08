@@ -5,6 +5,7 @@ type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discov
 
 interface Env {
   [key: string]: string,
+  ENVIRONMENT: string,
   PORT: string,
   SFTP_HOST: string,
   SFTP_PORT: string,

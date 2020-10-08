@@ -1,11 +1,17 @@
 const fetch = require('node-fetch').default
+const https = require("https");
+const dontValidateCertAgent = new https.Agent({
+  rejectUnauthorized: false
+})
+
 const { URLSearchParams } = require('url')
 const AbortController = require('abort-controller')
 const { PAYMENT_STATES, FETCH_ABORT_TIMEOUT, ONLINE_SITE_ID } = require('./constants')
 
 const { JESTA_API_HOST,
   JESTA_API_USERNAME,
-  JESTA_API_PASSWORD } = (/** @type {import('./orders').Env} */ (process.env))
+  JESTA_API_PASSWORD,
+  ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
 
 const updateJestaOrder = async (accessToken, orderUpdate) => {
   // @ts-ignore
@@ -29,22 +35,22 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
       Authorization: `Bearer ${accessToken}`
     }, 
     method: 'POST',
-    signal: controller.signal
+    signal: controller.signal,
+    agent: ENVIRONMENT === 'development' || ENVIRONMENT === 'staging' ? dontValidateCertAgent : null
   })
     .catch(error => {
-      return true
       if (error.name === 'AbortError') {
         console.log('Get jesta api access token request was aborted.')
       }
       throw error
     })
     .finally(() => { clearTimeout(timeout) })
-  if (response.status === 200 && response.body.ReturnCode === 0) return true
-  /*const error = new Error(`Jesta Update API responded with status ${response.status}: ${response}.`)
+  const jsonResponse = await response.json()
+  if (response.status === 200 && jsonResponse.ReturnCode === 1) return true
+  const error = new Error(`Jesta Update API responded with status ${response.status}: ${jsonResponse}.`)
   console.error(error)
   console.error(response)
-  throw error*/
-  return true
+  throw error
 }
 
 const getJestaApiAccessToken = async () => {
@@ -67,22 +73,22 @@ const getJestaApiAccessToken = async () => {
       Accept: 'application/json'
     }, 
     method: 'POST',
-    signal: controller.signal
+    signal: controller.signal,
+    agent: ENVIRONMENT === 'development' || ENVIRONMENT === 'staging' ? dontValidateCertAgent : null
   })
     .catch(error => {
-      return true
       if (error.name === 'AbortError') {
         console.log('Get jesta api access token request was aborted.')
       }
       throw error
     })
     .finally(() => { clearTimeout(timeout) })
-  if (response.status === 200) return response.body.access_token
-  /*const error = new Error(`Jesta OAuth API responded with status ${response.status}: ${response}.`)
+  const jsonResponse = await response.json()
+  if (response.status === 200) return jsonResponse.access_token
+  const error = new Error(`Jesta OAuth API responded with status ${response.status}: ${jsonResponse}.`)
   console.error(error)
   console.error(response)
-  throw error*/
-  return true
+  throw error
 }
 
 /**
