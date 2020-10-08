@@ -86,7 +86,7 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
 /** 
  * Fetches all orders that need to be updated in OMS
- * @returns {Promise<Array<string>>}
+ * @returns {Array<object>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS () {
   const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
