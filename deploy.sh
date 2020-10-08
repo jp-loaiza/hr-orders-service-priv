@@ -6,6 +6,7 @@ kubectl create configmap hr-orders-service \
   --from-literal=CT_PROJECT_KEY=$CT_PROJECT_KEY \
   --from-literal=CT_OAUTH_HOST=$CT_OAUTH_HOST \
   --from-literal=CT_HOST=$CT_HOST \
+  --from-literal=ENVIRONMENT=$ENVIRONMENT \
   --from-literal=ORDER_UPLOAD_INTERVAL=$ORDER_UPLOAD_INTERVAL \
   --from-literal=ORDER_UPDATE_INTERVAL=$ORDER_UPDATE_INTERVAL \
   --from-literal=EMAIL_API_URL=$EMAIL_API_URL_KUBERNETES \

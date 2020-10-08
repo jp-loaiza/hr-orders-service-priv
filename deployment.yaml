@@ -72,6 +72,11 @@ spec:
             configMapKeyRef:
               key: SFTP_INCOMING_ORDERS_PATH
               name: hr-orders-service
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              key: ENVIRONMENT
+              name: hr-orders-service
         - name: CT_PROJECT_KEY
           valueFrom:
             configMapKeyRef:
