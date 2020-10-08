@@ -1,4 +1,5 @@
 const fetch = require('node-fetch').default
+const { URLSearchParams } = require('url')
 const AbortController = require('abort-controller')
 const { PAYMENT_STATES, FETCH_ABORT_TIMEOUT, ONLINE_SITE_ID } = require('./constants')
 
@@ -51,9 +52,15 @@ const getJestaApiAccessToken = async () => {
     controller.abort()
   }, FETCH_ABORT_TIMEOUT)
 
-  const jestaAuthUrl = JESTA_API_HOST + `/OAuth/Token?grant_type=password&username=${JESTA_API_USERNAME}&password=${JESTA_API_PASSWORD}`
+  const jestaAuthUrl = JESTA_API_HOST + `/OAuth/Token`
+  const params = new URLSearchParams();
+  params.append('grant_type', 'client_credentials')
+  params.append('client_id', JESTA_API_USERNAME)
+  params.append('client_secret', JESTA_API_PASSWORD)
 
+  console.log('params', params);
   const response = await fetch(jestaAuthUrl, {
+    body: params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json'
