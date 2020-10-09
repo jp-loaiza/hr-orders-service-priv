@@ -1,12 +1,10 @@
-const fetch = require('node-fetch').default
+const { URLSearchParams } = require('url')
 const https = require('https')
 const dontValidateCertAgent = new https.Agent({
   rejectUnauthorized: false
 })
-
-const { URLSearchParams } = require('url')
-const AbortController = require('abort-controller')
-const { PAYMENT_STATES, FETCH_ABORT_TIMEOUT, ONLINE_SITE_ID } = require('./constants')
+const { PAYMENT_STATES, ONLINE_SITE_ID } = require('./constants')
+const { fetchWithTimeout } = require('./request.utils.js')
 
 const { JESTA_API_HOST,
   JESTA_API_USERNAME,
@@ -14,15 +12,9 @@ const { JESTA_API_HOST,
   ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
 
 const updateJestaOrder = async (accessToken, orderUpdate) => {
-  // @ts-ignore
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, FETCH_ABORT_TIMEOUT)
-
   const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PAID || orderUpdate.status === PAYMENT_STATES.PENDING ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
 
-  const response = await fetch(jestaUpdateOrderUrl, {
+  return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
       WebTransactionId: orderUpdate.orderNumber,
       BusinessUnitId: 1,
@@ -35,67 +27,33 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
       Authorization: `Bearer ${accessToken}`
     }, 
     method: 'POST',
-    signal: controller.signal,
     agent: ENVIRONMENT === 'development' || ENVIRONMENT === 'staging' ? dontValidateCertAgent : null
   })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        console.error('Get jesta api access token request was aborted.')
-      }
-      throw error
-    })
-    .finally(() => { clearTimeout(timeout) })
-  const jsonResponse = await response.json()
-  if (response.status === 200) return true
-  const error = new Error(`Jesta Update API responded with status ${response.status}: ${jsonResponse}.`)
-  console.error(error)
-  console.error(response)
-  throw error
 }
 
 const getJestaApiAccessToken = async () => {
-  // @ts-ignore
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, FETCH_ABORT_TIMEOUT)
-
   const jestaAuthUrl = JESTA_API_HOST + '/OAuth/Token'
   const params = new URLSearchParams()
   params.append('grant_type', 'client_credentials')
   params.append('client_id', JESTA_API_USERNAME)
   params.append('client_secret', JESTA_API_PASSWORD)
 
-  const response = await fetch(jestaAuthUrl, {
+  return fetchWithTimeout(jestaAuthUrl, {
     body: params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json'
     }, 
     method: 'POST',
-    signal: controller.signal,
     agent: ENVIRONMENT === 'development' || ENVIRONMENT === 'staging' ? dontValidateCertAgent : null
   })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        console.error('Get jesta api access token request was aborted.')
-      }
-      throw error
-    })
-    .finally(() => { clearTimeout(timeout) })
-  const jsonResponse = await response.json()
-  if (response.status === 200) return jsonResponse.access_token
-  const error = new Error(`Jesta OAuth API responded with status ${response.status}: ${jsonResponse}.`)
-  console.error(error)
-  console.error(response)
-  throw error
 }
 
 /**
  * @param {Object} orderUpdate
  */
 const sendOrderUpdateToJesta = async orderUpdate => {
-  const jestaApiAccessToken = await getJestaApiAccessToken ()
+  const jestaApiAccessToken = (await getJestaApiAccessToken()).access_token
   return updateJestaOrder(jestaApiAccessToken, orderUpdate)
 }
 
