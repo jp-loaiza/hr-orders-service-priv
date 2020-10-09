@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -56,6 +56,29 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
     }
     return response
   })
+}
+
+/**
+ * 
+ * @param {import('./orders').Order} order
+ */
+const transformToOrderPayment = order => {
+  const orderUpdate = {
+    orderNumber: order.orderNumber
+  }
+
+  const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
+  if (!creditPayment) {
+    orderUpdate.errorMessage = 'No credit card payment with payment release change'
+    return orderUpdate
+  }
+  if (creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PAID
+      && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PENDING
+      && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.CANCELLED) {
+    orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
+  }
+
+  return { ...orderUpdate, status: creditPayment.obj.paymentStatus.state.obj.key }
 }
 
 /**
@@ -136,14 +159,15 @@ async function sendOrderUpdates () {
   }
   await Promise.all(ordersToUpdate.map(async orderToUpdate => {
     try {
-      if (orderToUpdate.errorMessage) {
-        await retry(setOrderErrorFields)(orderToUpdate, orderToUpdate.errorMessage, false, {
+      const orderPayment = transformToOrderPayment(orderToUpdate)
+      if (orderPayment.errorMessage) {
+        await retry(setOrderErrorFields)(orderToUpdate, orderPayment.errorMessage, false, {
           retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
           nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
         })
       } else {
-        await sendOrderUpdateToJesta(orderToUpdate)
+        await sendOrderUpdateToJesta(orderPayment)
         // we retry in case the version of the order has changed by CSV job
         await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
       }
@@ -164,5 +188,6 @@ module.exports = {
   retry,
   createAndUploadCsvs,
   generateFilenameFromOrder,
-  sendOrderUpdates
+  sendOrderUpdates,
+  transformToOrderPayment
 }

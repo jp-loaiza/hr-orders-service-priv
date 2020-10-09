@@ -9,7 +9,6 @@ const {
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_CRM_STATUS,
-  PAYMENT_STATES,
   ORDER_CUSTOM_FIELDS
 } = require('./constants')
 
@@ -93,25 +92,7 @@ async function fetchOrdersThatShouldBeUpdatedInOMS () {
   const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
-  const ordersToUpdate = body.results.map((/** @type {import('./orders').Order} */ order) => {
-    const orderUpdate = {
-      id: order.id,
-      orderNumber: order.orderNumber,
-      custom: order.custom
-    }
- 
-    const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
-    if (!creditPayment) {
-      orderUpdate.errorMessage = 'No credit card payment with payment release change'
-      return orderUpdate
-    }
-    if (creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PAID && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.CANCELLED) {
-      orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
-    }
-
-    return { ...orderUpdate, status: creditPayment.obj.paymentStatus.state.obj.key }
-  })
-  return ordersToUpdate
+  return body.results
 }
 
 /** 

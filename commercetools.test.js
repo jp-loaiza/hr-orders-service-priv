@@ -1,4 +1,4 @@
-const { getActionsFromCustomFields, getNextRetryDateFromRetryCount, setOrderErrorFields, fetchOrdersThatShouldBeUpdatedInOMS } = require('./commercetools')
+const { getActionsFromCustomFields, getNextRetryDateFromRetryCount, setOrderErrorFields } = require('./commercetools')
 const { BACKOFF, ORDER_CUSTOM_FIELDS } = require('./constants')
 
 describe('getNextRetryDateFromRetryCount', () => {
@@ -99,12 +99,5 @@ describe('setOrderErrorFields', () => {
         nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
         statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
     })).resolves.toBeTruthy()
-  })
-})
-
-describe('fetchOrdersThatShouldBeUpdatedInOMS', () => {
-  it('fetch valid orders for updates', async () => {
-    const result = await fetchOrdersThatShouldBeUpdatedInOMS()
-    expect(result).toEqual([{"custom": {"fields": {"carrierId": "FDX", "loginRadiusUid": "ed6c636af37a4d738ba8d374fa219cbc", "paymentIsReleased": true, "retryCount": 0, "returnsAreFree": true, "sentToOmsStatus": "PENDING", "shippingIsRush": false, "shippingServiceType": "EXPRESS", "shippingTaxes": "{\"HST\":3.64}", "signatureIsRequired": true, "transactionTotal": {"centAmount": 99214, "currencyCode": "CAD", "fractionDigits": 2, "type": "centPrecision"}}, "type": {"id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada", "typeId": "type"}}, "id": "1", "orderNumber": "23551711", "status": "paid"}]);
   })
 })

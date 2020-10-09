@@ -588,11 +588,9 @@ module.exports = {
     .mockImplementationOnce(() => [validOrder])
     .mockImplementationOnce(() => []),
   fetchOrdersThatShouldBeUpdatedInOMS: jest.fn()
-    .mockImplementationOnce(() => [{ id:validOrder.id, orderNumber: validOrder.orderNumber, custom: validOrder.custom, status: 'paid'},
-                                   { id: invalidOrder.id, orderNumber: invalidOrder.orderNumber, custom: invalidOrder.custom, errorMessage: 'No credit card payment with payment release change'}])
-    .mockImplementationOnce(() => [{ id: invalidOrder.id, orderNumber: invalidOrder.orderNumber, custom: invalidOrder.custom, errorMessage: 'No credit card payment with payment release change'},
-                                   { id:validOrder.id, orderNumber: validOrder.orderNumber, custom: validOrder.custom, status: 'paid'}])
-    .mockImplementationOnce(() => [{ id:validOrder.id, orderNumber: validOrder.orderNumber, custom: validOrder.custom, status: 'paid'}])
+    .mockImplementationOnce(() => [validOrder, invalidOrder])
+    .mockImplementationOnce(() => [invalidOrder, validOrder])
+    .mockImplementationOnce(() => [validOrder])
     .mockImplementationOnce(() => []),
   setOrderAsSentToOms: jest.fn(),
   setOrderErrorFields: jest.fn()  

@@ -20,7 +20,7 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
     controller.abort()
   }, FETCH_ABORT_TIMEOUT)
 
-  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PAID ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
+  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PAID || orderUpdate.status === PAYMENT_STATES.PENDING ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
 
   const response = await fetch(jestaUpdateOrderUrl, {
     body: JSON.stringify({
