@@ -18,7 +18,8 @@ const getPaymentReleasedStatus = (paymentInfo) => {
   const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit');
   if (!creditPaymentInfo) return 'Y' 
 
-  return creditPaymentInfo.obj.paymentStatus.state.obj.key === PAYMENT_STATES.PAID ? 'Y' : 'N'
+  const paymentKey = creditPaymentInfo.obj.paymentStatus.state.obj.key
+  return paymentKey === PAYMENT_STATES.PAID || paymentKey === PAYMENT_STATES.PENDING ? 'Y' : 'N'
 }
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
