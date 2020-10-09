@@ -5,7 +5,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "test": "jest",
+    "pretest": "eslint . --ignore-pattern newrelic.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   },
   "author": "Houman Kamali",
   "license": "UNLICENSED",
@@ -38,6 +44,7 @@
     "@types/newrelic": "^6.4.0",
     "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.7",
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "husky": "^4.3.0"
   }
 }

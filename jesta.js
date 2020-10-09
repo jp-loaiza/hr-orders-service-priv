@@ -1,5 +1,5 @@
 const fetch = require('node-fetch').default
-const https = require("https");
+const https = require('https')
 const dontValidateCertAgent = new https.Agent({
   rejectUnauthorized: false
 })
@@ -40,7 +40,7 @@ const updateJestaOrder = async (accessToken, orderUpdate) => {
   })
     .catch(error => {
       if (error.name === 'AbortError') {
-        console.log('Get jesta api access token request was aborted.')
+        console.error('Get jesta api access token request was aborted.')
       }
       throw error
     })
@@ -60,8 +60,8 @@ const getJestaApiAccessToken = async () => {
     controller.abort()
   }, FETCH_ABORT_TIMEOUT)
 
-  const jestaAuthUrl = JESTA_API_HOST + `/OAuth/Token`
-  const params = new URLSearchParams();
+  const jestaAuthUrl = JESTA_API_HOST + '/OAuth/Token'
+  const params = new URLSearchParams()
   params.append('grant_type', 'client_credentials')
   params.append('client_id', JESTA_API_USERNAME)
   params.append('client_secret', JESTA_API_PASSWORD)
@@ -78,7 +78,7 @@ const getJestaApiAccessToken = async () => {
   })
     .catch(error => {
       if (error.name === 'AbortError') {
-        console.log('Get jesta api access token request was aborted.')
+        console.error('Get jesta api access token request was aborted.')
       }
       throw error
     })
@@ -95,7 +95,7 @@ const getJestaApiAccessToken = async () => {
  * @param {Object} orderUpdate
  */
 const sendOrderUpdateToJesta = async orderUpdate => {
-  const jestaApiAccessToken = await getJestaApiAccessToken ();
+  const jestaApiAccessToken = await getJestaApiAccessToken ()
   return updateJestaOrder(jestaApiAccessToken, orderUpdate)
 }
 

@@ -78,9 +78,9 @@ describe('setOrderErrorFields', () => {
 
     // @ts-ignore mockOrder doesn't need to have all CT order fields
     await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true, {
-          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
-          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
-          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+      retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+      nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+      statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
     })).resolves.toBeTruthy()
   })
 
@@ -95,9 +95,9 @@ describe('setOrderErrorFields', () => {
 
     // @ts-ignore mockOrder doesn't need to have all CT order fields
     await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true, {
-        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
-        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
-        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+      retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+      nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+      statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
     })).resolves.toBeTruthy()
   })
 })

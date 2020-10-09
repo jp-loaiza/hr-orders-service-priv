@@ -6,9 +6,7 @@ const { createAndUploadCsvs, sendOrderUpdates, sleep, retry } = require('./jobs.
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
-  fetchStuckOrderResults,
-  setOrderErrorFields,
-  setOrderAsSentToOms
+  fetchStuckOrderResults
 } = require('./commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
