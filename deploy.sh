@@ -31,7 +31,7 @@ kubectl create secret generic hr-orders-service \
   --from-literal=CT_CLIENT_SECRET=$CT_CLIENT_SECRET \
   --from-literal=EMAIL_API_USERNAME=$EMAIL_API_USERNAME \
   --from-literal=EMAIL_API_PASSWORD=$EMAIL_API_PASSWORD \
-  --from-literal=JESTA_API_USERNAME==$JESTA_API_USERNAME \
+  --from-literal=JESTA_API_USERNAME=$JESTA_API_USERNAME \
   --from-literal=JESTA_API_PASSWORD=$JESTA_API_PASSWORD \
   --from-literal=HEALTHZ_AUTHORIZATION=$HEALTHZ_AUTHORIZATION \
   --from-literal=NEWRELIC_LICENSE_KEY=$NEWRELIC_LICENSE_KEY \
