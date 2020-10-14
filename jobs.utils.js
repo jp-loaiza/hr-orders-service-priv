@@ -1,12 +1,14 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
   setOrderErrorFields,
+  fetchOrdersThatShouldBeUpdatedInOMS
 } = require('./commercetools')
+const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
@@ -59,6 +61,29 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
 /**
  * 
  * @param {import('./orders').Order} order
+ */
+const transformToOrderPayment = order => {
+  const orderUpdate = {
+    orderNumber: order.orderNumber
+  }
+
+  const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
+  if (!creditPayment) {
+    orderUpdate.errorMessage = 'No credit card payment with payment release change'
+    return orderUpdate
+  }
+  if (creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PAID
+      && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PENDING
+      && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.CANCELLED) {
+    orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
+  }
+
+  return { ...orderUpdate, status: creditPayment.obj.paymentStatus.state.obj.key }
+}
+
+/**
+ * 
+ * @param {import('./orders').Order} order
  * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS<orderNumber>.csv`.
  */
 const generateFilenameFromOrder = order => {
@@ -92,18 +117,26 @@ const createAndUploadCsvs = async () => {
         console.error(errorMessage)
         console.error(err)
         // we retry in case the version of the order has changed by the notifications job
-        await retry(setOrderErrorFields)(order, errorMessage, false)
+        await retry(setOrderErrorFields)(order, errorMessage, false, {
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+        })
         continue
       }
       try {
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
-        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true)
+        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+        })
         continue
       }
       // we retry in case the version of the order has changed by the notifications job
-      await retry(setOrderAsSentToOms)(order)
+      await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
     console.log('Done processing orders')
   } catch (err) {
@@ -119,9 +152,42 @@ const createAndUploadCsvs = async () => {
   }
 }
 
+async function sendOrderUpdates () {
+  const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
+  if (ordersToUpdate.length) {
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
+  }
+  await Promise.all(ordersToUpdate.map(async orderToUpdate => {
+    try {
+      const orderPayment = transformToOrderPayment(orderToUpdate)
+      if (orderPayment.errorMessage) {
+        await retry(setOrderErrorFields)(orderToUpdate, orderPayment.errorMessage, false, {
+          retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+        })
+      } else {
+        await sendOrderUpdateToJesta(orderPayment)
+        // we retry in case the version of the order has changed by CSV job
+        await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
+      }
+    } catch (error) {
+      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+      })
+    }
+  }))
+}
+
 module.exports = {
   sleep,
   retry,
   createAndUploadCsvs,
   generateFilenameFromOrder,
+  sendOrderUpdates,
+  transformToOrderPayment
 }

@@ -5,3 +5,4 @@ id_rsa
 .DS_Store
 secrets.yaml
 newrelic_agent.log
+*.swp

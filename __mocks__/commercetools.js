@@ -486,7 +486,34 @@ const validOrder = {
           },
           paymentStatus: {
             interfaceCode: 'preauthed',
-            interfaceText: 'preauthed'
+            interfaceText: 'preauthed',
+            'state': {
+              'typeId': 'state',
+              'id': 'a8521a92-b3c5-4a9e-94eb-24462bd3d486',
+              'obj': {
+                'id': 'a8521a92-b3c5-4a9e-94eb-24462bd3d486',
+                'version': 1,
+                'createdAt': '2020-10-05T19:03:19.984Z',
+                'lastModifiedAt': '2020-10-05T19:03:19.984Z',
+                'lastModifiedBy': {
+                  'clientId': 'aPGUaMxkMVXpRJdxnjZlNYJ3',
+                  'isPlatformClient': false
+                },
+                'createdBy': {
+                  'clientId': 'aPGUaMxkMVXpRJdxnjZlNYJ3',
+                  'isPlatformClient': false
+                },
+                'key': 'paid',
+                'type': 'PaymentState',
+                'roles': [],
+                'name': {
+                  'en-CA': 'Paid',
+                  'fr-CA': 'Paid'
+                },
+                'builtIn': false,
+                'initial': true
+              }
+            }
           },
           transactions: [
             {
@@ -556,6 +583,11 @@ const invalidOrder = { orderNumber: 'testOrderThatIsInvalid' }
 
 module.exports = {
   fetchOrdersThatShouldBeSentToOms: jest.fn()
+    .mockImplementationOnce(() => [validOrder, invalidOrder])
+    .mockImplementationOnce(() => [invalidOrder, validOrder])
+    .mockImplementationOnce(() => [validOrder])
+    .mockImplementationOnce(() => []),
+  fetchOrdersThatShouldBeUpdatedInOMS: jest.fn()
     .mockImplementationOnce(() => [validOrder, invalidOrder])
     .mockImplementationOnce(() => [invalidOrder, validOrder])
     .mockImplementationOnce(() => [validOrder])

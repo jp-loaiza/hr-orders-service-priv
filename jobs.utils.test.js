@@ -1,10 +1,11 @@
 // @ts-nocheck The linter gets confused by Jest mocks
 
-const { generateFilenameFromOrder, createAndUploadCsvs } = require('./jobs.utils')
+const { generateFilenameFromOrder, createAndUploadCsvs, sendOrderUpdates } = require('./jobs.utils')
 const { setOrderAsSentToOms, setOrderErrorFields } = require('./commercetools')
 
 jest.mock('./config')
 jest.mock('./commercetools')
+jest.mock('node-fetch')
 
 describe('generateFilenameFromOrder', () => {
   const mockOrder1 = {
@@ -52,6 +53,40 @@ describe('createAndUploadCsvs', () => {
 
   it('processes [] correctly', async () => {
     await createAndUploadCsvs()
+    expect(setOrderAsSentToOms.mock.calls.length).toBe(0)
+    expect(setOrderErrorFields.mock.calls.length).toBe(0)
+  })
+})
+
+describe('sendOrderUpdates', () => {
+  afterEach(() => {
+    setOrderErrorFields.mockClear()
+    setOrderAsSentToOms.mockClear()
+  })
+
+  // Each time 'sendOrderUpdates' is called called, different mock orders
+  // get fed into it, as indicated in the test description. See `/__mocks__/commercetools.js`
+  // for details.
+  it('processes [validOrder, invalidOrder] correctly', async () => {
+    await sendOrderUpdates()
+    expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
+    expect(setOrderErrorFields.mock.calls.length).toBe(1)
+  })
+
+  it('processes [invalidOrder, validOrder] correctly', async () => {
+    await sendOrderUpdates()
+    expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
+    expect(setOrderErrorFields.mock.calls.length).toBe(1)
+  })
+
+  it('processes [validOrder] correctly', async () => {
+    await sendOrderUpdates()
+    expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
+    expect(setOrderErrorFields.mock.calls.length).toBe(0)
+  })
+
+  it('processes [] correctly', async () => {
+    await sendOrderUpdates()
     expect(setOrderAsSentToOms.mock.calls.length).toBe(0)
     expect(setOrderErrorFields.mock.calls.length).toBe(0)
   })

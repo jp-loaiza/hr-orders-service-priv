@@ -5,6 +5,7 @@ type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discov
 
 interface Env {
   [key: string]: string,
+  ENVIRONMENT: string,
   PORT: string,
   SFTP_HOST: string,
   SFTP_PORT: string,
@@ -25,7 +26,12 @@ interface Env {
   STALE_ORDER_CUTOFF_TIME_MS: string,
   STUCK_ORDER_CHECK_INTERVAL: string,
   JOB_TASK_TIMEOUT: string,
-  MAXIMUM_RETRIES: string
+  MAXIMUM_RETRIES: string,
+  SHOULD_SEND_ORDER_UPDATES: string,
+  ORDER_UPLOAD_INTERVAL: number,
+  JESTA_API_HOST: string,
+  JESTA_API_USERNAME: string,
+  JESTA_API_PASSWORD: string
 }
 
 type Price = {
@@ -123,6 +129,13 @@ type Payment = {
         transaction_card_last4: string,
         transaction_card_type: Card
       }
+    },
+    paymentStatus: {
+      state: {
+        obj: {
+          key: string
+        }
+      }
     }
   }
 }
@@ -150,6 +163,9 @@ type Order = {
   custom: {
     fields: {
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
+      omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
+      omsUpdateNextRetryAt?: string,
+      omsUpdateRetryCount?: number,
       errorMessage?: string,
       shippingTaxes: string, // stringified JSON
       paymentIsReleased: boolean,
