@@ -15,7 +15,7 @@ const {
  * @param {Object} paymentInfo
  */
 const getPaymentReleasedStatus = (paymentInfo) => {
-  const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit');
+  const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
   if (!creditPaymentInfo) return 'Y' 
 
   const paymentKey = creditPaymentInfo.obj.paymentStatus.state.obj.key
@@ -118,8 +118,6 @@ const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawSh
 }
 
 const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount - taxedPrice.totalNet.centAmount
-
-const getSignatureIsRequiredFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount > 50000
 
 /**
  * @returns {Array<import('./orders').ParsedTax>}
@@ -234,7 +232,6 @@ module.exports = {
   getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
-  getSignatureIsRequiredFromTaxedPrice,
   getTaxTotalFromTaxedPrice,
   sumMoney,
   getPaymentReleasedStatus

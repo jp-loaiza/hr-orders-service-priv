@@ -1,5 +1,5 @@
 const { getActionsFromCustomFields, getNextRetryDateFromRetryCount, setOrderErrorFields } = require('./commercetools')
-const { BACKOFF } = require('./constants')
+const { BACKOFF, ORDER_CUSTOM_FIELDS } = require('./constants')
 
 describe('getNextRetryDateFromRetryCount', () => {
   it('returns a date object', () => {
@@ -77,6 +77,27 @@ describe('setOrderErrorFields', () => {
     }
 
     // @ts-ignore mockOrder doesn't need to have all CT order fields
-    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true)).resolves.toBeTruthy()
+    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true, {
+      retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+      nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+      statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+    })).resolves.toBeTruthy()
+  })
+
+  it('does not throw an error when given a valid order update', async () => {
+    const mockOrder = {
+      custom: {
+        fields: {
+          retryCount: 2
+        }
+      }
+    }
+
+    // @ts-ignore mockOrder doesn't need to have all CT order fields
+    await expect(setOrderErrorFields(mockOrder, 'placeholderErrorMessage', true, {
+      retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+      nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+      statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+    })).resolves.toBeTruthy()
   })
 })
