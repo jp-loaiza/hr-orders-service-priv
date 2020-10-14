@@ -5,6 +5,7 @@ const { setOrderAsSentToOms, setOrderErrorFields } = require('./commercetools')
 
 jest.mock('./config')
 jest.mock('./commercetools')
+jest.mock('node-fetch')
 
 describe('generateFilenameFromOrder', () => {
   const mockOrder1 = {

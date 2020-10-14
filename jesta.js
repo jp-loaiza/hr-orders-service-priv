@@ -13,7 +13,7 @@ const { JESTA_API_HOST,
 
 const updateJestaOrder = async (accessToken, orderUpdate) => {
   const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PAID || orderUpdate.status === PAYMENT_STATES.PENDING ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
-
+  
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
       WebTransactionId: orderUpdate.orderNumber,
