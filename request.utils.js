@@ -19,7 +19,7 @@ const fetchWithTimeout = async (url, options) => {
     .finally(() => { clearTimeout(timeout) })
   const jsonResponse = await response.json()
   if (response.status === 200) return jsonResponse
-  const error = new Error(`API responded with status ${response.status}: ${jsonResponse}.`)
+  const error = new Error(`API responded with status ${response.status}: ${JSON.stringify(jsonResponse)}.`)
   console.error(error)
   console.error(response)
   throw error
