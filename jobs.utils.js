@@ -125,7 +125,9 @@ const createAndUploadCsvs = async () => {
         continue
       }
       try {
+        console.log(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
+        console.log(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
         await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
