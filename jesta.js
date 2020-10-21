@@ -12,7 +12,7 @@ const { JESTA_API_HOST,
   ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
 
 const updateJestaOrder = async (accessToken, orderUpdate) => {
-  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PAID || orderUpdate.status === PAYMENT_STATES.PENDING ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
+  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PENDING ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
   
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({

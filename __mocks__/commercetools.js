@@ -485,8 +485,8 @@ const validOrder = {
             }
           },
           paymentStatus: {
-            interfaceCode: 'preauthed',
-            interfaceText: 'preauthed',
+            interfaceCode: 'pending',
+            interfaceText: 'pending',
             'state': {
               'typeId': 'state',
               'id': 'a8521a92-b3c5-4a9e-94eb-24462bd3d486',
@@ -503,12 +503,12 @@ const validOrder = {
                   'clientId': 'aPGUaMxkMVXpRJdxnjZlNYJ3',
                   'isPlatformClient': false
                 },
-                'key': 'paid',
+                'key': 'pending',
                 'type': 'PaymentState',
                 'roles': [],
                 'name': {
-                  'en-CA': 'Paid',
-                  'fr-CA': 'Paid'
+                  'en-CA': 'Pending',
+                  'fr-CA': 'Pending'
                 },
                 'builtIn': false,
                 'initial': true
