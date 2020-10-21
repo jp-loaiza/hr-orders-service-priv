@@ -72,8 +72,7 @@ const transformToOrderPayment = order => {
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
     return orderUpdate
   }
-  if (creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PAID
-      && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PENDING
+  if (creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PENDING
       && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.CANCELLED) {
     orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
   }
