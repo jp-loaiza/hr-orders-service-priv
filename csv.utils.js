@@ -19,7 +19,7 @@ const getPaymentReleasedStatus = (paymentInfo) => {
   if (!creditPaymentInfo) return 'Y' 
 
   const paymentKey = creditPaymentInfo.obj.paymentStatus.state.obj.key
-  return paymentKey === PAYMENT_STATES.PAID || paymentKey === PAYMENT_STATES.PENDING ? 'Y' : 'N'
+  return paymentKey === PAYMENT_STATES.PENDING ? 'Y' : 'N'
 }
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
