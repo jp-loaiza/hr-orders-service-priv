@@ -6,8 +6,21 @@ const {
   CARRIER_IDS_TO_NAMES,
   JESTA_TAX_DESCRIPTIONS,
   SHIPPING_SERVICE_TYPES,
-  SHIPPING_SERVICE_TYPES_TO_NAMES
+  SHIPPING_SERVICE_TYPES_TO_NAMES,
+  PAYMENT_STATES
 } = require('./constants')
+
+/**
+ * Determines payment released status based on payment methods and current payment state 
+ * @param {Object} paymentInfo
+ */
+const getPaymentReleasedStatus = (paymentInfo) => {
+  const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
+  if (!creditPaymentInfo) return 'Y' 
+
+  const paymentKey = creditPaymentInfo.obj.paymentStatus.state.obj.key
+  return paymentKey === PAYMENT_STATES.PENDING ? 'Y' : 'N'
+}
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
   nums.reduce((total, num) => currency(total, { precision: 4 }).add(num), currency(0))
@@ -220,5 +233,6 @@ module.exports = {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
-  sumMoney
+  sumMoney,
+  getPaymentReleasedStatus
 }

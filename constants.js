@@ -375,7 +375,7 @@ const PAYMENT_STATES = {
   HELD_FOR_REVIEW: 'held_for_review'
 }
 
-module.exports = { 
+module.exports = {
   PAYMENT_STATES,
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,

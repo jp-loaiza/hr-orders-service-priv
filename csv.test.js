@@ -478,8 +478,35 @@ const completeOrderEnglishUntyped = {
             }
           },
           paymentStatus: {
-            interfaceCode: 'preauthed',
-            interfaceText: 'preauthed'
+            interfaceCode: 'pending',
+            interfaceText: 'pending',
+            state: {
+              typeId: 'state',
+              id: 'a8521a92-b3c5-4a9e-94eb-24462bd3d486',
+              obj: {
+                id: 'a8521a92-b3c5-4a9e-94eb-24462bd3d486',
+                version: 1,
+                createdAt: '2020-10-05T19:03:19.984Z',
+                lastModifiedAt: '2020-10-05T19:03:19.984Z',
+                lastModifiedBy: {
+                  clientId: 'aPGUaMxkMVXpRJdxnjZlNYJ3',
+                  isPlatformClient: false
+                },
+                createdBy: {
+                  clientId: 'aPGUaMxkMVXpRJdxnjZlNYJ3',
+                  isPlatformClient: false
+                },
+                key: 'pending',
+                type: 'PaymentState',
+                roles: [],
+                name: {
+                  'en-CA': 'Pending',
+                  'fr-CA': 'Pending'
+                },
+                builtIn: false,
+                initial: true
+              }
+            }
           },
           transactions: [
             {
@@ -581,10 +608,8 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
   })
 
   it('returns the correct CSV string when given an order whose payment is not released', () => {
-    const orderWithFailedPayment = {
-      ...completeOrderEnglish,
-      paymentState: 'Pending'
-    }
+    const orderWithFailedPayment = { ...completeOrderEnglish }
+    orderWithFailedPayment.paymentInfo.payments[0].obj.paymentStatus.state.obj.key = 'notPendingPaymentState'
 
     const expectedOrderCsv = `RecordType H,SITE_ID,WFE_TRANS_ID,SHIP_TO_FIRST_NAME,SHIP_TO_LAST_NAME,,SHIP_TO_ADDRESS_1,SHIP_TO_ADDRESS_2,SHIP_TO_ADDRESS_3,SHIP_TO_CITY,SHIP_TO_STATE_ID,SHIP_TO_ZIP_CODE,SHIP_TO_COUNTRY_ID,WFE_CUSTOMER_ID,BILL_TO_FIRST_NAME,BILL_TO_LAST_NAME,BILL_TO_ADDRESS_1,BILL_TO_ADDRESS_2,BILL_TO_ADDRESS_3,BILL_TO_CITY,BILL_TO_STATE_ID,BILL_TO_ZIP_CODE,BILL_TO_COUNTRY_ID,BILL_TO_HOME_PHONE,EMAIL_ADDRESS,CARRIER_ID,RUSH_SHIPPING_IND,SHIP_COMPLETE_IND,,SHIPPING_CHARGES_TOTAL,TAX_TOTAL,,TRANSACTION_TOTAL,,POS_EQUIVALENCE,,,,,ORDER_DATE,ADDITIONAL_METADATA,SHIPPING_TAX1,SHIPPING_TAX1_DESCRIPTION,SHIPPING_TAX2,SHIPPING_TAX2_DESCRIPTION,SHIPPING_TAX3,SHIPPING_TAX3_DESCRIPTION,DESTINATION_SITE_ID,REQUESTER_SITE_ID,,,SERVICE_TYPE,LANGUAGE_NO,FREE_RETURN_IND,SIGNATURE_REQUIRED_IND,RELEASED
 RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOUNT,LINE_SHIPPING_CHARGES,LINE_TOTAL_TAX,LINE_TOTAL_AMOUNT,BAR_CODE_ID,ENDLESS_AISLE_IND,EXT_REF_ID,GIFT_WRAP_IND,,,SALESPERSON_ID,ADDITIONAL_METADATA,SUB_TYPE
