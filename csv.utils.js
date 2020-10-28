@@ -7,7 +7,9 @@ const {
   JESTA_TAX_DESCRIPTIONS,
   SHIPPING_SERVICE_TYPES,
   SHIPPING_SERVICE_TYPES_TO_NAMES,
-  PAYMENT_STATES
+  PAYMENT_STATES,
+  TRANSACTION_TYPES,
+  TRANSACTION_STATES 
 } = require('./constants')
 
 /**
@@ -18,8 +20,14 @@ const getPaymentReleasedStatus = (paymentInfo) => {
   const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
   if (!creditPaymentInfo) return 'Y' 
 
-  const paymentKey = creditPaymentInfo.obj.paymentStatus.state.obj.key
-  return paymentKey === PAYMENT_STATES.PENDING ? 'Y' : 'N'
+  const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode;
+  let successfulTransaction = null
+  if (interfaceCode === PAYMENT_STATES.PREAUTHED) { // delayed capture is ON
+    successfulTransaction = creditPaymentInfo.obj.paymentStatus.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.AUTHORIZATION && transaction.state === TRANSACTION_STATES.SUCCESS)
+  } else { // delayed capture is OFF
+    successfulTransaction = creditPaymentInfo.obj.paymentStatus.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.CHARGE && transaction.state === TRANSACTION_STATES.SUCCESS)
+  }
+  return successfulTransaction ? 'Y' : 'N'
 }
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
