@@ -20,7 +20,7 @@ const getPaymentReleasedStatus = (paymentInfo) => {
   const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
   if (!creditPaymentInfo) return 'Y' 
 
-  const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode;
+  const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode
   let successfulTransaction = null
   if (interfaceCode === PAYMENT_STATES.PREAUTHED) { // delayed capture is ON
     successfulTransaction = creditPaymentInfo.obj.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.AUTHORIZATION && transaction.state === TRANSACTION_STATES.SUCCESS)

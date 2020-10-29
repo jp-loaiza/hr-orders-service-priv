@@ -847,41 +847,14 @@
                         }
                     },
                     "paymentStatus": {
-                        "interfaceCode": "pending",
-                        "interfaceText": "pending",
-                        "state": {
-                            "typeId": "state",
-                            "id": "a8521a92-b3c5-4a9e-94eb-24462bd3d486",
-                            "obj": {
-                                "id": "a8521a92-b3c5-4a9e-94eb-24462bd3d486",
-                                "version": 1,
-                                "createdAt": "2020-10-05T19:03:19.984Z",
-                                "lastModifiedAt": "2020-10-05T19:03:19.984Z",
-                                "lastModifiedBy": {
-                                    "clientId": "aPGUaMxkMVXpRJdxnjZlNYJ3",
-                                    "isPlatformClient": false
-                                },
-                                "createdBy": {
-                                    "clientId": "aPGUaMxkMVXpRJdxnjZlNYJ3",
-                                    "isPlatformClient": false
-                                },
-                                "key": "pending",
-                                "type": "PaymentState",
-                                "roles": [],
-                                "name": {
-                                    "en-CA": "Pending",
-                                    "fr-CA": "Pending"
-                                },
-                                "builtIn": false,
-                                "initial": true
-                            }
-                        }
+                        "interfaceCode": "preauthed",
+                        "interfaceText": "preauthed"
                     },
                     "transactions": [
                         {
                             "id": "c22fd7fd-fbae-4003-afd6-75bb247bac3c",
                             "timestamp": "2020-08-27T15:26:25.586Z",
-                            "type": "Charge",
+                            "type": "Authorization",
                             "amount": {
                                 "type": "centPrecision",
                                 "currencyCode": "CAD",
@@ -889,7 +862,7 @@
                                 "fractionDigits": 2
                             },
                             "interactionId": "5985419880586457704007:Axj/7wSTRHhjFUecyOZHABEg3aMHDlw5at4rRm3tS6iiOEvdlzAFRHCXuy5g+D9PeB4QyaSZejFiDinAnJojwxiqPOZHMjgAmhFF",
-                            "state": "Success"
+                            "state": "Pending"
                         },
                         {
                             "id": "e72c5620-c3cf-4763-89bf-dbc41b03019e",
