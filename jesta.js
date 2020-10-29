@@ -3,7 +3,7 @@ const https = require('https')
 const dontValidateCertAgent = new https.Agent({
   rejectUnauthorized: false
 })
-const { PAYMENT_STATES, ONLINE_SITE_ID } = require('./constants')
+const { TRANSACTION_STATES, ONLINE_SITE_ID } = require('./constants')
 const { fetchWithTimeout } = require('./request.utils.js')
 
 const { JESTA_API_HOST,
@@ -12,7 +12,7 @@ const { JESTA_API_HOST,
   ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
 
 const updateJestaOrder = async (accessToken, orderUpdate) => {
-  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === PAYMENT_STATES.PENDING ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
+  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === TRANSACTION_STATES.SUCCESS ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
   
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
