@@ -385,7 +385,7 @@ const TRANSACTION_TYPES = {
 
 const TRANSACTION_STATES = {
   SUCCESS: 'Success',
-  PENDING: 'Pending,
+  PENDING: 'Pending',
   INITIAL: 'Initial',
   FAILURE: 'Failure'
 }

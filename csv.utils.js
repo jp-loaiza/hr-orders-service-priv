@@ -23,9 +23,9 @@ const getPaymentReleasedStatus = (paymentInfo) => {
   const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode;
   let successfulTransaction = null
   if (interfaceCode === PAYMENT_STATES.PREAUTHED) { // delayed capture is ON
-    successfulTransaction = creditPaymentInfo.obj.paymentStatus.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.AUTHORIZATION && transaction.state === TRANSACTION_STATES.SUCCESS)
-  } else { // delayed capture is OFF
-    successfulTransaction = creditPaymentInfo.obj.paymentStatus.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.CHARGE && transaction.state === TRANSACTION_STATES.SUCCESS)
+    successfulTransaction = creditPaymentInfo.obj.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.AUTHORIZATION && transaction.state === TRANSACTION_STATES.SUCCESS)
+  } else if (interfaceCode === PAYMENT_STATES.PAID) { // delayed capture is OFF
+    successfulTransaction = creditPaymentInfo.obj.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.CHARGE && transaction.state === TRANSACTION_STATES.SUCCESS)
   }
   return successfulTransaction ? 'Y' : 'N'
 }
