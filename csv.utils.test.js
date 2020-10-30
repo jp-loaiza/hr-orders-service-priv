@@ -444,11 +444,15 @@ describe('getShippingInfoFromShippingName', () => {
   })
 
   it('throws an error when given a shipping name that lacks a valid carrier name', () => {
-    expect(() => getShippingInfoFromShippingName('INVALID_CARRIER Expedited')).toThrow('Shipping name \'INVALID_CARRIER Expedited\' is invalid: does not include recognized carrier')
+    expect(getShippingInfoFromShippingName('INVALID_CARRIER Expedited').carrierId).toBe(null)
   })
 
-  it('throws an error when given a shipping name that lacks a valid shipping service type', () => {
-    expect(() => getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE')).toThrow('Shipping name \'Canada Post INVALID_SHIPPING_TYPE\' is invalid: does not include recognized shipping service type')
+  it('returns null when given a shipping name that lacks a valid shipping service type', () => {
+    expect(getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE').shippingServiceType).toBe(null)
+  })
+
+  it('any invalid shipping carriers or shipping service type should result in false of rush indicator', () => {
+    expect(getShippingInfoFromShippingName('INVALID SHIPPING').shippingIsRush).toBe(false)
   })
 })
 
