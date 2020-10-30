@@ -457,6 +457,10 @@ describe('getShippingInfoFromShippingName', () => {
 })
 
 describe('getPaymentReleasedStatus', () => {
+  const transaction = {
+    type: 'Charge',
+    state: 'Success' 
+  }
   const paymentInfo = {
     payments: [{
       obj: {
@@ -464,36 +468,57 @@ describe('getPaymentReleasedStatus', () => {
           method: 'notcredit'
         },
         paymentStatus: {
-          state: {
-            obj: {
-              key: 'pending'
-            }
-          }
-        }
-      }   
-    }] 
+          interfaceCode: 'paid' 
+        },
+        transactions: []
+      }
+    }]
   }
-  it('returns "Y" if payment type is not credit no matter the payment state', () => {
+  it('returns "Y" if payment type is not credit no matter the transactions', () => {
     expect(getPaymentReleasedStatus(paymentInfo)).toBe('Y')
   })
-  it('returns "Y" if all payment types are not credit no matter the payment state', () => {
+  it('returns "Y" if all payment types are not credit no matter the transactions', () => {
     const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'stillnotcredit' } } }] }
     expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('Y')
   })
-  it('returns "Y" if payment type is credit and payment state is "Pending"', () => {
-    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
+  it('returns "Y" if payment type is credit and interface code is "paid" and a transaction of "Charge" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [transaction] } }] }
     expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
   })
-  it('returns "N" if payment type is credit and payment state is not "Pending"', () => {
-    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { state: { obj: { key: 'notPendingPaymentState' } } } } }] }
+  it('returns "N" if payment type is credit and interface code is "cancelled" and a transaction of "Charge" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [transaction] } }] }
     expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
   })
-  it('returns "Y" if any payment type is credit and payment state is "Pending"', () => {
-    const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' } } }] }
-    expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('Y')
+  it('returns "N" if payment type is credit and interface code is "paid" and a transaction of "Charge" and "Pending" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [{ ...transaction, state: 'Pending' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
   })
-  it('returns "N" if any payment type is credit and payment state is not "Pending"', () => {
-    const multiPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0] }, { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { state: { obj: { key: 'notPendingPaymentState' } } } } }] }
-    expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('N')
+  it('returns "N" if payment type is credit and interface code is "paid" and a transaction of "Authorization" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [{ ...transaction, type: 'Authorization' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "Y" if payment type is credit and interface code is "paid" and a transaction of "Charge" and "Success" exists even if multiple transactions exist', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [transaction, { ...transaction, state: 'Pending' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "Y" if payment type is credit and interface code is "preauthed" and a transaction of "Authorization" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ ...transaction, type: 'Authorization' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "Y" if payment type is credit and interface code is "preauthed" and a transaction of "Authorization" and "Success" exists even if multiple transactions exist', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ type: 'Authorization', state: 'Pending' },{ ...transaction, type: 'Authorization' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "N" if payment type is credit and interface code is "preauthed" and a transaction of "Authorization" and "Pending" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ ...transaction, state: 'Pending' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "N" if payment type is credit and interface code is "preauthed" and a transaction of "Charge" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ ...transaction, type: 'Charge' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "N" if payment type is credit and interface code is "cancelled" and a transaction of "Authorization" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [transaction] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
   })
 })

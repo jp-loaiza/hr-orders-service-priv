@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -58,6 +58,8 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
   })
 }
 
+const getTransaction = (transactions, type, state) => transactions.find(transaction => transaction.type === type && transaction.state === state)
+
 /**
  * 
  * @param {import('./orders').Order} order
@@ -67,17 +69,29 @@ const transformToOrderPayment = order => {
     orderNumber: order.orderNumber
   }
 
-  const creditPayment = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
-  if (!creditPayment) {
+  const creditPaymentInfo = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
+  if (!creditPaymentInfo) {
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
     return orderUpdate
   }
-  if (creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.PENDING
-      && creditPayment.obj.paymentStatus.state.obj.key !== PAYMENT_STATES.CANCELLED) {
-    orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
+
+  const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode
+  let transaction = null
+  if (interfaceCode === PAYMENT_STATES.PREAUTHED) { // delayed capture is ON and DM accepted
+    transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.SUCCESS)
+  } else if (interfaceCode === PAYMENT_STATES.CANCELLED) { // delated capture is ON or OFF but DM rejected
+    transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.FAILURE)
+                  || getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE)
+  } else if (interfaceCode === PAYMENT_STATES.PAID) { // delayed capture is OFF and DM accepted
+    transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.SUCCESS)
   }
 
-  return { ...orderUpdate, status: creditPayment.obj.paymentStatus.state.obj.key }
+  if (!transaction) {
+    orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
+    return orderUpdate
+  }
+
+  return { ...orderUpdate, status: transaction.state }
 }
 
 /**
@@ -168,7 +182,8 @@ async function sendOrderUpdates () {
           statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
         })
       } else {
-        await sendOrderUpdateToJesta(orderPayment)
+        const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
+        await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus)
         // we retry in case the version of the order has changed by CSV job
         await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
       }
