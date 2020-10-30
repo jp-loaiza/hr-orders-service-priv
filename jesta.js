@@ -3,7 +3,7 @@ const https = require('https')
 const dontValidateCertAgent = new https.Agent({
   rejectUnauthorized: false
 })
-const { TRANSACTION_STATES, ONLINE_SITE_ID } = require('./constants')
+const { ONLINE_SITE_ID } = require('./constants')
 const { fetchWithTimeout } = require('./request.utils.js')
 
 const { JESTA_API_HOST,
@@ -11,12 +11,12 @@ const { JESTA_API_HOST,
   JESTA_API_PASSWORD,
   ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
 
-const updateJestaOrder = async (accessToken, orderUpdate) => {
-  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderUpdate.status === TRANSACTION_STATES.SUCCESS ? 'UnholdSalesOrder' : 'CancelSalesOrder'}`
+const updateJestaOrder = async (accessToken, orderNumber, orderStatus) => {
+  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderStatus}`
   
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
-      WebTransactionId: orderUpdate.orderNumber,
+      WebTransactionId: orderNumber,
       BusinessUnitId: 1,
       SiteId: ONLINE_SITE_ID
     }),
@@ -52,9 +52,9 @@ const getJestaApiAccessToken = async () => {
 /**
  * @param {Object} orderUpdate
  */
-const sendOrderUpdateToJesta = async orderUpdate => {
+const sendOrderUpdateToJesta = async (orderNumber, orderStatus) => {
   const jestaApiAccessToken = (await getJestaApiAccessToken()).access_token
-  return updateJestaOrder(jestaApiAccessToken, orderUpdate)
+  return updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
 }
 
 module.exports = {

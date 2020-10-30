@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -182,7 +182,8 @@ async function sendOrderUpdates () {
           statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
         })
       } else {
-        await sendOrderUpdateToJesta(orderPayment)
+        const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
+        await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus)
         // we retry in case the version of the order has changed by CSV job
         await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
       }

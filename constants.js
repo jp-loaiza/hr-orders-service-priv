@@ -390,7 +390,13 @@ const TRANSACTION_STATES = {
   FAILURE: 'Failure'
 }
 
+const JESTA_ORDER_STATUSES = {
+  RELEASED: 'UnholdSalesOrder',
+  CANCELLED: 'CancelSalesOrder'
+}
+
 module.exports = {
+  JESTA_ORDER_STATUSES,
   PAYMENT_STATES,
   TRANSACTION_TYPES,
   TRANSACTION_STATES,
