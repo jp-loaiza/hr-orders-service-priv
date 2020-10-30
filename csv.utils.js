@@ -184,7 +184,7 @@ const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
       return carrierId
     }
   }
-  throw new Error(`Shipping name '${name}' is invalid: does not include recognized carrier`)
+  return null
 }
 
 const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
@@ -195,7 +195,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => 
       return shippingServiceType
     }
   }
-  throw new Error(`Shipping name '${name}' is invalid: does not include recognized shipping service type`)
+  return null
 }
 
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
@@ -204,6 +204,7 @@ const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const shippingIsRush = (
     !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
     && !(carrierId === CARRIER_IDS.FDX && shippingServiceType === SHIPPING_SERVICE_TYPES.ECONOMY)
+    && Boolean(carrierId || shippingServiceType)
   )
 
   return {
