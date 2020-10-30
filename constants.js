@@ -375,8 +375,31 @@ const PAYMENT_STATES = {
   HELD_FOR_REVIEW: 'held_for_review'
 }
 
-module.exports = { 
+const TRANSACTION_TYPES = {
+  AUTHORIZATION: 'Authorization',
+  CHARGE: 'Charge',
+  CANCEL_AUTHORIZATION: 'CancelAuthorization',
+  REFUND: 'Refund',
+  CHARGE_BACK: 'Chargeback'
+}
+
+const TRANSACTION_STATES = {
+  SUCCESS: 'Success',
+  PENDING: 'Pending',
+  INITIAL: 'Initial',
+  FAILURE: 'Failure'
+}
+
+const JESTA_ORDER_STATUSES = {
+  RELEASED: 'UnholdSalesOrder',
+  CANCELLED: 'CancelSalesOrder'
+}
+
+module.exports = {
+  JESTA_ORDER_STATUSES,
   PAYMENT_STATES,
+  TRANSACTION_TYPES,
+  TRANSACTION_STATES,
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,

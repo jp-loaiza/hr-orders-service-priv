@@ -1207,8 +1207,8 @@
                         }
                     },
                     "paymentStatus": {
-                        "interfaceCode": "paid",
-                        "interfaceText": "paid"
+                        "interfaceCode": "preauthed",
+                        "interfaceText": "preauthed"
                     },
                     "transactions": [
                         {

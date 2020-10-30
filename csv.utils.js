@@ -6,8 +6,29 @@ const {
   CARRIER_IDS_TO_NAMES,
   JESTA_TAX_DESCRIPTIONS,
   SHIPPING_SERVICE_TYPES,
-  SHIPPING_SERVICE_TYPES_TO_NAMES
+  SHIPPING_SERVICE_TYPES_TO_NAMES,
+  PAYMENT_STATES,
+  TRANSACTION_TYPES,
+  TRANSACTION_STATES 
 } = require('./constants')
+
+/**
+ * Determines payment released status based on payment methods and current payment state 
+ * @param {Object} paymentInfo
+ */
+const getPaymentReleasedStatus = (paymentInfo) => {
+  const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
+  if (!creditPaymentInfo) return 'Y' 
+
+  const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode
+  let successfulTransaction = null
+  if (interfaceCode === PAYMENT_STATES.PREAUTHED) { // delayed capture is ON
+    successfulTransaction = creditPaymentInfo.obj.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.AUTHORIZATION && transaction.state === TRANSACTION_STATES.SUCCESS)
+  } else if (interfaceCode === PAYMENT_STATES.PAID) { // delayed capture is OFF
+    successfulTransaction = creditPaymentInfo.obj.transactions.find(transaction => transaction.type === TRANSACTION_TYPES.CHARGE && transaction.state === TRANSACTION_STATES.SUCCESS)
+  }
+  return successfulTransaction ? 'Y' : 'N'
+}
 
 const sumMoney  = (/** @type {Array<number>} */ nums) => (
   nums.reduce((total, num) => currency(total, { precision: 4 }).add(num), currency(0))
@@ -171,7 +192,7 @@ const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
       return carrierId
     }
   }
-  throw new Error(`Shipping name '${name}' is invalid: does not include recognized carrier`)
+  return null
 }
 
 const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
@@ -182,7 +203,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => 
       return shippingServiceType
     }
   }
-  throw new Error(`Shipping name '${name}' is invalid: does not include recognized shipping service type`)
+  return null
 }
 
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
@@ -191,6 +212,7 @@ const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const shippingIsRush = (
     !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
     && !(carrierId === CARRIER_IDS.FDX && shippingServiceType === SHIPPING_SERVICE_TYPES.ECONOMY)
+    && Boolean(carrierId || shippingServiceType)
   )
 
   return {
@@ -220,5 +242,6 @@ module.exports = {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
-  sumMoney
+  sumMoney,
+  getPaymentReleasedStatus
 }

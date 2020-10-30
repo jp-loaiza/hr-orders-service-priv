@@ -771,14 +771,14 @@
                         }
                     },
                     "paymentStatus": {
-                        "interfaceCode": "paid",
-                        "interfaceText": "paid"
+                        "interfaceCode": "preauthed",
+                        "interfaceText": "preauthed"
                     },
                     "transactions": [
                         {
                             "id": "cdd62b75-430c-47d0-be46-dccc8edb411b",
                             "timestamp": "2020-08-24T17:53:47.504Z",
-                            "type": "Charge",
+                            "type": "Authorization",
                             "amount": {
                                 "type": "centPrecision",
                                 "currencyCode": "CAD",

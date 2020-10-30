@@ -1,6 +1,6 @@
 // @ts-nocheck The linter gets confused by Jest mocks
 
-const { generateFilenameFromOrder, createAndUploadCsvs, sendOrderUpdates } = require('./jobs.utils')
+const { generateFilenameFromOrder, createAndUploadCsvs, sendOrderUpdates, transformToOrderPayment } = require('./jobs.utils')
 const { setOrderAsSentToOms, setOrderErrorFields } = require('./commercetools')
 
 jest.mock('./config')
@@ -89,5 +89,85 @@ describe('sendOrderUpdates', () => {
     await sendOrderUpdates()
     expect(setOrderAsSentToOms.mock.calls.length).toBe(0)
     expect(setOrderErrorFields.mock.calls.length).toBe(0)
+  })
+})
+
+describe('transformToOrderPayment', () => {
+  const mockTransaction = {
+    type: 'Authorization',
+    state: 'Success' 
+  }
+  const mockPayment = {
+    obj: {
+      paymentMethodInfo: {
+        method: 'credit'
+      },
+      paymentStatus: {
+        interfaceCode: 'preauthed'
+      },
+      transactions: []
+    } 
+  }
+  const mockOrder = {
+    orderNumber: '12345',
+    paymentInfo: {
+      payments: []
+    } 
+  }
+  it('invalid order update; no credit card payment', () => {
+    const mockOrderNoCredit = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentMethodInfo: { method: 'notCredit' } } }] } }
+    expect(transformToOrderPayment(mockOrderNoCredit)).toEqual({
+      errorMessage: 'No credit card payment with payment release change',
+      orderNumber: mockOrderNoCredit.orderNumber
+    })
+  })
+  it('invalid order update; no valid interface code', () => {
+    const mockOrderInvalidInterfaceCode = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentStatus: { interfaceCode: 'failed' } } }] } }
+    expect(transformToOrderPayment(mockOrderInvalidInterfaceCode)).toEqual({
+      errorMessage: 'Order update is not for a status that jesta recognizes',
+      orderNumber: mockOrderInvalidInterfaceCode.orderNumber
+    })
+  })
+  it('invalid order update; invalid transaction status', () => {
+    const mockOrderInvalidStatus = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, transactions: [{ ...mockTransaction, state: 'Failure' }] } }] } }
+    expect(transformToOrderPayment(mockOrderInvalidStatus)).toEqual({
+      errorMessage: 'Order update is not for a status that jesta recognizes',
+      orderNumber: mockOrderInvalidStatus.orderNumber
+    })
+  })
+  it('valid order update; cancel order delayed capture ON', () => {
+    const mockOrderCancelDelayedCaptureOn = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [{ ...mockTransaction, state: 'Failure' }] } }] } }
+    expect(transformToOrderPayment(mockOrderCancelDelayedCaptureOn)).toEqual({
+      orderNumber: mockOrderCancelDelayedCaptureOn.orderNumber,
+      status: 'Failure'
+    })
+  })
+  it('valid order update; cancel order delayed capture OFF', () => {
+    const mockOrderCancelDelayedCaptureOff = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [{ ...mockTransaction, type: 'Charge', state: 'Failure' }] } }] } }
+    expect(transformToOrderPayment(mockOrderCancelDelayedCaptureOff)).toEqual({
+      orderNumber: mockOrderCancelDelayedCaptureOff.orderNumber,
+      status: 'Failure'
+    })
+  })
+  it('valid order update; release order delayed capture ON', () => {
+    const mockOrderReleaseDelayedCaptureOn = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, transactions: [{ ...mockTransaction }] } }] } }
+    expect(transformToOrderPayment(mockOrderReleaseDelayedCaptureOn)).toEqual({
+      orderNumber: mockOrderReleaseDelayedCaptureOn.orderNumber,
+      status: 'Success'
+    })
+  })
+  it('valid order update; release order delayed capture OFF', () => {
+    const mockOrderReleaseDelayedCaptureOff = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentStatus: { interfaceCode: 'paid' }, transactions: [{ ...mockTransaction, type: 'Charge' }] } }] } }
+    expect(transformToOrderPayment(mockOrderReleaseDelayedCaptureOff)).toEqual({
+      orderNumber: mockOrderReleaseDelayedCaptureOff.orderNumber,
+      status: 'Success'
+    })
+  })
+  it('valid order update; at least 1 transaction with release order delayed capture ON', () => {
+    const mockOrderReleaseDelayedCaptureOn = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, transactions: [{ ...mockTransaction },{ ...mockTransaction, state: 'Failure'}] } }] } }
+    expect(transformToOrderPayment(mockOrderReleaseDelayedCaptureOn)).toEqual({
+      orderNumber: mockOrderReleaseDelayedCaptureOn.orderNumber,
+      status: 'Success'
+    })
   })
 })
