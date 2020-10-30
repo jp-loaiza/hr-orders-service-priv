@@ -443,7 +443,7 @@ describe('getShippingInfoFromShippingName', () => {
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toBe(true)
   })
 
-  it('throws an error when given a shipping name that lacks a valid carrier name', () => {
+  it('returns null when given a shipping name that lacks a valid carrier name', () => {
     expect(getShippingInfoFromShippingName('INVALID_CARRIER Expedited').carrierId).toBe(null)
   })
 

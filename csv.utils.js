@@ -204,7 +204,7 @@ const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const shippingIsRush = (
     !(carrierId === CARRIER_IDS.CP && shippingServiceType === SHIPPING_SERVICE_TYPES.EXPEDITED_PARCEL)
     && !(carrierId === CARRIER_IDS.FDX && shippingServiceType === SHIPPING_SERVICE_TYPES.ECONOMY)
-    && (!!carrierId || !!shippingServiceType)
+    && Boolean(carrierId || shippingServiceType)
   )
 
   return {
