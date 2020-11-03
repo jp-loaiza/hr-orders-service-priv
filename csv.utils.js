@@ -222,6 +222,23 @@ const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   }
 }
 
+const getFirstLastName = (shippingAddress, billingAddress, isStorePickup) => {
+  console.log('isStorePickup', isStorePickup)
+  if (isStorePickup) {
+    const test = {
+      firstName: shippingAddress.firstName || billingAddress.firstName,
+      lastName: shippingAddress.firstName || billingAddress.lastName
+    } 
+    console.log(test)
+    return test
+  }
+
+  return {
+    firstName: shippingAddress.firstName,
+    lastName: shippingAddress.lastName
+  }
+}
+
 module.exports = {
   convertAndFormatDate,
   convertToDollars,
@@ -243,5 +260,6 @@ module.exports = {
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
   sumMoney,
-  getPaymentReleasedStatus
+  getPaymentReleasedStatus,
+  getFirstLastName
 }

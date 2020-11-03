@@ -33,7 +33,8 @@ const {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getPaymentReleasedStatus,
-  getTaxTotalFromTaxedPrice
+  getTaxTotalFromTaxedPrice,
+  getFirstLastName
 } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
@@ -57,8 +58,8 @@ const getHeaderObjectFromOrder = ({
   [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
   [HEADER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
   [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
-  [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: shippingAddress.firstName,
-  [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: shippingAddress.lastName,
+  [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: getFirstLastName(shippingAddress, billingAddress, custom.fields.isStorePickup).firstName,
+  [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: getFirstLastName(shippingAddress, billingAddress, custom.fields.isStorePickup).lastName,
   [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: getLineOneFromAddress(shippingAddress),
   [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: getLineTwoFromAddress(shippingAddress),
   [HEADER_ROWS_ENUM.SHIP_TO_CITY]: shippingAddress.city,
