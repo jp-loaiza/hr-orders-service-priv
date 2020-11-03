@@ -14,8 +14,6 @@ const addressSchema = {
   required: [
     'city',
     'country',
-    'firstName',
-    'lastName',
     'postalCode',
     'state',
     'streetName'
