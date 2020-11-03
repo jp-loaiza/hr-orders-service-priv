@@ -227,6 +227,7 @@ const getFirstLastName = (address1, address2, isStorePickup) => {
     const firstName = address1.firstName || address2.firstName
     const lastName = address1.lastName || address2.lastName
     if (!firstName || !lastName) {
+      console.error('Missing firstname/lastname on order')
       throw new Error('Missing firstname/lastname on order')
     }
     return {
@@ -236,6 +237,7 @@ const getFirstLastName = (address1, address2, isStorePickup) => {
   }
 
   if (!address1.firstName || !address1.lastName) {
+    console.error('Missing firstname/lastname on order')
     throw new Error('Missing firstname/lastname on order')
   }
   return {
