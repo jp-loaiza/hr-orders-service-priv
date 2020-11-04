@@ -16,7 +16,8 @@ const {
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
   sumMoney,
-  getPaymentReleasedStatus
+  getPaymentReleasedStatus,
+  getFirstLastName
 } = require('./csv.utils')
 
 describe('flatten', () => {
@@ -520,5 +521,68 @@ describe('getPaymentReleasedStatus', () => {
   it('returns "N" if payment type is credit and interface code is "cancelled" and a transaction of "Authorization" and "Success" exists', () => {
     const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [transaction] } }] }
     expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+})
+
+describe('getFirstLastName', () => {
+  const shippingAddress = {
+    streetName: '55 Fake St',
+    postalCode: 'M4V 1H6',
+    city: 'Toronto',
+    state: 'ON',
+    country: 'CA',
+    phone: '5551231234',
+    email: 'user@gmail.com',
+    key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
+  }
+  const billingAddress = {
+    streetName: '55 Fake St',
+    postalCode: 'M4V 1H6',
+    city: 'Toronto',
+    state: 'ON',
+    country: 'CA',
+    phone: '5551231234',
+    email: 'user@gmail.com',
+    key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
+  }
+
+  it('returns billing address first name and last name when present', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(getFirstLastName(billingAddressWithNames, shippingAddress, false)).toEqual({
+      firstName: 'firstName',
+      lastName: 'lastName'
+    })
+  })
+  it('returns billing address first name and last name when present even if order is pickup in store', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(getFirstLastName(billingAddressWithNames, shippingAddress, true)).toEqual({
+      firstName: 'firstName',
+      lastName: 'lastName'
+    })
+  })
+  it('throws an error when billing address first/last name is not present even if order is pickup in store', () => {
+    expect(() => getFirstLastName(billingAddress, shippingAddress, true)).toThrow('Missing firstname/lastname on order')
+  })
+  it('throws an error when billing address first/last name is not present', () => {
+    expect(() => getFirstLastName(billingAddress, shippingAddress, false)).toThrow('Missing firstname/lastname on order')
+  })
+  it('returns billing address first name and last name when they are present on shipping address only if the order is pickup in store', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(getFirstLastName(billingAddressWithNames, shippingAddress, true)).toEqual({
+      firstName: 'firstName',
+      lastName: 'lastName'
+    })
+  })
+  it('throws an error when billing address first name and last name are present but the order is not pickup in store', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(() => getFirstLastName(shippingAddress, billingAddressWithNames, false)).toThrow('Missing firstname/lastname on order')
+  })
+  it('returns shipping first/last name for pickup in store if they are present instead of billing address', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    const shippingAddressWithNames = { ...shippingAddress, firstName: 'firstName2', lastName: 'lastName2' }
+    expect(getFirstLastName(shippingAddressWithNames, billingAddressWithNames, true)).toEqual({
+      firstName: 'firstName2',
+      lastName: 'lastName2'
+    })
   })
 })
