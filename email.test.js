@@ -763,7 +763,7 @@ const completeOrderEnglishUntyped = {
 const completeOrderEnglish = completeOrderEnglishUntyped
 
 describe('formatEmailApiRequestBodyFromOrder', () => {
-  it('returns a correctly formmated object when given a vaid order', () => {
+  it('returns a correctly formmated object when given a vaild order', () => {
     expect(formatEmailApiRequestBodyFromOrder(completeOrderEnglish)).toEqual({
       request: {
         Channel: 'Email',
@@ -772,6 +772,21 @@ describe('formatEmailApiRequestBodyFromOrder', () => {
         Sender: '',
         Subject: '{"Name":"Salesorder","Id":"122004"}',
         Topic: 'Confirmation',
+        Data: expect.any(String)
+      }
+    })
+  })
+
+  it('returns a correctly formmated object when given a vaild BOPIS order', () => {
+    const completeOrderEnglishBOPIS = { ...completeOrderEnglish, custom: { ...completeOrderEnglish.custom, fields: { ...completeOrderEnglish.custom.fields, isStorePickup: true } } }
+    expect(formatEmailApiRequestBodyFromOrder(completeOrderEnglishBOPIS)).toEqual({
+      request: {
+        Channel: 'Email',
+        OwnerId: 'F6UJ9A000002',
+        Recipient: '{"address":"example01@example.com","locale":"en-CA"}',
+        Sender: '',
+        Subject: '{"Name":"Salesorder","Id":"122004"}',
+        Topic: 'ConfirmationBOPIS',
         Data: expect.any(String)
       }
     })
