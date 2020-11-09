@@ -14,7 +14,7 @@ const formatEmailApiRequestBodyFromOrder = order => ({
     OwnerId: EMAIL_API_OWNER_ID,
     Channel: 'Email',
     Subject: JSON.stringify({ Name: 'Salesorder', Id: order.orderNumber }),
-    Topic: 'Confirmation',
+    Topic: order.custom.fields.isStorePickup ? 'ConfirmationBOPIS' : 'Confirmation',
     Recipient: JSON.stringify({
       address: order.customerEmail,
       locale: order.locale
