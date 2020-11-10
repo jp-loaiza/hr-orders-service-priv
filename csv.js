@@ -32,7 +32,9 @@ const {
   getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
-  getTaxTotalFromTaxedPrice
+  getPaymentReleasedStatus,
+  getTaxTotalFromTaxedPrice,
+  getFirstLastName
 } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
@@ -49,52 +51,56 @@ const getHeaderObjectFromOrder = ({
   locale,
   orderNumber,
   paymentInfo,
-  paymentState,
   shippingAddress,
   shippingInfo,
   taxedPrice
-}) => ({
-  [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
-  [HEADER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
-  [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
-  [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: shippingAddress.firstName,
-  [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: shippingAddress.lastName,
-  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: getLineOneFromAddress(shippingAddress),
-  [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: getLineTwoFromAddress(shippingAddress),
-  [HEADER_ROWS_ENUM.SHIP_TO_CITY]: shippingAddress.city,
-  [HEADER_ROWS_ENUM.SHIP_TO_STATE_ID]: shippingAddress.state,
-  [HEADER_ROWS_ENUM.SHIP_TO_ZIP_CODE]: shippingAddress.postalCode,
-  [HEADER_ROWS_ENUM.SHIP_TO_COUNTRY_ID]: shippingAddress.country,
-  [HEADER_ROWS_ENUM.BILL_TO_FIRST_NAME]: billingAddress.firstName,
-  [HEADER_ROWS_ENUM.BILL_TO_LAST_NAME]: billingAddress.lastName,
-  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_1]: getLineOneFromAddress(billingAddress),
-  [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_2]: getLineTwoFromAddress(billingAddress),
-  [HEADER_ROWS_ENUM.BILL_TO_CITY]: billingAddress.city,
-  [HEADER_ROWS_ENUM.BILL_TO_STATE_ID]: billingAddress.state,
-  [HEADER_ROWS_ENUM.BILL_TO_ZIP_CODE]: billingAddress.postalCode,
-  [HEADER_ROWS_ENUM.BILL_TO_COUNTRY_ID]: billingAddress.country,
-  [HEADER_ROWS_ENUM.BILL_TO_HOME_PHONE]: billingAddress.phone || shippingAddress.phone, // From JESTA's docs: "Both [BILL_TO_HOME_PHONE and SHIP_TO_HOME_PHONE] are copied from this field"
-  [HEADER_ROWS_ENUM.EMAIL_ADDRESS]: customerEmail,
-  [HEADER_ROWS_ENUM.CARRIER_ID]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).carrierId,
-  [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).shippingIsRush ? 'Y' : 'N',
-  [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
-  [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
-  [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
-  [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(getPaymentTotalFromPaymentInfo(paymentInfo)),
-  [HEADER_ROWS_ENUM.ORDER_DATE]: convertAndFormatDate(createdAt),
-  [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0],
-  [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
-  [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] && getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1],
-  [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
-  [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
-  [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
-  [HEADER_ROWS_ENUM.SERVICE_TYPE]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).shippingServiceType,
-  [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
-  [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'Y', // All returns are free
-  [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: 'N', // A signature is never required
-  [HEADER_ROWS_ENUM.RELEASED]: paymentState === 'Paid' ? 'Y' : 'N' // TODO: confirm with Bold that this can be relied on
-})
+}) => {
+  const { firstName: firstNameShipping, lastName: lastNameShipping } = getFirstLastName(shippingAddress, billingAddress, custom.fields.isStorePickup)
+  const { firstName: firstNameBilling, lastName: lastNameBilling } = getFirstLastName(billingAddress, shippingAddress, false)
+
+  return { 
+    [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
+    [HEADER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+    [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
+    [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: firstNameShipping,
+    [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: lastNameShipping,
+    [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_1]: getLineOneFromAddress(shippingAddress),
+    [HEADER_ROWS_ENUM.SHIP_TO_ADDRESS_2]: getLineTwoFromAddress(shippingAddress),
+    [HEADER_ROWS_ENUM.SHIP_TO_CITY]: shippingAddress.city,
+    [HEADER_ROWS_ENUM.SHIP_TO_STATE_ID]: shippingAddress.state,
+    [HEADER_ROWS_ENUM.SHIP_TO_ZIP_CODE]: shippingAddress.postalCode,
+    [HEADER_ROWS_ENUM.SHIP_TO_COUNTRY_ID]: shippingAddress.country,
+    [HEADER_ROWS_ENUM.BILL_TO_FIRST_NAME]: firstNameBilling,
+    [HEADER_ROWS_ENUM.BILL_TO_LAST_NAME]: lastNameBilling,
+    [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_1]: getLineOneFromAddress(billingAddress),
+    [HEADER_ROWS_ENUM.BILL_TO_ADDRESS_2]: getLineTwoFromAddress(billingAddress),
+    [HEADER_ROWS_ENUM.BILL_TO_CITY]: billingAddress.city,
+    [HEADER_ROWS_ENUM.BILL_TO_STATE_ID]: billingAddress.state,
+    [HEADER_ROWS_ENUM.BILL_TO_ZIP_CODE]: billingAddress.postalCode,
+    [HEADER_ROWS_ENUM.BILL_TO_COUNTRY_ID]: billingAddress.country,
+    [HEADER_ROWS_ENUM.BILL_TO_HOME_PHONE]: billingAddress.phone || shippingAddress.phone, // From JESTA's docs: "Both [BILL_TO_HOME_PHONE and SHIP_TO_HOME_PHONE] are copied from this field"
+    [HEADER_ROWS_ENUM.EMAIL_ADDRESS]: customerEmail,
+    [HEADER_ROWS_ENUM.CARRIER_ID]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).carrierId,
+    [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).shippingIsRush ? 'Y' : 'N',
+    [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
+    [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
+    [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
+    [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(getPaymentTotalFromPaymentInfo(paymentInfo)),
+    [HEADER_ROWS_ENUM.ORDER_DATE]: convertAndFormatDate(createdAt),
+    [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
+    [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0],
+    [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
+    [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] && getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1],
+    [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
+    [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
+    [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
+    [HEADER_ROWS_ENUM.SERVICE_TYPE]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).shippingServiceType,
+    [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
+    [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'Y', // All returns are free
+    [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: 'N', // A signature is never required
+    [HEADER_ROWS_ENUM.RELEASED]: getPaymentReleasedStatus(paymentInfo)
+  }
+}
 
 const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
   [DETAILS_ROWS_ENUM.RECORD_TYPE]: 'D',

@@ -5,8 +5,11 @@ const {
   DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
+  SEND_ORDER_UPDATE_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
-  SENT_TO_CRM_STATUS
+  UPDATE_TO_OMS_STATUSES,
+  SENT_TO_CRM_STATUS,
+  ORDER_CUSTOM_FIELDS
 } = require('./constants')
 
 dotenv.config()
@@ -81,6 +84,18 @@ keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
 /** 
+ * Fetches all orders that need to be updated in OMS
+ * @returns {Array<import('./orders').Order>}
+ */
+async function fetchOrdersThatShouldBeUpdatedInOMS () {
+  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
+  const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+
+  return body.results
+}
+
+/** 
  * Fetches all orders that that we should try to send to the Notification Service.
  * @returns {Promise<Array<string>>}
  */
@@ -123,8 +138,7 @@ async function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
-  const expansionParams = '?expand=lineItems[*].variant.attributes[*].value[*]&expand=paymentInfo.payments[*]'
-  const uri = requestBuilder.orders.byId(orderId).build() + expansionParams
+  const uri = requestBuilder.orders.byId(orderId).expand('lineItems[*].variant.attributes[*].value[*]').expand('paymentInfo.payments[*].paymentStatus.state').build()
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
 
@@ -163,18 +177,21 @@ const fetchStuckOrderResults = async () => {
 
 /**
  * @param {import('./orders').Order} order
+ * @param {string} statusField
  */
-async function setOrderAsSentToOms (order) {
+async function setOrderAsSentToOms (order, statusField) {
   const uri = requestBuilder.orders.byId(order.id).build()
   const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+
+  const availableStatuses = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
 
   const body = JSON.stringify({
     version: version,
     actions: [
       {
         action: 'setCustomField',
-        name: 'sentToOmsStatus',
-        value: SENT_TO_OMS_STATUSES.SUCCESS
+        name: statusField,
+        value: availableStatuses.SUCCESS
       }
     ]
   })
@@ -207,20 +224,25 @@ const getActionsFromCustomFields = customFields => (
  * @param {import('./orders').Order} order
  * @param {string} errorMessage
  * @param {boolean} errorIsRecoverable
+ * @param {object} orderCustomFields
  */
-const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable) => {
+const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { retryCountField, nextRetryAtField, statusField }) => {
   const uri = requestBuilder.orders.byId(order.id).build()
   const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-  const retryCount =  order.custom.fields.retryCount === undefined ? 0 : order.custom.fields.retryCount + 1
-  const shouldRetry = errorIsRecoverable && (retryCount < SEND_ORDER_RETRY_LIMIT)
+  const retryCount =  order.custom.fields[retryCountField] === undefined ? 0 : order.custom.fields[retryCountField] + 1
+
+  const isOrderCreation = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS 
+  const shouldRetry = errorIsRecoverable && (retryCount < (isOrderCreation ? SEND_ORDER_RETRY_LIMIT : SEND_ORDER_UPDATE_RETRY_LIMIT))
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount) : null
-  const sentToOmsStatus = shouldRetry ? SENT_TO_OMS_STATUSES.PENDING : SENT_TO_OMS_STATUSES.FAILURE
+
+  const availableStatuses = isOrderCreation ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
+  const status = shouldRetry ? availableStatuses.PENDING : availableStatuses.FAILURE
 
   const actions = getActionsFromCustomFields({
-    retryCount,
+    [retryCountField]: retryCount,
     errorMessage,
-    sentToOmsStatus,
-    ...errorIsRecoverable ? { nextRetryAt } : {},
+    [statusField]: status,
+    ...errorIsRecoverable ? { [nextRetryAtField]: nextRetryAt } : {},
   })
   const body = JSON.stringify({ version, actions })
 
@@ -236,6 +258,7 @@ module.exports = {
   setOrderAsSentToOms,
   setOrderErrorFields,
   fetchOrderIdsThatShouldBeSentToCrm,
+  fetchOrdersThatShouldBeUpdatedInOMS,
   setOrderSentToCrmStatus,
   keepAliveRequest
 }

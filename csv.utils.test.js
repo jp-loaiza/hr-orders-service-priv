@@ -15,7 +15,9 @@ const {
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
-  sumMoney
+  sumMoney,
+  getPaymentReleasedStatus,
+  getFirstLastName
 } = require('./csv.utils')
 
 describe('flatten', () => {
@@ -442,11 +444,145 @@ describe('getShippingInfoFromShippingName', () => {
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toBe(true)
   })
 
-  it('throws an error when given a shipping name that lacks a valid carrier name', () => {
-    expect(() => getShippingInfoFromShippingName('INVALID_CARRIER Expedited')).toThrow('Shipping name \'INVALID_CARRIER Expedited\' is invalid: does not include recognized carrier')
+  it('returns null when given a shipping name that lacks a valid carrier name', () => {
+    expect(getShippingInfoFromShippingName('INVALID_CARRIER Expedited').carrierId).toBe(null)
   })
 
-  it('throws an error when given a shipping name that lacks a valid shipping service type', () => {
-    expect(() => getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE')).toThrow('Shipping name \'Canada Post INVALID_SHIPPING_TYPE\' is invalid: does not include recognized shipping service type')
+  it('returns null when given a shipping name that lacks a valid shipping service type', () => {
+    expect(getShippingInfoFromShippingName('Canada Post INVALID_SHIPPING_TYPE').shippingServiceType).toBe(null)
+  })
+
+  it('any invalid shipping carriers or shipping service type should result in false of rush indicator', () => {
+    expect(getShippingInfoFromShippingName('INVALID SHIPPING').shippingIsRush).toBe(false)
+  })
+})
+
+describe('getPaymentReleasedStatus', () => {
+  const transaction = {
+    type: 'Charge',
+    state: 'Success' 
+  }
+  const paymentInfo = {
+    payments: [{
+      obj: {
+        paymentMethodInfo: {
+          method: 'notcredit'
+        },
+        paymentStatus: {
+          interfaceCode: 'paid' 
+        },
+        transactions: []
+      }
+    }]
+  }
+  it('returns "Y" if payment type is not credit no matter the transactions', () => {
+    expect(getPaymentReleasedStatus(paymentInfo)).toBe('Y')
+  })
+  it('returns "Y" if all payment types are not credit no matter the transactions', () => {
+    const multiPaymentInfo = { ...paymentInfo, payments: [paymentInfo.payments[0], { ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'stillnotcredit' } } }] }
+    expect(getPaymentReleasedStatus(multiPaymentInfo)).toBe('Y')
+  })
+  it('returns "Y" if payment type is credit and interface code is "paid" and a transaction of "Charge" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [transaction] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "N" if payment type is credit and interface code is "cancelled" and a transaction of "Charge" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [transaction] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "N" if payment type is credit and interface code is "paid" and a transaction of "Charge" and "Pending" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [{ ...transaction, state: 'Pending' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "N" if payment type is credit and interface code is "paid" and a transaction of "Authorization" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [{ ...transaction, type: 'Authorization' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "Y" if payment type is credit and interface code is "paid" and a transaction of "Charge" and "Success" exists even if multiple transactions exist', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, transactions: [transaction, { ...transaction, state: 'Pending' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "Y" if payment type is credit and interface code is "preauthed" and a transaction of "Authorization" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ ...transaction, type: 'Authorization' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "Y" if payment type is credit and interface code is "preauthed" and a transaction of "Authorization" and "Success" exists even if multiple transactions exist', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ type: 'Authorization', state: 'Pending' },{ ...transaction, type: 'Authorization' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('Y')
+  })
+  it('returns "N" if payment type is credit and interface code is "preauthed" and a transaction of "Authorization" and "Pending" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ ...transaction, state: 'Pending' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "N" if payment type is credit and interface code is "preauthed" and a transaction of "Charge" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'preauthed' }, transactions: [{ ...transaction, type: 'Charge' }] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+  it('returns "N" if payment type is credit and interface code is "cancelled" and a transaction of "Authorization" and "Success" exists', () => {
+    const creditPaymentInfo = { ...paymentInfo, payments: [{ ...paymentInfo.payments[0], obj: { ...paymentInfo.payments[0].obj, paymentMethodInfo: { ...paymentInfo.payments[0].obj.paymentMethodInfo, method: 'credit' }, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [transaction] } }] }
+    expect(getPaymentReleasedStatus(creditPaymentInfo)).toBe('N')
+  })
+})
+
+describe('getFirstLastName', () => {
+  const shippingAddress = {
+    streetName: '55 Fake St',
+    postalCode: 'M4V 1H6',
+    city: 'Toronto',
+    state: 'ON',
+    country: 'CA',
+    phone: '5551231234',
+    email: 'user@gmail.com',
+    key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
+  }
+  const billingAddress = {
+    streetName: '55 Fake St',
+    postalCode: 'M4V 1H6',
+    city: 'Toronto',
+    state: 'ON',
+    country: 'CA',
+    phone: '5551231234',
+    email: 'user@gmail.com',
+    key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
+  }
+
+  it('returns billing address first name and last name when present', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(getFirstLastName(billingAddressWithNames, shippingAddress, false)).toEqual({
+      firstName: 'firstName',
+      lastName: 'lastName'
+    })
+  })
+  it('returns billing address first name and last name when present even if order is pickup in store', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(getFirstLastName(billingAddressWithNames, shippingAddress, true)).toEqual({
+      firstName: 'firstName',
+      lastName: 'lastName'
+    })
+  })
+  it('throws an error when billing address first/last name is not present even if order is pickup in store', () => {
+    expect(() => getFirstLastName(billingAddress, shippingAddress, true)).toThrow('Missing firstname/lastname on order')
+  })
+  it('throws an error when billing address first/last name is not present', () => {
+    expect(() => getFirstLastName(billingAddress, shippingAddress, false)).toThrow('Missing firstname/lastname on order')
+  })
+  it('returns billing address first name and last name when they are present on shipping address only if the order is pickup in store', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(getFirstLastName(billingAddressWithNames, shippingAddress, true)).toEqual({
+      firstName: 'firstName',
+      lastName: 'lastName'
+    })
+  })
+  it('throws an error when billing address first name and last name are present but the order is not pickup in store', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    expect(() => getFirstLastName(shippingAddress, billingAddressWithNames, false)).toThrow('Missing firstname/lastname on order')
+  })
+  it('returns shipping first/last name for pickup in store if they are present instead of billing address', () => {
+    const billingAddressWithNames = { ...billingAddress, firstName: 'firstName', lastName: 'lastName' }
+    const shippingAddressWithNames = { ...shippingAddress, firstName: 'firstName2', lastName: 'lastName2' }
+    expect(getFirstLastName(shippingAddressWithNames, billingAddressWithNames, true)).toEqual({
+      firstName: 'firstName2',
+      lastName: 'lastName2'
+    })
   })
 })

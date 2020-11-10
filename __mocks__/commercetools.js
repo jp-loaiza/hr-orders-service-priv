@@ -492,7 +492,7 @@ const validOrder = {
             {
               id: 'c3ab7cbb-d28f-4d82-9760-e9eaa317d33c',
               timestamp: '2020-08-04T15:39:18.076Z',
-              type: 'Charge',
+              type: 'Authorization',
               amount: {
                 type: 'centPrecision',
                 currencyCode: 'CAD',
@@ -501,7 +501,7 @@ const validOrder = {
               },
               interactionId:
                 '5965555601086316404009:Axj/7wSTQ2S2/FHfyd0pABEg3cMHDBm1bNIkGw3j2XKiOEbhdQQFRHCNwuoI+EcHHAbK8GkmXoxYg4kwJyaGyW34o7+TulIAMx4k',
-              state: 'Pending'
+              state: 'Success'
             }
           ],
           interfaceInteractions: []
@@ -556,6 +556,11 @@ const invalidOrder = { orderNumber: 'testOrderThatIsInvalid' }
 
 module.exports = {
   fetchOrdersThatShouldBeSentToOms: jest.fn()
+    .mockImplementationOnce(() => [validOrder, invalidOrder])
+    .mockImplementationOnce(() => [invalidOrder, validOrder])
+    .mockImplementationOnce(() => [validOrder])
+    .mockImplementationOnce(() => []),
+  fetchOrdersThatShouldBeUpdatedInOMS: jest.fn()
     .mockImplementationOnce(() => [validOrder, invalidOrder])
     .mockImplementationOnce(() => [invalidOrder, validOrder])
     .mockImplementationOnce(() => [validOrder])

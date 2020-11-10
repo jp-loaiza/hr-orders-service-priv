@@ -5,6 +5,12 @@ const ajv = new Ajv({ allErrors: true })
 const addressSchema = {
   type: 'object',
   properties: {
+    firstName: {
+      type: 'string'
+    },
+    lastName: {
+      type: 'string'
+    },
     state: {
       type: 'string',
       maxLength: 2,
@@ -14,8 +20,6 @@ const addressSchema = {
   required: [
     'city',
     'country',
-    'firstName',
-    'lastName',
     'postalCode',
     'state',
     'streetName'

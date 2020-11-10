@@ -57,6 +57,15 @@ const CARD_TYPES_TO_JESTA_CODES = {
 
 const ONLINE_SITE_ID = '00990'
 
+const ORDER_CUSTOM_FIELDS = {
+  SENT_TO_OMS_STATUS: 'sentToOmsStatus',
+  OMS_UPDATE_RETRY_COUNT: 'omsUpdateRetryCount',
+  OMS_UPDATE_NEXT_RETRY_AT: 'omsUpdateNextRetryAt',
+  OMS_UPDATE_STATUS: 'omsUpdate',
+  RETRY_COUNT: 'retryCount',
+  NEXT_RETRY_AT: 'nextRetryAt'
+}
+
 const HEADER_ROWS_ENUM = {
   RECORD_TYPE: 'RecordType H',
   SITE_ID: 'SITE_ID',
@@ -293,8 +302,14 @@ const SENT_TO_OMS_STATUSES = {
   FAILURE: 'FAILURE'
 }
 
-const SEND_ORDER_RETRY_LIMIT = 5
+const UPDATE_TO_OMS_STATUSES = {
+  SUCCESS: 'SUCCESS',
+  FAILURE: 'FAILURE',
+  PENDING: 'PENDING'
+}
 
+const SEND_ORDER_RETRY_LIMIT = 5
+const SEND_ORDER_UPDATE_RETRY_LIMIT = 5
 
 const SENT_TO_CRM_STATUS = {
   SUCCESS: 'SUCCESS',
@@ -348,7 +363,43 @@ const CARRIER_IDS_TO_NAMES =  {
   [CARRIER_IDS.UPS]: 'UPS'
 }
 
+const PAYMENT_STATES = { 
+  CANCELLED: 'cancelled',
+  DISPUTED: 'disputed',
+  PAID: 'paid',
+  PARTIALLY_PAID: 'partially_paid',
+  PARTIALLY_REFUNDED: 'partially_refunded',
+  PENDING: 'pending',
+  PREAUTHED: 'preauthed',
+  REFUNDED: 'refunded',
+  HELD_FOR_REVIEW: 'held_for_review'
+}
+
+const TRANSACTION_TYPES = {
+  AUTHORIZATION: 'Authorization',
+  CHARGE: 'Charge',
+  CANCEL_AUTHORIZATION: 'CancelAuthorization',
+  REFUND: 'Refund',
+  CHARGE_BACK: 'Chargeback'
+}
+
+const TRANSACTION_STATES = {
+  SUCCESS: 'Success',
+  PENDING: 'Pending',
+  INITIAL: 'Initial',
+  FAILURE: 'Failure'
+}
+
+const JESTA_ORDER_STATUSES = {
+  RELEASED: 'UnholdSalesOrder',
+  CANCELLED: 'CancelSalesOrder'
+}
+
 module.exports = {
+  JESTA_ORDER_STATUSES,
+  PAYMENT_STATES,
+  TRANSACTION_TYPES,
+  TRANSACTION_STATES,
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,
@@ -367,7 +418,9 @@ module.exports = {
   MISC_ROWS,
   ONLINE_SITE_ID,
   SEND_ORDER_RETRY_LIMIT,
+  SEND_ORDER_UPDATE_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
+  UPDATE_TO_OMS_STATUSES,
   SENT_TO_CRM_STATUS,
   SHIPPING_SERVICE_TYPES,
   SHIPPING_SERVICE_TYPES_TO_NAMES,
@@ -377,4 +430,5 @@ module.exports = {
   TENDER_ROWS_ENUM,
   JOB_TASK_TIMEOUT,
   MAXIMUM_RETRIES,
+  ORDER_CUSTOM_FIELDS
 }

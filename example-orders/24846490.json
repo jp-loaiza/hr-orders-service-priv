@@ -1519,14 +1519,14 @@
                         }
                     },
                     "paymentStatus": {
-                        "interfaceCode": "paid",
-                        "interfaceText": "paid"
+                        "interfaceCode": "preauthed",
+                        "interfaceText": "preauthed"
                     },
                     "transactions": [
                         {
                             "id": "e63eeff7-81a7-4ee0-8590-100766900dcd",
                             "timestamp": "2020-08-24T19:43:24.240Z",
-                            "type": "Charge",
+                            "type": "Authorization",
                             "amount": {
                                 "type": "centPrecision",
                                 "currencyCode": "CAD",

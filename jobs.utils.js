@@ -1,12 +1,14 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
   setOrderErrorFields,
+  fetchOrdersThatShouldBeUpdatedInOMS
 } = require('./commercetools')
+const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
@@ -56,6 +58,42 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
   })
 }
 
+const getTransaction = (transactions, type, state) => transactions.find(transaction => transaction.type === type && transaction.state === state)
+
+/**
+ * 
+ * @param {import('./orders').Order} order
+ */
+const transformToOrderPayment = order => {
+  const orderUpdate = {
+    orderNumber: order.orderNumber
+  }
+
+  const creditPaymentInfo = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
+  if (!creditPaymentInfo) {
+    orderUpdate.errorMessage = 'No credit card payment with payment release change'
+    return orderUpdate
+  }
+
+  const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode
+  let transaction = null
+  if (interfaceCode === PAYMENT_STATES.PREAUTHED) { // delayed capture is ON and DM accepted
+    transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.SUCCESS)
+  } else if (interfaceCode === PAYMENT_STATES.CANCELLED) { // delated capture is ON or OFF but DM rejected
+    transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.FAILURE)
+                  || getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE)
+  } else if (interfaceCode === PAYMENT_STATES.PAID) { // delayed capture is OFF and DM accepted
+    transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.SUCCESS)
+  }
+
+  if (!transaction) {
+    orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
+    return orderUpdate
+  }
+
+  return { ...orderUpdate, status: transaction.state }
+}
+
 /**
  * 
  * @param {import('./orders').Order} order
@@ -92,18 +130,28 @@ const createAndUploadCsvs = async () => {
         console.error(errorMessage)
         console.error(err)
         // we retry in case the version of the order has changed by the notifications job
-        await retry(setOrderErrorFields)(order, errorMessage, false)
+        await retry(setOrderErrorFields)(order, errorMessage, false, {
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+        })
         continue
       }
       try {
+        console.log(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
+        console.log(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
       } catch (err) {
         console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
-        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true)
+        await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
+          retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+        })
         continue
       }
       // we retry in case the version of the order has changed by the notifications job
-      await retry(setOrderAsSentToOms)(order)
+      await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
     console.log('Done processing orders')
   } catch (err) {
@@ -119,9 +167,43 @@ const createAndUploadCsvs = async () => {
   }
 }
 
+async function sendOrderUpdates () {
+  const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
+  if (ordersToUpdate.length) {
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
+  }
+  await Promise.all(ordersToUpdate.map(async orderToUpdate => {
+    try {
+      const orderPayment = transformToOrderPayment(orderToUpdate)
+      if (orderPayment.errorMessage) {
+        await retry(setOrderErrorFields)(orderToUpdate, orderPayment.errorMessage, false, {
+          retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+        })
+      } else {
+        const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
+        await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus)
+        // we retry in case the version of the order has changed by CSV job
+        await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
+      }
+    } catch (error) {
+      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+      })
+    }
+  }))
+}
+
 module.exports = {
   sleep,
   retry,
   createAndUploadCsvs,
   generateFilenameFromOrder,
+  sendOrderUpdates,
+  transformToOrderPayment
 }

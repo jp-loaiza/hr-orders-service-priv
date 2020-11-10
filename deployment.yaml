@@ -37,6 +37,16 @@ spec:
               - name: authorization
                 value: {HEALTHZ_AUTHORIZATION}
         env:
+        - name: JESTA_API_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: JESTA_API_USERNAME
+              name: hr-orders-service
+        - name: JESTA_API_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: JESTA_API_PASSWORD
+              name: hr-orders-service
         - name: SFTP_USERNAME
           valueFrom:
             secretKeyRef:
@@ -61,6 +71,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: SFTP_INCOMING_ORDERS_PATH
+              name: hr-orders-service
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              key: ENVIRONMENT
               name: hr-orders-service
         - name: CT_PROJECT_KEY
           valueFrom:
@@ -92,10 +107,20 @@ spec:
             configMapKeyRef:
               key: ORDER_UPLOAD_INTERVAL
               name: hr-orders-service
+        - name: ORDER_UPDATE_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: ORDER_UPDATE_INTERVAL
+              name: hr-orders-service
         - name: SHOULD_UPLOAD_ORDERS
           valueFrom:
             configMapKeyRef:
               key: SHOULD_UPLOAD_ORDERS
+              name: hr-orders-service
+        - name: SHOULD_SEND_ORDER_UPDATES
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_ORDER_UPDATES
               name: hr-orders-service
         - name: SHOULD_SEND_NOTIFICATIONS
           valueFrom:
@@ -106,6 +131,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: EMAIL_API_URL
+              name: hr-orders-service
+        - name: JESTA_API_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: JESTA_API_HOST
               name: hr-orders-service
         - name: EMAIL_API_USERNAME
           valueFrom:

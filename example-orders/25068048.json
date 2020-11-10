@@ -847,14 +847,14 @@
                         }
                     },
                     "paymentStatus": {
-                        "interfaceCode": "paid",
-                        "interfaceText": "paid"
+                        "interfaceCode": "preauthed",
+                        "interfaceText": "preauthed"
                     },
                     "transactions": [
                         {
                             "id": "c22fd7fd-fbae-4003-afd6-75bb247bac3c",
                             "timestamp": "2020-08-27T15:26:25.586Z",
-                            "type": "Charge",
+                            "type": "Authorization",
                             "amount": {
                                 "type": "centPrecision",
                                 "currencyCode": "CAD",
@@ -862,7 +862,7 @@
                                 "fractionDigits": 2
                             },
                             "interactionId": "5985419880586457704007:Axj/7wSTRHhjFUecyOZHABEg3aMHDlw5at4rRm3tS6iiOEvdlzAFRHCXuy5g+D9PeB4QyaSZejFiDinAnJojwxiqPOZHMjgAmhFF",
-                            "state": "Success"
+                            "state": "Pending"
                         },
                         {
                             "id": "e72c5620-c3cf-4763-89bf-dbc41b03019e",

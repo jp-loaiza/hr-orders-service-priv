@@ -478,8 +478,8 @@ const completeOrderEnglishUntyped = {
             }
           },
           paymentStatus: {
-            interfaceCode: 'preauthed',
-            interfaceText: 'preauthed'
+            interfaceCode: 'paid',
+            interfaceText: 'paid'
           },
           transactions: [
             {
@@ -494,7 +494,7 @@ const completeOrderEnglishUntyped = {
               },
               interactionId:
                 '5965555601086316404009:Axj/7wSTQ2S2/FHfyd0pABEg3cMHDBm1bNIkGw3j2XKiOEbhdQQFRHCNwuoI+EcHHAbK8GkmXoxYg4kwJyaGyW34o7+TulIAMx4k',
-              state: 'Pending'
+              state: 'Success'
             }
           ],
           interfaceInteractions: []
@@ -581,10 +581,8 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
   })
 
   it('returns the correct CSV string when given an order whose payment is not released', () => {
-    const orderWithFailedPayment = {
-      ...completeOrderEnglish,
-      paymentState: 'Pending'
-    }
+    const orderWithFailedPayment = { ...completeOrderEnglish }
+    orderWithFailedPayment.paymentInfo.payments[0].obj.transactions[0]= { type: 'Charge', state: 'Pending' } 
 
     const expectedOrderCsv = `RecordType H,SITE_ID,WFE_TRANS_ID,SHIP_TO_FIRST_NAME,SHIP_TO_LAST_NAME,,SHIP_TO_ADDRESS_1,SHIP_TO_ADDRESS_2,SHIP_TO_ADDRESS_3,SHIP_TO_CITY,SHIP_TO_STATE_ID,SHIP_TO_ZIP_CODE,SHIP_TO_COUNTRY_ID,WFE_CUSTOMER_ID,BILL_TO_FIRST_NAME,BILL_TO_LAST_NAME,BILL_TO_ADDRESS_1,BILL_TO_ADDRESS_2,BILL_TO_ADDRESS_3,BILL_TO_CITY,BILL_TO_STATE_ID,BILL_TO_ZIP_CODE,BILL_TO_COUNTRY_ID,BILL_TO_HOME_PHONE,EMAIL_ADDRESS,CARRIER_ID,RUSH_SHIPPING_IND,SHIP_COMPLETE_IND,,SHIPPING_CHARGES_TOTAL,TAX_TOTAL,,TRANSACTION_TOTAL,,POS_EQUIVALENCE,,,,,ORDER_DATE,ADDITIONAL_METADATA,SHIPPING_TAX1,SHIPPING_TAX1_DESCRIPTION,SHIPPING_TAX2,SHIPPING_TAX2_DESCRIPTION,SHIPPING_TAX3,SHIPPING_TAX3_DESCRIPTION,DESTINATION_SITE_ID,REQUESTER_SITE_ID,,,SERVICE_TYPE,LANGUAGE_NO,FREE_RETURN_IND,SIGNATURE_REQUIRED_IND,RELEASED
 RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOUNT,LINE_SHIPPING_CHARGES,LINE_TOTAL_TAX,LINE_TOTAL_AMOUNT,BAR_CODE_ID,ENDLESS_AISLE_IND,EXT_REF_ID,GIFT_WRAP_IND,,,SALESPERSON_ID,ADDITIONAL_METADATA,SUB_TYPE
