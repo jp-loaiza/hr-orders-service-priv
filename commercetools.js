@@ -238,6 +238,10 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   const availableStatuses = isOrderCreation ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
   const status = shouldRetry ? availableStatuses.PENDING : availableStatuses.FAILURE
 
+  if (status === availableStatuses.FAILURE) {
+    console.error(`Order failed due to error ${errorMessage}: `, JSON.stringify(order))
+  }
+
   const actions = getActionsFromCustomFields({
     [retryCountField]: retryCount,
     errorMessage,
