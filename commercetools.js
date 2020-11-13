@@ -2,6 +2,7 @@ const dotenv = require('dotenv')
 
 const {
   BACKOFF,
+  ORDER_UPDATE_BACKOFF,
   DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
@@ -202,9 +203,9 @@ async function setOrderAsSentToOms (order, statusField) {
 /**
  * @param {number} retryCount
  */
-const getNextRetryDateFromRetryCount = (retryCount = 0) => {
+const getNextRetryDateFromRetryCount = (retryCount = 0, backoff = BACKOFF) => {
   const now = new Date().valueOf()
-  return new Date(now + Math.pow(2, retryCount) * BACKOFF)
+  return new Date(now + Math.pow(2, retryCount) * backoff)
 }
 
 /**
@@ -233,7 +234,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
 
   const isOrderCreation = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS 
   const shouldRetry = errorIsRecoverable && (retryCount < (isOrderCreation ? SEND_ORDER_RETRY_LIMIT : SEND_ORDER_UPDATE_RETRY_LIMIT))
-  const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount) : null
+  const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount, isOrderCreation ? BACKOFF : ORDER_UPDATE_BACKOFF) : null
 
   const availableStatuses = isOrderCreation ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
   const status = shouldRetry ? availableStatuses.PENDING : availableStatuses.FAILURE

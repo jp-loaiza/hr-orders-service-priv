@@ -1,6 +1,7 @@
 const KEEP_ALIVE_INTERVAL = 300000 // 5 minutes in milliseconds
 
 const BACKOFF = 600000 // retry exponential backoff rate in milliseconds
+const ORDER_UPDATE_BACKOFF = 7200000 // retry exponential backoff rate in milliseconds (only for fraud hold updates to jesta)
 
 const DEFAULT_STALE_ORDER_CUTOFF_TIME_MS = 10 * 60 * 1000
 
@@ -430,5 +431,6 @@ module.exports = {
   TENDER_ROWS_ENUM,
   JOB_TASK_TIMEOUT,
   MAXIMUM_RETRIES,
-  ORDER_CUSTOM_FIELDS
+  ORDER_CUSTOM_FIELDS,
+  ORDER_UPDATE_BACKOFF
 }
