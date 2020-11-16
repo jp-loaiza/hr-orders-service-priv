@@ -124,14 +124,14 @@ describe('transformToOrderPayment', () => {
   it('invalid order update; no valid interface code', () => {
     const mockOrderInvalidInterfaceCode = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentStatus: { interfaceCode: 'failed' } } }] } }
     expect(transformToOrderPayment(mockOrderInvalidInterfaceCode)).toEqual({
-      errorMessage: 'Order update is not for a status that jesta recognizes',
+      errorMessage: 'Order update is not for a status that jesta recognizes: failed',
       orderNumber: mockOrderInvalidInterfaceCode.orderNumber
     })
   })
   it('invalid order update; invalid transaction status', () => {
     const mockOrderInvalidStatus = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, transactions: [{ ...mockTransaction, state: 'Failure' }] } }] } }
     expect(transformToOrderPayment(mockOrderInvalidStatus)).toEqual({
-      errorMessage: 'Order update is not for a status that jesta recognizes',
+      errorMessage: 'Order update is not for a status that jesta recognizes: preauthed',
       orderNumber: mockOrderInvalidStatus.orderNumber
     })
   })
