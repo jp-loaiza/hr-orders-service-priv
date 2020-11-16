@@ -87,7 +87,7 @@ const transformToOrderPayment = order => {
   }
 
   if (!transaction) {
-    orderUpdate.errorMessage = 'Order update is not for a status that jesta recognizes'
+    orderUpdate.errorMessage = `Order update is not for a status that jesta recognizes: ${interfaceCode}`
     return orderUpdate
   }
 
@@ -125,12 +125,11 @@ const createAndUploadCsvs = async () => {
         if (!validateOrder(order)) throw new Error('Invalid order')
         csvString = generateCsvStringFromOrder(order)
       } catch (err) {
-        console.error(`Unable to generate CSV for order ${order.orderNumber}`)
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
-        console.error(errorMessage)
+        console.error(`Unable to generate CSV for order ${order.orderNumber}: `, errorMessage)
         console.error(err)
         // we retry in case the version of the order has changed by the notifications job
-        await retry(setOrderErrorFields)(order, errorMessage, false, {
+        await retry(setOrderErrorFields)(order, errorMessage, true, {
           retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
           nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
@@ -176,7 +175,7 @@ async function sendOrderUpdates () {
     try {
       const orderPayment = transformToOrderPayment(orderToUpdate)
       if (orderPayment.errorMessage) {
-        await retry(setOrderErrorFields)(orderToUpdate, orderPayment.errorMessage, false, {
+        await retry(setOrderErrorFields)(orderToUpdate, orderPayment.errorMessage, true, {
           retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
           nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
