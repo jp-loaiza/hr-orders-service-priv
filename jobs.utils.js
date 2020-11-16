@@ -72,6 +72,7 @@ const transformToOrderPayment = order => {
   const creditPaymentInfo = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
   if (!creditPaymentInfo) {
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
+    console.error(`Failed to find credit payment info for order ${order.orderNumber}: `, JSON.stringify(order.paymentInfo, null, 3))
     return orderUpdate
   }
 
@@ -88,6 +89,7 @@ const transformToOrderPayment = order => {
 
   if (!transaction) {
     orderUpdate.errorMessage = `Order update is not for a status that jesta recognizes: ${interfaceCode}`
+    console.error(`Failed to set transaction for order ${order.orderNumber}: `, JSON.stringify(creditPaymentInfo.obj.transactions, null, 3))
     return orderUpdate
   }
 
