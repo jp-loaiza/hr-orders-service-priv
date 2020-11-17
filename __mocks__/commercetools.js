@@ -552,7 +552,7 @@ const validOrder = {
   refusedGifts: []
 }
 
-const invalidOrder = { orderNumber: 'testOrderThatIsInvalid' }
+const invalidOrder = { orderNumber: 'testOrderThatIsInvalid', paymentMethodInfo: { payments: [] } }
 
 module.exports = {
   fetchOrdersThatShouldBeSentToOms: jest.fn()
