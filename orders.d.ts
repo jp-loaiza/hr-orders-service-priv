@@ -28,7 +28,6 @@ interface Env {
   JOB_TASK_TIMEOUT: string,
   MAXIMUM_RETRIES: string,
   SHOULD_SEND_ORDER_UPDATES: string,
-  ORDER_UPLOAD_INTERVAL: number,
   JESTA_API_HOST: string,
   JESTA_API_USERNAME: string,
   JESTA_API_PASSWORD: string
@@ -113,6 +112,11 @@ type ShippingInfo = {
   taxRate: TaxRate
 }
 
+type Transaction = {
+  type: string,
+  state: string
+}
+
 type Payment = {
   obj: {
     paymentMethodInfo: {
@@ -135,9 +139,15 @@ type Payment = {
         obj: {
           key: string
         }
-      }
+      },
+      interfaceCode: string,
     }
+    transactions: Array<Transaction>
   }
+}
+
+type PaymentInfo = {
+  payments: Array<Payment>
 }
 
 type Order = {
@@ -155,9 +165,7 @@ type Order = {
   billingAddress: Address,
   locale: 'en-CA' | 'fr-CA',
   paymentState: 'Pending' | 'Paid'
-  paymentInfo: {
-    payments: Array<Payment>
-  },
+  paymentInfo: PaymentInfo,
   shippingInfo: ShippingInfo, 
   taxedPrice: TaxedPrice
   custom: {
@@ -178,7 +186,8 @@ type Order = {
       destinationSiteId?: string,
       retryCount?: number,
       nextRetryAt?: string,
-      loginRadiusUid: string
+      loginRadiusUid: string,
+      isStorePickup: boolean
     }
   }
 }
@@ -198,8 +207,10 @@ export {
   Order,
   ParsedTax,
   Payment,
+  PaymentInfo,
   ShippingInfo,
   StateCode,
   TaxDescriptionKey,
-  TaxedPrice
+  TaxedPrice,
+  Transaction
 }
