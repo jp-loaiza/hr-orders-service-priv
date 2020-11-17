@@ -34,7 +34,8 @@ const {
   getShippingTaxDescriptionsFromShippingTaxes,
   getPaymentReleasedStatus,
   getTaxTotalFromTaxedPrice,
-  getFirstLastName
+  getFirstLastName,
+  lineItemIsEndlessAisle
 } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
@@ -114,7 +115,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
   [DETAILS_ROWS_ENUM.LINE_TOTAL_TAX]: getLineTotalTaxFromLineItem(lineItem),
   [DETAILS_ROWS_ENUM.LINE_TOTAL_AMOUNT]: convertToDollars(lineItem.taxedPrice.totalGross.centAmount),
   [DETAILS_ROWS_ENUM.BAR_CODE_ID]: getBarcodeInfoFromLineItem(lineItem).number,
-  [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: 'N',
+  [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: lineItemIsEndlessAisle(lineItem) ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.SALESPERSON_ID]: lineItem.custom.fields.salespersonId,

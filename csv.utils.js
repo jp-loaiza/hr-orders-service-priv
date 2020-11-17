@@ -246,6 +246,11 @@ const getFirstLastName = (address1, address2, isStorePickup) => {
   }
 }
 
+const lineItemIsEndlessAisle = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  const endlessAisleAttribute = lineItem.variant.attributes.find(attribute => attribute.name === 'isEndlessAisle')
+  return endlessAisleAttribute ? endlessAisleAttribute.value : false 
+}
+
 module.exports = {
   convertAndFormatDate,
   convertToDollars,
@@ -266,6 +271,7 @@ module.exports = {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
+  lineItemIsEndlessAisle,
   sumMoney,
   getPaymentReleasedStatus,
   getFirstLastName

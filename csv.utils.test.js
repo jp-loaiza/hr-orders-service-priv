@@ -15,6 +15,7 @@ const {
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
+  lineItemIsEndlessAisle,
   sumMoney,
   getPaymentReleasedStatus,
   getFirstLastName
@@ -584,5 +585,47 @@ describe('getFirstLastName', () => {
       firstName: 'firstName2',
       lastName: 'lastName2'
     })
+  })
+})
+
+
+describe('lineItemIsEndlessAisle', () => {
+  it('returns true when given a line item with an endless aisle flag set to true', () => {
+    const endlessAisleLineItem = {
+      variant: {
+        attributes: [{
+          name: 'isEndlessAisle',
+          value: true
+        }]
+      }
+    }
+
+    // @ts-ignore incomplete line item for testing
+    expect(lineItemIsEndlessAisle(endlessAisleLineItem)).toBe(true)
+  })
+
+  it('returns false when given a line item with an endless aisle flag set to false', () => {
+    const notEndlessAisleLineItem = {
+      variant: {
+        attributes: [{
+          name: 'isEndlessAisle',
+          value: false
+        }]
+      }
+    }
+
+    // @ts-ignore incomplete line item for testing
+    expect(lineItemIsEndlessAisle(notEndlessAisleLineItem)).toBe(false)
+  })
+
+  it('returns false when given a line item with no endless aisle flag', () => {
+    const notEndlessAisleLineItem = {
+      variant: {
+        attributes: []
+      }
+    }
+
+    // @ts-ignore incomplete line item for testing
+    expect(lineItemIsEndlessAisle(notEndlessAisleLineItem)).toBe(false)
   })
 })
