@@ -17,9 +17,12 @@ const fetchWithTimeout = async (url, options) => {
       throw error
     })
     .finally(() => { clearTimeout(timeout) })
-  const jsonResponse = await response.json()
-  if (response.status === 200) return jsonResponse
-  const error = new Error(`API responded with status ${response.status}: ${JSON.stringify(jsonResponse)}.`)
+  const contentType = response.headers.get('content-type')
+  const content = contentType && contentType.includes('application/json')
+    ? await response.json()
+    : await response.text()
+  if (response.ok) return content
+  const error = new Error(`API responded with status ${response.status}: ${JSON.stringify(content)}.`)
   console.error(error)
   console.error(response)
   throw error
