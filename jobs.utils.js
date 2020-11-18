@@ -58,6 +58,12 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
   })
 }
 
+/**
+ * 
+ * @param {Array<import('./orders').Transaction>} transactions 
+ * @param {string} type
+ * @param {string} state
+ */
 const getTransaction = (transactions, type, state) => transactions.find(transaction => transaction.type === type && transaction.state === state)
 
 /**

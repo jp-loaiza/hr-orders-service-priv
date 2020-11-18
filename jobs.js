@@ -48,7 +48,7 @@ async function createAndUploadCsvsJob (orderUploadInterval) {
 }
 
 /**
- * @param {number} orderUpdateInterval interval between each job in ms
+ * @param {number} orderUploadInterval interval between each job in ms
  */
 async function sendOrderUpdatesJob (orderUploadInterval) {
   // eslint-disable-next-line no-constant-condition
