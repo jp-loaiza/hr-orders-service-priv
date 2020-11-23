@@ -19,7 +19,7 @@ console.log('JOB_TASK_TIMEOUT set to: ', JOB_TASK_TIMEOUT)
 let MAXIMUM_RETRIES = 3
 let maximumRetriesFromEnv = Number(process.env.MAXIMUM_RETRIES)
 if (maximumRetriesFromEnv) {
-  if (maximumRetriesFromEnv > 0 && maximumRetriesFromEnv < 6) {
+  if (maximumRetriesFromEnv > 0 && maximumRetriesFromEnv < 10) {
     MAXIMUM_RETRIES = maximumRetriesFromEnv 
   } else {
     throw new Error(`Invalid MAXIMUM_RETRIES passed as environmental variable: ${maximumRetriesFromEnv}`)
