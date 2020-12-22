@@ -1,8 +1,8 @@
 
 require('dotenv').config()
 
-const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
-const { createAndUploadCsvs, sendOrderUpdates, sleep, retry } = require('./jobs.utils')
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { createAndUploadCsvs, sendConversionsToAlgolia, sendOrderUpdates, sleep, retry } = require('./jobs.utils')
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
@@ -128,6 +128,22 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
   }
 }
 
+/**
+ * @param {number} sendToAlgoliaInterval
+ */
+async function sendConversionsToAlgoliaJob(sendToAlgoliaInterval) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      await sendConversionsToAlgolia()
+    }
+    catch(error) {
+      console.error('Unable to send conversions to Algolia:', error)
+    }
+    await sleep(sendToAlgoliaInterval)
+  }
+}
+
 const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
 if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
@@ -160,6 +176,13 @@ if (shouldCheckForStuckOrders) {
   checkForStuckOrdersJob(stuckOrderCheckInterval)
 }
 
+const shouldSendAlgoliaInfo = process.env.SHOULD_SEND_ALGOLIA_INFO === 'true'
+if (shouldSendAlgoliaInfo) {
+  const sendAlgoliaInfoInterval = Number(SEND_ALGOLIA_INFO_INTERVAL)
+  console.log('Processing Algolia job at interval: ', sendAlgoliaInfoInterval)
+  if (!(sendAlgoliaInfoInterval > 0)) throw new Error('SEND_ALGOLIA_INFO_INTERVAL must be a positive number')
+  sendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
+}
 
 module.exports = {
   getEnabledJobsLastExecutionTime: () => {
