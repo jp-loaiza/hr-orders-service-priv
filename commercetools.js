@@ -9,6 +9,7 @@ const {
   SEND_ORDER_UPDATE_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
+  SENT_TO_ALGOLIA_STATUES,
   SENT_TO_CRM_STATUS,
   ORDER_CUSTOM_FIELDS
 } = require('./constants')
@@ -139,6 +140,7 @@ async function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
+  // TODO: add reference expansion of algoliaAnalyticsData
   const uri = requestBuilder.orders.byId(orderId).expand('lineItems[*].variant.attributes[*].value[*]').expand('paymentInfo.payments[*].paymentStatus.state').build()
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
@@ -254,14 +256,48 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   return ctClient.execute({ method: 'POST', uri, body })
 }
 
+/**
+ * @returns {Promise<Array<(import('./orders').Order)>>}
+ */
+const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
+  const query = `custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  return await Promise.all(orderIds.map(fetchFullOrder))
+}
+
+/**
+ * @param {string} orderId
+ * @param {string} name
+ * @param {any} value
+ */
+const setOrderCustomField = async (orderId, name, value) => {
+  const uri = requestBuilder.orders.byId(orderId).build()
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+  const body = JSON.stringify({
+    version: version,
+    actions: [
+      {
+        action: 'setCustomField',
+        name,
+        value
+      }
+    ]
+  })
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
   fetchStuckOrderResults,
+  fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
   setOrderErrorFields,
+  setOrderCustomField,
   fetchOrderIdsThatShouldBeSentToCrm,
   fetchOrdersThatShouldBeUpdatedInOMS,
   setOrderSentToCrmStatus,
