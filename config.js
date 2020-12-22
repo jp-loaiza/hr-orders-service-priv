@@ -9,6 +9,6 @@ const sftpConfig = {
 
 module.exports = {
   sftpConfig,
-  ALGOLIA_APP_ID, // TODO: add to toolchain, YAML, deploy script, etc.
-  ALGOLIA_API_KEY // TODO: ditto
+  ALGOLIA_APP_ID,
+  ALGOLIA_API_KEY
 }
