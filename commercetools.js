@@ -85,6 +85,27 @@ const keepAlive = async () => {
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
+/**
+ * @param {string} orderId
+ * @param {string} name
+ * @param {any} value
+ */
+const setOrderCustomField = async (orderId, name, value) => {
+  const uri = requestBuilder.orders.byId(orderId).build()
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+  const body = JSON.stringify({
+    version: version,
+    actions: [
+      {
+        action: 'setCustomField',
+        name,
+        value
+      }
+    ]
+  })
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
 /** 
  * Fetches all orders that need to be updated in OMS
  * @returns {Array<import('./orders').Order>}
@@ -117,21 +138,8 @@ async function fetchOrderIdsThatShouldBeSentToCrm () {
  * @param {string} orderId
  * @param {boolean} status
  */
-async function setOrderSentToCrmStatus (orderId, status) {
-  const uri = requestBuilder.orders.byId(orderId).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-  const body = JSON.stringify({
-    version: version,
-    actions: [
-      {
-        action: 'setCustomField',
-        name: 'sentToCrmStatus',
-        value: SENT_TO_CRM_STATUS[status ? 'SUCCESS' : 'FAILURE']
-      }
-    ]
-  })
-
-  return ctClient.execute({ method: 'POST', uri, body })
+function setOrderSentToCrmStatus (orderId, status) {
+  return setOrderCustomField(orderId, 'sentToCrmStatus', SENT_TO_CRM_STATUS[status ? 'SUCCESS' : 'FAILURE'])
 }
 
 /**
@@ -182,24 +190,9 @@ const fetchStuckOrderResults = async () => {
  * @param {import('./orders').Order} order
  * @param {string} statusField
  */
-async function setOrderAsSentToOms (order, statusField) {
-  const uri = requestBuilder.orders.byId(order.id).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-
+function setOrderAsSentToOms (order, statusField) {
   const availableStatuses = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
-
-  const body = JSON.stringify({
-    version: version,
-    actions: [
-      {
-        action: 'setCustomField',
-        name: statusField,
-        value: availableStatuses.SUCCESS
-      }
-    ]
-  })
-
-  return ctClient.execute({ method: 'POST', uri, body })
+  return setOrderCustomField(order.id, statusField, availableStatuses.SUCCESS)
 }
 
 /**
@@ -265,27 +258,6 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
   return await Promise.all(orderIds.map(fetchFullOrder))
-}
-
-/**
- * @param {string} orderId
- * @param {string} name
- * @param {any} value
- */
-const setOrderCustomField = async (orderId, name, value) => {
-  const uri = requestBuilder.orders.byId(orderId).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-  const body = JSON.stringify({
-    version: version,
-    actions: [
-      {
-        action: 'setCustomField',
-        name,
-        value
-      }
-    ]
-  })
-  return ctClient.execute({ method: 'POST', uri, body })
 }
 
 module.exports = {
