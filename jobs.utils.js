@@ -1,17 +1,20 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
+  setOrderCustomField,
   setOrderErrorFields,
-  fetchOrdersThatShouldBeUpdatedInOMS
+  fetchOrdersThatShouldBeUpdatedInOMS,
+  fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
 } = require('./commercetools')
 const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
+const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
 
 /**
  * 
@@ -206,11 +209,27 @@ async function sendOrderUpdates () {
   }))
 }
 
+async function sendConversionsToAlgolia() {
+  const orders = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
+  for (const order of orders) {
+    try {
+      const conversions = getConversionsFromOrder(order)
+      await sendManyConversionsToAlgolia(conversions)
+      console.log(`Sent Algolia conversion updates for order ${order.orderNumber}`)
+      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUES.SUCCESS)
+    } catch (error) {
+      console.error(`Failed to send Algolia conversion updates for order ${order.orderNumber}:`, error)
+      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUES.FAILURE)
+    }
+  }
+}
+
 module.exports = {
   sleep,
   retry,
   createAndUploadCsvs,
   generateFilenameFromOrder,
   sendOrderUpdates,
+  sendConversionsToAlgolia,
   transformToOrderPayment
 }
