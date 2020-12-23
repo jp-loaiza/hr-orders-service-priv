@@ -52,7 +52,9 @@ describe('getConversionsFromOrder', () => {
     custom: {
       fields: {
         algoliaAnalyticsData: {
-          obj: analyticsData
+          obj: {
+            value: analyticsData
+          }
         }
       }
     }

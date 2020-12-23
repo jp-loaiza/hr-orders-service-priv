@@ -20,7 +20,7 @@ initializeAlgoliaAnalytics()
  * @param {import('./orders').LineItem} lineItem
  * @returns {import('./orders').AlgoliaAnalyticsData | undefined}
  */
-const getConversionFromLineItem = lineItem => lineItem.custom && lineItem.custom.fields.algoliaAnalyticsData && lineItem.custom.fields.algoliaAnalyticsData.obj
+const getConversionFromLineItem = lineItem => lineItem.custom && lineItem.custom.fields.algoliaAnalyticsData && lineItem.custom.fields.algoliaAnalyticsData.obj.value
 
 /**
  * @param {import('./orders').Order} order

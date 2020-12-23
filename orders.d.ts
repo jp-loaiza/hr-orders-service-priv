@@ -96,7 +96,9 @@ type LineItem = {
       itemTaxes: string // stringified JSON
       lineShippingCharges?: Price,
       algoliaAnalyticsData?: {
-        obj: AlgoliaAnalyticsData
+        obj: {
+          value: AlgoliaAnalyticsData
+        }
       }
     }
   },
