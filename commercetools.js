@@ -148,8 +148,11 @@ function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
-  // TODO: add reference expansion of algoliaAnalyticsData
-  const uri = requestBuilder.orders.byId(orderId).expand('lineItems[*].variant.attributes[*].value[*]').expand('paymentInfo.payments[*].paymentStatus.state').build()
+  const uri = requestBuilder.orders.byId(orderId)
+    .expand('lineItems[*].variant.attributes[*].value[*]')
+    .expand('paymentInfo.payments[*].paymentStatus.state')
+    .expand('lineItems[*].custom.fields.algoliaAnalyticsData[*]')
+    .build()
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
 
