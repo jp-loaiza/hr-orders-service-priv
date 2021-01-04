@@ -177,7 +177,7 @@ const createAndUploadCsvs = async () => {
 async function sendOrderUpdates () {
   const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
   if (ordersToUpdate.length) {
-    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${JSON.stringify(ordersToUpdate)}`)
   }
   await Promise.all(ordersToUpdate.map(async orderToUpdate => {
     try {
