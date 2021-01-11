@@ -140,7 +140,8 @@ async function setOrderSentToCrmStatus (orderId, status) {
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
   const uri = requestBuilder.orders.byId(orderId).expand('lineItems[*].variant.attributes[*].value[*]').expand('paymentInfo.payments[*].paymentStatus.state').build()
-  return (await ctClient.execute({ method: 'GET', uri })).body
+  const order = (await ctClient.execute({ method: 'GET', uri })).body
+  return !order.locale ? { ...order, locale: 'en-CA' } : order
 }
 
 /** Fetches all orders that that we should try to send to the OMS. Includes
