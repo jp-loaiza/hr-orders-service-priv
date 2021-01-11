@@ -14,7 +14,7 @@ const {
 
 /**
  * Determines payment released status based on payment methods and current payment state 
- * @param {Object} paymentInfo
+ * @param {import('./orders').PaymentInfo} paymentInfo
  */
 const getPaymentReleasedStatus = (paymentInfo) => {
   const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
@@ -222,6 +222,11 @@ const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   }
 }
 
+/**
+ * @param {import('./orders').Address} address1 
+ * @param {import('./orders').Address} address2 
+ * @param {boolean} isStorePickup 
+ */
 const getFirstLastName = (address1, address2, isStorePickup) => {
   if (isStorePickup) {
     const firstName = address1.firstName || address2.firstName
@@ -246,6 +251,11 @@ const getFirstLastName = (address1, address2, isStorePickup) => {
   }
 }
 
+const lineItemIsEndlessAisle = (/** @type {import('./orders').LineItem} */ lineItem) => {
+  const endlessAisleAttribute = lineItem.variant.attributes.find(attribute => attribute.name === 'isEndlessAisle')
+  return endlessAisleAttribute ? endlessAisleAttribute.value : false 
+}
+
 module.exports = {
   convertAndFormatDate,
   convertToDollars,
@@ -266,6 +276,7 @@ module.exports = {
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
+  lineItemIsEndlessAisle,
   sumMoney,
   getPaymentReleasedStatus,
   getFirstLastName

@@ -58,6 +58,12 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
   })
 }
 
+/**
+ * 
+ * @param {Array<import('./orders').Transaction>} transactions 
+ * @param {string} type
+ * @param {string} state
+ */
 const getTransaction = (transactions, type, state) => transactions.find(transaction => transaction.type === type && transaction.state === state)
 
 /**
@@ -171,7 +177,7 @@ const createAndUploadCsvs = async () => {
 async function sendOrderUpdates () {
   const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
   if (ordersToUpdate.length) {
-    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${ordersToUpdate}`)
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${JSON.stringify(ordersToUpdate)}`)
   }
   await Promise.all(ordersToUpdate.map(async orderToUpdate => {
     try {

@@ -167,26 +167,22 @@ const mockOrder = {
           {
             name: 'construction',
             value: {
-              'en-CA':
-                '<li> Huge6/Genius5\n<li> Single-breasted, Two-button, Two-piece Suit\n<li> Notch lapel\n<li> Fully lined\n<li> Double vent\n<li> Flat front pant with 1/4 top pockets and besom back pockets\n<li> Unfinished hems',
-              'fr-CA':
-                '<li> Modèle Huge6/Genius5\n<li> Complet deux-pièces (veston à deux boutons, simple boutonnage)\n<li> Revers cranté\n<li> Entièrement doublé\n<li> Fente double\n<li> Pantalon sans plis avec poches en biais et poches arrière passepoilées\n<li> Bords inférieurs non finis'
+              'en-CA': 'construction',
+              'fr-CA': 'construction' 
             }
           },
           {
             name: 'fabricAndMaterials',
             value: {
-              'en-CA': '<li> 100% virgin wool\n<li> Midnight blue',
-              'fr-CA': '<li> 100 % laine vierge\n<li> Bleu foncé'
+              'en-CA': 'fabricAndMaterials',
+              'fr-CA': 'fabricAndMaterials'
             }
           },
           {
             name: 'styleAndMeasurements',
             value: {
-              'en-CA':
-                '<li> Slim fit\n<li> BOSS Huge6/Genius5 Slim fit\n<li> Back length: 29.5 in\n<li> Measurement is based on size 40R',
-              'fr-CA':
-                '<li> Coupe amincie\n<li> Coupe amincie Huge6/Genius5 de BOSS\n<li> Longueur du dos : 74,9 cm (29,5 po)\n<li> Mesure(s) prise(s) sur la taille 40R'
+              'en-CA': 'styleAndMeasurements',
+              'fr-CA': 'styleAndMeasurements'
             }
           },
           {
@@ -579,12 +575,19 @@ const mockOrder = {
   refusedGifts: []
 }
 
-const ctMockResponse = {
-  results: [mockOrder],
+const ctMockResponse = (orderId) => {
+  if (orderId === 'orderNoLocale') {
+    return { ...mockOrder, locale: null }
+  } else if (orderId === 'orderFrLocale') {
+    return { ...mockOrder, locale: 'fr-CA' }
+  } else if (orderId === 'orderEnLocale') {
+    return { ...mockOrder, locale: 'en-CA' }
+  }
+  return { results: [mockOrder] }
 }
 
 const mockClient = {
-  execute: () => Promise.resolve({ body: ctMockResponse })
+  execute: (params) => Promise.resolve({ body: ctMockResponse(params.uri) })
 }
 
 const sdkClient = {
