@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -216,10 +216,10 @@ async function sendConversionsToAlgolia() {
       const conversions = getConversionsFromOrder(order)
       await sendManyConversionsToAlgolia(conversions)
       console.log(`Sent Algolia conversion updates for order ${order.orderNumber}`)
-      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUES.SUCCESS)
+      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.SUCCESS)
     } catch (error) {
       console.error(`Failed to send Algolia conversion updates for order ${order.orderNumber}:`, error)
-      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUES.FAILURE)
+      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.FAILURE)
     }
   }
 }

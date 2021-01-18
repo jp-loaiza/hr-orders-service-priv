@@ -66,7 +66,6 @@ type Barcode = {
   }
 }
 
-// TODO: Confirm structure with FE
 type AlgoliaAnalyticsData = {
   userToken: string,
   index: string,
