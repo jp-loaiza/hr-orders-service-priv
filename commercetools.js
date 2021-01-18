@@ -153,7 +153,8 @@ const fetchFullOrder = async orderId => {
     .expand('paymentInfo.payments[*].paymentStatus.state')
     .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
     .build()
-  return (await ctClient.execute({ method: 'GET', uri })).body
+  const order = (await ctClient.execute({ method: 'GET', uri })).body
+  return !order.locale ? { ...order, locale: 'en-CA' } : order
 }
 
 /** Fetches all orders that that we should try to send to the OMS. Includes
