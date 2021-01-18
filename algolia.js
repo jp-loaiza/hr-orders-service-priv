@@ -2,19 +2,12 @@
 const algoliaAnalytics = require('search-insights')
 const { ALGOLIA_APP_ID, ALGOLIA_API_KEY } = require('./config')
 
-const initializeAlgoliaAnalytics = async () => {
-  try {
-    await algoliaAnalytics('init', {
-      appId: ALGOLIA_APP_ID,
-      apiKey: ALGOLIA_API_KEY
-    })
-    console.log('Connected to Algolia')
-  } catch (error) {
-    console.error('Unable to connect to Algolia:', error)
-  }
-}
-
-initializeAlgoliaAnalytics()
+// Note: This does not throw an error or return any response indicating whether
+// it initialized successfully
+algoliaAnalytics('init', {
+  appId: ALGOLIA_APP_ID,
+  apiKey: ALGOLIA_API_KEY
+})
 
 /**
  * @param {import('./orders').LineItem} lineItem
@@ -34,6 +27,11 @@ const getConversionsFromOrder = order => order.lineItems.map(getConversionFromLi
  */
 const sendSingleConversionToAlgolia = conversion => {
   const conversionType = conversion.queryID ? 'convertedObjectIDsAfterSearch' : 'convertedObjectIDs'
+  // Note: `algoliaAnalytics` does not throw an error or return any response
+  // indicating whether the request was successfully sent to Algolia. This is a
+  // limitation of the Algolia Search Insights JavaScript SDK. See
+  // https://github.com/algolia/search-insights.js/issues/245. As a result, we
+  // have to simply assume that the request was successful.
   return algoliaAnalytics(conversionType, conversion)
 }
 
