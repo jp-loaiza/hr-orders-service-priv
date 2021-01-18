@@ -151,7 +151,7 @@ const fetchFullOrder = async orderId => {
   const uri = requestBuilder.orders.byId(orderId)
     .expand('lineItems[*].variant.attributes[*].value[*]')
     .expand('paymentInfo.payments[*].paymentStatus.state')
-    .expand('lineItems[*].custom.fields.algoliaAnalyticsData[*]')
+    .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
     .build()
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
