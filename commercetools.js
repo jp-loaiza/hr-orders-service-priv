@@ -253,14 +253,17 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
 }
 
 /**
- * @returns {Promise<Array<(import('./orders').Order)>>}
+ * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
-  const query = `custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))`
+  const query = `(custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
-  return await Promise.all(orderIds.map(fetchFullOrder))
+  return {
+    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    total: body.total
+  }
 }
 
 module.exports = {

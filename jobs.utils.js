@@ -210,7 +210,8 @@ async function sendOrderUpdates () {
 }
 
 async function sendConversionsToAlgolia() {
-  const orders = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
+  const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
+  console.log(total > 0 ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.`: 'No orders with conversion data to send to Algolia.')
   for (const order of orders) {
     try {
       const conversions = getConversionsFromOrder(order)
@@ -221,6 +222,7 @@ async function sendConversionsToAlgolia() {
       console.error(`Failed to send Algolia conversion updates for order ${order.orderNumber}:`, error)
       await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.FAILURE)
     }
+    await sleep(100) // prevent CT/Algolia from getting overloaded
   }
 }
 
