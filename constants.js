@@ -402,7 +402,10 @@ const JESTA_ORDER_STATUSES = {
   CANCELLED: 'CancelSalesOrder'
 }
 
+const ALGOLIA_INSIGHTS_URL = 'https://insights.algolia.io'
+
 module.exports = {
+  ALGOLIA_INSIGHTS_URL,
   JESTA_ORDER_STATUSES,
   PAYMENT_STATES,
   TRANSACTION_TYPES,

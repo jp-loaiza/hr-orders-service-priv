@@ -70,8 +70,9 @@ type AlgoliaAnalyticsData = {
   userToken: string,
   index: string,
   eventName: string,
+  eventType?: string
   queryID?: string,
-  objectIDs: Array<string>
+  objectIDs: Array<string>,
 }
 
 type LineItem = {

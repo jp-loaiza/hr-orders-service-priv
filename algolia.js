@@ -1,19 +1,30 @@
-// @ts-ignore no types are available for `search-insights`: https://github.com/algolia/search-insights.js/issues/9
-const algoliaAnalytics = require('search-insights')
+const { fetchWithTimeout: fetch } = require('./request.utils')
 const { ALGOLIA_APP_ID, ALGOLIA_API_KEY } = require('./config')
+const { ALGOLIA_INSIGHTS_URL } = require('./constants')
 
-// Note: This does not throw an error or return any response indicating whether
-// it initialized successfully
-algoliaAnalytics('init', {
-  appId: ALGOLIA_APP_ID,
-  apiKey: ALGOLIA_API_KEY
+/**
+ * @param {Array<import('./orders').AlgoliaAnalyticsData>} conversions 
+ */
+const formatAlgoliaRequestOptionsFromConversions = conversions => ({
+  method: 'post',
+  headers: {
+    'x-algolia-api-key': ALGOLIA_API_KEY,
+    'x-algolia-application-id': ALGOLIA_APP_ID,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    events: conversions
+  })
 })
 
 /**
  * @param {import('./orders').LineItem} lineItem
  * @returns {import('./orders').AlgoliaAnalyticsData | undefined}
  */
-const getConversionFromLineItem = lineItem => lineItem.custom && lineItem.custom.fields.algoliaAnalyticsData && lineItem.custom.fields.algoliaAnalyticsData.obj.value
+const getConversionFromLineItem = lineItem => {
+  const conversion = lineItem.custom && lineItem.custom.fields.algoliaAnalyticsData && lineItem.custom.fields.algoliaAnalyticsData.obj.value
+  return conversion && {eventType: 'conversion', ...conversion }
+}
 
 /**
  * @param {import('./orders').Order} order
@@ -23,22 +34,11 @@ const getConversionFromLineItem = lineItem => lineItem.custom && lineItem.custom
 const getConversionsFromOrder = order => order.lineItems.map(getConversionFromLineItem).filter(Boolean)
 
 /**
- * @param {import('./orders').AlgoliaAnalyticsData} conversion
- */
-const sendSingleConversionToAlgolia = conversion => {
-  const conversionType = conversion.queryID ? 'convertedObjectIDsAfterSearch' : 'convertedObjectIDs'
-  // Note: `algoliaAnalytics` does not throw an error or return any response
-  // indicating whether the request was successfully sent to Algolia. This is a
-  // limitation of the Algolia Search Insights JavaScript SDK. See
-  // https://github.com/algolia/search-insights.js/issues/245. As a result, we
-  // have to simply assume that the request was successful.
-  return algoliaAnalytics(conversionType, conversion)
-}
-
-/**
  * @param {Array<import('./orders').AlgoliaAnalyticsData>} conversions
  */
-const sendManyConversionsToAlgolia = conversions => Promise.all(conversions.map(sendSingleConversionToAlgolia))
+const sendManyConversionsToAlgolia = conversions =>
+  fetch(`${ALGOLIA_INSIGHTS_URL}/1/events`, formatAlgoliaRequestOptionsFromConversions(conversions))
+
 
 module.exports = {
   getConversionsFromOrder,
