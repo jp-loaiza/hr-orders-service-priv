@@ -11,6 +11,7 @@ const {
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_ALGOLIA_STATUSES,
   SENT_TO_CRM_STATUS,
+  STATUS_FIELDS_TO_AVAILABLE_STATUSES,
   ORDER_CUSTOM_FIELDS
 } = require('./constants')
 
@@ -235,7 +236,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   const shouldRetry = errorIsRecoverable && (retryCount < (isOrderCreation ? SEND_ORDER_RETRY_LIMIT : SEND_ORDER_UPDATE_RETRY_LIMIT))
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount, isOrderCreation ? BACKOFF : ORDER_UPDATE_BACKOFF) : null
 
-  const availableStatuses = isOrderCreation ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
+  const availableStatuses =  STATUS_FIELDS_TO_AVAILABLE_STATUSES[statusField]
   const status = shouldRetry ? availableStatuses.PENDING : availableStatuses.FAILURE
 
   if (status === availableStatuses.FAILURE) {
@@ -257,7 +258,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
-  const query = `(custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined)))`
+  const query = `(custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)

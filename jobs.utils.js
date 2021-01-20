@@ -220,7 +220,11 @@ async function sendConversionsToAlgolia() {
       await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.SUCCESS)
     } catch (error) {
       console.error(`Failed to send Algolia conversion updates for order ${order.orderNumber}:`, error)
-      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.FAILURE)
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_STATUS
+      })
     }
     await sleep(100) // prevent CT/Algolia from getting overloaded
   }
