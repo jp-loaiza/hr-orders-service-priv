@@ -4,7 +4,15 @@ const mockRequestBuilder = {
     expand: () => mockRequestBuilder.orders,
     byId: (id) => {
       if (id) {
-        return { expand: () => ({ expand: () => ({ build: () => id }) }) }
+        return {
+          expand: () => ({
+            expand: () => ({
+              expand: () => ({
+                build: () => id
+              })
+            })
+          })
+        }
       }
       return mockRequestBuilder.orders
     },

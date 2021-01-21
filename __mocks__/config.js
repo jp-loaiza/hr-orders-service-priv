@@ -5,9 +5,6 @@ const mockSftpConfig = {
   privateKey: 'mockKey'
 }
 
-const testFn = jest.fn(() => console.log('yo'))
-
 module.exports = {
-  sftpConfig: mockSftpConfig,
-  testFn
+  sftpConfig: mockSftpConfig
 }

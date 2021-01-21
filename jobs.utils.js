@@ -1,17 +1,20 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
+  setOrderCustomField,
   setOrderErrorFields,
-  fetchOrdersThatShouldBeUpdatedInOMS
+  fetchOrdersThatShouldBeUpdatedInOMS,
+  fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
 } = require('./commercetools')
 const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
+const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
 
 /**
  * 
@@ -206,11 +209,33 @@ async function sendOrderUpdates () {
   }))
 }
 
+async function sendConversionsToAlgolia() {
+  const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
+  console.log(total > 0 ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.`: 'No orders with conversion data to send to Algolia.')
+  for (const order of orders) {
+    try {
+      const conversions = getConversionsFromOrder(order)
+      await sendManyConversionsToAlgolia(conversions)
+      console.log(`Sent Algolia conversion updates for order ${order.orderNumber}`)
+      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.SUCCESS)
+    } catch (error) {
+      console.error(`Failed to send Algolia conversion updates for order ${order.orderNumber}:`, error)
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_STATUS
+      })
+    }
+    await sleep(100) // prevent CT/Algolia from getting overloaded
+  }
+}
+
 module.exports = {
   sleep,
   retry,
   createAndUploadCsvs,
   generateFilenameFromOrder,
   sendOrderUpdates,
+  sendConversionsToAlgolia,
   transformToOrderPayment
 }
