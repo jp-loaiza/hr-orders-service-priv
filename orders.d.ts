@@ -66,6 +66,15 @@ type Barcode = {
   }
 }
 
+type AlgoliaAnalyticsData = {
+  userToken: string,
+  index: string,
+  eventName: string,
+  eventType?: string
+  queryID?: string,
+  objectIDs: Array<string>,
+}
+
 type LineItem = {
   id: string,
   variant: {
@@ -85,7 +94,12 @@ type LineItem = {
       isGift: boolean
       salespersonId?: number,
       itemTaxes: string // stringified JSON
-      lineShippingCharges?: Price
+      lineShippingCharges?: Price,
+      algoliaAnalyticsData?: {
+        obj: {
+          value: AlgoliaAnalyticsData
+        }
+      }
     }
   },
   taxedPrice: TaxedPrice,
@@ -199,6 +213,7 @@ type ParsedTax = {
 
 export {
   Address,
+  AlgoliaAnalyticsData,
   Barcode,
   BoldTaxDescription,
   Card,

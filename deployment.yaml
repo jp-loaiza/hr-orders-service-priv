@@ -192,3 +192,23 @@ spec:
             configMapKeyRef:
               key: STUCK_ORDER_CHECK_INTERVAL
               name: hr-orders-service
+        - name: SEND_ALGOLIA_INFO_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SEND_ALGOLIA_INFO_INTERVAL
+              name: hr-orders-service
+        - name: ALGOLIA_APP_ID
+          valueFrom:
+            configMapKeyRef:
+              key: ALGOLIA_APP_ID
+              name: hr-orders-service
+        - name: SHOULD_SEND_ALGOLIA_INFO
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_ALGOLIA_INFO
+              name: hr-orders-service
+        - name: ALGOLIA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: ALGOLIA_API_KEY
+              name: hr-orders-service
