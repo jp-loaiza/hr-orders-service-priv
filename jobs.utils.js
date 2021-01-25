@@ -127,8 +127,8 @@ const createAndUploadCsvs = async () => {
     await sftp.connect(sftpConfig)
     console.log('Connected to SFTP server')
 
-    const orders = await fetchOrdersThatShouldBeSentToOms()
-    console.log(`Starting to process ${orders.length} orders`)
+    const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
+    console.log(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
 
     for (const order of orders) {
       let csvString
@@ -178,9 +178,9 @@ const createAndUploadCsvs = async () => {
 }
 
 async function sendOrderUpdates () {
-  const ordersToUpdate = await fetchOrdersThatShouldBeUpdatedInOMS()
+  const { orders: ordersToUpdate, total } = await fetchOrdersThatShouldBeUpdatedInOMS()
   if (ordersToUpdate.length) {
-    console.log(`Sending ${ordersToUpdate.length} order updates to OMS: ${JSON.stringify(ordersToUpdate)}`)
+    console.log(`Sending ${ordersToUpdate.length} order updates to OMS (total in backlog: ${total}): ${JSON.stringify(ordersToUpdate)}`)
   }
   await Promise.all(ordersToUpdate.map(async orderToUpdate => {
     try {

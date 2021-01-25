@@ -1,5 +1,7 @@
 const { getConversionsFromOrder } = require('./algolia')
 
+jest.mock('./config')
+
 const analyticsData = {
   userToken: 'user-123456',
   eventName: 'book_click_on_search_page',

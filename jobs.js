@@ -71,9 +71,9 @@ async function sendOrderUpdatesJob (orderUploadInterval) {
 
 
 async function sendOrderEmailNotification () {
-  const orderIds = await fetchOrderIdsThatShouldBeSentToCrm()
+  const { orderIds, total } = await fetchOrderIdsThatShouldBeSentToCrm()
   if (orderIds.length) {
-    console.log(`Sending ${orderIds.length} orders to CRM: ${orderIds}`)
+    console.log(`Sending ${orderIds.length} orders to CRM (total in backlog: ${total}): ${orderIds}`)
   }
   await Promise.all(orderIds.map(async orderId => {
     try {
