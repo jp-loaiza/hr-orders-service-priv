@@ -556,15 +556,15 @@ const invalidOrder = { orderNumber: 'testOrderThatIsInvalid', paymentMethodInfo:
 
 module.exports = {
   fetchOrdersThatShouldBeSentToOms: jest.fn()
-    .mockImplementationOnce(() => [validOrder, invalidOrder])
-    .mockImplementationOnce(() => [invalidOrder, validOrder])
-    .mockImplementationOnce(() => [validOrder])
-    .mockImplementationOnce(() => []),
+    .mockImplementationOnce(() => ({ orders: [validOrder, invalidOrder], total: 2 }))
+    .mockImplementationOnce(() => ({ orders: [invalidOrder, validOrder], total: 2 }))
+    .mockImplementationOnce(() => ({ orders: [validOrder], total: 1 }))
+    .mockImplementationOnce(() => ({ orders: [], total: 0 })),
   fetchOrdersThatShouldBeUpdatedInOMS: jest.fn()
-    .mockImplementationOnce(() => [validOrder, invalidOrder])
-    .mockImplementationOnce(() => [invalidOrder, validOrder])
-    .mockImplementationOnce(() => [validOrder])
-    .mockImplementationOnce(() => []),
+    .mockImplementationOnce(() => ({ orders: [validOrder, invalidOrder], total: 2 }))
+    .mockImplementationOnce(() => ({ orders: [invalidOrder, validOrder], total: 2 }))
+    .mockImplementationOnce(() => ({ orders: [validOrder], total: 1}))
+    .mockImplementationOnce(() => ({ orders: [], total: 1 })),
   setOrderAsSentToOms: jest.fn(),
   setOrderErrorFields: jest.fn()  
 }
