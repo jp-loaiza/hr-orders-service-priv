@@ -109,14 +109,14 @@ const setOrderCustomField = async (orderId, name, value) => {
 
 /** 
  * Fetches all orders that need to be updated in OMS
- * @returns {Array<import('./orders').Order>}
+ * @returns {Promise<{orders: Array<import('./orders').Order>, total: number}>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS () {
   const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
   const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
-  return body.results
+  return { orders: body.results, total: body.total }
 }
 
 /** 
@@ -162,7 +162,7 @@ const fetchFullOrder = async orderId => {
  *  both orders that we have never tried to send to the OMS, and ones that
  *  it is time to re-try sending to the OMS. Excludes orders that lack
  *  LoginRadius UIDs.
- * @returns {Promise<Array<(import('./orders').Order)>>}
+ * @returns {Promise<{orders: Array<(import('./orders').Order)>, total: number}>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = `custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}")) and custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))) and custom(fields(loginRadiusUid is defined))`
@@ -176,7 +176,7 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
    * @type Array<string>
    */
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
-  return await Promise.all(orderIds.map(fetchFullOrder))
+  return { orders: await Promise.all(orderIds.map(fetchFullOrder)), total: body.total }
 }
 
 /**
