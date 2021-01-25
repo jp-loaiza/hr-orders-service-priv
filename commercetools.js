@@ -121,7 +121,7 @@ async function fetchOrdersThatShouldBeUpdatedInOMS () {
 
 /** 
  * Fetches all orders that that we should try to send to the Notification Service.
- * @returns {Promise<Array<string>>}
+ * @returns {Promise<{ orderIds: Array<string>, total: number }>}
  */
 async function fetchOrderIdsThatShouldBeSentToCrm () {
   const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined)) and custom is defined`
@@ -132,7 +132,7 @@ async function fetchOrderIdsThatShouldBeSentToCrm () {
    * @type Array<string>
    */
   const orderIds = body.results.map((/** @type {import('./orders').Order} */ order) => order.id)
-  return orderIds
+  return { orderIds, total: body.total } 
 }
 
 /**
