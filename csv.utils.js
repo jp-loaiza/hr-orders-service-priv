@@ -189,8 +189,8 @@ const getPaymentTotalFromPaymentInfo = paymentInfo => (
 const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
   if (!name) throw new Error('Shipping name is undefined')
 
-  if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS).includes(name)) {
-    return ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS[name]
+  if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS).includes(name.trim())) {
+    return ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS[name.trim()]
   }
 
   for (const [carrierId, carrierName] of Object.entries(CARRIER_IDS_TO_NAMES)) {
@@ -204,8 +204,8 @@ const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
 const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
   if (!name) throw new Error('Shipping name is undefined')
 
-  if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES).includes(name)) {
-    return ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES[name]
+  if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES).includes(name.trim())) {
+    return ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES[name.trim()]
   }
   
   for (const [shippingServiceType, shippingServiceName] of Object.entries(SHIPPING_SERVICE_TYPES_TO_NAMES)) {

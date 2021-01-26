@@ -447,6 +447,14 @@ describe('getShippingInfoFromShippingName', () => {
     expect(getShippingInfoFromShippingName('Next Day / Livraison le jour suivant').shippingServiceType).toBe('OVERNIGHT')
   })
 
+  it('parses shipping name correctly even if it starts with extra whitespace', () => {
+    expect(getShippingInfoFromShippingName(' Express / Livraison accélérée')).toEqual({
+      carrierId: 'FDX',
+      shippingServiceType: 'ECONOMY',
+      shippingIsRush: false
+    })
+  })
+
   it('classifies all shipping types as rush except for `Canada Post Expedited`, `FedEx Economy`, and `Express / Livraison accélérée`', () => {
     expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toBe(false)
     expect(getShippingInfoFromShippingName('FedEx Economy').shippingIsRush).toBe(false)
