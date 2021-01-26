@@ -4,12 +4,14 @@ const {
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,
   CARRIER_IDS_TO_NAMES,
+  ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES,
   JESTA_TAX_DESCRIPTIONS,
   SHIPPING_SERVICE_TYPES,
   SHIPPING_SERVICE_TYPES_TO_NAMES,
   PAYMENT_STATES,
   TRANSACTION_TYPES,
-  TRANSACTION_STATES 
+  TRANSACTION_STATES, 
+  ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS
 } = require('./constants')
 
 /**
@@ -187,6 +189,10 @@ const getPaymentTotalFromPaymentInfo = paymentInfo => (
 const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
   if (!name) throw new Error('Shipping name is undefined')
 
+  if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS).includes(name)) {
+    return ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS[name]
+  }
+
   for (const [carrierId, carrierName] of Object.entries(CARRIER_IDS_TO_NAMES)) {
     if (name.includes(carrierName)) {
       return carrierId
@@ -198,6 +204,10 @@ const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
 const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
   if (!name) throw new Error('Shipping name is undefined')
 
+  if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES).includes(name)) {
+    return ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES[name]
+  }
+  
   for (const [shippingServiceType, shippingServiceName] of Object.entries(SHIPPING_SERVICE_TYPES_TO_NAMES)) {
     if (name.includes(shippingServiceName)) {
       return shippingServiceType
