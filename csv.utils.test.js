@@ -437,32 +437,32 @@ describe('getShippingInfoFromShippingName', () => {
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toBe('EXPRESS')
   })
 
-  it('parses endless aisle "Express / Livraison accélérée" shipping name as FedEx Economy', () => {
-    expect(getShippingInfoFromShippingName('Express / Livraison accélérée').carrierId).toBe('FDX')
-    expect(getShippingInfoFromShippingName('Express / Livraison accélérée').shippingServiceType).toBe('ECONOMY')
+  it('parses endless aisle "Express" shipping name as FedEx Economy', () => {
+    expect(getShippingInfoFromShippingName('Express').carrierId).toBe('FDX')
+    expect(getShippingInfoFromShippingName('Express').shippingServiceType).toBe('ECONOMY')
   })
 
-  it('parses endless aisle "Next Day / Livraison le jour suivant" shipping name as FedEx Standard Overnight', () => {
-    expect(getShippingInfoFromShippingName('Next Day / Livraison le jour suivant').carrierId).toBe('FDX')
-    expect(getShippingInfoFromShippingName('Next Day / Livraison le jour suivant').shippingServiceType).toBe('OVERNIGHT')
+  it('parses endless aisle "Next Day" shipping name as FedEx Standard Overnight', () => {
+    expect(getShippingInfoFromShippingName('Next Day').carrierId).toBe('FDX')
+    expect(getShippingInfoFromShippingName('Next Day').shippingServiceType).toBe('OVERNIGHT')
   })
 
   it('parses shipping name correctly even if it starts with extra whitespace', () => {
-    expect(getShippingInfoFromShippingName(' Express / Livraison accélérée')).toEqual({
+    expect(getShippingInfoFromShippingName(' Express')).toEqual({
       carrierId: 'FDX',
       shippingServiceType: 'ECONOMY',
       shippingIsRush: false
     })
   })
 
-  it('classifies all shipping types as rush except for `Canada Post Expedited`, `FedEx Economy`, and `Express / Livraison accélérée`', () => {
+  it('classifies all shipping types as rush except for `Canada Post Expedited`, `FedEx Economy`, and `Express`', () => {
     expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toBe(false)
     expect(getShippingInfoFromShippingName('FedEx Economy').shippingIsRush).toBe(false)
     expect(getShippingInfoFromShippingName('FedEx Ground').shippingIsRush).toBe(true)
     expect(getShippingInfoFromShippingName('FedEx Standard Overnight').shippingIsRush).toBe(true)
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toBe(true)
-    expect(getShippingInfoFromShippingName('Express / Livraison accélérée').shippingIsRush).toBe(false)
-    expect(getShippingInfoFromShippingName('Next Day / Livraison le jour suivant').shippingIsRush).toBe(true)
+    expect(getShippingInfoFromShippingName('Express').shippingIsRush).toBe(false)
+    expect(getShippingInfoFromShippingName('Next Day').shippingIsRush).toBe(true)
   })
 
   it('returns null when given a shipping name that lacks a valid carrier name', () => {

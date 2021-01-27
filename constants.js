@@ -374,8 +374,8 @@ const CARRIER_IDS_TO_NAMES =  {
 }
 
 const ENDLESS_AISLE_SHIPPING_NAMES = {
-  EXPRESS: 'Express / Livraison accélérée',
-  NEXT_DAY: 'Next Day / Livraison le jour suivant'
+  EXPRESS: 'Express',
+  NEXT_DAY: 'Next Day'
 }
 
 const ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS = {
