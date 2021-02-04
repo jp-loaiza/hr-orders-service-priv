@@ -1,5 +1,6 @@
 # update existing configmap
 kubectl create configmap hr-orders-service \
+  --from-literal=ALGOLIA_APP_ID=$ALGOLIA_APP_ID \
   --from-literal=SFTP_HOST=$SFTP_HOST_KUBERNETES \
   --from-literal=SFTP_PORT=$SFTP_PORT \
   --from-literal=SFTP_INCOMING_ORDERS_PATH=$SFTP_INCOMING_ORDERS_PATH \
@@ -11,8 +12,10 @@ kubectl create configmap hr-orders-service \
   --from-literal=ORDER_UPDATE_INTERVAL=$ORDER_UPDATE_INTERVAL \
   --from-literal=EMAIL_API_URL=$EMAIL_API_URL_KUBERNETES \
   --from-literal=JESTA_API_HOST=$JESTA_API_HOST \
+  --from-literal=SEND_ALGOLIA_INFO_INTERVAL=$SEND_ALGOLIA_INFO_INTERVAL \
   --from-literal=SHOULD_CHECK_FOR_STUCK_ORDERS=$SHOULD_CHECK_FOR_STUCK_ORDERS \
   --from-literal=SHOULD_SEND_ORDER_UPDATES=$SHOULD_SEND_ORDER_UPDATES \
+  --from-literal=SHOULD_SEND_ALGOLIA_INFO=$SHOULD_SEND_ALGOLIA_INFO \
   --from-literal=SHOULD_UPLOAD_ORDERS=$SHOULD_UPLOAD_ORDERS \
   --from-literal=SHOULD_SEND_NOTIFICATIONS=$SHOULD_SEND_NOTIFICATIONS \
   --from-literal=STALE_ORDER_CUTOFF_TIME_MS=$STALE_ORDER_CUTOFF_TIME_MS \
@@ -25,6 +28,7 @@ kubectl create configmap hr-orders-service \
 
 # update existing secret
 kubectl create secret generic hr-orders-service \
+  --from-literal=ALGOLIA_API_KEY=$ALGOLIA_API_KEY \
   --from-literal=SFTP_USERNAME=$SFTP_USERNAME \
   --from-literal=SFTP_PRIVATE_KEY=$SFTP_PRIVATE_KEY \
   --from-literal=CT_CLIENT_ID=$CT_CLIENT_ID \

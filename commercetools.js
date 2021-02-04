@@ -9,7 +9,9 @@ const {
   SEND_ORDER_UPDATE_RETRY_LIMIT,
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
+  SENT_TO_ALGOLIA_STATUSES,
   SENT_TO_CRM_STATUS,
+  STATUS_FIELDS_TO_AVAILABLE_STATUSES,
   ORDER_CUSTOM_FIELDS
 } = require('./constants')
 
@@ -84,21 +86,42 @@ const keepAlive = async () => {
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
+/**
+ * @param {string} orderId
+ * @param {string} name
+ * @param {any} value
+ */
+const setOrderCustomField = async (orderId, name, value) => {
+  const uri = requestBuilder.orders.byId(orderId).build()
+  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+  const body = JSON.stringify({
+    version: version,
+    actions: [
+      {
+        action: 'setCustomField',
+        name,
+        value
+      }
+    ]
+  })
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
 /** 
  * Fetches all orders that need to be updated in OMS
- * @returns {Array<import('./orders').Order>}
+ * @returns {Promise<{orders: Array<import('./orders').Order>, total: number}>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS () {
   const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
   const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
-  return body.results
+  return { orders: body.results, total: body.total }
 }
 
 /** 
  * Fetches all orders that that we should try to send to the Notification Service.
- * @returns {Promise<Array<string>>}
+ * @returns {Promise<{ orderIds: Array<string>, total: number }>}
  */
 async function fetchOrderIdsThatShouldBeSentToCrm () {
   const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined)) and custom is defined`
@@ -109,28 +132,15 @@ async function fetchOrderIdsThatShouldBeSentToCrm () {
    * @type Array<string>
    */
   const orderIds = body.results.map((/** @type {import('./orders').Order} */ order) => order.id)
-  return orderIds
+  return { orderIds, total: body.total } 
 }
 
 /**
  * @param {string} orderId
  * @param {boolean} status
  */
-async function setOrderSentToCrmStatus (orderId, status) {
-  const uri = requestBuilder.orders.byId(orderId).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-  const body = JSON.stringify({
-    version: version,
-    actions: [
-      {
-        action: 'setCustomField',
-        name: 'sentToCrmStatus',
-        value: SENT_TO_CRM_STATUS[status ? 'SUCCESS' : 'FAILURE']
-      }
-    ]
-  })
-
-  return ctClient.execute({ method: 'POST', uri, body })
+function setOrderSentToCrmStatus (orderId, status) {
+  return setOrderCustomField(orderId, 'sentToCrmStatus', SENT_TO_CRM_STATUS[status ? 'SUCCESS' : 'FAILURE'])
 }
 
 /**
@@ -139,7 +149,11 @@ async function setOrderSentToCrmStatus (orderId, status) {
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
-  const uri = requestBuilder.orders.byId(orderId).expand('lineItems[*].variant.attributes[*].value[*]').expand('paymentInfo.payments[*].paymentStatus.state').build()
+  const uri = requestBuilder.orders.byId(orderId)
+    .expand('lineItems[*].variant.attributes[*].value[*]')
+    .expand('paymentInfo.payments[*].paymentStatus.state')
+    .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
+    .build()
   const order = (await ctClient.execute({ method: 'GET', uri })).body
   return !order.locale ? { ...order, locale: 'en-CA' } : order
 }
@@ -148,7 +162,7 @@ const fetchFullOrder = async orderId => {
  *  both orders that we have never tried to send to the OMS, and ones that
  *  it is time to re-try sending to the OMS. Excludes orders that lack
  *  LoginRadius UIDs.
- * @returns {Promise<Array<(import('./orders').Order)>>}
+ * @returns {Promise<{orders: Array<(import('./orders').Order)>, total: number}>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = `custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}")) and custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))) and custom(fields(loginRadiusUid is defined))`
@@ -162,7 +176,7 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
    * @type Array<string>
    */
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
-  return await Promise.all(orderIds.map(fetchFullOrder))
+  return { orders: await Promise.all(orderIds.map(fetchFullOrder)), total: body.total }
 }
 
 /**
@@ -181,24 +195,9 @@ const fetchStuckOrderResults = async () => {
  * @param {import('./orders').Order} order
  * @param {string} statusField
  */
-async function setOrderAsSentToOms (order, statusField) {
-  const uri = requestBuilder.orders.byId(order.id).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-
+function setOrderAsSentToOms (order, statusField) {
   const availableStatuses = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
-
-  const body = JSON.stringify({
-    version: version,
-    actions: [
-      {
-        action: 'setCustomField',
-        name: statusField,
-        value: availableStatuses.SUCCESS
-      }
-    ]
-  })
-
-  return ctClient.execute({ method: 'POST', uri, body })
+  return setOrderCustomField(order.id, statusField, availableStatuses.SUCCESS)
 }
 
 /**
@@ -237,7 +236,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   const shouldRetry = errorIsRecoverable && (retryCount < (isOrderCreation ? SEND_ORDER_RETRY_LIMIT : SEND_ORDER_UPDATE_RETRY_LIMIT))
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount, isOrderCreation ? BACKOFF : ORDER_UPDATE_BACKOFF) : null
 
-  const availableStatuses = isOrderCreation ? SENT_TO_OMS_STATUSES : UPDATE_TO_OMS_STATUSES
+  const availableStatuses =  STATUS_FIELDS_TO_AVAILABLE_STATUSES[statusField]
   const status = shouldRetry ? availableStatuses.PENDING : availableStatuses.FAILURE
 
   if (status === availableStatuses.FAILURE) {
@@ -255,14 +254,30 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   return ctClient.execute({ method: 'POST', uri, body })
 }
 
+/**
+ * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
+ */
+const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
+  const query = `(custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined)))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  return {
+    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    total: body.total
+  }
+}
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
   fetchStuckOrderResults,
+  fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
   setOrderErrorFields,
+  setOrderCustomField,
   fetchOrderIdsThatShouldBeSentToCrm,
   fetchOrdersThatShouldBeUpdatedInOMS,
   setOrderSentToCrmStatus,

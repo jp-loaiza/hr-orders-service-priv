@@ -15,6 +15,7 @@ const {
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
+  lineItemIsEndlessAisle,
   sumMoney,
   getPaymentReleasedStatus,
   getFirstLastName
@@ -436,12 +437,32 @@ describe('getShippingInfoFromShippingName', () => {
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingServiceType).toBe('EXPRESS')
   })
 
-  it('classifies all shipping types as rush except for `Canada Post Expedited` and `FedEx Economy`', () => {
+  it('parses endless aisle "Express" shipping name as FedEx Economy', () => {
+    expect(getShippingInfoFromShippingName('Express').carrierId).toBe('FDX')
+    expect(getShippingInfoFromShippingName('Express').shippingServiceType).toBe('ECONOMY')
+  })
+
+  it('parses endless aisle "Next Day" shipping name as FedEx Standard Overnight', () => {
+    expect(getShippingInfoFromShippingName('Next Day').carrierId).toBe('FDX')
+    expect(getShippingInfoFromShippingName('Next Day').shippingServiceType).toBe('OVERNIGHT')
+  })
+
+  it('parses shipping name correctly even if it starts with extra whitespace', () => {
+    expect(getShippingInfoFromShippingName(' Express')).toEqual({
+      carrierId: 'FDX',
+      shippingServiceType: 'ECONOMY',
+      shippingIsRush: false
+    })
+  })
+
+  it('classifies all shipping types as rush except for `Canada Post Expedited`, `FedEx Economy`, and `Express`', () => {
     expect(getShippingInfoFromShippingName('Canada Post Expedited').shippingIsRush).toBe(false)
     expect(getShippingInfoFromShippingName('FedEx Economy').shippingIsRush).toBe(false)
     expect(getShippingInfoFromShippingName('FedEx Ground').shippingIsRush).toBe(true)
     expect(getShippingInfoFromShippingName('FedEx Standard Overnight').shippingIsRush).toBe(true)
     expect(getShippingInfoFromShippingName('Purolator Priority Overnight').shippingIsRush).toBe(true)
+    expect(getShippingInfoFromShippingName('Express').shippingIsRush).toBe(false)
+    expect(getShippingInfoFromShippingName('Next Day').shippingIsRush).toBe(true)
   })
 
   it('returns null when given a shipping name that lacks a valid carrier name', () => {
@@ -584,5 +605,47 @@ describe('getFirstLastName', () => {
       firstName: 'firstName2',
       lastName: 'lastName2'
     })
+  })
+})
+
+
+describe('lineItemIsEndlessAisle', () => {
+  it('returns true when given a line item with an endless aisle flag set to true', () => {
+    const endlessAisleLineItem = {
+      variant: {
+        attributes: [{
+          name: 'isEndlessAisle',
+          value: true
+        }]
+      }
+    }
+
+    // @ts-ignore incomplete line item for testing
+    expect(lineItemIsEndlessAisle(endlessAisleLineItem)).toBe(true)
+  })
+
+  it('returns false when given a line item with an endless aisle flag set to false', () => {
+    const notEndlessAisleLineItem = {
+      variant: {
+        attributes: [{
+          name: 'isEndlessAisle',
+          value: false
+        }]
+      }
+    }
+
+    // @ts-ignore incomplete line item for testing
+    expect(lineItemIsEndlessAisle(notEndlessAisleLineItem)).toBe(false)
+  })
+
+  it('returns false when given a line item with no endless aisle flag', () => {
+    const notEndlessAisleLineItem = {
+      variant: {
+        attributes: []
+      }
+    }
+
+    // @ts-ignore incomplete line item for testing
+    expect(lineItemIsEndlessAisle(notEndlessAisleLineItem)).toBe(false)
   })
 })
