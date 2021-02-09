@@ -1,3 +1,5 @@
+set -e # abort execution and exit with failure a code if any command fails
+
 # update existing configmap
 kubectl create configmap hr-orders-service \
   --from-literal=ALGOLIA_APP_ID=$ALGOLIA_APP_ID \
@@ -46,3 +48,6 @@ kubectl apply -f ./deployment-populated.yaml
 
 # cleanup temporary files
 rm ./deployment-populated.yaml
+
+# verify that the deployment succeeded
+kubectl rollout status deployment hr-orders-service
