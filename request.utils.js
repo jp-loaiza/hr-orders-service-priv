@@ -13,7 +13,8 @@ const formatRequestAndResponseLogString = ({ url, request, response, responseBod
   response: {
     body: responseBody,
     status: response.status,
-    statusText: response.statusText
+    statusText: response.statusText,
+    contentType: response.headers.get('content-type')
   }
 })
 

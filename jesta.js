@@ -74,6 +74,10 @@ const getJestaApiAccessToken = async () => {
  */
 const sendOrderUpdateToJesta = async (orderNumber, orderStatus) => {
   const jestaApiAccessToken = (await getJestaApiAccessToken()).access_token
+  const response = await updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
+  const responseState = getJestaApiResponseState(response)
+  if (responseState === JESTA_RESPONSE_STATES.FAILURE) throw new Error(`Invalid or failure Jesta response: ${JSON.stringify(response)}`)
+  if (responseState === JESTA_RESPONSE_STATES.WARNING) console.warn(`Unexpected Jesta response for order: ${orderNumber}, status: '${orderStatus}': ${JSON.stringify(response)}`)
   return updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
 }
 
