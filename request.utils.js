@@ -46,7 +46,7 @@ const fetchWithTimeout = async (url, options, verboseLogging = false) => {
 
   if (verboseLogging) {
     // @ts-ignore
-    console.log('node-fetch request and response:', formatRequestAndResponseLogString({ url, request: options, response, responseBody: content }))
+    console.debug('node-fetch request and response:', formatRequestAndResponseLogString({ url, request: options, response, responseBody: content }))
   }
   if (response.ok) return content
   const error = new Error(`API responded with status ${response.status}: ${JSON.stringify(content)}.`)
