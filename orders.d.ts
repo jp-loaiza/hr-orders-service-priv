@@ -211,6 +211,12 @@ type ParsedTax = {
   description: string
 }
 
+type JestaApiResponseBody = null | undefined | {
+  '@odata.context'?: string,
+  ReturnCode?: number,
+  ReturnMessage?: string
+}
+
 export {
   Address,
   AlgoliaAnalyticsData,
@@ -218,6 +224,7 @@ export {
   BoldTaxDescription,
   Card,
   Env,
+  JestaApiResponseBody,
   LineItem,
   Order,
   ParsedTax,
