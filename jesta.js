@@ -1,9 +1,10 @@
-const { JESTA_RESPONSE_STATES, FAILURE_CODES, WARNING_CODES, SUCCESS_CODES } = require('./jesta.constants')
 const { URLSearchParams } = require('url')
 const https = require('https')
 const dontValidateCertAgent = new https.Agent({
   rejectUnauthorized: false
 })
+const { JESTA_RESPONSE_STATES } = require('./jesta.constants')
+const { getJestaApiResponseState } = require('./jesta.utils')
 const { ONLINE_SITE_ID } = require('./constants')
 const { fetchWithTimeout } = require('./request.utils.js')
 
@@ -11,18 +12,6 @@ const { JESTA_API_HOST,
   JESTA_API_USERNAME,
   JESTA_API_PASSWORD,
   ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
-
-/**
- * @param {import('./orders').JestaApiResponseBody} response 
- * @returns {'failure'|'success'|'warning'}
- */
-const getJestaApiResponseState = response => {
-  if (!response || typeof response !== 'object' || !response.ReturnCode) return JESTA_RESPONSE_STATES.FAILURE
-  if (FAILURE_CODES.includes(response.ReturnCode)) return JESTA_RESPONSE_STATES.FAILURE
-  if (WARNING_CODES.includes(response.ReturnCode)) return JESTA_RESPONSE_STATES.WARNING
-  if (SUCCESS_CODES.includes(response.ReturnCode)) return JESTA_RESPONSE_STATES.SUCCESS
-  return JESTA_RESPONSE_STATES.FAILURE
-}
 
 /**
  * 
@@ -78,7 +67,7 @@ const sendOrderUpdateToJesta = async (orderNumber, orderStatus) => {
   const responseState = getJestaApiResponseState(response)
   if (responseState === JESTA_RESPONSE_STATES.FAILURE) throw new Error(`Invalid or failure Jesta response: ${JSON.stringify(response)}`)
   if (responseState === JESTA_RESPONSE_STATES.WARNING) console.warn(`Unexpected Jesta response for order: ${orderNumber}, status: '${orderStatus}': ${JSON.stringify(response)}`)
-  return updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
+  return response
 }
 
 module.exports = {
