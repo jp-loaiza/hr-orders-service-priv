@@ -1,4 +1,6 @@
+const { stringify } = require('qs')
 const { convertToDollars } = require('./csv.utils')
+const { fetchWithTimeout } = require('./request.utils')
 
 const getLineItemDiscountValue = (/** @type {import('./orders').LineItem} */ lineItem) =>
   lineItem.price.value.centAmount - (lineItem.discountedPrice ? lineItem.discountedPrice.value.centAmount : lineItem.price.value.centAmount)
@@ -27,6 +29,13 @@ const getUrlParamMappingFromOrder = (/** @type {import('./orders').Order} */ ord
     amount: convertToDollars(order.taxedPrice.totalNet.centAmount - order.shippingInfo.price.centAmount) // total price of order excluding shipping and taxes
   })
 
+const sendOrderConversionToCj = (/** @type {import('./orders').Order} */ order) => {
+  const urlParamMapping = getUrlParamMappingFromOrder(order)
+  const urlParamString = stringify(urlParamMapping)
+  return fetchWithTimeout(`${process.env.CJ_CONVERSION_BASE_URL}?${urlParamString}`, { method: 'post' })
+}
+
 module.exports = {
-  getUrlParamMappingFromOrder
+  getUrlParamMappingFromOrder,
+  sendOrderConversionToCj
 }
