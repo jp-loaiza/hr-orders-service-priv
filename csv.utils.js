@@ -181,9 +181,9 @@ const getBarcodeInfoFromLineItem = lineItem => {
   const applicableBarcodes = barcodes.value.filter(barcodeIsApplicable)
   if (applicableBarcodes.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has barcodes, but none are valid`)
 
-  const nonUpceBarcode = barcodes.value.find(barcode => barcode.obj.value.subType !== 'UPCE')
+  const nonUpceBarcode = applicableBarcodes.find(barcode => barcode.obj.value.subType !== 'UPCE')
   if (nonUpceBarcode) return formatBarcodeInfo(nonUpceBarcode)
-  return formatBarcodeInfo(barcodes.value[0])
+  return formatBarcodeInfo(applicableBarcodes[0])
 }
 
 /**
