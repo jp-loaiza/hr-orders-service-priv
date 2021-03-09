@@ -1,4 +1,5 @@
 const {
+  barcodeIsApplicable,
   convertAndFormatDate,
   convertToDollars,
   flatten,
@@ -345,6 +346,35 @@ describe('getBarcodeInfoFromLineItem', () => {
     // @ts-ignore incomplete line for testing only barcode related things
     expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksBarcodes)).toThrow('SKU -123 has no barcodes')
   })
+
+  it('throws an informative error if the line item has barcodes but none that are applicable', () => {
+    const expiredBarcode = {
+      ...upcaBarcode,
+      obj: {
+        value: {
+          ...upcaBarcode.obj.value,
+          effectiveAt: '1970-01-01T00:00:00.000Z',
+          expiresAt: '2020-01-01T00:00:00.000Z'
+        }
+      }
+    }
+
+    const lineItemThatLacksApplicableBarcodes = {
+      ...incompleteLineItem,
+      variant: {
+        sku: '-123',
+        attributes: [
+          {
+            name: 'barcodes',
+            value: [expiredBarcode]
+          }
+        ]
+      }
+    }
+
+    // @ts-ignore incomplete line for testing only barcode related things
+    expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksApplicableBarcodes)).toThrow('SKU -123 has barcodes, but none are valid')
+  })
 })
 
 describe('sumMoney', () => {
@@ -647,5 +677,48 @@ describe('lineItemIsEndlessAisle', () => {
 
     // @ts-ignore incomplete line item for testing
     expect(lineItemIsEndlessAisle(notEndlessAisleLineItem)).toBe(false)
+  })
+})
+
+
+describe('barcodeIsApplicable', () => {
+  it('returns true when given a barcode that lacks effective/expiry dates', () => {
+    const barcodeWithNoDates = {
+      obj: {
+        value: {
+          subType: 'UPCE',
+          barcode: '89950453-01'
+        }
+      }
+    }
+    expect(barcodeIsApplicable(barcodeWithNoDates)).toBe(true)
+  })
+
+  it('returns false when given a barcode that is expired', () => {
+    const expiredBarcode = {
+      obj: {
+        value: {
+          subType: 'UPCE',
+          barcode: '89950453-01',
+          effectiveAt: '1970-01-01T00:00:00.000Z',
+          expiresAt: '2020-01-01T00:00:00.000Z'
+        }
+      }
+    }
+    expect(barcodeIsApplicable(expiredBarcode)).toBe(false)
+  })
+
+  it('returns true when given a barcode has effective/expiry dates and the barcode is still effective', () => {
+    const effectiveBarcode = {
+      obj: {
+        value: {
+          subType: 'UPCE',
+          barcode: '89950453-01',
+          effectiveAt: '1970-01-01T00:00:00.000Z',
+          expiresAt: new Date(Date.now() + 100000).toISOString()
+        }
+      }
+    }
+    expect(barcodeIsApplicable(effectiveBarcode)).toBe(true)
   })
 })
