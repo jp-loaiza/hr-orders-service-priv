@@ -287,93 +287,141 @@ describe('getBarcodeInfoFromLineItem', () => {
     }
   }
 
-  it('returns the barcode number and type of the barcode when the given line item has a single barcode which is of type UPCE', () => {
-    const lineItemWithOneUpceBarcode = {
-      variant: {
-        attributes: [
-          {
-            name: 'barcodes',
-            value: [upceBarcode]
-          }
-        ]
-      }
-    }
-
-    // @ts-ignore incomplete line for testing only barcode related things
-    const { number, type } = getBarcodeInfoFromLineItem(lineItemWithOneUpceBarcode)
-    expect(number).toBe('89950453-01')
-    expect(type).toBe('UPCE')
-  })
-
-  it('returns the barcode number and type of the barcode when the given line item has a single barcode which is of type UPCA', () => {
-    const lineItemWithOneUpcaBarcode = {
-      variant: {
-        attributes: [
-          {
-            name: 'barcodes',
-            value: [upcaBarcode]
-          }
-        ]
-      }
-    }
-
-    // @ts-ignore incomplete line for testing only barcode related things
-    const { number, type } = getBarcodeInfoFromLineItem(lineItemWithOneUpcaBarcode)
-    expect(number).toBe('557391553')
-    expect(type).toBe('UPCA')
-  })
-
-  it('returns the barcode number and type of the UPCA barcode when the given line item has both a UPCE barcode and a UPCA barcode', () => {
-    const lineItemWithTwoBarcodes = {
-      variant: {
-        attributes: [
-          {
-            name: 'barcodes',
-            value: [upcaBarcode, upceBarcode]
-          }
-        ]
-      }
-    }
-
-    // @ts-ignore incomplete line for testing only barcode related things
-    const { number, type } = getBarcodeInfoFromLineItem(lineItemWithTwoBarcodes)
-    expect(number).toBe('557391553')
-    expect(type).toBe('UPCA')
-  })
-
-  it('throws an informative error if the line item has no barcodes', () => {
-    const lineItemThatLacksBarcodes = {...incompleteLineItem, variant: { sku: '-123', attributes: [] } }
-    // @ts-ignore incomplete line for testing only barcode related things
-    expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksBarcodes)).toThrow('SKU -123 has no barcodes')
-  })
-
-  it('throws an informative error if the line item has barcodes but none that are applicable', () => {
-    const expiredBarcode = {
-      ...upcaBarcode,
-      obj: {
-        value: {
-          ...upcaBarcode.obj.value,
-          effectiveAt: '1970-01-01T00:00:00.000Z',
-          expiresAt: '2020-01-01T00:00:00.000Z'
+  describe('line item is non-EA', () => {
+    it('returns the barcode number and type of the barcode when the given line item has a single barcode which is of type UPCE', () => {
+      const lineItemWithOneUpceBarcode = {
+        variant: {
+          attributes: [
+            {
+              name: 'barcodes',
+              value: [upceBarcode]
+            }
+          ]
         }
       }
-    }
 
-    const lineItemThatLacksApplicableBarcodes = {
-      ...incompleteLineItem,
-      variant: {
-        sku: '-123',
-        attributes: [
-          {
-            name: 'barcodes',
-            value: [expiredBarcode]
-          }
-        ]
+      // @ts-ignore incomplete line for testing only barcode related things
+      const { number, type } = getBarcodeInfoFromLineItem(lineItemWithOneUpceBarcode)
+      expect(number).toBe('89950453-01')
+      expect(type).toBe('UPCE')
+    })
+
+    it('returns the barcode number and type of the barcode when the given line item has a single barcode which is of type UPCA', () => {
+      const lineItemWithOneUpcaBarcode = {
+        variant: {
+          attributes: [
+            {
+              name: 'barcodes',
+              value: [upcaBarcode]
+            }
+          ]
+        }
       }
-    }
 
-    // @ts-ignore incomplete line for testing only barcode related things
-    expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksApplicableBarcodes)).toThrow('SKU -123 has barcodes, but none are valid')
+      // @ts-ignore incomplete line for testing only barcode related things
+      const { number, type } = getBarcodeInfoFromLineItem(lineItemWithOneUpcaBarcode)
+      expect(number).toBe('557391553')
+      expect(type).toBe('UPCA')
+    })
+
+    it('returns the barcode number and type of the UPCA barcode when the given line item has both a UPCE barcode and a UPCA barcode', () => {
+      const lineItemWithTwoBarcodes = {
+        variant: {
+          attributes: [
+            {
+              name: 'barcodes',
+              value: [upcaBarcode, upceBarcode]
+            }
+          ]
+        }
+      }
+
+      // @ts-ignore incomplete line for testing only barcode related things
+      const { number, type } = getBarcodeInfoFromLineItem(lineItemWithTwoBarcodes)
+      expect(number).toBe('557391553')
+      expect(type).toBe('UPCA')
+    })
+
+    it('throws an informative error if the line item has no barcodes', () => {
+      const lineItemThatLacksBarcodes = {...incompleteLineItem, variant: { sku: '-123', attributes: [] } }
+      // @ts-ignore incomplete line for testing only barcode related things
+      expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksBarcodes)).toThrow('SKU -123 has no barcodes')
+    })
+
+    it('throws an informative error if the line item has barcodes but none that are applicable', () => {
+      const expiredBarcode = {
+        ...upcaBarcode,
+        obj: {
+          value: {
+            ...upcaBarcode.obj.value,
+            effectiveAt: '1970-01-01T00:00:00.000Z',
+            expiresAt: '2020-01-01T00:00:00.000Z'
+          }
+        }
+      }
+
+      const lineItemThatLacksApplicableBarcodes = {
+        ...incompleteLineItem,
+        variant: {
+          sku: '-123',
+          attributes: [
+            {
+              name: 'barcodes',
+              value: [expiredBarcode]
+            }
+          ]
+        }
+      }
+
+      // @ts-ignore incomplete line for testing only barcode related things
+      expect(() => getBarcodeInfoFromLineItem(lineItemThatLacksApplicableBarcodes)).toThrow('SKU -123 has barcodes, but none are valid')
+    })
+  })
+
+  describe('line item is EA', () => {
+    it('returns the barcode number and type of the UPCE barcode when the given line item has both a UPCE barcode and a UPCA barcode', () => {
+      const eaLineItemWithTwoBarcodes = {
+        variant: {
+          attributes: [
+            {
+              name: 'barcodes',
+              value: [upcaBarcode, upceBarcode]
+            },
+            {
+              name: 'isEndlessAisle',
+              value: true
+            }
+          ]
+        }
+      }
+
+      // @ts-ignore incomplete line for testing only barcode related things
+      expect(getBarcodeInfoFromLineItem(eaLineItemWithTwoBarcodes)).toEqual({
+        number: '89950453-01',
+        type: 'UPCE'
+      })
+    })
+
+    it('throws an error when given a line item that lacks a UPCE barcode', () => {
+      const eaLineItemWithNoUpceBarcode = {
+        variant: {
+          sku: '-123',
+          attributes: [
+            {
+              name: 'barcodes',
+              value: [upcaBarcode]
+            },
+            {
+              name: 'isEndlessAisle',
+              value: true
+            }
+          ]
+        }
+      }
+
+      // @ts-ignore incomplete line for testing only barcode related things
+      expect(() => getBarcodeInfoFromLineItem(eaLineItemWithNoUpceBarcode)).toThrow('EA SKU -123 lacks an effective UPCE barcode')
+    })
   })
 })
 

@@ -181,6 +181,12 @@ const getBarcodeInfoFromLineItem = lineItem => {
   const applicableBarcodes = barcodes.value.filter(barcodeIsApplicable)
   if (applicableBarcodes.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has barcodes, but none are valid`)
 
+  if (lineItemIsEndlessAisle(lineItem)) {
+    const upceBarcode = applicableBarcodes.find(barcode => barcode.obj.value.subType === 'UPCE')
+    if (!upceBarcode) throw new Error(`EA SKU ${lineItem.variant.sku} lacks an effective UPCE barcode`)
+    return formatBarcodeInfo(upceBarcode)
+  }
+
   const nonUpceBarcode = applicableBarcodes.find(barcode => barcode.obj.value.subType !== 'UPCE')
   if (nonUpceBarcode) return formatBarcodeInfo(nonUpceBarcode)
   return formatBarcodeInfo(applicableBarcodes[0])
