@@ -69,9 +69,9 @@ const ORDER_CUSTOM_FIELDS = {
   ALGOLIA_CONVERSION_NEXT_RETRY_AT: 'algoliaConversionNextRetryAt',
   ALGOLIA_CONVERSION_RETRY_COUNT: 'algoliaConversionRetryCount',
   ALGOLIA_CONVERSION_STATUS: 'sentToAlgoliaStatus',
-  CJ_CONVERSION_NEXT_RETRY_AT: 'algoliaConversionNextRetryAt',
-  CJ_CONVERSION_RETRY_COUNT: 'algoliaConversionRetryCount',
-  CJ_CONVERSION_STATUS: 'sentToAlgoliaStatus',
+  CJ_CONVERSION_NEXT_RETRY_AT: 'cjNextRetryAt',
+  CJ_CONVERSION_RETRY_COUNT: 'cjRetryCount',
+  CJ_CONVERSION_STATUS: 'sentToCjStatus',
   CJ_EVENT: 'cjEvent'
 }
 
