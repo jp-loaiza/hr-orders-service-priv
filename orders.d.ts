@@ -61,7 +61,9 @@ type Barcode = {
   obj: {
     value: {
       subType: string,
-      barcode: string
+      barcode: string,
+      effectiveAt?: string,
+      expiresAt?: string
     }
   }
 }
