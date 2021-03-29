@@ -198,7 +198,7 @@ async function sendOrderUpdates () {
         await retry(setOrderAsSentToOms)(orderToUpdate, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
       }
     } catch (error) {
-      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error)
+      console.error(`Failed to send order update to jesta for order number: ${orderToUpdate.orderNumber}: `, error.message)
       // we retry in case the version of the order has changed by CSV job
       await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
         retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,

@@ -3,6 +3,8 @@ const https = require('https')
 const dontValidateCertAgent = new https.Agent({
   rejectUnauthorized: false
 })
+const { JESTA_RESPONSE_STATES } = require('./jesta.constants')
+const { getJestaApiResponseState } = require('./jesta.utils')
 const { ONLINE_SITE_ID } = require('./constants')
 const { fetchWithTimeout } = require('./request.utils.js')
 
@@ -11,6 +13,12 @@ const { JESTA_API_HOST,
   JESTA_API_PASSWORD,
   ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
 
+/**
+ * 
+ * @param {string} accessToken 
+ * @param {string} orderNumber 
+ * @param {string} orderStatus 
+ */
 const updateJestaOrder = async (accessToken, orderNumber, orderStatus) => {
   const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderStatus}`
   
@@ -28,7 +36,7 @@ const updateJestaOrder = async (accessToken, orderNumber, orderStatus) => {
     }, 
     method: 'POST',
     agent: ENVIRONMENT === 'development' || ENVIRONMENT === 'staging' ? dontValidateCertAgent : null
-  })
+  }, true)
 }
 
 const getJestaApiAccessToken = async () => {
@@ -50,13 +58,19 @@ const getJestaApiAccessToken = async () => {
 }
 
 /**
- * @param {Object} orderUpdate
+ * @param {string} orderNumber
+ * @param {string} orderStatus
  */
 const sendOrderUpdateToJesta = async (orderNumber, orderStatus) => {
   const jestaApiAccessToken = (await getJestaApiAccessToken()).access_token
-  return updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
+  const response = await updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
+  const responseState = getJestaApiResponseState(response)
+  if (responseState === JESTA_RESPONSE_STATES.FAILURE) throw new Error(`Invalid or failure Jesta response: ${JSON.stringify(response)}`)
+  if (responseState === JESTA_RESPONSE_STATES.WARNING) console.warn(`Unexpected Jesta response for order: ${orderNumber}, status: '${orderStatus}': ${JSON.stringify(response)}`)
+  return response
 }
 
 module.exports = {
-  sendOrderUpdateToJesta
+  sendOrderUpdateToJesta,
+  getJestaApiResponseState
 }

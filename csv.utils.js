@@ -162,6 +162,12 @@ const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) =>
   type: barcode.obj.value.subType
 })
 
+const barcodeIsApplicable = (/** @type {import('./orders').Barcode} **/ barcode) => {
+  if (!barcode.obj.value.effectiveAt || !barcode.obj.value.expiresAt) return true
+  const now = new Date()
+  return new Date(barcode.obj.value.effectiveAt) <= now && new Date(barcode.obj.value.expiresAt) > now
+}
+
 /**
  * If more than one barcode exists on the line item, returns the information
  * from the non-UPCE barcode.
@@ -172,10 +178,18 @@ const getBarcodeInfoFromLineItem = lineItem => {
   // @ts-ignore casting to known type
   /** @type {{name: any, value: Array<import('./orders').Barcode>} | undefined} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
   if (!barcodes || barcodes.value.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has no barcodes`)
+  const applicableBarcodes = barcodes.value.filter(barcodeIsApplicable)
+  if (applicableBarcodes.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has barcodes, but none are valid`)
 
-  const nonUpceBarcode = barcodes.value.find(barcode => barcode.obj.value.subType !== 'UPCE')
+  if (lineItemIsEndlessAisle(lineItem)) {
+    const upceBarcode = applicableBarcodes.find(barcode => barcode.obj.value.subType === 'UPCE')
+    if (!upceBarcode) throw new Error(`EA SKU ${lineItem.variant.sku} lacks an effective UPCE barcode`)
+    return formatBarcodeInfo(upceBarcode)
+  }
+
+  const nonUpceBarcode = applicableBarcodes.find(barcode => barcode.obj.value.subType !== 'UPCE')
   if (nonUpceBarcode) return formatBarcodeInfo(nonUpceBarcode)
-  return formatBarcodeInfo(barcodes.value[0])
+  return formatBarcodeInfo(applicableBarcodes[0])
 }
 
 /**
@@ -267,6 +281,7 @@ const lineItemIsEndlessAisle = (/** @type {import('./orders').LineItem} */ lineI
 }
 
 module.exports = {
+  barcodeIsApplicable,
   convertAndFormatDate,
   convertToDollars,
   flatten,
