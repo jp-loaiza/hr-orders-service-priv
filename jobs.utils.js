@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES, SENT_TO_CJ_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -9,12 +9,14 @@ const {
   setOrderErrorFields,
   fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
+  fetchOrdersWhoseConversionsShouldBeSentToCj
 } = require('./commercetools')
 const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
 const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
+const { sendOrderConversionToCj } = require('./cj')
 
 /**
  * 
@@ -230,6 +232,56 @@ async function sendConversionsToAlgolia() {
   }
 }
 
+/**
+ * @param {{name: string, fetchRelevantOrders: function, processOrder: function, retryCountField: string, nextRetryAtField: string, statusField: string, statuses: {SUCCESS: string, FAILURE: string, PENDING: string} }} params
+ */
+function createJob({
+  name,
+  fetchRelevantOrders,
+  processOrder,
+  retryCountField,
+  nextRetryAtField,
+  statusField,
+  statuses
+}) {
+  async function processOrders() {
+    const { orders, total } = await fetchRelevantOrders()
+    console.log(total > 0 ? `Processing orders for ${name} job (total in backlog: ${total}).`: `No orders for ${name} job to process.`)
+    for (const order of orders) {
+      try {
+        await processOrder(order)
+        await retry(setOrderCustomField)(order.id, statusField, statuses.SUCCESS)
+        console.log(`${name} job successfully processed order ${order.orderNumber}`)
+      } catch (error) {
+        console.error(`${name} job failed to process order ${order.orderNumber}: ${error.message || JSON.stringify(error)}`)
+        await retry(setOrderErrorFields)(order, error.message || JSON.stringify(error), true, { retryCountField, nextRetryAtField, statusField })
+      }
+    }
+  }
+
+  return async function startJob(/** @type {number} **/ interval) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        await processOrders()
+      } catch (error) {
+        console.error(`Unexpected ${name} job error: ${error.message || JSON.stringify(error)}`)
+      }
+      await sleep(interval)
+    }
+  }
+}
+
+const startCjConversionJob = createJob({
+  name: 'CJ conversions',
+  fetchRelevantOrders: fetchOrdersWhoseConversionsShouldBeSentToCj,
+  processOrder: sendOrderConversionToCj,
+  retryCountField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_RETRY_COUNT,
+  nextRetryAtField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT,
+  statusField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_STATUS,
+  statuses: SENT_TO_CJ_STATUSES
+})
+
 module.exports = {
   sleep,
   retry,
@@ -237,5 +289,6 @@ module.exports = {
   generateFilenameFromOrder,
   sendOrderUpdates,
   sendConversionsToAlgolia,
+  startCjConversionJob,
   transformToOrderPayment
 }

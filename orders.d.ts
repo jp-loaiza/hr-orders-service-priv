@@ -183,9 +183,16 @@ type Order = {
   paymentState: 'Pending' | 'Paid'
   paymentInfo: PaymentInfo,
   shippingInfo: ShippingInfo, 
-  taxedPrice: TaxedPrice
+  taxedPrice: TaxedPrice,
+  discountCodes: Array<{
+    discountCode: {
+      typeId: string,
+      id: string
+    }
+  }>,
   custom: {
     fields: {
+      cjEvent?: string,
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdateNextRetryAt?: string,
