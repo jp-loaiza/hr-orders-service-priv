@@ -56,6 +56,8 @@ const CARD_TYPES_TO_JESTA_CODES = {
   'Harry Rosen Loyalty': '49'
 }
 
+const ALI_PAY_AND_WE_CHAT_PAYMENT_CODE = '55'
+
 const ONLINE_SITE_ID = '00990'
 
 const ORDER_CUSTOM_FIELDS = {
@@ -441,6 +443,7 @@ const ALGOLIA_INSIGHTS_URL = 'https://insights.algolia.io'
 
 module.exports = {
   ALGOLIA_INSIGHTS_URL,
+  ALI_PAY_AND_WE_CHAT_PAYMENT_CODE,
   JESTA_ORDER_STATUSES,
   PAYMENT_STATES,
   TRANSACTION_TYPES,
