@@ -11,6 +11,7 @@ const {
   getLineTotalTaxFromLineItem,
   getPaymentTotalFromPaymentInfo,
   getParsedTaxesFromLineItem,
+  getPosEquivalenceFromPayment,
   getShippingInfoFromShippingName,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
@@ -118,6 +119,20 @@ describe('getAuthorizationNumberFromPayment', () => {
 
   it('returns `undefined` when given a non-credit card payment', () => {
     expect(getAuthorizationNumberFromPayment(nonCreditCardPayment)).toBeUndefined()
+  })
+})
+
+describe('getPosEquivalenceFromPayment', () => {
+  it('returns the correct Jesta payment code when given a credit card payment', () => {
+    const visaPayment = creditCardPayment
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(visaPayment)).toBe('05')
+  })
+
+  it('returns the corret Jesta payment code when given an AliPay or WeChat payment', () => {
+    const aliPayPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: 'Citcon Payment' } } }
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(aliPayPayment)).toBe('55')
   })
 })
 
