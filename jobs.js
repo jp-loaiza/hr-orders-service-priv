@@ -1,8 +1,8 @@
 
 require('dotenv').config()
 
-const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
-const { createAndUploadCsvs, sendConversionsToAlgolia, sendOrderUpdates, sleep, retry } = require('./jobs.utils')
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { createAndUploadCsvs, sendConversionsToAlgolia, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
@@ -183,6 +183,15 @@ if (shouldSendAlgoliaInfo) {
   if (!(sendAlgoliaInfoInterval > 0)) throw new Error('SEND_ALGOLIA_INFO_INTERVAL must be a positive number')
   sendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
 }
+
+const shouldSendCjConversions = process.env.SHOULD_SEND_CJ_CONVERSIONS === 'true'
+if (shouldSendCjConversions) {
+  const sendCjConversionsInterval = Number(SEND_CJ_CONVERSIONS_INTERVAL)
+  console.log('Processing CJ job at interval: ', sendCjConversionsInterval)
+  if (!(sendCjConversionsInterval > 0)) throw new Error('SEND_CJ_CONVERSIONS_INTERVAL must be a positive number')
+  startCjConversionJob(sendCjConversionsInterval)
+}
+
 
 module.exports = {
   getEnabledJobsLastExecutionTime: () => {
