@@ -759,6 +759,7 @@
             "id": "4525a9be-e60e-4d48-b27f-8c5d12b6aada"
         },
         "fields": {
+            "cjEvent": "XBMn0HYfI5Ky3Yt6AU7I",
             "paymentIsReleased": false,
             "shippingIsRush": true,
             "transactionTotal": {

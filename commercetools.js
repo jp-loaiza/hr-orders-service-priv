@@ -2,17 +2,18 @@ const dotenv = require('dotenv')
 
 const {
   BACKOFF,
+  ORDER_CUSTOM_FIELDS,
   ORDER_UPDATE_BACKOFF,
   DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   KEEP_ALIVE_INTERVAL,
   SEND_ORDER_RETRY_LIMIT,
   SEND_ORDER_UPDATE_RETRY_LIMIT,
+  SENT_TO_CJ_STATUSES,
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_ALGOLIA_STATUSES,
   SENT_TO_CRM_STATUS,
   STATUS_FIELDS_TO_AVAILABLE_STATUSES,
-  ORDER_CUSTOM_FIELDS
 } = require('./constants')
 
 dotenv.config()
@@ -268,11 +269,24 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   }
 }
 
+
+const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} = "${SENT_TO_CJ_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.CJ_EVENT} is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} is not defined)))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  return {
+    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    total: body.total
+  }
+}
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
   fetchStuckOrderResults,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
+  fetchOrdersWhoseConversionsShouldBeSentToCj,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,

@@ -212,3 +212,33 @@ spec:
             secretKeyRef:
               key: ALGOLIA_API_KEY
               name: hr-orders-service
+        - name: SHOULD_SEND_CJ_CONVERSIONS
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_CJ_CONVERSIONS
+              name: hr-orders-service
+        - name: SEND_CJ_CONVERSIONS_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SEND_CJ_CONVERSIONS_INTERVAL
+              name: hr-orders-service
+        - name: CJ_CID
+          valueFrom:
+            configMapKeyRef:
+              key: CJ_CID
+              name: hr-orders-service
+        - name: CJ_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: CJ_TYPE
+              name: hr-orders-service
+        - name: CJ_CONVERSION_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: CJ_CONVERSION_BASE_URL
+              name: hr-orders-service
+        - name: CJ_SIGNATURE
+          valueFrom:
+            secretKeyRef:
+              key: CJ_SIGNATURE
+              name: hr-orders-service
