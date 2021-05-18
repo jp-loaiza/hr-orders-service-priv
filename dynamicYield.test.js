@@ -2,7 +2,7 @@ const { getDYReportEventFromOrder } = require('./dynamicYield')
 
 jest.mock('./config')
 
-const DY_DATA = Object.freeze({
+const DYNAMIC_YIELD_DATA = Object.freeze({
   user: {
     dyid: '1234567890123456789',
   },
@@ -58,7 +58,7 @@ describe('getDYReportEventFromOrder', () => {
 
   it ('returns a Dynamic Yield report event body when there is a dynamicYield custom field', () => {
     const order = clone(BASE_ORDER)
-    order.custom.fields.dynamicYieldData = clone(DY_DATA)
+    order.custom.fields.dynamicYieldData = clone(DYNAMIC_YIELD_DATA)
 
     const dyReportEvent = getDYReportEventFromOrder(order)
     expect(dyReportEvent.user).toEqual({ dyid: '1234567890123456789' })

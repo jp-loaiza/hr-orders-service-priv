@@ -1,3 +1,7 @@
+const { fetchWithTimeout: fetch } = require('./request.utils')
+const { DYNAMIC_YIELD_API_KEY_SERVER } = require('./config')
+const { DYNAMIC_YIELD_API_URL } = require('./constants')
+
 /**
  * @param {import('./orders').Order} order
  * @returns {import('./orders').DynamicYieldReportEventData | undefined}
@@ -57,6 +61,25 @@ const convertToDollars = (centAmount) => {
   return centAmount / 100
 }
 
+/**
+ * @param {Array<import('./orders').DynamicYieldReportEventData>} dynamicYieldEventData
+ */
+const sendPurchaseEventToDynamicYield = dynamicYieldEventData =>
+  fetch(`${DYNAMIC_YIELD_API_URL}/v2/collect/user/event`, formatDynamicYieldRequestOptionsFromEventData(dynamicYieldEventData))
+
+/**
+ * @param {Array<import('./orders').DynamicYieldReportEventData>} dynamicYieldEventData
+ */
+const formatDynamicYieldRequestOptionsFromEventData = dynamicYieldEventData => ({
+  method: 'post',
+  headers: {
+    'content-type': 'application/json',
+    'dy-api-key': DYNAMIC_YIELD_API_KEY_SERVER
+  },
+  body: JSON.stringify(dynamicYieldEventData)
+})
+
 module.exports = {
-  getDYReportEventFromOrder
+  getDYReportEventFromOrder,
+  sendPurchaseEventToDynamicYield
 }
