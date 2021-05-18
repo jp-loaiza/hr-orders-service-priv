@@ -30,7 +30,9 @@ interface Env {
   SHOULD_SEND_ORDER_UPDATES: string,
   JESTA_API_HOST: string,
   JESTA_API_USERNAME: string,
-  JESTA_API_PASSWORD: string
+  JESTA_API_PASSWORD: string,
+  DY_SITE_ID: string,
+  DY_API_KEY_SERVER: string
 }
 
 type Price = {
@@ -75,6 +77,39 @@ type AlgoliaAnalyticsData = {
   eventType?: string
   queryID?: string,
   objectIDs: Array<string>,
+}
+
+type DynamicYieldCustomFieldData = {
+  user: {
+    dyid: string
+  },
+  session: {
+    dy: string
+  },
+}
+
+type DynamicYieldReportEventData = DynamicYieldCustomFieldData & {
+  events: Array<DynamicYieldEvent<DynamicYieldPurchaseEventProperties>>
+}
+
+type DynamicYieldEvent<E> = {
+  name: string
+  properties: E
+}
+
+type DynamicYieldPurchaseEventProperties = {
+  dyType: 'purchase-v1',
+  uniqueTransactionId: string,
+  value: number,
+  currency?: 'CAD',
+  cart: Array<DynamicYieldCartItem>
+}
+
+type DynamicYieldCartItem = {
+  productId: string,
+  quantity: number,
+  itemPrice: number,
+  size?: string
 }
 
 type LineItem = {
@@ -182,7 +217,7 @@ type Order = {
   locale: 'en-CA' | 'fr-CA',
   paymentState: 'Pending' | 'Paid'
   paymentInfo: PaymentInfo,
-  shippingInfo: ShippingInfo, 
+  shippingInfo: ShippingInfo,
   taxedPrice: TaxedPrice,
   discountCodes: Array<{
     discountCode: {
@@ -210,7 +245,8 @@ type Order = {
       retryCount?: number,
       nextRetryAt?: string,
       loginRadiusUid: string,
-      isStorePickup: boolean
+      isStorePickup: boolean,
+      dynamicYieldData?: DynamicYieldReportEventData
     }
   }
 }
