@@ -285,7 +285,7 @@ const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and lineItems(custom(fields(dynamicYieldData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined)))`
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
