@@ -16,9 +16,15 @@ const BASE_ORDER = Object.freeze({
   totalPrice: 76500,
   lineItems: [
     {
+      id: 'b3df59b9-af78-4bc0-ad69-b866f73bd5fb',
+      productId: '35c42b26-e9a9-4427-8a6f-1f92ab4446e3',
       quantity: 2,
       variant: {
         sku: '-2967100'
+      },
+      productSlug: {
+        'en-CA': '20050820',
+        'fr-CA': '20050820'
       },
       price: {
         value: {
@@ -32,9 +38,15 @@ const BASE_ORDER = Object.freeze({
       }
     },
     {
+      id: '9d9947dc-f987-4c03-8175-f166359f3d0a',
+      productId: '54b8e81a-547a-49f3-a2bc-d2d2c840d0c6',
       quantity: 1,
       variant: {
         sku: '-2973273'
+      },
+      productSlug: {
+        'en-CA': '20051312',
+        'fr-CA': '20051312'
       },
       price: {
         value: {
@@ -74,12 +86,12 @@ describe('getDYReportEventFromOrder', () => {
     expect(event.properties.currency).toBe('CAD')
     expect(event.properties.cart).toEqual([
       {
-        productId: '-2967100',
+        productId: '35c42b26-e9a9-4427-8a6f-1f92ab4446e3',
         quantity: 2,
         itemPrice: 135
       },
       {
-        productId: '-2973273',
+        productId: '54b8e81a-547a-49f3-a2bc-d2d2c840d0c6',
         quantity: 1,
         itemPrice: 495
       }

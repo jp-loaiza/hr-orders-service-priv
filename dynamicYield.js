@@ -35,7 +35,7 @@ const getDYReportEventFromOrder = order => {
  */
 const convertLineItemToDYCartItem = (lineItem) => {
   return {
-    productId: lineItem.variant.sku,
+    productId: lineItem.productId,
     quantity: lineItem.quantity,
     itemPrice: getLineItemPriceInDollars(lineItem)
   }
