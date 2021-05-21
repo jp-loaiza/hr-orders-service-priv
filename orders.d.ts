@@ -210,7 +210,8 @@ type Order = {
       retryCount?: number,
       nextRetryAt?: string,
       loginRadiusUid: string,
-      isStorePickup: boolean
+      isStorePickup: boolean,
+      giftMessage: string
     }
   }
 }
