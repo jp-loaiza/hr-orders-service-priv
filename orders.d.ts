@@ -247,7 +247,11 @@ type Order = {
       nextRetryAt?: string,
       loginRadiusUid: string,
       isStorePickup: boolean,
-      dynamicYieldData?: DynamicYieldCustomFieldData
+      dynamicYieldData?: {
+        obj: {
+          value: DynamicYieldCustomFieldData
+        }
+      }
     }
   }
 }

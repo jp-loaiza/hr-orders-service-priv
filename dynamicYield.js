@@ -7,7 +7,7 @@ const { DYNAMIC_YIELD_API_URL } = require('./constants')
  * @returns {import('./orders').DynamicYieldReportEventData | undefined}
  */
 const getDYReportEventFromOrder = order => {
-  const { dynamicYieldData } = order.custom && order.custom.fields || {}
+  const dynamicYieldData = order.custom && order.custom.fields.dynamicYieldData && order.custom.fields.dynamicYieldData.obj.value
   if (!(dynamicYieldData && dynamicYieldData.user && dynamicYieldData.user.dyid)) {
     return undefined
   }

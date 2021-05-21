@@ -3,11 +3,15 @@ const { getDYReportEventFromOrder } = require('./dynamicYield')
 jest.mock('./config')
 
 const DYNAMIC_YIELD_DATA = Object.freeze({
-  user: {
-    dyid: '1234567890123456789',
-  },
-  session: {
-    dy: '8b01311c454c4d54b43ffa57c6df7301'
+  obj: {
+    value: {
+      user: {
+        dyid: '1234567890123456789',
+      },
+      session: {
+        dy: '8b01311c454c4d54b43ffa57c6df7301'
+      }
+    }
   }
 })
 
