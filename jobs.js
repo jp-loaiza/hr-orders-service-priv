@@ -1,8 +1,8 @@
 
 require('dotenv').config()
 
-const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
-const { createAndUploadCsvs, sendConversionsToAlgolia, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynamicYield, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
@@ -144,6 +144,22 @@ async function sendConversionsToAlgoliaJob(sendToAlgoliaInterval) {
   }
 }
 
+/**
+ * @param {number} sendToDynamicYieldInterval
+ */
+async function sendPurchaseEventsToDynamicYieldJob(sendToDynamicYieldInterval) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      await sendPurchaseEventsToDynamicYield()
+    }
+    catch(error) {
+      console.error('Unable to send purchase events to Dynamic Yield:', error)
+    }
+    await sleep(sendToDynamicYieldInterval)
+  }
+}
+
 const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
 if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
@@ -182,6 +198,14 @@ if (shouldSendAlgoliaInfo) {
   console.log('Processing Algolia job at interval: ', sendAlgoliaInfoInterval)
   if (!(sendAlgoliaInfoInterval > 0)) throw new Error('SEND_ALGOLIA_INFO_INTERVAL must be a positive number')
   sendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
+}
+
+const shouldSendDynamicYieldInfo = process.env.SHOULD_SEND_DYNAMIC_YIELD_INFO === 'true'
+if (shouldSendDynamicYieldInfo) {
+  const sendDynamicYieldInfoInterval = Number(SEND_DYNAMIC_YIELD_INFO_INTERVAL)
+  console.log('Processing Dynamic Yield job at interval: ', sendDynamicYieldInfoInterval)
+  if (!(sendDynamicYieldInfoInterval > 0)) throw new Error('SEND_DYNAMIC_YIELD_INFO_INTERVAL must be a positive number')
+  sendPurchaseEventsToDynamicYieldJob(sendDynamicYieldInfoInterval)
 }
 
 const shouldSendCjConversions = process.env.SHOULD_SEND_CJ_CONVERSIONS === 'true'

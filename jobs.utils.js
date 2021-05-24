@@ -1,7 +1,7 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES, SENT_TO_CJ_STATUSES } = require('./constants')
+const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES, SENT_TO_CJ_STATUSES, SENT_TO_DYNAMIC_YIELD_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -9,17 +9,19 @@ const {
   setOrderErrorFields,
   fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
-  fetchOrdersWhoseConversionsShouldBeSentToCj
+  fetchOrdersWhoseConversionsShouldBeSentToCj,
+  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield
 } = require('./commercetools')
 const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
 const { sftpConfig } = require('./config')
 const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
 const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
+const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('./dynamicYield')
 const { sendOrderConversionToCj } = require('./cj')
 
 /**
- * 
+ *
  * @param {number} ms time to sleep in ms
  */
 async function sleep(ms) {
@@ -32,9 +34,9 @@ const NoResponse = Symbol.for('no-response')
 
 // TODO implement retry as a generic function so that the type of args matches the parameters expected by fn
 /**
- * 
- * @param {Function} fn 
- * @param {number} maxRetries 
+ *
+ * @param {Function} fn
+ * @param {number} maxRetries
  * @param {number} backoff in ms
  */
 function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
@@ -64,15 +66,15 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
 }
 
 /**
- * 
- * @param {Array<import('./orders').Transaction>} transactions 
+ *
+ * @param {Array<import('./orders').Transaction>} transactions
  * @param {string} type
  * @param {string} state
  */
 const getTransaction = (transactions, type, state) => transactions.find(transaction => transaction.type === type && transaction.state === state)
 
 /**
- * 
+ *
  * @param {import('./orders').Order} order
  */
 const transformToOrderPayment = order => {
@@ -108,7 +110,7 @@ const transformToOrderPayment = order => {
 }
 
 /**
- * 
+ *
  * @param {import('./orders').Order} order
  * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS<orderNumber>.csv`.
  */
@@ -191,7 +193,7 @@ async function sendOrderUpdates () {
         await retry(setOrderErrorFields)(orderToUpdate, orderPayment.errorMessage, true, {
           retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
           nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
-          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS
         })
       } else {
         const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
@@ -205,7 +207,7 @@ async function sendOrderUpdates () {
       await retry(setOrderErrorFields)(orderToUpdate, error.message, true, {
         retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
         nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
-        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS 
+        statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS
       })
     }
   }))
@@ -229,6 +231,28 @@ async function sendConversionsToAlgolia() {
       })
     }
     await sleep(100) // prevent CT/Algolia from getting overloaded
+  }
+}
+
+async function sendPurchaseEventsToDynamicYield() {
+  const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
+  console.log(total > 0 ? `Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`: 'No orders with purchase data to send to Dynamic Yield.')
+
+  for (const order of orders) {
+    try {
+      const dynamicYieldEventData = getDYReportEventFromOrder(order)
+      await sendPurchaseEventToDynamicYield(dynamicYieldEventData)
+      console.log(`Sent Dynamic Yield purchase event for order ${order.orderNumber}`)
+      await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS, SENT_TO_DYNAMIC_YIELD_STATUSES.SUCCESS)
+    } catch (error) {
+      console.error(`Failed to send Dynamic Yield purchase event for order ${order.orderNumber}:`, error)
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS
+      })
+    }
+    await sleep(100) // prevent CT/Dynamic Yield from getting overloaded
   }
 }
 
@@ -289,6 +313,7 @@ module.exports = {
   generateFilenameFromOrder,
   sendOrderUpdates,
   sendConversionsToAlgolia,
+  sendPurchaseEventsToDynamicYield,
   startCjConversionJob,
   transformToOrderPayment
 }
