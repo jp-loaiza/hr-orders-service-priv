@@ -251,7 +251,8 @@ type Order = {
         obj: {
           value: DynamicYieldCustomFieldData
         }
-      }
+      },
+      giftMessage: string
     }
   }
 }
