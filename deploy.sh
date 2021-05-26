@@ -19,10 +19,12 @@ kubectl create configmap hr-orders-service \
   --from-literal=JESTA_API_HOST=$JESTA_API_HOST \
   --from-literal=SEND_ALGOLIA_INFO_INTERVAL=$SEND_ALGOLIA_INFO_INTERVAL \
   --from-literal=SEND_CJ_CONVERSIONS_INTERVAL=$SEND_CJ_CONVERSIONS_INTERVAL \
+  --from-literal=SEND_DYNAMIC_YIELD_INFO_INTERVAL=$SEND_DYNAMIC_YIELD_INFO_INTERVAL \
   --from-literal=SHOULD_CHECK_FOR_STUCK_ORDERS=$SHOULD_CHECK_FOR_STUCK_ORDERS \
   --from-literal=SHOULD_SEND_ORDER_UPDATES=$SHOULD_SEND_ORDER_UPDATES \
   --from-literal=SHOULD_SEND_ALGOLIA_INFO=$SHOULD_SEND_ALGOLIA_INFO \
   --from-literal=SHOULD_SEND_CJ_CONVERSIONS=$SHOULD_SEND_CJ_CONVERSIONS \
+  --from-literal=SHOULD_SEND_DYNAMIC_YIELD_INFO=$SHOULD_SEND_DYNAMIC_YIELD_INFO \
   --from-literal=SHOULD_UPLOAD_ORDERS=$SHOULD_UPLOAD_ORDERS \
   --from-literal=SHOULD_SEND_NOTIFICATIONS=$SHOULD_SEND_NOTIFICATIONS \
   --from-literal=STALE_ORDER_CUTOFF_TIME_MS=$STALE_ORDER_CUTOFF_TIME_MS \
@@ -36,6 +38,7 @@ kubectl create configmap hr-orders-service \
 # update existing secret
 kubectl create secret generic hr-orders-service \
   --from-literal=ALGOLIA_API_KEY=$ALGOLIA_API_KEY \
+  --from-literal=DYNAMIC_YIELD_API_KEY_SERVER=$DYNAMIC_YIELD_API_KEY_SERVER \
   --from-literal=SFTP_USERNAME=$SFTP_USERNAME \
   --from-literal=SFTP_PRIVATE_KEY=$SFTP_PRIVATE_KEY \
   --from-literal=CJ_SIGNATURE=$CJ_SIGNATURE \
@@ -47,7 +50,7 @@ kubectl create secret generic hr-orders-service \
   --from-literal=JESTA_API_PASSWORD=$JESTA_API_PASSWORD \
   --from-literal=HEALTHZ_AUTHORIZATION=$HEALTHZ_AUTHORIZATION \
   --from-literal=NEWRELIC_LICENSE_KEY=$NEWRELIC_LICENSE_KEY \
-  -o yaml --dry-run | kubectl apply -f -  
+  -o yaml --dry-run | kubectl apply -f -
 
 sed "s~{IMAGE}~$IMAGE~g; s~{HEALTHZ_AUTHORIZATION}~$HEALTHZ_AUTHORIZATION~g;" ./deployment.yaml > ./deployment-populated.yaml
 kubectl apply -f ./deployment-populated.yaml
