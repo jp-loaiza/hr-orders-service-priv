@@ -53,10 +53,10 @@ const CARD_TYPES_TO_JESTA_CODES = {
   discover: '08',
   jcb: '10',
   'Harry Rosen Giftcard': '14',
-  'Harry Rosen Loyalty': '49'
+  'Harry Rosen Loyalty': '49',
+  'Citcon Payment' : '55'
 }
 
-const ALI_PAY_AND_WE_CHAT_PAYMENT_CODE = '55'
 
 const ONLINE_SITE_ID = '00990'
 
@@ -456,7 +456,6 @@ const DYNAMIC_YIELD_API_URL = 'https://dy-api.com'
 
 module.exports = {
   ALGOLIA_INSIGHTS_URL,
-  ALI_PAY_AND_WE_CHAT_PAYMENT_CODE,
   JESTA_ORDER_STATUSES,
   PAYMENT_STATES,
   TRANSACTION_TYPES,
