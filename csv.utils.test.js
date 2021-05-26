@@ -83,10 +83,10 @@ const creditCardPayment = {
 const aliPayPayment = {
   obj: {
     paymentMethodInfo:{
-      paymentInterface:"plugin_v2",
-      method:"plugin",
+      paymentInterface:'plugin_v2',
+      method:'plugin',
       name:{
-         "en":"plugin_v2"
+        en:'plugin_v2'
       }
     },
     amountPlanned: {
@@ -95,10 +95,10 @@ const aliPayPayment = {
       centAmount: 113,
       fractionDigits: 2
     },
-    custom:{
-      fields:{
-        transaction_card_last4:"Alipay",
-        transaction_card_expiry:"",
+    custom: {
+      fields: {
+        transaction_card_last4:'Alipay',
+        transaction_card_expiry:'',
         auth_number:'authNumber',
         bin:'N/A',
         transaction_card_type:'Citcon Payment'
