@@ -156,7 +156,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: HEALTHZ_AUTHORIZATION
-              name: hr-orders-service             
+              name: hr-orders-service
         - name: NEWRELIC_APP_NAME
           valueFrom:
             configMapKeyRef:
@@ -166,13 +166,13 @@ spec:
           valueFrom:
             secretKeyRef:
               key: NEWRELIC_LICENSE_KEY
-              name: hr-orders-service             
-        - name: JOB_TASK_TIMEOUT 
+              name: hr-orders-service
+        - name: JOB_TASK_TIMEOUT
           valueFrom:
             configMapKeyRef:
               key: JOB_TASK_TIMEOUT
               name: hr-orders-service
-        - name: MAXIMUM_RETRIES 
+        - name: MAXIMUM_RETRIES
           valueFrom:
             configMapKeyRef:
               key: MAXIMUM_RETRIES
@@ -211,6 +211,21 @@ spec:
           valueFrom:
             secretKeyRef:
               key: ALGOLIA_API_KEY
+              name: hr-orders-service
+        - name: SEND_DYNAMIC_YIELD_INFO_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SEND_DYNAMIC_YIELD_INFO_INTERVAL
+              name: hr-orders-service
+        - name: SHOULD_SEND_DYNAMIC_YIELD_INFO
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_DYNAMIC_YIELD_INFO
+              name: hr-orders-service
+        - name: DYNAMIC_YIELD_API_KEY_SERVER
+          valueFrom:
+            secretKeyRef:
+              key: DYNAMIC_YIELD_API_KEY_SERVER
               name: hr-orders-service
         - name: SHOULD_SEND_CJ_CONVERSIONS
           valueFrom:
