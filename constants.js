@@ -20,7 +20,7 @@ let MAXIMUM_RETRIES = 3
 let maximumRetriesFromEnv = Number(process.env.MAXIMUM_RETRIES)
 if (maximumRetriesFromEnv) {
   if (maximumRetriesFromEnv > 0 && maximumRetriesFromEnv < 10) {
-    MAXIMUM_RETRIES = maximumRetriesFromEnv 
+    MAXIMUM_RETRIES = maximumRetriesFromEnv
   } else {
     throw new Error(`Invalid MAXIMUM_RETRIES passed as environmental variable: ${maximumRetriesFromEnv}`)
   }
@@ -71,6 +71,9 @@ const ORDER_CUSTOM_FIELDS = {
   ALGOLIA_CONVERSION_NEXT_RETRY_AT: 'algoliaConversionNextRetryAt',
   ALGOLIA_CONVERSION_RETRY_COUNT: 'algoliaConversionRetryCount',
   ALGOLIA_CONVERSION_STATUS: 'sentToAlgoliaStatus',
+  DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT: 'dynamicYieldPurchaseNextRetryAt',
+  DYNAMIC_YIELD_PURCHASE_RETRY_COUNT: 'dynamicYieldPurchaseRetryCount',
+  DYNAMIC_YIELD_PURCHASE_STATUS: 'sentToDynamicYieldStatus',
   CJ_CONVERSION_NEXT_RETRY_AT: 'cjNextRetryAt',
   CJ_CONVERSION_RETRY_COUNT: 'cjRetryCount',
   CJ_CONVERSION_STATUS: 'sentToCjStatus',
@@ -123,7 +126,8 @@ const HEADER_ROWS_ENUM = {
   LANGUAGE_NO: 'LANGUAGE_NO',
   FREE_RETURN_IND: 'FREE_RETURN_IND',
   SIGNATURE_REQUIRED_IND: 'SIGNATURE_REQUIRED_IND',
-  RELEASED: 'RELEASED'
+  RELEASED: 'RELEASED',
+  GIFT_NOTE: 'GIFT_NOTE'
 }
 
 // We don't generate this array from the above enum because the order
@@ -190,7 +194,8 @@ const HEADER_ROWS = [
   'LANGUAGE_NO',
   'FREE_RETURN_IND',
   'SIGNATURE_REQUIRED_IND',
-  'RELEASED'
+  'RELEASED',
+  'GIFT_NOTE'
 ]
 
 const DETAILS_ROWS_ENUM = {
@@ -334,6 +339,12 @@ const SENT_TO_CJ_STATUSES = {
   FAILURE: 'FAILURE'
 }
 
+const SENT_TO_DYNAMIC_YIELD_STATUSES = {
+  SUCCESS: 'SUCCESS',
+  PENDING: 'PENDING',
+  FAILURE: 'FAILURE'
+}
+
 const SENT_TO_CRM_STATUS = {
   SUCCESS: 'SUCCESS',
   PENDING: 'PENDING',
@@ -401,7 +412,7 @@ const ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES = {
   [ENDLESS_AISLE_SHIPPING_NAMES.NEXT_DAY]: SHIPPING_SERVICE_TYPES.STANDARD_OVERNIGHT
 }
 
-const PAYMENT_STATES = { 
+const PAYMENT_STATES = {
   CANCELLED: 'cancelled',
   DISPUTED: 'disputed',
   PAID: 'paid',
@@ -441,6 +452,8 @@ const STATUS_FIELDS_TO_AVAILABLE_STATUSES = {
 
 const ALGOLIA_INSIGHTS_URL = 'https://insights.algolia.io'
 
+const DYNAMIC_YIELD_API_URL = 'https://dy-api.com'
+
 module.exports = {
   ALGOLIA_INSIGHTS_URL,
   ALI_PAY_AND_WE_CHAT_PAYMENT_CODE,
@@ -455,6 +468,7 @@ module.exports = {
   DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
+  DYNAMIC_YIELD_API_URL,
   EMAIL_API_OWNER_ID,
   FETCH_ABORT_TIMEOUT,
   GENERAL_CSV_OPTIONS,
@@ -472,6 +486,7 @@ module.exports = {
   SENT_TO_ALGOLIA_STATUSES,
   SENT_TO_CJ_STATUSES,
   SENT_TO_CRM_STATUS,
+  SENT_TO_DYNAMIC_YIELD_STATUSES,
   SHIPPING_SERVICE_TYPES,
   SHIPPING_SERVICE_TYPES_TO_NAMES,
   TAXES_ROWS,
