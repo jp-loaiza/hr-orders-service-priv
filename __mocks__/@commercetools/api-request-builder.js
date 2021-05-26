@@ -8,7 +8,9 @@ const mockRequestBuilder = {
           expand: () => ({
             expand: () => ({
               expand: () => ({
-                build: () => id
+                expand: () => ({
+                  build: () => id
+                })
               })
             })
           })
