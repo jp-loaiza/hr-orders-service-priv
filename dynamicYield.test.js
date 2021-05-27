@@ -49,8 +49,10 @@ const BASE_ORDER = Object.freeze({
         sku: '-2973273'
       },
       productSlug: {
-        'en-CA': '20051312',
-        'fr-CA': '20051312'
+        // Currently, CommerceTools `productSlug` field contain only the styleID, but
+        // the code is future proof in case we start storing the whole slug, so we test it here.
+        'en-CA': 'harry-rosen-burnished-cap-toe-oxfords-20051312',
+        'fr-CA': 'harry-rosen-chaussure-lacee-en-cuir-bruni-a-bout-rapporte-20051312'
       },
       price: {
         value: {
@@ -90,12 +92,12 @@ describe('getDYReportEventFromOrder', () => {
     expect(event.properties.currency).toBe('CAD')
     expect(event.properties.cart).toEqual([
       {
-        productId: '35c42b26-e9a9-4427-8a6f-1f92ab4446e3',
+        productId: '20050820',
         quantity: 2,
         itemPrice: 135
       },
       {
-        productId: '54b8e81a-547a-49f3-a2bc-d2d2c840d0c6',
+        productId: '20051312',
         quantity: 1,
         itemPrice: 495
       }
