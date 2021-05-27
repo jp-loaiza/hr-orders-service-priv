@@ -19,7 +19,7 @@ const getDYReportEventFromOrder = order => {
       uniqueTransactionId: order.id,
       value: convertToDollars(order.totalPrice),
       currency: 'CAD',
-      cart: order.lineItems.map(convertLineItemToDYCartItem)
+      cart: order.lineItems.map(convertLineItemToDYCartItem).filter(item => item != null)
     }
   }
 
@@ -34,8 +34,16 @@ const getDYReportEventFromOrder = order => {
  * @returns {import('./orders').DynamicYieldCartItem}
  */
 const convertLineItemToDYCartItem = (lineItem) => {
+  const productSlug = lineItem.productSlug && (lineItem.productSlug['en-CA'] || lineItem.productSlug['fr-CA']) || ''
+  const styleIdMatch = productSlug.match(/\d+$/)
+  const styleId = (styleIdMatch && styleIdMatch[0]) || ''
+
+  if (!styleId) {
+    return null
+  }
+
   return {
-    productId: lineItem.productId,
+    productId: styleId,
     quantity: lineItem.quantity,
     itemPrice: getLineItemPriceInDollars(lineItem)
   }
