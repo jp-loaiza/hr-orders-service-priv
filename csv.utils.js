@@ -1,7 +1,6 @@
 const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
-  ALI_PAY_AND_WE_CHAT_PAYMENT_CODE,
   CARD_TYPES_TO_JESTA_CODES,
   CARRIER_IDS,
   CARRIER_IDS_TO_NAMES,
@@ -67,10 +66,6 @@ const convertAndFormatDate = jsonDateString => {
   return format(easternDate, template, { timeZone })
 }
 
-const paymentIsByAliPayOrWeChat = (/** @type {import('./orders').Payment} */ payment) => (
-  payment.obj.paymentMethodInfo.method
-  && payment.obj.paymentMethodInfo.method.toLowerCase() === 'citcon payment'
-)
 
 const paymentIsByCreditCard =  (/** @type {import('./orders').Payment} */ payment) => (
   payment.obj.paymentMethodInfo.method
@@ -161,10 +156,7 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivalenceFromPayment = payment => {
-  if (paymentIsByAliPayOrWeChat(payment)) return ALI_PAY_AND_WE_CHAT_PAYMENT_CODE
-  return CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
-}
+const getPosEquivalenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
 
 const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
