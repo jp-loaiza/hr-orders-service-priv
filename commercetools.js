@@ -12,6 +12,7 @@ const {
   SENT_TO_OMS_STATUSES,
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_ALGOLIA_STATUSES,
+  SENT_TO_DYNAMIC_YIELD_STATUSES,
   SENT_TO_CRM_STATUS,
   STATUS_FIELDS_TO_AVAILABLE_STATUSES,
 } = require('./constants')
@@ -108,7 +109,7 @@ const setOrderCustomField = async (orderId, name, value) => {
   return ctClient.execute({ method: 'POST', uri, body })
 }
 
-/** 
+/**
  * Fetches all orders that need to be updated in OMS
  * @returns {Promise<{orders: Array<import('./orders').Order>, total: number}>}
  */
@@ -120,7 +121,7 @@ async function fetchOrdersThatShouldBeUpdatedInOMS () {
   return { orders: body.results, total: body.total }
 }
 
-/** 
+/**
  * Fetches all orders that that we should try to send to the Notification Service.
  * @returns {Promise<{ orderIds: Array<string>, total: number }>}
  */
@@ -133,7 +134,7 @@ async function fetchOrderIdsThatShouldBeSentToCrm () {
    * @type Array<string>
    */
   const orderIds = body.results.map((/** @type {import('./orders').Order} */ order) => order.id)
-  return { orderIds, total: body.total } 
+  return { orderIds, total: body.total }
 }
 
 /**
@@ -154,6 +155,7 @@ const fetchFullOrder = async orderId => {
     .expand('lineItems[*].variant.attributes[*].value[*]')
     .expand('paymentInfo.payments[*].paymentStatus.state')
     .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
+    .expand('custom.fields.dynamicYieldData')
     .build()
   const order = (await ctClient.execute({ method: 'GET', uri })).body
   return !order.locale ? { ...order, locale: 'en-CA' } : order
@@ -233,7 +235,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   const { version } = (await ctClient.execute({ method: 'GET', uri })).body
   const retryCount =  order.custom.fields[retryCountField] === undefined ? 0 : order.custom.fields[retryCountField] + 1
 
-  const isOrderCreation = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS 
+  const isOrderCreation = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
   const shouldRetry = errorIsRecoverable && (retryCount < (isOrderCreation ? SEND_ORDER_RETRY_LIMIT : SEND_ORDER_UPDATE_RETRY_LIMIT))
   const nextRetryAt = shouldRetry ? getNextRetryDateFromRetryCount(retryCount, isOrderCreation ? BACKOFF : ORDER_UPDATE_BACKOFF) : null
 
@@ -269,9 +271,22 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   }
 }
 
-
 const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
   const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} = "${SENT_TO_CJ_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.CJ_EVENT} is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} is not defined)))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  return {
+    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    total: body.total
+  }
+}
+
+/**
+ * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
+ */
+const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
@@ -287,6 +302,7 @@ module.exports = {
   fetchStuckOrderResults,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   fetchOrdersWhoseConversionsShouldBeSentToCj,
+  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
