@@ -17,7 +17,7 @@ const getDYReportEventFromOrder = order => {
     properties: {
       dyType: 'purchase-v1',
       uniqueTransactionId: order.id,
-      value: convertToDollars(order.totalPrice),
+      value: convertToDollars(order.totalPrice.centAmount),
       currency: 'CAD',
       cart: order.lineItems.map(convertLineItemToDYCartItem).filter(item => item != null)
     }
@@ -56,8 +56,8 @@ const convertLineItemToDYCartItem = (lineItem) => {
 const getLineItemPriceInDollars = (lineItem) => {
   const centAmount = lineItem.discountedPrice
     ? lineItem.discountedPrice.value.centAmount
-
     : lineItem.price.value.centAmount
+
   return convertToDollars(centAmount)
 }
 

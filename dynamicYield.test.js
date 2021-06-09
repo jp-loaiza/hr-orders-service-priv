@@ -1,4 +1,5 @@
 const { getDYReportEventFromOrder } = require('./dynamicYield')
+const BASE_ORDER = require('./example-orders/24845933.json')
 
 jest.mock('./config')
 
@@ -11,58 +12,6 @@ const DYNAMIC_YIELD_DATA = Object.freeze({
       session: {
         dy: '8b01311c454c4d54b43ffa57c6df7301'
       }
-    }
-  }
-})
-
-const BASE_ORDER = Object.freeze({
-  id: 'C5336C86-EC52-469C-AE37-AC8D47548540',
-  totalPrice: 76500,
-  lineItems: [
-    {
-      id: 'b3df59b9-af78-4bc0-ad69-b866f73bd5fb',
-      productId: '35c42b26-e9a9-4427-8a6f-1f92ab4446e3',
-      quantity: 2,
-      variant: {
-        sku: '-2967100'
-      },
-      productSlug: {
-        'en-CA': '20050820',
-        'fr-CA': '20050820'
-      },
-      price: {
-        value: {
-          centAmount: 15000
-        }
-      },
-      discountedPrice: {
-        value: {
-          centAmount: 13500
-        }
-      }
-    },
-    {
-      id: '9d9947dc-f987-4c03-8175-f166359f3d0a',
-      productId: '54b8e81a-547a-49f3-a2bc-d2d2c840d0c6',
-      quantity: 1,
-      variant: {
-        sku: '-2973273'
-      },
-      productSlug: {
-        // Currently, CommerceTools `productSlug` field contain only the styleID, but
-        // the code is future proof in case we start storing the whole slug, so we test it here.
-        'en-CA': 'harry-rosen-burnished-cap-toe-oxfords-20051312',
-        'fr-CA': 'harry-rosen-chaussure-lacee-en-cuir-bruni-a-bout-rapporte-20051312'
-      },
-      price: {
-        value: {
-          centAmount: 49500
-        }
-      }
-    },
-  ],
-  custom: {
-    fields: {
     }
   }
 })
@@ -87,19 +36,24 @@ describe('getDYReportEventFromOrder', () => {
 
     expect(event.name).toBe('Purchase')
     expect(event.properties.dyType).toBe('purchase-v1')
-    expect(event.properties.uniqueTransactionId).toBe('C5336C86-EC52-469C-AE37-AC8D47548540')
-    expect(event.properties.value).toBe(765)
+    expect(event.properties.uniqueTransactionId).toBe('3f738305-a705-48e1-8e57-fe60a3a759a0')
+    expect(event.properties.value).toBe(584.73)
     expect(event.properties.currency).toBe('CAD')
     expect(event.properties.cart).toEqual([
       {
-        productId: '20050820',
-        quantity: 2,
-        itemPrice: 135
+        productId: '20047537',
+        quantity: 1,
+        itemPrice: 252.74
       },
       {
-        productId: '20051312',
+        productId: '20041790',
         quantity: 1,
-        itemPrice: 495
+        itemPrice: 136.99
+      },
+      {
+        productId: '20052889',
+        quantity: 1,
+        itemPrice: 175.00
       }
     ])
   })
