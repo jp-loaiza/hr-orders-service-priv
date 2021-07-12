@@ -256,6 +256,10 @@ async function sendPurchaseEventsToDynamicYield() {
   }
 }
 
+async function sendOrdersToNarvar() {
+  console.log('Send orders to Narvar job!')
+}
+
 /**
  * @param {{name: string, fetchRelevantOrders: function, processOrder: function, retryCountField: string, nextRetryAtField: string, statusField: string, statuses: {SUCCESS: string, FAILURE: string, PENDING: string} }} params
  */
@@ -314,6 +318,7 @@ module.exports = {
   sendOrderUpdates,
   sendConversionsToAlgolia,
   sendPurchaseEventsToDynamicYield,
+  sendOrdersToNarvar,
   startCjConversionJob,
   transformToOrderPayment
 }
