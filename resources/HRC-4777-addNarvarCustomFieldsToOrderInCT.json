@@ -1,0 +1,79 @@
+{
+  "version": 67,
+  "actions": [
+    {
+      "action": "addFieldDefinition",
+      "fieldDefinition": {
+        "name": "narvarLastSuccessTime",
+        "label": {
+          "fr-CA": "",
+          "en-CA": "Last time when the order was successfully transmitted to Narvar"
+        },
+        "required": false,
+        "type": {
+          "name": "DateTime"
+        },
+        "inputHint": "SingleLine"
+      }
+    },
+    {
+      "action": "addFieldDefinition",
+      "fieldDefinition": {
+        "name": "narvarStatus",
+        "label": {
+          "fr-CA": "",
+          "en-CA": "Status of the last attempt to transmit to Narvar"
+        },
+        "required": false,
+        "type": {
+          "name": "Enum",
+          "values": [
+            {
+              "key": "PENDING",
+              "label": "Pending"
+            },
+            {
+              "key": "SUCCESS",
+              "label": "Success"
+            },
+            {
+              "key": "FAILURE",
+              "label": "Failure"
+            }
+          ]
+        },
+        "inputHint": "SingleLine"
+      }
+    },
+    {
+      "action": "addFieldDefinition",
+      "fieldDefinition": {
+        "name": "narvarRetryCount",
+        "label": {
+          "fr-CA": "",
+          "en-CA": "Counter for retrying a failed transfer to Narvar"
+        },
+        "required": false,
+        "type": {
+          "name": "Number"
+        },
+        "inputHint": "SingleLine"
+      }
+    },
+    {
+      "action": "addFieldDefinition",
+      "fieldDefinition": {
+        "name": "narvarNextRetryAt",
+        "label": {
+          "fr-CA": "",
+          "en-CA": "Earliest time when a failed transfer to Narvar will be retried"
+        },
+        "required": false,
+        "type": {
+          "name": "DateTime"
+        },
+        "inputHint": "SingleLine"
+      }
+    }
+  ]
+}
