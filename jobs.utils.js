@@ -275,9 +275,11 @@ async function sendOrdersToNarvar() {
   for (const order of orders) {
     try {
       const narvarOrder = convertOrderForNarvar(order)
-      //await sendToNarvar(narvarOrder)
-      //console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
-      //await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+      if(narvarOrder) {}
+        await sendToNarvar(narvarOrder)
+        console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
+        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+    }
     } catch (error) {
       console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
       await retry(setOrderErrorFields)(order, error.message, true, {
