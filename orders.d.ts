@@ -36,6 +36,107 @@ interface Env {
   SHOULD_SEND_DYNAMIC_YIELD_INFO: string
 }
 
+type NarvarOrder = {
+  order_info: {
+    order_number: string,
+    order_date: string,
+    order_items:Array<NarvarOrderItem>,
+    shipments: Array<NarvarShipment>,
+    pickups: Array<NarvarPickup>,
+    billing: NarvarBilling,
+    customer: NarvarCustomer
+}
+
+type NarvarOrderItem = {
+  item_id: string,
+  name: string,
+  quantity: number,
+  categories: Array<string>,
+  item_image: string,
+  item_url: string,
+  sku: string,
+  is_final_sale: boolean,
+  unit_price: number,
+  line_price: number,
+  fulfillment_type: 'HD' | 'BOPIS' | 'BOSS',
+  fulfillment_status: 'FULFILLED' | 'NOT_SHIPPED' | 'SHIPPED' | 'CANCELLED' | 'RETURNED' | 'PARTIAL' | 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP',
+  is_gift: boolean,
+  final_sale_date: string,
+  line_number: number,
+  attributes: Array<{ [key: string]: string}>,
+  vendors: Array<{
+    name: string,
+    phone: string,
+    adddress: string
+  }>
+}
+
+type NarvarShipment = {
+  items_info: Array<NarvarItemsInfo>,
+  tracking_number: string,
+  carrier: string,
+  shipped_to: NarvarShippedTo,
+  ship_date: string
+  // TODO: add optional items we use
+}
+
+type NarvarPickup = {
+  id: string,
+  items_info: Array<NarvarItemsInfo>,
+   status: NarvarPickupStatus,
+   status_history: Array<NarvarPickupStatus>,
+   attributes: Array<{ [key: string]: string}>,
+   store: {
+     id: string,
+     address: NarvarAddress,
+     phone_number: string
+   }
+}
+
+type NarvarPickupStatus = {
+  code: 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP',
+  date: string
+}
+
+type NarvarItemsInfo = {
+  item_id: string,
+  sku: string,
+  quantity: number
+}
+
+type NarvarBilling = {
+  billed_to: NarvarShippedTo, // SIC as per Narvar API spec
+  amount: number,
+  tax_amount: number,
+  shipping_handling: number
+}
+
+type NarvarCustomer = {
+  first_name: string,
+  last_name: string,
+  phone: string,
+  email: string,
+  address: NarvarAddress
+}
+
+type NarvarShippedTo = {
+  first_name: string,
+  last_name: string,
+  phone: string,
+  email: string,
+  address: NarvarAddress,
+
+}
+
+type NarvarAddress = {
+  street_1: string,
+  street_2: string,
+  city: string,
+  state: string,
+  zip: string,
+  country: string
+}
+
 type Price = {
   type: string,
   currencyCode: string,
@@ -287,5 +388,6 @@ export {
   StateCode,
   TaxDescriptionKey,
   TaxedPrice,
-  Transaction
+  Transaction,
+  NarvarOrder
 }

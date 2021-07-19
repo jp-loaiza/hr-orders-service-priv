@@ -1,5 +1,7 @@
-import fetch from 'node-fetch'
-import base64 from 'base-64'
+const fetch = require('node-fetch')
+const base64 = require('base-64')
+//import fetch from 'node-fetch'
+//import base64 from 'base-64'
 
 const baseUrl = process.env.NARVAR_BASE_URL
 const username = process.env.NARVAR_USERNAME
@@ -34,10 +36,9 @@ const makeNarvarRequest = async (path, options) => {
 /**
  * 
  * @param {import('./orders').Order} order The order to send to Narvar
- * @returns Result of the request
  */
 
-const sendOrderToNarvar = async (order) => {
+const sendToNarvar = async (order) => {
   // convert order to Narvar format
   const options = {
     body: JSON.stringify(order),
@@ -49,7 +50,16 @@ const sendOrderToNarvar = async (order) => {
   }
   return makeNarvarRequest('/orders', options)
 }
+
+/**
+ * @param {import('./orders').Order} order
+ * @returns {import('./orders').NarvarOrder | undefined}
+ */
+const convertOrderForNarvar = order => {
+  return undefined
+}
   
-export default {
-  sendOrderToNarvar
+module.exports = {
+  convertOrderForNarvar,
+  sendToNarvar
 }

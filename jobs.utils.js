@@ -1,7 +1,17 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES, SENT_TO_CJ_STATUSES, SENT_TO_DYNAMIC_YIELD_STATUSES } = require('./constants')
+const { 
+  MAXIMUM_RETRIES,
+  ORDER_CUSTOM_FIELDS,
+  PAYMENT_STATES, 
+  TRANSACTION_TYPES, 
+  TRANSACTION_STATES, 
+  JESTA_ORDER_STATUSES, 
+  SENT_TO_ALGOLIA_STATUSES, 
+  SENT_TO_CJ_STATUSES, 
+  SENT_TO_DYNAMIC_YIELD_STATUSES, 
+  SENT_TO_NARVAR_STATUSES } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -10,7 +20,8 @@ const {
   fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   fetchOrdersWhoseConversionsShouldBeSentToCj,
-  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield
+  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
+  fetchOrdersThatShouldBeSentToNarvar
 } = require('./commercetools')
 const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
@@ -19,6 +30,7 @@ const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (pr
 const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
 const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('./dynamicYield')
 const { sendOrderConversionToCj } = require('./cj')
+const { convertOrderForNarvar, sendToNarvar } = require('./narvar')
 
 /**
  *
@@ -258,6 +270,24 @@ async function sendPurchaseEventsToDynamicYield() {
 
 async function sendOrdersToNarvar() {
   console.log('Send orders to Narvar job!')
+  const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar();
+  console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
+  for (const order of orders) {
+    try {
+      const narvarOrder = convertOrderForNarvar(order)
+      //await sendToNarvar(narvarOrder)
+      //console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
+      //await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+    } catch (error) {
+      console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
+      })
+    }
+    await sleep(100) // prevent CT/Narvar from getting overloaded
+  }
 }
 
 /**
