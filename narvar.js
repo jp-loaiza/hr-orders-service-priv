@@ -56,6 +56,7 @@ const sendToNarvar = async (order) => {
  * @returns {import('./orders').NarvarOrder | undefined}
  */
 const convertOrderForNarvar = order => {
+  console.log(`Convert order: ${JSON.stringify(order)}`)
   return undefined
 }
   
