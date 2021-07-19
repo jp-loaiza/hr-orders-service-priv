@@ -270,15 +270,16 @@ async function sendPurchaseEventsToDynamicYield() {
 
 async function sendOrdersToNarvar() {
   console.log('Send orders to Narvar job!')
-  const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar();
+  const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
   console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
   for (const order of orders) {
     try {
       const narvarOrder = convertOrderForNarvar(order)
-      if(narvarOrder) {}
+      if(narvarOrder) {
         await sendToNarvar(narvarOrder)
         console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
         await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+      }
     } catch (error) {
       console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
       await retry(setOrderErrorFields)(order, error.message, true, {
