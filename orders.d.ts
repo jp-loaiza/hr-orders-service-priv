@@ -76,8 +76,10 @@ type NarvarShipment = {
   tracking_number: string,
   carrier: string,
   shipped_to: NarvarShippedTo,
-  ship_date: string
-  // TODO: add optional items we use
+  ship_date: string,
+  carrier_service: string,
+  shipped_from: NarvarShippedFrom,
+  attributes: Array<{ [key: string]: string}>,
 }
 
 type NarvarPickup = {
@@ -124,6 +126,14 @@ type NarvarShippedTo = {
   last_name: string,
   phone: string,
   email: string,
+  address: NarvarAddress,
+
+}
+
+type NarvarShippedFrom = {
+  first_name: string,
+  last_name: string,
+  phone: string,
   address: NarvarAddress,
 
 }
