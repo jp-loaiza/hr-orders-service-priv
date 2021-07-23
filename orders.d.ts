@@ -2,6 +2,8 @@ type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
 type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
 type BoldTaxDescription = 'GST' | 'HST' | 'PST' | 'QST'
 type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discover' | 'jcb'
+type NarvarFulfillmentStatuses = 'FULFILLED' | 'NOT_SHIPPED' | 'SHIPPED' | 'CANCELLED' | 'RETURNED' | 'PARTIAL' | 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP'
+type CommerceToolsOrderStates = 'SHIPPED' | 'IN PICKING' | 'HOLD' | 'OPEN' | 'CANCELLED'
 
 interface Env {
   [key: string]: string,
@@ -40,34 +42,36 @@ type NarvarOrder = {
   order_info: {
     order_number: string,
     order_date: string,
-    order_items:Array<NarvarOrderItem>,
-    shipments: Array<NarvarShipment>,
-    pickups: Array<NarvarPickup>,
-    billing: NarvarBilling,
-    customer: NarvarCustomer
+    status: string, // should use the statuses instead
+  }
+  order_items:Array<NarvarOrderItem>,
+  shipments: Array<NarvarShipment>,
+  pickups: Array<NarvarPickup>,
+  billing: NarvarBilling,
+  customer: NarvarCustomer
 }
 
 type NarvarOrderItem = {
   item_id: string,
   name: string,
   quantity: number,
-  categories: Array<string>,
+  categories?: Array<string>,
   item_image: string,
-  item_url: string,
+  item_url?: string,
   sku: string,
   is_final_sale: boolean,
-  unit_price: number,
-  line_price: number,
+  unit_price: string, // Using string since they're not using cents, instead a xx.yy format
+  line_price: string,
   fulfillment_type: 'HD' | 'BOPIS' | 'BOSS',
-  fulfillment_status: 'FULFILLED' | 'NOT_SHIPPED' | 'SHIPPED' | 'CANCELLED' | 'RETURNED' | 'PARTIAL' | 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP',
+  fulfillment_status: string,
   is_gift: boolean,
   final_sale_date: string,
-  line_number: number,
-  attributes: Array<{ [key: string]: string}>,
+  line_number?: number,
+  attributes: { [key: string]: string},
   vendors: Array<{
     name: string,
-    phone: string,
-    adddress: string
+    phone?: string,
+    adddress?: string
   }>
 }
 
@@ -145,6 +149,14 @@ type NarvarAddress = {
   state: string,
   zip: string,
   country: string
+}
+
+type OrderState = {
+  id: string,
+  name: {
+    'en-CA': CommerceToolsOrderStates,
+    'fr-CA': CommerceToolsOrderStates
+  }
 }
 
 type Price = {
@@ -226,14 +238,18 @@ type DynamicYieldCartItem = {
 
 type LineItem = {
   id: string,
+  name: {'en-CA':string, 'fr-CA':string},
+  productSlug: {'en-CA':string, 'fr-CA':string},
   variant: {
     sku: string,
     prices: Array<{ value: Price }>,
+    images: Array<{ url: string }>
     attributes: Array<{
       name: string,
       value: any
     }>
   },
+  state: Array<{ quantity: number, state: { typeId: string, id: string} }>,
   price: { value: Price },
   discountedPrice?: { value: Price }
   totalPrice: Price,
@@ -252,7 +268,8 @@ type LineItem = {
     }
   },
   taxedPrice: TaxedPrice,
-  taxRate: TaxRate
+  taxRate: TaxRate,
+  lastModifiedAt: string
 }
 
 type Address = {
@@ -318,6 +335,7 @@ type Order = {
   type: string,
   id: string,
   orderNumber: string,
+  state: { typeId: string, id: string },
   createdAt: string,
   customerId?: string,
   anonymousId?: string,
@@ -368,6 +386,27 @@ type Order = {
   }
 }
 
+type Shipment = {
+  id: string,
+  createdAt: string,
+  value: {
+    fillSiteId: string,
+    destinationSiteId: string,
+    shipmentId: string,
+    shipmentDetails: {
+      siteId: string,
+      line: number,
+      businessUnitId: string,
+      status: string, // TODO: commercetools lineitem state
+      quantityShipped: number,
+      lineItemId: string,
+      shipmentDetailId: string,
+      carrierId?: string,
+      trackingNumber?: string
+    }
+  }
+}
+
 type ParsedTax = {
   dollarAmount: number,
   description: string
@@ -399,5 +438,9 @@ export {
   TaxDescriptionKey,
   TaxedPrice,
   Transaction,
-  NarvarOrder
+  NarvarOrder,
+  NarvarOrderItem,
+  OrderState,
+  CommerceToolsOrderStates,
+  Shipment
 }

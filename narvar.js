@@ -20,7 +20,7 @@ const makeNarvarRequest = async (path, options) => {
   console.log(path)
   console.log(baseUrl)
   console.log(options)
-  const response = await fetch(baseUrl + path, options)
+  /*const response = await fetch(baseUrl + path, options)
   const result = await response.json()
   console.log('result:')
   console.log(result)
@@ -30,12 +30,12 @@ const makeNarvarRequest = async (path, options) => {
     }
     return result
   }
-  throw new Error(JSON.stringify(result))
+  throw new Error(JSON.stringify(result))*/
 }
 
 /**
  * 
- * @param {import('./orders').Order} order The order to send to Narvar
+ * @param {import('./orders').NarvarOrder} order The order to send to Narvar
  */
 
 const sendToNarvar = async (order) => {
@@ -51,13 +51,79 @@ const sendToNarvar = async (order) => {
   return makeNarvarRequest('/orders', options)
 }
 
+const STATES_TO_NARVAR_STATUSES /** @type {import('./orders').NarvarStateMap} */ = {
+  'SHIPPED': 'SHIPPED',
+  'OPEN': 'PROCESSING',
+  'HOLD': 'PROCESSING',
+  'IN PICKING': 'IN_PICKING',
+  'CANCELLED': 'CANCELLED'
+}
+
+const LOCALE_TO_PRODUCT = {
+  'en-CA': 'product',
+  'fr-CA': 'produit'
+}
+
+/**
+ * @param {string} productSlug
+ * @param {string} locale
+ * @returns string
+ */
+const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.substr(0,2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
+
+/**
+ * @param {import('./orders').LineItem} item
+ * @param {Array<import('./orders').OrderState>} states
+ * @param { 'en-CA' | 'fr-CA' } locale
+ * @returns string
+ */
+ const getItemFulfillmentStatus = (item, states, locale) => {
+  const state = states.find(s => item.state[0].state.id === s.id)
+  return state ? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
+}
+
 /**
  * @param {import('./orders').Order} order
+ * @param {Array<import('./orders').OrderState>} states
  * @returns {import('./orders').NarvarOrder | undefined}
  */
-const convertOrderForNarvar = order => {
-  console.log(`Convert order: ${JSON.stringify(order)}`)
-  return undefined
+const convertOrderForNarvar = (order, states) => {
+  console.log(`Convert order: ${order.orderNumber} - ${order.id}`)
+  const state = order.state ? states.find(s => order.state.id === s.id) : null
+  const locale = order.locale
+  return {
+    order_info: {
+      order_number: order.orderNumber,
+      order_date: order.createdAt,
+      status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN']
+    },
+    order_items: order.lineItems.map(item => { return {
+      item_id: item.id,
+      sku: item.variant.sku,
+      name: item.name[locale],
+      quantity: item.quantity,
+      unit_price: (item.variant.prices[0].value.centAmount / 100).toFixed(2),
+      item_image: item.variant.images[0].url,
+      item_url: getItemUrl(item.productSlug[locale], locale),
+      is_final_sale: item.variant.attributes.find(attr => attr.name === 'isReturnable')?.value ?? true,
+      fulfillment_status: getItemFulfillmentStatus(item, states, locale),
+      fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
+      is_gift: item.custom.fields.isGift,
+      final_sale_date: order.createdAt,
+      attributes: {
+        deliveryItemLastModifiedDate: item.lastModifiedAt,
+        brand_name: item.variant.attributes.find(a => a.name === 'brandName')?.value[locale] ?? null,
+        barcode: item.variant.attributes.find(a => a.name === 'barcodes')?.value.obj?.barcode ?? null
+      },
+      vendors: [
+        { 'name' :  (item.variant.attributes.find(a => a.name === 'isEndlessAisle')?.value ?? false) ? 'EA' : 'HR' }
+      ],
+      line_price: (item.price.value.centAmount / 100).toFixed(2)
+      }}),
+    pickups: !order.custom.fields.isStorePickup ? [] : order.lineItems.map(item => { return {
+      
+    }}),
+  }
 }
   
 module.exports = {
