@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+//const fetch = require('node-fetch')
 const base64 = require('base-64')
 //import fetch from 'node-fetch'
 //import base64 from 'base-64'
@@ -77,17 +77,42 @@ const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.sub
  * @param { 'en-CA' | 'fr-CA' } locale
  * @returns string
  */
- const getItemFulfillmentStatus = (item, states, locale) => {
+const getItemFulfillmentStatus = (item, states, locale) => {
   const state = states.find(s => item.state[0].state.id === s.id)
   return state ? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
 }
 
 /**
+ * 
+ * @param {Array<{ name: string, value: any }>} attributes 
+ * @param {string} attrName 
+ * @param {{value: boolean}} attrDefault 
+ * @returns {{value: boolean}}
+ */
+const getAttributeOrDefaultBoolean = (attributes, attrName, attrDefault) => {
+  const obj = attributes.find(a => a.name === attrName)
+  return obj ? obj : attrDefault
+}
+
+/**
+ * 
+ * @param {Array<{ name: string, value: any }>} attributes 
+ * @param {string} attrName 
+ * @param {{value: any}} attrDefault 
+ * @returns {{value: any}}
+ */
+const getAttributeOrDefaultAny = (attributes, attrName, attrDefault) => {
+  const obj = attributes.find(a => a.name === attrName)
+  return obj ? obj : attrDefault
+}
+
+/**
  * @param {import('./orders').Order} order
+ * @param {Array<import('./orders').Shipment>} shipments
  * @param {Array<import('./orders').OrderState>} states
  * @returns {import('./orders').NarvarOrder | undefined}
  */
-const convertOrderForNarvar = (order, states) => {
+const convertOrderForNarvar = (order, shipments, states) => {
   console.log(`Convert order: ${order.orderNumber} - ${order.id}`)
   const state = order.state ? states.find(s => order.state.id === s.id) : null
   const locale = order.locale
@@ -105,23 +130,23 @@ const convertOrderForNarvar = (order, states) => {
       unit_price: (item.variant.prices[0].value.centAmount / 100).toFixed(2),
       item_image: item.variant.images[0].url,
       item_url: getItemUrl(item.productSlug[locale], locale),
-      is_final_sale: item.variant.attributes.find(attr => attr.name === 'isReturnable')?.value ?? true,
+      is_final_sale: getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true }).value,
       fulfillment_status: getItemFulfillmentStatus(item, states, locale),
       fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
       is_gift: item.custom.fields.isGift,
       final_sale_date: order.createdAt,
       attributes: {
         deliveryItemLastModifiedDate: item.lastModifiedAt,
-        brand_name: item.variant.attributes.find(a => a.name === 'brandName')?.value[locale] ?? null,
-        barcode: item.variant.attributes.find(a => a.name === 'barcodes')?.value.obj?.barcode ?? null
+        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
+        barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: { obj: { barcode: null }}} ).value.obj.barcode
       },
       vendors: [
-        { 'name' :  (item.variant.attributes.find(a => a.name === 'isEndlessAisle')?.value ?? false) ? 'EA' : 'HR' }
+        { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }) ? 'EA' : 'HR' }
       ],
       line_price: (item.price.value.centAmount / 100).toFixed(2)
-      }}),
-    pickups: !order.custom.fields.isStorePickup ? [] : order.lineItems.map(item => { return {
-      
+    }}),
+    pickups: !order.custom.fields.isStorePickup ? [] : shipments.map(shipment => { return {
+      carrier_service: shipment.value.shipmentDetails.carrierId || null
     }}),
   }
 }

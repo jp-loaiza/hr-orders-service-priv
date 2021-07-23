@@ -272,7 +272,7 @@ async function sendPurchaseEventsToDynamicYield() {
 
 async function sendOrdersToNarvar() {
   console.log('Send orders to Narvar job!')
-  const states = await fetchStates();
+  const states = await fetchStates()
   const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
   console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
 
