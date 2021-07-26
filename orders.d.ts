@@ -77,31 +77,25 @@ type NarvarOrderItem = {
 
 type NarvarShipment = {
   items_info: Array<NarvarItemsInfo>,
-  tracking_number: string,
-  carrier: string,
+  tracking_number: string | null,
+  carrier: string | null,
   shipped_to: NarvarShippedTo,
-  ship_date: string,
-  carrier_service: string,
+  ship_date: string | null,
+  carrier_service: string | null,
   shipped_from: NarvarShippedFrom,
-  attributes: Array<{ [key: string]: string}>,
+  attributes: { [key: string]: string},
 }
 
 type NarvarPickup = {
   id: string,
   items_info: Array<NarvarItemsInfo>,
-   status: NarvarPickupStatus,
-   status_history: Array<NarvarPickupStatus>,
-   attributes: Array<{ [key: string]: string}>,
-   store: {
-     id: string,
-     address: NarvarAddress,
-     phone_number: string
-   }
-}
-
-type NarvarPickupStatus = {
-  code: 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP',
-  date: string
+  status: string,
+  attributes: { [key: string]: string},
+  store: {
+    id: string,
+    address: NarvarAddress,
+    phone_number: string
+  }
 }
 
 type NarvarItemsInfo = {
@@ -112,9 +106,9 @@ type NarvarItemsInfo = {
 
 type NarvarBilling = {
   billed_to: NarvarShippedTo, // SIC as per Narvar API spec
-  amount: number,
-  tax_amount: number,
-  shipping_handling: number
+  amount: string, // Narvar requires prices in "0.00" format so we send it as string to avoid float weirdness
+  tax_amount: string,
+  shipping_handling: string
 }
 
 type NarvarCustomer = {
@@ -144,7 +138,7 @@ type NarvarShippedFrom = {
 
 type NarvarAddress = {
   street_1: string,
-  street_2: string,
+  street_2?: string,
   city: string,
   state: string,
   zip: string,
@@ -281,7 +275,8 @@ type Address = {
   firstName: string,
   lastName: string,
   phone: string,
-  additionalAddressInfo?: string
+  additionalAddressInfo?: string,
+  email: string
 }
 
 type ShippingInfo = {
@@ -343,6 +338,7 @@ type Order = {
   totalPrice: Price,
   lineItems: Array<LineItem>,
   shippingAddress: Address,
+  itemShippingAddress: Address,
   billingAddress: Address,
   locale: 'en-CA' | 'fr-CA',
   paymentState: 'Pending' | 'Paid'
@@ -393,7 +389,8 @@ type Shipment = {
     fillSiteId: string,
     destinationSiteId: string,
     shipmentId: string,
-    shipmentDetails: {
+    shipmentLastModifiedDate: string,
+    shipmentDetails: Array<{
       siteId: string,
       line: number,
       businessUnitId: string,
@@ -402,8 +399,10 @@ type Shipment = {
       lineItemId: string,
       shipmentDetailId: string,
       carrierId?: string,
-      trackingNumber?: string
-    }
+      trackingNumber?: string,
+      serviceType?: string,
+      shippedDate?: string
+    }>
   }
 }
 
@@ -440,6 +439,8 @@ export {
   Transaction,
   NarvarOrder,
   NarvarOrderItem,
+  NarvarShipment,
+  NarvarPickup,
   OrderState,
   CommerceToolsOrderStates,
   Shipment

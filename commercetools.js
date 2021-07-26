@@ -301,7 +301,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined))) and (createdAt > "2021-05-30")`
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined))) and (createdAt > "2021-07-14")`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
@@ -323,7 +323,7 @@ const fetchStates = async () => {
 /**
  * 
  * @param {string} orderNumber 
- * @returns {Promise<import('./orders').Shipment>}
+ * @returns {Promise<Array<import('./orders').Shipment>>}
  */
 
 const fetchShipments = async orderNumber => {

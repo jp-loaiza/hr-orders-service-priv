@@ -278,10 +278,10 @@ async function sendOrdersToNarvar() {
 
   for (const order of orders) {
     try {
-      const shipments = fetchShipments(order.orderNumber)
+      const shipments = await fetchShipments(order.orderNumber)
       console.log('Shipments: ')
       console.log(JSON.stringify(shipments, null, 2))
-      const narvarOrder = convertOrderForNarvar(order, states)
+      const narvarOrder = convertOrderForNarvar(order, shipments, states)
       if(narvarOrder) {
         await sendToNarvar(narvarOrder)
         console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
