@@ -120,13 +120,61 @@ const findItemSku = (items, item_id) => {
 
 /**
  * 
+ * @param {Array<import('./orders').Shipment>} shipments 
+ * @param {string} lineItemId 
+ * @returns 
+ */
+
+const lineNumberFromShipments = (shipments, lineItemId) => {
+  const shipment = shipments.find(s => s.id === lineItemId)
+  return shipment ? shipment.value.shipmentDetails[0].line : null
+}
+
+/**
+ * 
+ * @param {import('./orders').Order} order
+ * @param {Array<import('./orders').OrderState>} states
+ * @param {Array<import('./orders').Shipment>} shipments 
+ * @returns {Array<import('./orders').NarvarOrderItem>}
+ */
+const convertItems = (order, states, shipments) => {
+  const locale = order.locale
+  let lineCounter = 1 // Not sure this workaround is fine
+  return order.lineItems.map(item => { return {
+    item_id: item.id,
+    sku: item.variant.sku,
+    name: item.name[locale],
+    quantity: item.quantity,
+    unit_price: (item.variant.prices[0].value.centAmount / 100).toFixed(2), // TODO: double check
+    item_image: item.variant.images[0].url, // TODO: double check
+    item_url: getItemUrl(item.productSlug[locale], locale),
+    is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
+    fulfillment_status: getItemFulfillmentStatus(item, states, locale),
+    fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
+    is_gift: item.custom.fields.isGift,
+    final_sale_date: order.createdAt,
+    line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
+    attributes: {
+      orderItemLastModifiedDate: item.lastModifiedAt,
+      brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
+      barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: null }} ]} ).value[0].obj.barcode
+    },
+    vendors: [
+      { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
+    ],
+    line_price: (item.totalPrice.centAmount / 100).toFixed(2)
+  }})
+}
+
+/**
+ * 
  * @param {import('./orders').Order} order
  * @param {Array<import('./orders').Shipment>} shipments
  * @returns {Array<import('./orders').NarvarShipment>}
  */
 
 const convertShipments = (order, shipments) => {
-  return order.custom.fields.isStorePickup ? [] : shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
+  return order.custom.fields.isStorePickup ? [] : shipments/*.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0)*/.map(shipment => { return {
     carrier: shipment.value.shipmentDetails[0].carrierId || null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
     carrier_service: shipment.value.shipmentDetails[0].serviceType || null,
@@ -220,29 +268,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
       order_date: order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN']
     },
-    order_items: order.lineItems.map(item => { return {
-      item_id: item.id,
-      sku: item.variant.sku,
-      name: item.name[locale],
-      quantity: item.quantity,
-      unit_price: (item.variant.prices[0].value.centAmount / 100).toFixed(2), // TODO: double check
-      item_image: item.variant.images[0].url, // TODO: double check
-      item_url: getItemUrl(item.productSlug[locale], locale),
-      is_final_sale: getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true }).value,
-      fulfillment_status: getItemFulfillmentStatus(item, states, locale),
-      fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
-      is_gift: item.custom.fields.isGift,
-      final_sale_date: order.createdAt,
-      attributes: {
-        deliveryItemLastModifiedDate: item.lastModifiedAt,
-        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
-        barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: null }} ]} ).value[0].obj.barcode
-      },
-      vendors: [
-        { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }) ? 'EA' : 'HR' }
-      ],
-      line_price: (item.price.value.centAmount / 100).toFixed(2)
-    }}),
+    order_items: convertItems(order, states),
     shipments: convertShipments(order, shipments),
     pickups: convertPickups(order, shipments),
     billing: {
@@ -259,11 +285,22 @@ const convertOrderForNarvar = (order, shipments, states) => {
           country: order.billingAddress.country
         },
       },
-      amount: (order.taxedPrice.totalNet.centAmount / 100.0).toFixed(2),
+      amount: (order.taxedPrice.totalGross.centAmount / 100.0).toFixed(2),
       tax_amount: (order.taxedPrice.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) / 100.0).toFixed(2),
       shipping_handling: (order.shippingInfo.shippingRate.price.centAmount / 100).toFixed(2)
     },
     customer: {
+      first_name: order.shippingAddress.firstName,
+      last_name: order.shippingAddress.lastName,
+      phone: order.shippingAddress.phone,
+      email: order.shippingAddress.email,
+      address: {
+        street_1: order.shippingAddress.streetName,
+        city: order.shippingAddress.city,
+        state: order.shippingAddress.state,
+        zip: order.shippingAddress.postalCode,
+        country: order.shippingAddress.country
+      }
     }
   }
 }

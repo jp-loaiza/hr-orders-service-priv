@@ -11,7 +11,8 @@ const {
   SENT_TO_ALGOLIA_STATUSES, 
   SENT_TO_CJ_STATUSES, 
   SENT_TO_DYNAMIC_YIELD_STATUSES, 
-  SENT_TO_NARVAR_STATUSES } = require('./constants')
+//  SENT_TO_NARVAR_STATUSES 
+} = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -277,6 +278,8 @@ async function sendOrdersToNarvar() {
   console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
 
   for (const order of orders) {
+    if (order.orderNumber !== '47069255') // TODO remove
+      continue
     try {
       const shipments = await fetchShipments(order.orderNumber)
       console.log('Shipments: ')
@@ -286,7 +289,7 @@ async function sendOrdersToNarvar() {
         await sendToNarvar(narvarOrder)
         console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
         console.log(`Converted order: ${JSON.stringify(narvarOrder, null, ' ')}`)
-        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+        //await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
       }
     } catch (error) {
       console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
