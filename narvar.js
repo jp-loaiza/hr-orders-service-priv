@@ -268,7 +268,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
       order_date: order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN']
     },
-    order_items: convertItems(order, states),
+    order_items: convertItems(order, states, shipments),
     shipments: convertShipments(order, shipments),
     pickups: convertPickups(order, shipments),
     billing: {
