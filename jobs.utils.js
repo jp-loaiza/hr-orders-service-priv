@@ -278,8 +278,6 @@ async function sendOrdersToNarvar() {
   console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
 
   for (const order of orders) {
-    if (order.orderNumber !== '47069255') // TODO remove
-      continue
     try {
       const shipments = await fetchShipments(order.orderNumber)
       console.log('Shipments: ')

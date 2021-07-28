@@ -198,17 +198,19 @@ const convertShipments = (order, shipments) => {
       }
     },
     shipped_from: {
-      first_name: order.itemShippingAddress.firstName,
-      last_name: order.itemShippingAddress.lastName,
-      street_1: order.itemShippingAddress.streetName,
-      phone: order.itemShippingAddress.phone,
-      email: order.itemShippingAddress.email,
+      first_name: shipment.value.fromStoreName || 'N/A',
+      last_name: '',
+      street_1: shipment.value.fromAddress1 || 'N/A',
+      street_2: shipment.value.fromAddress2 || 'N/A',
+      phone: shipment.value.fromHomePhone || 'N/A',
+      email: '',
       address: {
-        street_1: order.itemShippingAddress.streetName,
-        city: order.itemShippingAddress.city,
-        state: order.itemShippingAddress.state,
-        zip: order.itemShippingAddress.postalCode,
-        country: order.itemShippingAddress.country
+        street_1: shipment.value.fromAddress1 || 'N/A',
+        street_2: shipment.value.fromAddress2 || 'N/A',
+        city: shipment.value.fromCity || 'N/A',
+        state: shipment.value.fromStateId || 'N/A',
+        zip: shipment.value.fromZipCode || 'N/A',
+        country: shipment.value.fromCountryId || 'N/A'
       }
     },
     ship_date: shipment.value.shipmentDetails[0].shippedDate || null,
@@ -236,13 +238,15 @@ const convertPickups = (order, shipments) => {
     } ],
     store: {
       id: shipment.value.shipmentDetails[0].siteId,
-      phone_number: order.itemShippingAddress.phone,
+      phone_number: shipment.value.fromHomePhone || 'N/A',
+      name: shipment.value.fromStoreName || 'N/A',
       address: {
-        street_1: order.itemShippingAddress.streetName,
-        city: order.itemShippingAddress.city,
-        state: order.itemShippingAddress.state,
-        zip: order.itemShippingAddress.postalCode,
-        country: order.itemShippingAddress.country
+        street_1: shipment.value.fromAddress1 || 'N/A',
+        street_2: shipment.value.fromAddress2 || 'N/A',
+        city: shipment.value.fromCity || 'N/A',
+        state: shipment.value.fromStateId || 'N/A',
+        zip: shipment.value.fromZipCode || 'N/A',
+        country: shipment.value.fromCountryId || 'N/A'
       }
     },
     attributes: {
