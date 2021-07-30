@@ -64,6 +64,11 @@ const LOCALE_TO_PRODUCT = {
   'fr-CA': 'produit'
 }
 
+const JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID = {
+  'FDX': 'fedex',
+  'CP': 'canadapost'
+}
+
 /**
  * @param {string} productSlug
  * @param {string} locale
@@ -126,7 +131,7 @@ const findItemSku = (items, item_id) => {
  */
 
 const lineNumberFromShipments = (shipments, lineItemId) => {
-  const shipment = shipments.find(s => s.id === lineItemId)
+  const shipment = shipments.find(s => s.value.shipmentDetails[0].lineItemId === lineItemId)
   return shipment ? shipment.value.shipmentDetails[0].line : null
 }
 
@@ -155,7 +160,7 @@ const convertItems = (order, states, shipments) => {
     final_sale_date: order.createdAt,
     line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
     attributes: {
-      orderItemLastModifiedDate: item.lastModifiedAt,
+      orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
       brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
       barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: null }} ]} ).value[0].obj.barcode
     },
@@ -175,7 +180,7 @@ const convertItems = (order, states, shipments) => {
 
 const convertShipments = (order, shipments) => {
   return order.custom.fields.isStorePickup ? [] : shipments/*.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0)*/.map(shipment => { return {
-    carrier: shipment.value.shipmentDetails[0].carrierId || null,
+    carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
     carrier_service: shipment.value.shipmentDetails[0].serviceType || null,
     items_info: [ { 
@@ -200,8 +205,6 @@ const convertShipments = (order, shipments) => {
     shipped_from: {
       first_name: shipment.value.fromStoreName || 'N/A',
       last_name: '',
-      street_1: shipment.value.fromAddress1 || 'N/A',
-      street_2: shipment.value.fromAddress2 || 'N/A',
       phone: shipment.value.fromHomePhone || 'N/A',
       email: '',
       address: {
@@ -215,7 +218,7 @@ const convertShipments = (order, shipments) => {
     },
     ship_date: shipment.value.shipmentDetails[0].shippedDate || null,
     attributes: {
-      deliveryItemLastModifiedDate: shipment.value.shipmentLastModifiedDate
+      deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate
     }
   }})
 }
@@ -228,7 +231,7 @@ const convertShipments = (order, shipments) => {
  */
 
 const convertPickups = (order, shipments) => {
-  return order.custom.fields.isStorePickup ? [] : shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
+  return !order.custom.fields.isStorePickup ? [] : shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
     id: shipment.id,
     status: STATES_TO_NARVAR_STATUSES[shipment.value.shipmentDetails[0].status],
     items_info: [ { 
@@ -270,40 +273,40 @@ const convertOrderForNarvar = (order, shipments, states) => {
     order_info: {
       order_number: order.orderNumber,
       order_date: order.createdAt,
-      status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN']
-    },
-    order_items: convertItems(order, states, shipments),
-    shipments: convertShipments(order, shipments),
-    pickups: convertPickups(order, shipments),
-    billing: {
-      billed_to: {
-        first_name: order.billingAddress.firstName,
-        last_name: order.billingAddress.lastName,
-        phone: order.billingAddress.phone,
-        email: order.billingAddress.email,
-        address: {
-          street_1: order.billingAddress.streetName,
-          city: order.billingAddress.city,
-          state: order.billingAddress.state,
-          zip: order.billingAddress.postalCode,
-          country: order.billingAddress.country
+      status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
+      order_items: convertItems(order, states, shipments),
+      shipments: convertShipments(order, shipments),
+      pickups: convertPickups(order, shipments),
+      billing: {
+        billed_to: {
+          first_name: order.billingAddress.firstName,
+          last_name: order.billingAddress.lastName,
+          phone: order.billingAddress.phone,
+          email: order.billingAddress.email,
+          address: {
+            street_1: order.billingAddress.streetName,
+            city: order.billingAddress.city,
+            state: order.billingAddress.state,
+            zip: order.billingAddress.postalCode,
+            country: order.billingAddress.country
+          },
         },
+        amount: (order.taxedPrice.totalGross.centAmount / 100.0).toFixed(2),
+        tax_amount: (order.taxedPrice.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) / 100.0).toFixed(2),
+        shipping_handling: (order.shippingInfo.shippingRate.price.centAmount / 100).toFixed(2)
       },
-      amount: (order.taxedPrice.totalGross.centAmount / 100.0).toFixed(2),
-      tax_amount: (order.taxedPrice.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) / 100.0).toFixed(2),
-      shipping_handling: (order.shippingInfo.shippingRate.price.centAmount / 100).toFixed(2)
-    },
-    customer: {
-      first_name: order.shippingAddress.firstName,
-      last_name: order.shippingAddress.lastName,
-      phone: order.shippingAddress.phone,
-      email: order.shippingAddress.email,
-      address: {
-        street_1: order.shippingAddress.streetName,
-        city: order.shippingAddress.city,
-        state: order.shippingAddress.state,
-        zip: order.shippingAddress.postalCode,
-        country: order.shippingAddress.country
+      customer: {
+        first_name: order.shippingAddress.firstName,
+        last_name: order.shippingAddress.lastName,
+        phone: order.shippingAddress.phone,
+        email: order.shippingAddress.email,
+        address: {
+          street_1: order.shippingAddress.streetName,
+          city: order.shippingAddress.city,
+          state: order.shippingAddress.state,
+          zip: order.shippingAddress.postalCode,
+          country: order.shippingAddress.country
+        }
       }
     }
   }

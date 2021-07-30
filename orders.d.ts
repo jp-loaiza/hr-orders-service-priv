@@ -43,12 +43,12 @@ type NarvarOrder = {
     order_number: string,
     order_date: string,
     status: string, // should use the statuses instead
+    order_items:Array<NarvarOrderItem>,
+    shipments: Array<NarvarShipment>,
+    pickups: Array<NarvarPickup>,
+    billing: NarvarBilling,
+    customer: NarvarCustomer
   }
-  order_items:Array<NarvarOrderItem>,
-  shipments: Array<NarvarShipment>,
-  pickups: Array<NarvarPickup>,
-  billing: NarvarBilling,
-  customer: NarvarCustomer
 }
 
 type NarvarOrderItem = {
@@ -254,6 +254,7 @@ type LineItem = {
       salespersonId?: number,
       itemTaxes: string // stringified JSON
       lineShippingCharges?: Price,
+      orderDetailLastModifiedDate: string,
       algoliaAnalyticsData?: {
         obj: {
           value: AlgoliaAnalyticsData

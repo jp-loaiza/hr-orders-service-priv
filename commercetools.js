@@ -301,7 +301,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined))) and (createdAt > "2021-06-18")`
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined))) and (createdAt > "2021-07-25")`
   // TODO remove perPage
   const uri = requestBuilder.orders.where(query).perPage(100).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
