@@ -274,6 +274,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
       order_number: order.orderNumber,
       order_date: order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
+      currency_code: order.totalPrice.currencyCode,
       order_items: convertItems(order, states, shipments),
       shipments: convertShipments(order, shipments),
       pickups: convertPickups(order, shipments),
@@ -298,6 +299,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
       customer: {
         first_name: order.shippingAddress.firstName,
         last_name: order.shippingAddress.lastName,
+        customer_id: order.custom.fields.loginRadiusUid,
         phone: order.shippingAddress.phone,
         email: order.shippingAddress.email,
         address: {

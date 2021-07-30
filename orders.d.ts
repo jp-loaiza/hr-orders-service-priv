@@ -42,7 +42,8 @@ type NarvarOrder = {
   order_info: {
     order_number: string,
     order_date: string,
-    status: string, // should use the statuses instead
+    status: string,
+    currency_code: string,
     order_items:Array<NarvarOrderItem>,
     shipments: Array<NarvarShipment>,
     pickups: Array<NarvarPickup>,
@@ -114,6 +115,7 @@ type NarvarBilling = {
 type NarvarCustomer = {
   first_name: string,
   last_name: string,
+  customer_id: string,
   phone: string,
   email: string,
   address: NarvarAddress
