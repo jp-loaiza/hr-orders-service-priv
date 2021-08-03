@@ -157,7 +157,7 @@ const convertItems = (order, states, shipments) => {
     fulfillment_status: getItemFulfillmentStatus(item, states, locale),
     fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
     is_gift: item.custom.fields.isGift,
-    final_sale_date: order.createdAt,
+    final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
     line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
     attributes: {
       orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
@@ -272,7 +272,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
   return {
     order_info: {
       order_number: order.orderNumber,
-      order_date: order.createdAt,
+      order_date: order.custom.fields.orderDate || order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
       order_items: convertItems(order, states, shipments),

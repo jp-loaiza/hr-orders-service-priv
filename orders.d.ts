@@ -380,7 +380,9 @@ type Order = {
           value: DynamicYieldCustomFieldData
         }
       },
-      giftMessage: string
+      giftMessage: string,
+      orderDate?: string,
+      orderCreatedDate?: string
     }
   }
 }
