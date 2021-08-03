@@ -1,0 +1,35 @@
+{
+  "version": 71,
+  "actions": [
+    {
+      "action": "addFieldDefinition",
+      "fieldDefinition": {
+        "name": "orderDate",
+        "label": {
+          "fr-CA": "",
+          "en-CA": "ORDER_DATE from Jesta to be used in Narvar"
+        },
+        "required": false,
+        "type": {
+          "name": "DateTime"
+        },
+        "inputHint": "SingleLine"
+      }
+    },
+    {
+      "action": "addFieldDefinition",
+      "fieldDefinition": {
+        "name": "orderCreatedDate",
+        "label": {
+          "fr-CA": "",
+          "en-CA": "ORDER_CREATED_DATE from Jesta to be used in Narvar"
+        },
+        "required": false,
+        "type": {
+          "name": "DateTime"
+        },
+        "inputHint": "SingleLine"
+      }
+    }
+  ]
+}

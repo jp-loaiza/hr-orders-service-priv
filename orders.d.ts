@@ -404,6 +404,7 @@ type Shipment = {
     fromStateId?: string,
     fromStoreName?: string,
     trackingNumber?: string,
+    shipmentItemLastModifiedDate?: string,
     shipmentDetails: Array<{
       siteId: string,
       line: number,

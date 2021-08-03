@@ -127,12 +127,24 @@ const findItemSku = (items, item_id) => {
  * 
  * @param {Array<import('./orders').Shipment>} shipments 
  * @param {string} lineItemId 
- * @returns 
+ * @returns {number | null}
  */
 
 const lineNumberFromShipments = (shipments, lineItemId) => {
   const shipment = shipments.find(s => s.value.shipmentDetails[0].lineItemId === lineItemId)
   return shipment ? shipment.value.shipmentDetails[0].line : null
+}
+
+/**
+ * 
+ * @param {Array<import('./orders').Shipment>} shipments 
+ * @param {string} lineItemId 
+ * @returns {string | null}
+ */
+
+const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
+  const shipment = shipments.find(s => s.value.shipmentDetails[0].lineItemId === lineItemId)
+  return shipment && shipment.value.shipmentItemLastModifiedDate ? shipment.value.shipmentItemLastModifiedDate : null
 }
 
 /**
@@ -162,7 +174,9 @@ const convertItems = (order, states, shipments) => {
     attributes: {
       orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
       brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
-      barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: null }} ]} ).value[0].obj.barcode
+      barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: null }} ]} ).value[0].obj.barcode,
+      size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
+      deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
     },
     vendors: [
       { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
@@ -218,7 +232,8 @@ const convertShipments = (order, shipments) => {
     },
     ship_date: shipment.value.shipmentDetails[0].shippedDate || null,
     attributes: {
-      deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate
+      deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate,
+      [`${shipment.value.shipmentDetails[0].lineItemId}-deliveryItemLastModifiedDate`]: shipment.value.shipmentItemLastModifiedDate || shipment.value.shipmentLastModifiedDate,
     }
   }})
 }
