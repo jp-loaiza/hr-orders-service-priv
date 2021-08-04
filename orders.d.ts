@@ -44,11 +44,13 @@ type NarvarOrder = {
     order_date: string,
     status: string,
     currency_code: string,
+    checkout_locale: string,
     order_items:Array<NarvarOrderItem>,
     shipments: Array<NarvarShipment>,
     pickups: Array<NarvarPickup>,
     billing: NarvarBilling,
-    customer: NarvarCustomer
+    customer: NarvarCustomer,
+    attributes: { [key: string]: string },
   }
 }
 
@@ -68,7 +70,7 @@ type NarvarOrderItem = {
   is_gift: boolean,
   final_sale_date: string,
   line_number?: number,
-  attributes: { [key: string]: string},
+  attributes: { [key: string]: string },
   vendors: Array<{
     name: string,
     phone?: string,
@@ -356,6 +358,7 @@ type Order = {
   }>,
   custom: {
     fields: {
+      orderLastModifiedDate: string,
       cjEvent?: string,
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
@@ -382,7 +385,9 @@ type Order = {
       },
       giftMessage: string,
       orderDate?: string,
-      orderCreatedDate?: string
+      orderCreatedDate?: string,
+      shippingTax1?: string,
+      shippingTax2?: string
     }
   }
 }

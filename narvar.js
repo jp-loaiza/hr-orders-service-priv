@@ -290,6 +290,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
       order_date: order.custom.fields.orderDate || order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
+      checkout_locale: order.locale,
       order_items: convertItems(order, states, shipments),
       shipments: convertShipments(order, shipments),
       pickups: convertPickups(order, shipments),
@@ -324,6 +325,12 @@ const convertOrderForNarvar = (order, shipments, states) => {
           zip: order.shippingAddress.postalCode,
           country: order.shippingAddress.country
         }
+      },
+      attributes: {
+        checkout_locale: order.locale,
+        orderLastModifiedDate: order.custom.fields.orderLastModifiedDate,
+        shipping_tax1: order.custom.fields.shippingTax1 || '0',
+        shipping_tax2: order.custom.fields.shippingTax2 || '0',
       }
     }
   }
