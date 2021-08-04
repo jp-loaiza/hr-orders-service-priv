@@ -162,6 +162,7 @@ const convertItems = (order, states, shipments) => {
     sku: item.variant.sku,
     name: item.name[locale],
     quantity: item.quantity,
+    categories: [item.custom.fields.category || ''],
     unit_price: (item.variant.prices[0].value.centAmount / 100).toFixed(2), // TODO: double check
     item_image: item.variant.images[0].url, // TODO: double check
     item_url: getItemUrl(item.productSlug[locale], locale),
