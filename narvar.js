@@ -163,8 +163,8 @@ const convertItems = (order, states, shipments) => {
     name: item.name[locale],
     quantity: item.quantity,
     categories: [item.custom.fields.category || ''],
-    unit_price: (item.variant.prices[0].value.centAmount / 100).toFixed(2), // TODO: double check
-    item_image: item.variant.images[0].url, // TODO: double check
+    unit_price: (item.variant.prices[0].value.centAmount / 100),
+    item_image: item.variant.images[0].url,
     item_url: getItemUrl(item.productSlug[locale], locale),
     is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
     fulfillment_status: getItemFulfillmentStatus(item, states, locale),
@@ -175,14 +175,14 @@ const convertItems = (order, states, shipments) => {
     attributes: {
       orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
       brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
-      barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: null }} ]} ).value[0].obj.barcode,
+      barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: {value: null } }} ]} ).value[0].obj.value.barcode,
       size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
       deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
     },
     vendors: [
       { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
     ],
-    line_price: (item.totalPrice.centAmount / 100).toFixed(2)
+    line_price: (item.totalPrice.centAmount / 100)
   }})
 }
 
@@ -309,9 +309,9 @@ const convertOrderForNarvar = (order, shipments, states) => {
             country: order.billingAddress.country
           },
         },
-        amount: (order.taxedPrice.totalGross.centAmount / 100.0).toFixed(2),
-        tax_amount: (order.taxedPrice.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) / 100.0).toFixed(2),
-        shipping_handling: (order.shippingInfo.shippingRate.price.centAmount / 100).toFixed(2)
+        amount: (order.taxedPrice.totalGross.centAmount / 100.0),
+        tax_amount: (order.taxedPrice.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) / 100.0),
+        shipping_handling: (order.shippingInfo.shippingRate.price.centAmount / 100)
       },
       customer: {
         first_name: order.shippingAddress.firstName,

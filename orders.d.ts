@@ -63,8 +63,8 @@ type NarvarOrderItem = {
   item_url?: string,
   sku: string,
   is_final_sale: boolean,
-  unit_price: string, // Using string since they're not using cents, instead a xx.yy format
-  line_price: string,
+  unit_price: number,
+  line_price: number,
   fulfillment_type: 'HD' | 'BOPIS' | 'BOSS',
   fulfillment_status: string,
   is_gift: boolean,
@@ -109,9 +109,9 @@ type NarvarItemsInfo = {
 
 type NarvarBilling = {
   billed_to: NarvarShippedTo, // SIC as per Narvar API spec
-  amount: string, // Narvar requires prices in "0.00" format so we send it as string to avoid float weirdness
-  tax_amount: string,
-  shipping_handling: string
+  amount: number,
+  tax_amount: number,
+  shipping_handling: number
 }
 
 type NarvarCustomer = {
