@@ -70,7 +70,7 @@ type NarvarOrderItem = {
   is_gift: boolean,
   final_sale_date: string,
   line_number?: number,
-  attributes: { [key: string]: string },
+  attributes: { [key: string]: string | null },
   vendors: Array<{
     name: string,
     phone?: string,

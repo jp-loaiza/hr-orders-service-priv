@@ -113,6 +113,25 @@ const getAttributeOrDefaultAny = (attributes, attrName, attrDefault) => {
 
 /**
  * 
+ * @param {Array<{ name: string, value: any }>} attributes 
+ * @returns {string | null}
+ */
+const findBarcode = (attributes) => {
+  const obj = attributes.find(a => a.name === 'barcodes')
+  return obj ? obj.value.reduce((acc, curr) => (acc === null || acc.obj.version < curr.obj.version) ? curr : acc).obj.value.barcode : null
+}
+
+/**
+ * 
+ * @param {import('./orders').LineItem} item
+ * @returns {number}
+ */
+const findUnitPrice = (item) => {
+  return item.discountedPricePerQuantity ? (item.discountedPricePerQuantity[0].discountedPrice.value.centAmount / 100) : (item.variant.prices[0].value.centAmount / 100)
+}
+
+/**
+ * 
  * @param {Array<import('./orders').LineItem>} items 
  * @param {string} item_id 
  * @returns {string}
@@ -163,7 +182,7 @@ const convertItems = (order, states, shipments) => {
     name: item.name[locale],
     quantity: item.quantity,
     categories: [item.custom.fields.category || ''],
-    unit_price: (item.variant.prices[0].value.centAmount / 100),
+    unit_price: findUnitPrice(item),
     item_image: item.variant.images[0].url,
     item_url: getItemUrl(item.productSlug[locale], locale),
     is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
@@ -175,7 +194,7 @@ const convertItems = (order, states, shipments) => {
     attributes: {
       orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
       brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
-      barcode: getAttributeOrDefaultAny(item.variant.attributes, 'barcodes', { value: [ { obj: { barcode: {value: null } }} ]} ).value[0].obj.value.barcode,
+      barcode: findBarcode(item.variant.attributes),
       size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
       deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
     },
@@ -203,7 +222,6 @@ const convertShipments = (order, shipments) => {
       sku: findItemSku(order.lineItems, shipment.value.shipmentDetails[0].lineItemId),
       item_id: shipment.value.shipmentDetails[0].lineItemId
     } ],
-    // TODO: use order.itemShippingAddresses?
     shipped_to: {
       first_name: order.shippingAddress.firstName,
       last_name: order.shippingAddress.lastName,
@@ -284,14 +302,14 @@ const convertOrderForNarvar = (order, shipments, states) => {
   console.log(`Convert order: ${order.orderNumber} - ${order.id}`)
   console.log(JSON.stringify(order, null, 2))
   const state = order.state ? states.find(s => order.state.id === s.id) : null
-  const locale = order.locale
+  const locale = order.locale.replace('-', '_')
   return {
     order_info: {
       order_number: order.orderNumber,
       order_date: order.custom.fields.orderDate || order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
-      checkout_locale: order.locale,
+      checkout_locale: locale,
       order_items: convertItems(order, states, shipments),
       shipments: convertShipments(order, shipments),
       pickups: convertPickups(order, shipments),
@@ -328,7 +346,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
         }
       },
       attributes: {
-        checkout_locale: order.locale,
+        checkout_locale: locale,
         orderLastModifiedDate: order.custom.fields.orderLastModifiedDate,
         shipping_tax1: order.custom.fields.shippingTax1 || '0',
         shipping_tax2: order.custom.fields.shippingTax2 || '0',
