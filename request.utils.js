@@ -40,7 +40,7 @@ const fetchWithTimeout = async (url, options, verboseLogging = false) => {
     })
     .finally(() => { clearTimeout(timeout) })
   const contentType = response.headers.get('content-type')
-  const content = contentType && contentType.includes('application/json')
+  const content = contentType && contentType.includes('application/json') && response.status !== 204 // .json() fails if no content (204)
     ? await response.json()
     : await response.text()
 
