@@ -107,6 +107,32 @@ const aliPayPayment = {
   }
 }
 
+const unionPayPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'upop',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type:'Citcon Payment'
+      }
+    }
+  }
+}
 const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
 
 describe('formatCardExpiryDateFromPayment', () => {
@@ -159,6 +185,11 @@ describe('getPosEquivalenceFromPayment', () => {
   it('returns the corret Jesta payment code when given an AliPay or WeChat payment', () => {
     // @ts-ignore incomplete payment for testing
     expect(getPosEquivalenceFromPayment(aliPayPayment)).toBe('55')
+  })
+
+  it('returns the corret Jesta payment code when given an Union Pay payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(unionPayPayment)).toBe('45')
   })
 })
 

@@ -2,6 +2,7 @@ const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
+  CITCON_PAYMENT_METHODS,
   CARRIER_IDS,
   CARRIER_IDS_TO_NAMES,
   ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES,
@@ -156,7 +157,23 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivalenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
+const jestaCodeFromCardType = payment => {
+  if ((payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') && (payment.obj.custom.fields.transaction_card_last4 === 'upop')) {
+    return CITCON_PAYMENT_METHODS['upop']
+  } else if (payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') {
+    return CITCON_PAYMENT_METHODS['others']
+  }
+  for (const [key,value] of Object.entries(CARD_TYPES_TO_JESTA_CODES)){
+    if (payment.obj.custom.fields.transaction_card_type.toLowerCase() === key.toLowerCase()){
+      return value
+    }
+  } return null
+}
+
+/**
+ * @param {import('./orders').Payment} payment 
+ */
+const getPosEquivalenceFromPayment = payment => jestaCodeFromCardType(payment)
 
 const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
