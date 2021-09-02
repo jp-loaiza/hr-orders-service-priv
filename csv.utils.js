@@ -156,24 +156,21 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 
 /**
  * @param {import('./orders').Payment} payment 
+ * @param {import('./orders').tCARD_TYPES_TO_JESTA_CODES} CARD_TYPES_TO_JESTA_CODES 
  */
-const jestaCodeFromCardType = payment => {
+const jestaCodeFromCardType = (payment,CARD_TYPES_TO_JESTA_CODES) => {
   if ((payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') && (payment.obj.custom.fields.transaction_card_last4 === 'upop')) {
     return CITCON_PAYMENT_METHODS['upop']
   } else if (payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') {
     return CITCON_PAYMENT_METHODS['others']
   }
-  for (const [key,value] of Object.entries(CARD_TYPES_TO_JESTA_CODES)){
-    if (payment.obj.custom.fields.transaction_card_type.toLowerCase() === key.toLowerCase()){
-      return value
-    }
-  } return null
+  return CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type.toLowerCase()]
 }
 
 /**
  * @param {import('./orders').Payment} payment 
  */
-const getPosEquivalenceFromPayment = payment => jestaCodeFromCardType(payment)
+const getPosEquivalenceFromPayment = payment => jestaCodeFromCardType(payment,CARD_TYPES_TO_JESTA_CODES)
 
 const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
