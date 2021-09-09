@@ -80,7 +80,8 @@ const ORDER_CUSTOM_FIELDS = {
   CJ_CONVERSION_NEXT_RETRY_AT: 'cjNextRetryAt',
   CJ_CONVERSION_RETRY_COUNT: 'cjRetryCount',
   CJ_CONVERSION_STATUS: 'sentToCjStatus',
-  CJ_EVENT: 'cjEvent'
+  CJ_EVENT: 'cjEvent',
+  CART_SOURCE_WEBSITE: 'cartSourceWebsite'
 }
 
 const HEADER_ROWS_ENUM = {
