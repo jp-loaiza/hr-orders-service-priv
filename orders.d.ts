@@ -229,6 +229,7 @@ type Order = {
   custom: {
     fields: {
       cjEvent?: string,
+      cartSourceWebsite?: string,
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdateNextRetryAt?: string,
