@@ -18,15 +18,16 @@ const { JESTA_API_HOST,
  * @param {string} accessToken 
  * @param {string} orderNumber 
  * @param {string} orderStatus 
+ * @param {string} cartSourceWebsite 
  */
-const updateJestaOrder = async (accessToken, orderNumber, orderStatus) => {
+const updateJestaOrder = async (accessToken, orderNumber, orderStatus, cartSourceWebsite) => {
   const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderStatus}`
   
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
       WebTransactionId: orderNumber,
       BusinessUnitId: 1,
-      SiteId: ONLINE_SITE_ID
+      SiteId: cartSourceWebsite || ONLINE_SITE_ID
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -60,10 +61,11 @@ const getJestaApiAccessToken = async () => {
 /**
  * @param {string} orderNumber
  * @param {string} orderStatus
+ * @param {string} cartSourceWebsite
  */
-const sendOrderUpdateToJesta = async (orderNumber, orderStatus) => {
+const sendOrderUpdateToJesta = async (orderNumber, orderStatus, cartSourceWebsite) => {
   const jestaApiAccessToken = (await getJestaApiAccessToken()).access_token
-  const response = await updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus)
+  const response = await updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus, cartSourceWebsite)
   const responseState = getJestaApiResponseState(response)
   if (responseState === JESTA_RESPONSE_STATES.FAILURE) throw new Error(`Invalid or failure Jesta response: ${JSON.stringify(response)}`)
   if (responseState === JESTA_RESPONSE_STATES.WARNING) console.warn(`Unexpected Jesta response for order: ${orderNumber}, status: '${orderStatus}': ${JSON.stringify(response)}`)
