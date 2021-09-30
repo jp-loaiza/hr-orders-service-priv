@@ -54,6 +54,7 @@ const CARD_TYPES_TO_JESTA_CODES = {
   jcb: '10',
   'harry rosen giftcard': '14',
   'harry rosen loyalty': '49',
+  'paypal': '80'
 }
 
 const CITCON_PAYMENT_METHODS = {
