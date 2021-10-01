@@ -91,6 +91,7 @@ TODO: Currently all the traffic on Kubernetes is being routed via the Internet, 
 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.
+
 # BOLD TO JESTA MAPPING
 ### As up to Oct 1st 2021, PRODUCTION environment has the following mapping rule
 
