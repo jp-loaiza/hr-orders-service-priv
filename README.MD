@@ -109,7 +109,7 @@ TODO: Currently all the traffic on Kubernetes is being routed via the Internet, 
 
 ### As up to Oct 1st 2021, TEST environment has the following mapping rule (This may be applied in future)
 
-| Bold transaction_card_type (case insensitive) | transaction_card_last4 from Bold (case sensitive) | Description             | Jesta Code |
+| Bold transaction_card_type (case insensitive) | Bold transaction_card_last4 (case sensitive) | Description             | Jesta Code |
 |-----------------------------------------------------|------------------------------------------------------|-------------------------|------------|
 | "visa"                                              | -                                                    | VISA                    | "05"       |
 | "mastercard"                                        | -                                                    | Master Cards            | "06"       |
