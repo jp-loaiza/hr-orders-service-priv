@@ -91,6 +91,36 @@ TODO: Currently all the traffic on Kubernetes is being routed via the Internet, 
 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.
+# BOLD TO JESTA MAPPING
+### As up to Oct 1st 2021, PRODUCTION environment has the following mapping rule
+
+| Bold transaction_card_type (case sensitive) | Description             | Jesta Code |
+|--------------------------------------------------|-------------------------|------------|
+| "visa"                                           | VISA                    | "05"       |
+| "mastercard"                                     | Master Cards            | "06"       |
+| "american-express"                               | American-express        | "07"       |
+| "diners-club"                                    | Diners Club             | "09"       |
+| "discover"                                       | Discover                | "08"       |
+| "jcb"                                            | Japan Credit Bureau     | "10"       |
+| "Harry Rosen Giftcard"                           | Harry Rosen Giftcard    | "14"       |
+| "Harry Rosen Loyalty"                            | Harry Rosen Loyalty     | "49"       |
+| "Citcon Payment"                                 | Citcon Payment UnionPay | "55"       |
+
+### As up to Oct 1st 2021, TEST environment has the following mapping rule (This may be applied in future)
+
+| Bold transaction_card_type (case insensitive) | transaction_card_last4 from Bold (case sensitive) | Description             | Jesta Code |
+|-----------------------------------------------------|------------------------------------------------------|-------------------------|------------|
+| "visa"                                              | -                                                    | VISA                    | "05"       |
+| "mastercard"                                        | -                                                    | Master Cards            | "06"       |
+| "american-express"                                  | -                                                    | American-express        | "07"       |
+| "diners-club"                                       | -                                                    | Diners Club             | "09"       |
+| "discover"                                          | -                                                    | Discover                | "08"       |
+| "jcb"                                               | -                                                    | Japan Credit Bureau     | "10"       |
+| "harry rosen giftcard"                              | -                                                    | Harry Rosen Giftcard    | "14"       |
+| "harry rosen loyalty"                               | -                                                    | Harry Rosen Loyalty     | "49"       |
+| "paypal"                                            | -                                                    | Paypal                  | "80"       |
+| "citcon payment"                                    | "upop"                                               | Citcon Payment UnionPay | "45"       |
+| "citcon payment"                                    | Any value not equal to "upop"                        | Citcon Payment Others   | "55"       |
 
 # Logs
 ## Guide for adding tags to logDNA logs
