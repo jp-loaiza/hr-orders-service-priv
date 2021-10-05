@@ -8,7 +8,6 @@ const {
   HEADER_ROWS_ENUM,
   LOCALES_TO_JESTA_LANGUAGE_NUMBERS,
   MISC_ROWS,
-  ONLINE_SITE_ID,
   TAXES_ROWS,
   TAXES_ROWS_ENUM,
   TENDER_ROWS,
@@ -61,7 +60,7 @@ const getHeaderObjectFromOrder = ({
 
   return { 
     [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
-    [HEADER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+    [HEADER_ROWS_ENUM.SITE_ID]: custom.fields.cartSourceWebsite || '00990',
     [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
     [HEADER_ROWS_ENUM.SHIP_TO_FIRST_NAME]: firstNameShipping,
     [HEADER_ROWS_ENUM.SHIP_TO_LAST_NAME]: lastNameShipping,
@@ -93,7 +92,7 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.SHIPPING_TAX1_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[0],
     [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] && getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1],
     [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
-    [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: ONLINE_SITE_ID,
+    [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: custom.fields.cartSourceWebsite || '00990',
     [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
     [HEADER_ROWS_ENUM.SERVICE_TYPE]: getShippingInfoFromShippingName(shippingInfo.shippingMethodName).shippingServiceType,
     [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
@@ -106,7 +105,7 @@ const getHeaderObjectFromOrder = ({
 
 const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
   [DETAILS_ROWS_ENUM.RECORD_TYPE]: 'D',
-  [DETAILS_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+  [DETAILS_ROWS_ENUM.SITE_ID]: order.custom.fields.cartSourceWebsite || '00990',
   [DETAILS_ROWS_ENUM.LINE]: index + 1,
   [DETAILS_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [DETAILS_ROWS_ENUM.QTY_ORDERED]: lineItem.quantity,
@@ -124,11 +123,11 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
 })
 
 /**
- * @param {{ lineNumber: number, orderNumber: string, sequenceNumber: number, tax: import('./orders').ParsedTax }} lineItemTaxInfo
+ * @param {{ siteId: string, lineNumber: number, orderNumber: string, sequenceNumber: number, tax: import('./orders').ParsedTax }} lineItemTaxInfo
  */
-const getSingleTaxesObject = ({ lineNumber, orderNumber, sequenceNumber, tax }) => ({
+const getSingleTaxesObject = ({ siteId, lineNumber, orderNumber, sequenceNumber, tax }) => ({
   [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
-  [TAXES_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+  [TAXES_ROWS_ENUM.SITE_ID]: siteId,
   [TAXES_ROWS_ENUM.LINE]: lineNumber,
   [TAXES_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
   [TAXES_ROWS_ENUM.SEQUENCE]: sequenceNumber,
@@ -139,6 +138,7 @@ const getSingleTaxesObject = ({ lineNumber, orderNumber, sequenceNumber, tax }) 
 const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ lineIndex) => {
   const taxes = getParsedTaxesFromLineItem(lineItem, order.shippingAddress.state)
   return taxes.map((tax, taxIndex) => getSingleTaxesObject({
+    siteId: order.custom.fields.cartSourceWebsite || '00990',
     lineNumber: lineIndex + 1,
     orderNumber: order.orderNumber,
     sequenceNumber: taxIndex + 1,
@@ -148,7 +148,7 @@ const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Or
 
 const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
   [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
-  [TENDER_ROWS_ENUM.SITE_ID]: ONLINE_SITE_ID,
+  [TENDER_ROWS_ENUM.SITE_ID]: order.custom.fields.cartSourceWebsite || '00990',
   [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
   [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
   [TENDER_ROWS_ENUM.AMOUNT]: convertToDollars(payment.obj.amountPlanned.centAmount),

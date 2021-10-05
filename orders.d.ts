@@ -229,6 +229,7 @@ type Order = {
   custom: {
     fields: {
       cjEvent?: string,
+      cartSourceWebsite?: string,
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
       omsUpdateNextRetryAt?: string,
@@ -268,6 +269,10 @@ type JestaApiResponseBody = null | undefined | {
   ReturnMessage?: string
 }
 
+type tCARD_TYPES_TO_JESTA_CODES = {
+  [key: string]: string
+}
+
 export {
   Address,
   AlgoliaAnalyticsData,
@@ -287,5 +292,6 @@ export {
   StateCode,
   TaxDescriptionKey,
   TaxedPrice,
-  Transaction
+  Transaction,
+  tCARD_TYPES_TO_JESTA_CODES
 }
