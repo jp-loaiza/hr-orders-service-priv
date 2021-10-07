@@ -39,6 +39,7 @@ interface Env {
 }
 
 type NarvarOrder = {
+  retailer: string,
   order_info: {
     order_number: string,
     order_date: string,
@@ -46,11 +47,12 @@ type NarvarOrder = {
     currency_code: string,
     checkout_locale: string,
     order_items:Array<NarvarOrderItem>,
-    shipments: Array<NarvarShipment>,
-    pickups: Array<NarvarPickup>,
+    shipments?: Array<NarvarShipment>,
+    pickups?: Array<NarvarPickup>,
     billing: NarvarBilling,
     customer: NarvarCustomer,
     attributes: { [key: string]: string },
+    is_shoprunner_eligible: Boolean,
   }
 }
 
@@ -64,6 +66,8 @@ type NarvarOrderItem = {
   sku: string,
   is_final_sale: boolean,
   unit_price: number,
+  discount_amount: number | null,
+  discount_percent: number | null,
   line_price: number,
   fulfillment_type: 'HD' | 'BOPIS' | 'BOSS',
   fulfillment_status: string,
@@ -236,6 +240,7 @@ type DynamicYieldCartItem = {
 
 type LineItem = {
   id: string,
+  productId: string,
   name: {'en-CA':string, 'fr-CA':string},
   productSlug: {'en-CA':string, 'fr-CA':string},
   variant: {
@@ -269,7 +274,21 @@ type LineItem = {
   },
   taxedPrice: TaxedPrice,
   taxRate: TaxRate,
-  lastModifiedAt: string
+  lastModifiedAt: string,
+  product_type: string | null,
+  product_id: string | null,
+  dimensions: null,
+  is_backordered: null,
+  vendor: null,
+  item_promise_date: null,
+  return_reason_code: null,
+  events: null,
+  color: string | null,
+  size: string | null,
+  style: string | null,
+  original_unit_price: number | null,
+  original_line_price: null,
+  narvar_convert_id: null
 }
 
 type Address = {

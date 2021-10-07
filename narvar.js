@@ -1,6 +1,6 @@
 //const fetch = require('node-fetch')
 const base64 = require('base-64')
-//import fetch from 'node-fetch'
+import fetch from 'node-fetch'
 //import base64 from 'base-64'
 
 const baseUrl = process.env.NARVAR_BASE_URL
@@ -16,11 +16,7 @@ const password = process.env.NARVAR_PASSWORD
  * */
 
 const makeNarvarRequest = async (path, options) => {
-  console.log('narvar request:')
-  console.log(path)
-  console.log(baseUrl)
-  console.log(options)
-  /*const response = await fetch(baseUrl + path, options)
+  const response = await fetch(baseUrl + path, options)
   const result = await response.json()
   console.log('result:')
   console.log(result)
@@ -30,7 +26,7 @@ const makeNarvarRequest = async (path, options) => {
     }
     return result
   }
-  throw new Error(JSON.stringify(result))*/
+  throw new Error(JSON.stringify(result))
 }
 
 /**
@@ -127,7 +123,25 @@ const findBarcode = (attributes) => {
  * @returns {number}
  */
 const findUnitPrice = (item) => {
-  return item.discountedPricePerQuantity ? (item.discountedPricePerQuantity[0].discountedPrice.value.centAmount / 100) : (item.variant.prices[0].value.centAmount / 100)
+  return item.discountedPrice ? (item.discountedPrice.value.centAmount / 100) : (item.variant.prices[0].value.centAmount / 100)
+}
+
+/**
+ * 
+ * @param {import('./orders').LineItem} item
+ * @returns {number | null}
+ */
+const findDiscountedPrice = (item) => {
+  return item.discountedPrice ? (item.discountedPrice.value.centAmount / 100) : null
+}
+
+/**
+ * 
+ * @param {import('./orders').LineItem} item
+ * @returns {number | null}
+ */
+const findDiscountPercent = (item) => {
+  return item.discountedPrice ? parseFloat((( (item.variant.prices[0].value.centAmount) - item.discountedPrice.value.centAmount ) / (item.variant.prices[0].value.centAmount / 100)).toFixed(2)) : null
 }
 
 /**
@@ -176,33 +190,50 @@ const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
 const convertItems = (order, states, shipments) => {
   const locale = order.locale
   let lineCounter = 1 // Not sure this workaround is fine
-  return order.lineItems.map(item => { return {
-    item_id: item.id,
-    sku: item.variant.sku,
-    name: item.name[locale],
-    quantity: item.quantity,
-    categories: [item.custom.fields.category || ''],
-    unit_price: findUnitPrice(item),
-    item_image: item.variant.images[0].url,
-    item_url: getItemUrl(item.productSlug[locale], locale),
-    is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
-    fulfillment_status: getItemFulfillmentStatus(item, states, locale),
-    fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
-    is_gift: item.custom.fields.isGift,
-    final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
-    line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
-    attributes: {
-      orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
-      brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
-      barcode: findBarcode(item.variant.attributes),
+  return order.lineItems.map(item => { 
+    return {
+      item_id: item.id,
+      sku: item.variant.sku,
+      name: item.name[locale],
+      quantity: item.quantity,
+      categories: [item.custom.fields.category || ''],
+      unit_price: findUnitPrice(item),
+      discount_amount: findDiscountedPrice(item),
+      discount_percent: findDiscountPercent(item),
+      item_image: item.variant.images[0].url,
+      item_url: getItemUrl(item.productSlug[locale], locale),
+      is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
+      fulfillment_status: getItemFulfillmentStatus(item, states, locale),
+      fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
+      is_gift: item.custom.fields.isGift,
+      final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
+      line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
+      attributes: {
+        orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
+        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
+        barcode: findBarcode(item.variant.attributes),
+        size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
+        deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
+      },
+      vendors: [
+        { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
+      ],
+      line_price: (item.totalPrice.centAmount / 100),
+      product_type: getAttributeOrDefaultAny(item.variant.attributes, 'productType', { value:  null }).value,
+      product_id: item.productId,
+      dimensions: null,
+      is_backordered: null,
+      vendor: null,
+      item_promise_date: null,
+      return_reason_code: null,
+      events: null,
+      color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale] : null } }).value[locale],
       size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
-      deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
-    },
-    vendors: [
-      { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
-    ],
-    line_price: (item.totalPrice.centAmount / 100)
-  }})
+      style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
+      original_unit_price: item.variant.prices[0].value.centAmount / 100,
+      original_line_price: null,
+      narvar_convert_id: null
+    }})
 }
 
 /**
@@ -213,7 +244,7 @@ const convertItems = (order, states, shipments) => {
  */
 
 const convertShipments = (order, shipments) => {
-  return order.custom.fields.isStorePickup ? [] : shipments/*.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0)*/.map(shipment => { return {
+  return order.custom.fields.isStorePickup || shipments.length ? [] : shipments.map(shipment => { return {
     carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
     carrier_service: shipment.value.shipmentDetails[0].serviceType || null,
@@ -265,7 +296,7 @@ const convertShipments = (order, shipments) => {
  */
 
 const convertPickups = (order, shipments) => {
-  return !order.custom.fields.isStorePickup ? [] : shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
+  return !order.custom.fields.isStorePickup || shipments.length ? [] : shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
     id: shipment.id,
     status: STATES_TO_NARVAR_STATUSES[shipment.value.shipmentDetails[0].status],
     items_info: [ { 
@@ -304,6 +335,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
   const state = order.state ? states.find(s => order.state.id === s.id) : null
   const locale = order.locale.replace('-', '_')
   return {
+    retailer: 'harryrosen',
     order_info: {
       order_number: order.orderNumber,
       order_date: order.custom.fields.orderDate || order.createdAt,
@@ -348,9 +380,11 @@ const convertOrderForNarvar = (order, shipments, states) => {
       attributes: {
         checkout_locale: locale,
         orderLastModifiedDate: order.custom.fields.orderLastModifiedDate,
-        shipping_tax1: order.custom.fields.shippingTax1 || '0',
-        shipping_tax2: order.custom.fields.shippingTax2 || '0',
-      }
+        shipping_tax1: (order.custom.fields.shippingTax1.centAmount / 100).toString() || '0',
+        shipping_tax2: (order.custom.fields.shippingTax2.centAmount / 100).toString() || '0',
+        siteId: order.custom.fields.cartSourceWebsite || '00990'
+      },
+      is_shoprunner_eligible : false,
     }
   }
 }
