@@ -52,11 +52,15 @@ const CARD_TYPES_TO_JESTA_CODES = {
   'diners-club': '09',
   discover: '08',
   jcb: '10',
-  'Harry Rosen Giftcard': '14',
-  'Harry Rosen Loyalty': '49',
-  'Citcon Payment' : '55'
+  'harry rosen giftcard': '14',
+  'harry rosen loyalty': '49',
+  'paypal': '80'
 }
 
+const CITCON_PAYMENT_METHODS = {
+  'upop': '45',
+  'others': '55'
+}
 
 const ONLINE_SITE_ID = '00990'
 
@@ -81,7 +85,8 @@ const ORDER_CUSTOM_FIELDS = {
   NARVAR_LAST_SUCCESS_TIME: 'narvarLastSuccessTime',
   NARVAR_STATUS: 'narvarStatus',
   NARVAR_RETRY_COUNT: 'narvarRetryCount',
-  NARVAR_NEXT_RETRY_AT: 'narvarNextRetryAt'
+  NARVAR_NEXT_RETRY_AT: 'narvarNextRetryAt',
+  CART_SOURCE_WEBSITE: 'cartSourceWebsite'
 }
 
 const HEADER_ROWS_ENUM = {
@@ -473,6 +478,7 @@ module.exports = {
   TRANSACTION_STATES,
   BACKOFF,
   CARD_TYPES_TO_JESTA_CODES,
+  CITCON_PAYMENT_METHODS,
   CARRIER_IDS,
   CARRIER_IDS_TO_NAMES,
   DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,

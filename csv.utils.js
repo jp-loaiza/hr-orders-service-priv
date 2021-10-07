@@ -2,6 +2,7 @@ const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
 const {
   CARD_TYPES_TO_JESTA_CODES,
+  CITCON_PAYMENT_METHODS,
   CARRIER_IDS,
   CARRIER_IDS_TO_NAMES,
   ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES,
@@ -10,7 +11,7 @@ const {
   SHIPPING_SERVICE_TYPES_TO_NAMES,
   PAYMENT_STATES,
   TRANSACTION_TYPES,
-  TRANSACTION_STATES, 
+  TRANSACTION_STATES,
   ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS
 } = require('./constants')
 
@@ -155,8 +156,21 @@ const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, sta
 
 /**
  * @param {import('./orders').Payment} payment 
+ * @param {import('./orders').tCARD_TYPES_TO_JESTA_CODES} CARD_TYPES_TO_JESTA_CODES 
  */
-const getPosEquivalenceFromPayment = payment => CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type]
+const jestaCodeFromCardType = (payment,CARD_TYPES_TO_JESTA_CODES) => {
+  if ((payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') && (payment.obj.custom.fields.transaction_card_last4 === 'upop')) {
+    return CITCON_PAYMENT_METHODS['upop']
+  } else if (payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') {
+    return CITCON_PAYMENT_METHODS['others']
+  }
+  return CARD_TYPES_TO_JESTA_CODES[payment.obj.custom.fields.transaction_card_type.toLowerCase()]
+}
+
+/**
+ * @param {import('./orders').Payment} payment 
+ */
+const getPosEquivalenceFromPayment = payment => jestaCodeFromCardType(payment,CARD_TYPES_TO_JESTA_CODES)
 
 const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
