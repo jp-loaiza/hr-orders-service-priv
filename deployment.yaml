@@ -269,16 +269,16 @@ spec:
               name: hr-orders-service
         - name: NARVAR_BASE_URL
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               key: NARVAR_BASE_URL
               name: hr-orders-service
         - name: SHOULD_SEND_NARVAR_ORDERS
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               key: SHOULD_SEND_NARVAR_ORDERS
               name: hr-orders-service
         - name: SEND_NARVAR_ORDERS_INTERVAL
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               key: SEND_NARVAR_ORDERS_INTERVAL
               name: hr-orders-service
