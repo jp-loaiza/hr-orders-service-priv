@@ -13,6 +13,7 @@ const {
   UPDATE_TO_OMS_STATUSES,
   SENT_TO_ALGOLIA_STATUSES,
   SENT_TO_DYNAMIC_YIELD_STATUSES,
+  SENT_TO_NARVAR_STATUSES,
   SENT_TO_CRM_STATUS,
   STATUS_FIELDS_TO_AVAILABLE_STATUSES,
 } = require('./constants')
@@ -296,6 +297,43 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
   }
 }
 
+/**
+ * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
+ */
+const fetchOrdersThatShouldBeSentToNarvar = async () => {
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  return {
+    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    total: body.total
+  }
+}
+
+/**
+ * @returns {Promise<Array<import('./orders').OrderState>>}
+ */
+const fetchStates = async () => {
+  const uri = requestBuilder.states.build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  return body.results.map((/** @type {import('./orders').OrderState} */ result) => result)
+}
+
+/**
+ * 
+ * @param {string} orderNumber 
+ * @returns {Promise<Array<import('./orders').Shipment>>}
+ */
+
+const fetchShipments = async orderNumber => {
+  const uri = requestBuilder.customObjects.byId('shipments').where(`value(orderNumber="${orderNumber}")`).build()
+  console.log(uri)
+  const { body } = await ctClient.execute({ method: 'GET', uri})
+  console.log(body)
+  return body.results
+}
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
@@ -303,6 +341,9 @@ module.exports = {
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   fetchOrdersWhoseConversionsShouldBeSentToCj,
   fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
+  fetchOrdersThatShouldBeSentToNarvar,
+  fetchStates,
+  fetchShipments,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
