@@ -11,7 +11,7 @@ const {
   SENT_TO_ALGOLIA_STATUSES, 
   SENT_TO_CJ_STATUSES, 
   SENT_TO_DYNAMIC_YIELD_STATUSES, 
-//  SENT_TO_NARVAR_STATUSES 
+  SENT_TO_NARVAR_STATUSES 
 } = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
@@ -287,18 +287,17 @@ async function sendOrdersToNarvar() {
         await sendToNarvar(narvarOrder)
         console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
         console.log(`Converted order: ${JSON.stringify(narvarOrder, null, ' ')}`)
-        //await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
       }
     } catch (error) {
       console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
-      //await retry(setOrderErrorFields)(order, error.message, true, {
-      //  retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
-      //  nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
-      //  statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
-      //})
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
+      })
     }
     await sleep(100) // prevent CT/Narvar from getting overloaded
-    break // TODO: temp
   }
 }
 
