@@ -1,6 +1,6 @@
 //const fetch = require('node-fetch')
 const base64 = require('base-64')
-import fetch from 'node-fetch'
+const fetch = require('node-fetch')
 //import base64 from 'base-64'
 
 const baseUrl = process.env.NARVAR_BASE_URL
