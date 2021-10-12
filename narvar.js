@@ -330,8 +330,6 @@ const convertPickups = (order, shipments) => {
  * @returns {import('./orders').NarvarOrder | undefined}
  */
 const convertOrderForNarvar = (order, shipments, states) => {
-  console.log(`Convert order: ${order.orderNumber} - ${order.id}`)
-  console.log(JSON.stringify(order, null, 2))
   const state = order.state ? states.find(s => order.state.id === s.id) : null
   const locale = order.locale.replace('-', '_')
   return {

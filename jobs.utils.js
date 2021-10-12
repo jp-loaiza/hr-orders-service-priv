@@ -272,7 +272,6 @@ async function sendPurchaseEventsToDynamicYield() {
 }
 
 async function sendOrdersToNarvar() {
-  console.log('Send orders to Narvar job!')
   const states = await fetchStates()
   const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
   console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
@@ -280,13 +279,9 @@ async function sendOrdersToNarvar() {
   for (const order of orders) {
     try {
       const shipments = await fetchShipments(order.orderNumber)
-      console.log('Shipments: ')
-      console.log(JSON.stringify(shipments, null, 2))
       const narvarOrder = convertOrderForNarvar(order, shipments, states)
       if(narvarOrder) {
         await sendToNarvar(narvarOrder)
-        console.log(`Sending to Narvar complete for order ${order.orderNumber}`)
-        console.log(`Converted order: ${JSON.stringify(narvarOrder, null, ' ')}`)
         await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
       }
     } catch (error) {
