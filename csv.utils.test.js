@@ -639,7 +639,7 @@ describe('getShippingInfoForOrder', () => {
   })
 
   it('classifies all shipping types as rush except for `Canada Post Expedited`, `FedEx Economy`, and `Express`', () => {
-    expect(getShippingInfoForOrder('00990','Canada Post Expedited')?.shippingIsRush).toBe(false)
+    expect(getShippingInfoForOrder('00990','Canada Post Expedited').shippingIsRush).toBe(false)
     expect(getShippingInfoForOrder('00990','FedEx Economy').shippingIsRush).toBe(false)
     expect(getShippingInfoForOrder('00990','FedEx Ground').shippingIsRush).toBe(true)
     expect(getShippingInfoForOrder('00990','FedEx Standard Overnight').shippingIsRush).toBe(true)
