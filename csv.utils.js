@@ -250,16 +250,16 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
     
     if(name == 'Standard Shipping') {
       return {
-        carrierId : "CP",
-        shippingServiceType : "EXPEDITED PARCEL",
+        carrierId : 'CP',
+        shippingServiceType : 'EXPEDITED PARCEL',
         shippingIsRush : false
       }
     }
 
     if(name == 'Express Shipping') {
       return {
-        carrierId : "CP",
-        shippingServiceType : "XPRESSPOST",
+        carrierId : 'CP',
+        shippingServiceType : 'XPRESSPOST',
         shippingIsRush : true
       }
     }
