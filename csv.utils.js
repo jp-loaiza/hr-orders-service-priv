@@ -264,9 +264,8 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
       }
     }
     
-  } else {
-    return getShippingInfoFromShippingName(name)
-  }
+  } 
+  return getShippingInfoFromShippingName(name)
 }
 
 

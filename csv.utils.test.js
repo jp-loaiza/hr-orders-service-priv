@@ -606,28 +606,28 @@ describe('getPaymentTotalFromPaymentInfo', () => {
 
 describe('getShippingInfoForOrder', () => {
   it('returns correctly parsed carrier ID when given a valid shipping name', () => {
-    expect(getShippingInfoForOrder('00990','Canada Post Expedited')?.carrierId).toBe('CP')
-    expect(getShippingInfoForOrder('00990','FedEx Ground')?.carrierId).toBe('FDX')
-    expect(getShippingInfoForOrder('00990','FedEx Economy')?.carrierId).toBe('FDX')
-    expect(getShippingInfoForOrder('00990','Purolator Priority Overnight')?.carrierId).toBe('PRL')
+    expect(getShippingInfoForOrder('00990','Canada Post Expedited').carrierId).toBe('CP')
+    expect(getShippingInfoForOrder('00990','FedEx Ground').carrierId).toBe('FDX')
+    expect(getShippingInfoForOrder('00990','FedEx Economy').carrierId).toBe('FDX')
+    expect(getShippingInfoForOrder('00990','Purolator Priority Overnight').carrierId).toBe('PRL')
   })
 
   it('returns correctly parsed shipping service type when given a valid shipping name', () => {
-    expect(getShippingInfoForOrder('00990','Canada Post Expedited')?.shippingServiceType).toBe('EXPEDITED PARCEL')
-    expect(getShippingInfoForOrder('00990','FedEx Ground')?.shippingServiceType).toBe('GROUND')
-    expect(getShippingInfoForOrder('00990','FedEx Economy')?.shippingServiceType).toBe('ECONOMY')
-    expect(getShippingInfoForOrder('00990','FedEx Standard Overnight')?.shippingServiceType).toBe('OVERNIGHT')
-    expect(getShippingInfoForOrder('00990','Purolator Priority Overnight')?.shippingServiceType).toBe('EXPRESS')
+    expect(getShippingInfoForOrder('00990','Canada Post Expedited').shippingServiceType).toBe('EXPEDITED PARCEL')
+    expect(getShippingInfoForOrder('00990','FedEx Ground').shippingServiceType).toBe('GROUND')
+    expect(getShippingInfoForOrder('00990','FedEx Economy').shippingServiceType).toBe('ECONOMY')
+    expect(getShippingInfoForOrder('00990','FedEx Standard Overnight').shippingServiceType).toBe('OVERNIGHT')
+    expect(getShippingInfoForOrder('00990','Purolator Priority Overnight').shippingServiceType).toBe('EXPRESS')
   })
 
   it('parses endless aisle "Express" shipping name as FedEx Economy', () => {
-    expect(getShippingInfoForOrder('00990','Express')?.carrierId).toBe('FDX')
-    expect(getShippingInfoForOrder('00990','Express')?.shippingServiceType).toBe('ECONOMY')
+    expect(getShippingInfoForOrder('00990','Express').carrierId).toBe('FDX')
+    expect(getShippingInfoForOrder('00990','Express').shippingServiceType).toBe('ECONOMY')
   })
 
   it('parses endless aisle "Next Day" shipping name as FedEx Standard Overnight', () => {
-    expect(getShippingInfoForOrder('00990','Next Day')?.carrierId).toBe('FDX')
-    expect(getShippingInfoForOrder('00990','Next Day')?.shippingServiceType).toBe('OVERNIGHT')
+    expect(getShippingInfoForOrder('00990','Next Day').carrierId).toBe('FDX')
+    expect(getShippingInfoForOrder('00990','Next Day').shippingServiceType).toBe('OVERNIGHT')
   })
 
   it('parses shipping name correctly even if it starts with extra whitespace', () => {
@@ -640,41 +640,41 @@ describe('getShippingInfoForOrder', () => {
 
   it('classifies all shipping types as rush except for `Canada Post Expedited`, `FedEx Economy`, and `Express`', () => {
     expect(getShippingInfoForOrder('00990','Canada Post Expedited')?.shippingIsRush).toBe(false)
-    expect(getShippingInfoForOrder('00990','FedEx Economy')?.shippingIsRush).toBe(false)
-    expect(getShippingInfoForOrder('00990','FedEx Ground')?.shippingIsRush).toBe(true)
-    expect(getShippingInfoForOrder('00990','FedEx Standard Overnight')?.shippingIsRush).toBe(true)
-    expect(getShippingInfoForOrder('00990','Purolator Priority Overnight')?.shippingIsRush).toBe(true)
-    expect(getShippingInfoForOrder('00990','Express')?.shippingIsRush).toBe(false)
-    expect(getShippingInfoForOrder('00990','Next Day')?.shippingIsRush).toBe(true)
+    expect(getShippingInfoForOrder('00990','FedEx Economy').shippingIsRush).toBe(false)
+    expect(getShippingInfoForOrder('00990','FedEx Ground').shippingIsRush).toBe(true)
+    expect(getShippingInfoForOrder('00990','FedEx Standard Overnight').shippingIsRush).toBe(true)
+    expect(getShippingInfoForOrder('00990','Purolator Priority Overnight').shippingIsRush).toBe(true)
+    expect(getShippingInfoForOrder('00990','Express').shippingIsRush).toBe(false)
+    expect(getShippingInfoForOrder('00990','Next Day').shippingIsRush).toBe(true)
   })
 
   it('returns null when given a shipping name that lacks a valid carrier name', () => {
-    expect(getShippingInfoForOrder('00990','INVALID_CARRIER Expedited')?.carrierId).toBe(null)
+    expect(getShippingInfoForOrder('00990','INVALID_CARRIER Expedited').carrierId).toBe(null)
   })
 
   it('returns null when given a shipping name that lacks a valid shipping service type', () => {
-    expect(getShippingInfoForOrder('00990','Canada Post INVALID_SHIPPING_TYPE')?.shippingServiceType).toBe(null)
+    expect(getShippingInfoForOrder('00990','Canada Post INVALID_SHIPPING_TYPE').shippingServiceType).toBe(null)
   })
 
   it('any invalid shipping carriers or shipping service type should result in false of rush indicator', () => {
-    expect(getShippingInfoForOrder('00990','INVALID SHIPPING')?.shippingIsRush).toBe(false)
+    expect(getShippingInfoForOrder('00990','INVALID SHIPPING').shippingIsRush).toBe(false)
   })
 })
 
 
 it('returns correctly parsed shipping service type when given a valid shipping name for 997 shippings', () => {
-  expect(getShippingInfoForOrder('00997','Standard Shipping')?.shippingServiceType).toBe('EXPEDITED PARCEL')
-  expect(getShippingInfoForOrder('00997','Standard Shipping')?.carrierId).toBe('CP')
-  expect(getShippingInfoForOrder('00997','Standard Shipping')?.shippingIsRush).toBe(false)
-  expect(getShippingInfoForOrder('00997','Express Shipping')?.shippingServiceType).toBe('XPRESSPOST')
-  expect(getShippingInfoForOrder('00997','Express Shipping')?.carrierId).toBe('CP')
-  expect(getShippingInfoForOrder('00997','Express Shipping')?.shippingIsRush).toBe(true)
+  expect(getShippingInfoForOrder('00997','Standard Shipping').shippingServiceType).toBe('EXPEDITED PARCEL')
+  expect(getShippingInfoForOrder('00997','Standard Shipping').carrierId).toBe('CP')
+  expect(getShippingInfoForOrder('00997','Standard Shipping').shippingIsRush).toBe(false)
+  expect(getShippingInfoForOrder('00997','Express Shipping').shippingServiceType).toBe('XPRESSPOST')
+  expect(getShippingInfoForOrder('00997','Express Shipping').carrierId).toBe('CP')
+  expect(getShippingInfoForOrder('00997','Express Shipping').shippingIsRush).toBe(true)
 })
 
 
 it('returns correctly parsed shipping service type when given a valid shipping name for 990 shippings when cartSourceWebSiteNotInformed', () => {
-  expect(getShippingInfoForOrder(undefined,'Canada Post Expedited')?.carrierId).toBe('CP')
-  expect(getShippingInfoForOrder('','Canada Post Expedited')?.shippingServiceType).toBe('EXPEDITED PARCEL')
+  expect(getShippingInfoForOrder(undefined,'Canada Post Expedited').carrierId).toBe('CP')
+  expect(getShippingInfoForOrder('','Canada Post Expedited').shippingServiceType).toBe('EXPEDITED PARCEL')
 })
 
 

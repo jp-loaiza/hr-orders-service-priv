@@ -80,8 +80,8 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.BILL_TO_COUNTRY_ID]: billingAddress.country,
     [HEADER_ROWS_ENUM.BILL_TO_HOME_PHONE]: billingAddress.phone || shippingAddress.phone, // From JESTA's docs: "Both [BILL_TO_HOME_PHONE and SHIP_TO_HOME_PHONE] are copied from this field"
     [HEADER_ROWS_ENUM.EMAIL_ADDRESS]: customerEmail,
-    [HEADER_ROWS_ENUM.CARRIER_ID]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName)?.carrierId,
-    [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]:  getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName)?.shippingIsRush ? 'Y' : 'N',
+    [HEADER_ROWS_ENUM.CARRIER_ID]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).carrierId,
+    [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]:  getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingIsRush ? 'Y' : 'N',
     [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
     [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
     [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
