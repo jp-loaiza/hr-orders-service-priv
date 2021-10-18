@@ -248,7 +248,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
 const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebsite, /** @type {string} **/ name) => {
   if (cartSourceWebsite && cartSourceWebsite == '00997') {
     
-    if(name == 'Standard Shipping') {
+    if(name.trim() == 'Standard Shipping') {
       return {
         carrierId : 'CP',
         shippingServiceType : 'EXPEDITED PARCEL',
@@ -256,7 +256,7 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
       }
     }
 
-    if(name == 'Express Shipping') {
+    if(name.trim() == 'Express Shipping') {
       return {
         carrierId : 'CP',
         shippingServiceType : 'XPRESSPOST',
