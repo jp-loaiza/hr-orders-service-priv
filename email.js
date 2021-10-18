@@ -9,23 +9,29 @@ const { EMAIL_API_USERNAME,
 /**
  * @param {import('./orders').Order} order 
  */
-const formatEmailApiRequestBodyFromOrder = order => ({
-  request: {
-    OwnerId: EMAIL_API_OWNER_ID,
-    Channel: 'Email',
-    Subject: JSON.stringify({ Name: 'Salesorder', Id: order.orderNumber }),
-    Topic: order.custom.fields.isStorePickup ? 'ConfirmationBOPIS' : 'Confirmation',
-    Recipient: JSON.stringify({
-      address: order.customerEmail,
-      locale: order.locale
-    }),
-    // Required even though it's blank. From CRM's documentation: "Not
-    // currently implemented - This parameter will eventually be used to
-    // override the sender for the communication"
-    Sender: '',
-    Data: JSON.stringify(order)
+const formatEmailApiRequestBodyFromOrder = order => {
+  let Topic = order.custom.fields.isStorePickup ? 'ConfirmationBOPIS' : 'Confirmation'
+  if (order.custom.fields.cartSourceWebsite === '00997') {
+    Topic = 'ConfirmationFinalCut'
   }
-})
+  return ({
+    request: {
+      OwnerId: EMAIL_API_OWNER_ID,
+      Channel: 'Email',
+      Subject: JSON.stringify({ Name: 'Salesorder', Id: order.orderNumber }),
+      Topic,
+      Recipient: JSON.stringify({
+        address: order.customerEmail,
+        locale: order.locale
+      }),
+      // Required even though it's blank. From CRM's documentation: "Not
+      // currently implemented - This parameter will eventually be used to
+      // override the sender for the communication"
+      Sender: '',
+      Data: JSON.stringify(order)
+    }
+  })
+}
 
 /**
  * @param {string} orderId
