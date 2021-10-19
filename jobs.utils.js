@@ -291,7 +291,7 @@ async function sendOrdersToNarvar() {
         retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
         nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
         statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
-      }) 
+      })
     }
     await sleep(100) // prevent CT/Narvar from getting overloaded
   }

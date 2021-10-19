@@ -227,7 +227,7 @@ const convertItems = async (order, states, shipments) => {
       final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
       line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
       attributes: {
-        orderItemLastModifiedDate: order.custom.fields.orderDate || order.createdAt,
+        orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate || order.createdAt,
         brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),
         size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],

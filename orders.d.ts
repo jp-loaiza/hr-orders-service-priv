@@ -43,7 +43,7 @@ type NarvarOrder = {
     order_number: string,
     order_date: string,
     status: string,
-    currency_code: string,      
+    currency_code: string,
     checkout_locale: string,
     order_items: Array<NarvarOrderItem>,
     shipments?: Array<NarvarShipment>,
