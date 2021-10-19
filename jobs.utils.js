@@ -287,6 +287,7 @@ async function sendOrdersToNarvar() {
         await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME, new Date(now + 50000).toJSON())
       }
     } catch (error) {
+      console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
       await retry(setOrderErrorFields)(order, error.message, true, {
         retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
         nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
