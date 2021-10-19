@@ -12,20 +12,20 @@ describe('sendOrderUpdateToJesta', () => {
   it('returns the response from Jesta if its state is "success"', async () => {
     // @ts-ignore
     getJestaApiResponseState.mockReturnValueOnce('success')
-    const response = await sendOrderUpdateToJesta('orderNumber', 'orderStatus', 'cartSourceWebsite')
+    const response = await sendOrderUpdateToJesta('orderNumber', 'orderStatus')
     expect(response).toEqual({})
   })
 
   it('returns the response from Jesta if its state is "warning"', async () => {
     // @ts-ignore
     getJestaApiResponseState.mockReturnValueOnce('warning')
-    const response = await sendOrderUpdateToJesta('orderNumber', 'orderStatus', 'cartSourceWebsite')
+    const response = await sendOrderUpdateToJesta('orderNumber', 'orderStatus')
     expect(response).toEqual({})
   })
 
   it('throws an error if the state of the response from Jesta is "failure"', async () => {
     // @ts-ignore
     getJestaApiResponseState.mockReturnValueOnce('failure')
-    return expect(sendOrderUpdateToJesta('orderNumber', 'orderStatus','cartSourceWebsite')).rejects.toEqual(new Error('Invalid or failure Jesta response: {}'))
+    return expect(sendOrderUpdateToJesta('orderNumber', 'orderStatus')).rejects.toEqual(new Error('Invalid or failure Jesta response: {}'))
   })
 })
