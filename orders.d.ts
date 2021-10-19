@@ -39,14 +39,13 @@ interface Env {
 }
 
 type NarvarOrder = {
-  retailer: string,
   order_info: {
     order_number: string,
     order_date: string,
     status: string,
-    currency_code: string,
+    currency_code: string,      
     checkout_locale: string,
-    order_items:Array<NarvarOrderItem>,
+    order_items: Array<NarvarOrderItem>,
     shipments?: Array<NarvarShipment>,
     pickups?: Array<NarvarPickup>,
     billing: NarvarBilling,
@@ -60,7 +59,7 @@ type NarvarOrderItem = {
   item_id: string,
   name: string,
   quantity: number,
-  categories?: Array<string>,
+  categories: Array<string>,
   item_image: string,
   item_url?: string,
   sku: string,
@@ -69,7 +68,7 @@ type NarvarOrderItem = {
   discount_amount: number | null,
   discount_percent: number | null,
   line_price: number,
-  fulfillment_type: 'HD' | 'BOPIS' | 'BOSS',
+  fulfillment_type: string,
   fulfillment_status: string,
   is_gift: boolean,
   final_sale_date: string,
@@ -447,6 +446,56 @@ type Shipment = {
   }
 }
 
+type ProductVariant = {
+  id: number
+}
+
+type ProductDetails = {
+  name: {
+    'en-CA': string,
+    'fr-CA': string,
+  },
+  description: {
+    'en-CA': string,
+    'fr-CA': string,
+  },
+  categories: Array<{
+    typeId: string,
+    id: string
+  }>,
+  slug: {
+    'en-CA': string,
+    'fr-CA': string,
+  },
+  masterVariant: ProductVariant
+}
+
+type Product = {
+  id: string,
+  createdAt: string,
+  lastModifiedAt: string,
+  masterData: {
+    current: ProductDetails,
+    staged: ProductDetails,
+    published: boolean,
+    hasStagedChanges: boolean
+  },
+  key: string
+  taxCategory: {
+    typeId: string,
+    id: string
+  },
+  lastVariantId: number
+}
+
+type ProductCategory = {
+  key: string,
+  name: {
+    'en-CA': string,
+    'fr-CA': string
+  }
+}
+
 type ParsedTax = {
   dollarAmount: number,
   description: string
@@ -489,5 +538,7 @@ export {
   OrderState,
   CommerceToolsOrderStates,
   Shipment,
-  tCARD_TYPES_TO_JESTA_CODES
+  tCARD_TYPES_TO_JESTA_CODES,
+  Product,
+  ProductCategory
 }
