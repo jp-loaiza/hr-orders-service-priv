@@ -49,7 +49,7 @@ const ctClient = createClient({
         clientId,
         clientSecret,
       },
-      scopes: [`manage_orders:${projectKey}`, `view_payments:${projectKey}`],
+      scopes: [`manage_orders:${projectKey}`, `view_payments:${projectKey}`, `view_products:${projectKey}`],
       fetch,
     }),
     createHttpMiddleware({
@@ -301,7 +301,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined)) or (custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME} > "custom(fields(orderLastModifiedDate))"))) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)) and (createdAt > "2021-10-01")`
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined)) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)) and (createdAt > "2021-10-01")`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
@@ -332,6 +332,32 @@ const fetchShipments = async orderNumber => {
   return body.results
 }
 
+/**
+ * 
+ * @param {string} itemNumber 
+ * @returns {Promise<import('./orders').Product>}
+ */
+
+const fetchItemInfo = async itemNumber => {
+  const query = `id ="${itemNumber}"`
+  const uri = requestBuilder.products.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri})
+  return body.results[0]
+}
+
+/**
+ * 
+ * @param {Array<string>} categoryIds 
+ * @returns {Promise<Array<import('./orders').ProductCategory>>}
+ */
+
+const fetchCategoryInfo = async categoryIds => {
+  const query = `id in ("${categoryIds.join('","')}")`
+  const uri = requestBuilder.categories.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri})
+  return body.results
+}
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
@@ -350,5 +376,7 @@ module.exports = {
   fetchOrderIdsThatShouldBeSentToCrm,
   fetchOrdersThatShouldBeUpdatedInOMS,
   setOrderSentToCrmStatus,
-  keepAliveRequest
+  keepAliveRequest,
+  fetchItemInfo,
+  fetchCategoryInfo
 }

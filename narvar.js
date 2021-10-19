@@ -7,6 +7,7 @@ const baseUrl = process.env.NARVAR_BASE_URL
 const username = process.env.NARVAR_USERNAME
 const password = process.env.NARVAR_PASSWORD
 
+const { fetchItemInfo, fetchCategoryInfo } = require('./commercetools')
 
 /**
  * @param {string} path Path to the Api
@@ -80,12 +81,29 @@ const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.sub
  */
 const getItemFulfillmentStatus = (item, states, locale) => {
   const state = states.find(s => item.state[0].state.id === s.id)
-  return state ? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
+  return (state && STATES_TO_NARVAR_STATUSES[state.name[locale]])? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
 }
 
 /**
+ * @param {import('./orders').LineItem} item
+ * @returns {Promise<Array<string>>}
+ */
+
+async function fetchProductCategory(item) {
+  const productDetails = await fetchItemInfo(item.productId)
+  const categoryInfo = await fetchCategoryInfo(productDetails.masterData.current.categories.map(x => x.id))
+  /**
+   * @type {string[] | PromiseLike<string[]>}
+   */
+  const categoryForNarvar = categoryInfo.reduce(function(filtered, x) {
+    if (x.key.match('^DPMROOTCATEGORY-l1.*-l2.*-l3.*$')) filtered.push(x.name['en-CA'])
+    return filtered
+  }, [])
+  return categoryForNarvar
+}
+/**
  * 
- * @param {Array<{ name: string, value: any }>} attributes 
+ * @param {Array<{ name: string, value: any }>} attributes
  * @param {string} attrName 
  * @param {{value: boolean}} attrDefault 
  * @returns {{value: boolean}}
@@ -185,18 +203,18 @@ const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
  * @param {import('./orders').Order} order
  * @param {Array<import('./orders').OrderState>} states
  * @param {Array<import('./orders').Shipment>} shipments 
- * @returns {Array<import('./orders').NarvarOrderItem>}
+ * @returns {Promise<Array<import('./orders').NarvarOrderItem>>}
  */
-const convertItems = (order, states, shipments) => {
+const convertItems = async (order, states, shipments) => {
   const locale = order.locale
-  let lineCounter = 1 // Not sure this workaround is fine
-  return order.lineItems.map(item => { 
+  let lineCounter = 1
+  return  Promise.all(order.lineItems.map(async(item) => {
     return {
       item_id: item.id,
       sku: item.variant.sku,
       name: item.name[locale],
       quantity: item.quantity,
-      categories: [item.custom.fields.category || ''],
+      categories: await fetchProductCategory(item),
       unit_price: findUnitPrice(item),
       discount_amount: findDiscountedPrice(item),
       discount_percent: findDiscountPercent(item),
@@ -209,10 +227,11 @@ const convertItems = (order, states, shipments) => {
       final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
       line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
       attributes: {
-        orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate,
+        orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate || order.createdAt,
         brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),
         size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
+        reasonCode: null,
         deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
       },
       vendors: [
@@ -233,7 +252,8 @@ const convertItems = (order, states, shipments) => {
       original_unit_price: item.variant.prices[0].value.centAmount / 100,
       original_line_price: null,
       narvar_convert_id: null
-    }})
+    }
+  }))
 }
 
 /**
@@ -327,20 +347,19 @@ const convertPickups = (order, shipments) => {
  * @param {import('./orders').Order} order
  * @param {Array<import('./orders').Shipment>} shipments
  * @param {Array<import('./orders').OrderState>} states
- * @returns {import('./orders').NarvarOrder | undefined}
+ * @returns {Promise<import('./orders').NarvarOrder | undefined>}
  */
-const convertOrderForNarvar = (order, shipments, states) => {
+const convertOrderForNarvar = async(order, shipments, states) => {
   const state = order.state ? states.find(s => order.state.id === s.id) : null
   const locale = order.locale.replace('-', '_')
   return {
-    retailer: 'harryrosen',
     order_info: {
       order_number: order.orderNumber,
       order_date: order.custom.fields.orderDate || order.createdAt,
       status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
       checkout_locale: locale,
-      order_items: convertItems(order, states, shipments),
+      order_items: await convertItems(order, states, shipments),
       shipments: convertShipments(order, shipments),
       pickups: convertPickups(order, shipments),
       billing: {
@@ -376,8 +395,7 @@ const convertOrderForNarvar = (order, shipments, states) => {
         }
       },
       attributes: {
-        checkout_locale: locale,
-        orderLastModifiedDate: order.custom.fields.orderLastModifiedDate,
+        orderLastModifiedDate: order.custom.fields.orderLastModifiedDate|| order.createdAt,
         shipping_tax1: order.custom.fields.shippingTax1? (order.custom.fields.shippingTax1.centAmount / 100).toString() :'0',
         shipping_tax2: order.custom.fields.shippingTax2? (order.custom.fields.shippingTax2.centAmount / 100).toString() :'0',
         siteId: order.custom.fields.cartSourceWebsite || '00990'
