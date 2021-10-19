@@ -230,7 +230,7 @@ const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
   return null
 }
 
-const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name) => {
+const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
   if (!name) throw new Error('Shipping name is undefined')
 
   if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES).includes(name.trim())) {
@@ -244,30 +244,6 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
   }
   return null
 }
-
-const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebsite, /** @type {string} **/ name) => {
-  if (cartSourceWebsite && cartSourceWebsite == '00997') {
-    
-    if(name.trim() == 'Standard Shipping') {
-      return {
-        carrierId : 'CP',
-        shippingServiceType : 'EXPEDITED PARCEL',
-        shippingIsRush : false
-      }
-    }
-
-    if(name.trim() == 'Express Shipping') {
-      return {
-        carrierId : 'CP',
-        shippingServiceType : 'XPRESSPOST',
-        shippingIsRush : true
-      }
-    }
-    
-  } 
-  return getShippingInfoFromShippingName(name)
-}
-
 
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const carrierId = getCarrierIdFromShippingName(name)
@@ -337,7 +313,6 @@ module.exports = {
   getParsedTaxesFromLineItem,
   getPosEquivalenceFromPayment,
   getShippingInfoFromShippingName,
-  getShippingInfoForOrder,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
