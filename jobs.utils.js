@@ -279,7 +279,7 @@ async function sendOrdersToNarvar() {
   for (const order of orders) {
     try {
       const shipments = await fetchShipments(order.orderNumber)
-      const narvarOrder = convertOrderForNarvar(order, shipments, states)
+      const narvarOrder = await convertOrderForNarvar(order, shipments, states)
       if(narvarOrder) {
         const now = new Date().valueOf()
         await sendToNarvar(narvarOrder)
