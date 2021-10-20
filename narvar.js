@@ -19,8 +19,6 @@ const { fetchItemInfo, fetchCategoryInfo } = require('./commercetools')
 const makeNarvarRequest = async (path, options) => {
   const response = await fetch(baseUrl + path, options)
   const result = await response.json()
-  console.log('result:')
-  console.log(result)
   if (response.ok) {
     if (result.status === 'FAILURE') {
       throw new Error(JSON.stringify(result))
@@ -90,6 +88,9 @@ const getItemFulfillmentStatus = (item, states, locale) => {
  */
 
 async function fetchProductCategory(item) {
+  if (item.custom.fields.category) {
+    return [item.custom.fields.category]
+  }
   const productDetails = await fetchItemInfo(item.productId)
   const categoryInfo = await fetchCategoryInfo(productDetails.masterData.current.categories.map(x => x.id))
   /**
@@ -264,7 +265,7 @@ const convertItems = async (order, states, shipments) => {
  */
 
 const convertShipments = (order, shipments) => {
-  return order.custom.fields.isStorePickup || shipments.length ? [] : shipments.map(shipment => { return {
+  return order.custom.fields.isStorePickup || shipments.length ? shipments.map(shipment => { return {
     carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
     carrier_service: shipment.value.shipmentDetails[0].serviceType || null,
@@ -305,7 +306,7 @@ const convertShipments = (order, shipments) => {
       deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate,
       [`${shipment.value.shipmentDetails[0].lineItemId}-deliveryItemLastModifiedDate`]: shipment.value.shipmentItemLastModifiedDate || shipment.value.shipmentLastModifiedDate,
     }
-  }})
+  }}) : []
 }
 
 /**
@@ -316,7 +317,7 @@ const convertShipments = (order, shipments) => {
  */
 
 const convertPickups = (order, shipments) => {
-  return !order.custom.fields.isStorePickup || shipments.length ? [] : shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
+  return !order.custom.fields.isStorePickup || shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
     id: shipment.id,
     status: STATES_TO_NARVAR_STATUSES[shipment.value.shipmentDetails[0].status],
     items_info: [ { 
@@ -340,7 +341,7 @@ const convertPickups = (order, shipments) => {
     attributes: {
       deliveryItemLastModifiedDate: shipment.value.shipmentLastModifiedDate
     }
-  }})
+  }}) : []
 }
 
 /**
