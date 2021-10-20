@@ -19,8 +19,6 @@ const { fetchItemInfo, fetchCategoryInfo } = require('./commercetools')
 const makeNarvarRequest = async (path, options) => {
   const response = await fetch(baseUrl + path, options)
   const result = await response.json()
-  console.log('result:')
-  console.log(result)
   if (response.ok) {
     if (result.status === 'FAILURE') {
       throw new Error(JSON.stringify(result))
@@ -90,6 +88,9 @@ const getItemFulfillmentStatus = (item, states, locale) => {
  */
 
 async function fetchProductCategory(item) {
+  if (item.custom.fields.category) {
+    return [item.custom.fields.category]
+  }
   const productDetails = await fetchItemInfo(item.productId)
   const categoryInfo = await fetchCategoryInfo(productDetails.masterData.current.categories.map(x => x.id))
   /**
