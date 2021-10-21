@@ -280,6 +280,7 @@ async function sendOrdersToNarvar() {
     try {
       const shipments = await fetchShipments(order.orderNumber)
       const narvarOrder = await convertOrderForNarvar(order, shipments, states)
+      console.log(`Converted Order for Narvar: ${JSON.stringify(narvarOrder)}`)
       if(narvarOrder) {
         const now = new Date().valueOf()
         await sendToNarvar(narvarOrder)
