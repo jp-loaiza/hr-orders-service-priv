@@ -46,12 +46,13 @@ const JESTA_TAX_DESCRIPTIONS = {
 }
 
 const CARD_TYPES_TO_JESTA_CODES = {
-  visa: '05',
-  mastercard: '06',
+  'visa': '05',
+  'mastercard': '06',
   'american-express': '07',
+  'american express': '07',
   'diners-club': '09',
-  discover: '08',
-  jcb: '10',
+  'discover': '08',
+  'jcb': '10',
   'harry rosen giftcard': '14',
   'harry rosen loyalty': '49',
   'paypal': '80',
