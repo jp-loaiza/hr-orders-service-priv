@@ -161,6 +161,33 @@ const payPalPayment = {
   }
 }
 
+const klarnaPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 5040,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'Klarna',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type:'klarna'
+      }
+    }
+  }
+}
+
 const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
 
 describe('formatCardExpiryDateFromPayment', () => {
@@ -223,6 +250,11 @@ describe('getPosEquivalenceFromPayment', () => {
   it('returns the corret Jesta payment code when given an PayPal payment', () => {
     // @ts-ignore incomplete payment for testing
     expect(getPosEquivalenceFromPayment(payPalPayment)).toBe('80')
+  })
+
+  it('returns the corret Jesta payment code when given an Klarna payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(klarnaPayment)).toBe('93')
   })
 })
 
