@@ -1,5 +1,6 @@
 const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
+const { pathToFileURL } = require('url')
 const {
   CARD_TYPES_TO_JESTA_CODES,
   CITCON_PAYMENT_METHODS,
@@ -245,6 +246,19 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
   return null
 }
 
+
+/**
+ * Determines payment signature required indicator based on payment 
+ * @param {import('./orders').PaymentInfo} paymentInfo
+ */
+const getSignatureRequiredIndicator = (paymentInfo) => {
+  const klarnaPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna')
+  if(klarnaPaymentInfo && klarnaPaymentInfo.obj.amountPlanned.centAmount >= 94000) {
+      return 'Y'
+  }
+  return 'N'
+}
+
 const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebsite, /** @type {string} **/ name) => {
   if (cartSourceWebsite && cartSourceWebsite == '00997') {
     
@@ -344,5 +358,6 @@ module.exports = {
   lineItemIsEndlessAisle,
   sumMoney,
   getPaymentReleasedStatus,
+  getSignatureRequiredIndicator,
   getFirstLastName
 }

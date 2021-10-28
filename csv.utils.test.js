@@ -18,6 +18,7 @@ const {
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
   lineItemIsEndlessAisle,
+  getSignatureRequiredIndicator,
   sumMoney,
   getPaymentReleasedStatus,
   getFirstLastName
@@ -173,7 +174,7 @@ const klarnaPayment = {
     amountPlanned: {
       type: 'centPrecision',
       currencyCode: 'CAD',
-      centAmount: 5040,
+      centAmount: 94000,
       fractionDigits: 2
     },
     custom: {
@@ -187,6 +188,7 @@ const klarnaPayment = {
     }
   }
 }
+
 
 const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
 
@@ -256,6 +258,38 @@ describe('getPosEquivalenceFromPayment', () => {
     // @ts-ignore incomplete payment for testing
     expect(getPosEquivalenceFromPayment(klarnaPayment)).toBe('93')
   })
+
+
+  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount above 94000', () => {
+    
+    const paymentInfo = {
+      payments: [klarnaPayment]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('Y')
+  })
+
+  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount below 94000', () => {
+    
+    const klarnaPaymentBelow9400 = {...klarnaPayment}
+    klarnaPaymentBelow9400.obj.amountPlanned.centAmount = 5400
+
+    const paymentInfo = {
+      payments: [klarnaPaymentBelow9400]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('N')
+  })
+
+
+  it('returns the corret Jesta signature required indicator code when not a Klarna payment', () => {
+    const paymentInfo = {
+      payments: [payPalPayment]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('N')
+  })
+  
 })
 
 const incompleteLineItem = {
