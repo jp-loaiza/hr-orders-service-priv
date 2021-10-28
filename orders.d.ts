@@ -95,7 +95,10 @@ type NarvarShipment = {
 type NarvarPickup = {
   id: string,
   items_info: Array<NarvarItemsInfo>,
-  status: string,
+  status: {
+    code: string,
+    date: string
+  },
   attributes: { [key: string]: string},
   store: {
     id: string,
