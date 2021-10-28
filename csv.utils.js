@@ -1,6 +1,5 @@
 const currency = require('currency.js')
 const { format, utcToZonedTime } = require('date-fns-tz')
-const { pathToFileURL } = require('url')
 const {
   CARD_TYPES_TO_JESTA_CODES,
   CITCON_PAYMENT_METHODS,
@@ -254,7 +253,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
 const getSignatureRequiredIndicator = (paymentInfo) => {
   const klarnaPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna')
   if(klarnaPaymentInfo && klarnaPaymentInfo.obj.amountPlanned.centAmount >= 94000) {
-      return 'Y'
+    return 'Y'
   }
   return 'N'
 }
