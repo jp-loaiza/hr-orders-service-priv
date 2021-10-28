@@ -54,6 +54,14 @@ const STATES_TO_NARVAR_STATUSES /** @type {import('./orders').NarvarStateMap} */
   'CANCELLED': 'CANCELLED'
 }
 
+const STATES_TO_NARVAR_PICKUP_STATUSES /** @type {import('./orders').NarvarStateMap} */ = {
+  'SHIPPED': 'READY_FOR_PICKUP',
+  'OPEN': 'PROCESSING',
+  'HOLD': 'PROCESSING',
+  'IN PICKING': 'PROCESSING',
+  'CANCELLED': 'CANCELLED'
+}
+
 const LOCALE_TO_PRODUCT = {
   'en-CA': 'product',
   'fr-CA': 'produit'
@@ -319,7 +327,7 @@ const convertShipments = (order, shipments) => {
 const convertPickups = (order, shipments) => {
   return !order.custom.fields.isStorePickup || shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
     id: shipment.id,
-    status: STATES_TO_NARVAR_STATUSES[shipment.value.shipmentDetails[0].status],
+    status: STATES_TO_NARVAR_PICKUP_STATUSES[shipment.value.shipmentDetails[0].status],
     items_info: [ { 
       quantity: shipment.value.shipmentDetails[0].quantityShipped,
       sku: findItemSku(order.lineItems, shipment.value.shipmentDetails[0].lineItemId),
