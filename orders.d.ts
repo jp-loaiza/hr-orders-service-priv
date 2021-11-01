@@ -82,6 +82,7 @@ type NarvarOrderItem = {
 }
 
 type NarvarShipment = {
+  id: string,
   items_info: Array<NarvarItemsInfo>,
   tracking_number: string | null,
   carrier: string | null,
