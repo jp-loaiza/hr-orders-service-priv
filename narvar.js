@@ -197,6 +197,53 @@ const lineNumberFromShipments = (shipments, lineItemId) => {
 
 /**
  * 
+ * @param {import('./orders').NarvarShipment} shipment 
+ * @param {string} order_number 
+ * @returns {boolean}
+ */
+
+function filterMissingTrackingNumberMessages(shipment, order_number) {
+  if (!shipment.tracking_number) {
+    console.error(`Shipment ${shipment.id} for non-BOPIS order ${order_number} has no tracking number`)
+    return false
+  }
+  return true
+}
+
+/**
+ * 
+ * @param {import('./orders').NarvarShipment} shipment 
+ * @param {string} order_number 
+ * @returns {boolean}
+ */
+
+function checkShipmentItemIdForNull(shipment, order_number) {
+  if (!shipment.items_info[0].item_id) {
+    // we want to skip messages with no line item id but not fail them since there's no point retrying. We log out a message here for alerting purposes
+    console.error(`Cannot process messages with no line item id. Order number: ${order_number}`)
+    return false
+  }
+  return true 
+}
+
+/**
+ * 
+ * @param {import('./orders').NarvarShipment} shipment 
+ * @param {string} order_number 
+ * @returns {boolean}
+ */
+
+function checkShippedQuantity(shipment, order_number) {
+  if (!shipment.items_info[0].quantity) {
+    // we also want to skip messages with quantity = 0. We log out a message here for alerting purposes
+    console.error(`Cannot process messages with quantity shipped = 0. Order number: ${order_number}`)
+    return false
+  }
+  return true
+}
+
+/**
+ * 
  * @param {Array<import('./orders').Shipment>} shipments 
  * @param {string} lineItemId 
  * @returns {string | null}
@@ -274,6 +321,7 @@ const convertItems = async (order, states, shipments) => {
 
 const convertShipments = (order, shipments) => {
   return order.custom.fields.isStorePickup || shipments.length ? shipments.map(shipment => { return {
+    id: shipment.id,
     carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
     carrier_service: shipment.value.shipmentDetails[0].serviceType || null,
@@ -372,7 +420,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
       currency_code: order.totalPrice.currencyCode,
       checkout_locale: locale,
       order_items: await convertItems(order, states, shipments),
-      shipments: convertShipments(order, shipments),
+      shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber))? shipment : null),
       pickups: convertPickups(order, shipments),
       billing: {
         billed_to: {
