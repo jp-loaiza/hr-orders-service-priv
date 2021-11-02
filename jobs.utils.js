@@ -274,7 +274,7 @@ async function sendPurchaseEventsToDynamicYield() {
 async function sendOrdersToNarvar() {
   const states = await fetchStates()
   const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
-  console.log(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
+  console.log(total > 0 ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`: 'No orders found to send to Narvar.')
 
   for (const order of orders) {
     try {
