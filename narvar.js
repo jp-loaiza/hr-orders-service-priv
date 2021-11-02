@@ -51,15 +51,19 @@ const STATES_TO_NARVAR_STATUSES /** @type {import('./orders').NarvarStateMap} */
   'OPEN': 'PROCESSING',
   'HOLD': 'PROCESSING',
   'IN PICKING': 'IN_PICKING',
-  'CANCELLED': 'CANCELLED'
+  'CANCELLED': 'CANCELLED',
+  'PICKUP': 'READY_FOR_PICKUP',
+  'PICKEDUP': 'PICKED_UP'
 }
 
 const STATES_TO_NARVAR_PICKUP_STATUSES /** @type {import('./orders').NarvarStateMap} */ = {
-  'SHIPPED': 'READY_FOR_PICKUP',
+  'SHIPPED': 'READY_FOR_CARRIER',
   'OPEN': 'PROCESSING',
   'HOLD': 'PROCESSING',
   'IN PICKING': 'PROCESSING',
-  'CANCELLED': 'CANCELLED'
+  'CANCELLED': 'CANCELLED',
+  'PICKUP': 'READY_FOR_PICKUP',
+  'PICKEDUP': 'PICKED_UP'
 }
 
 const LOCALE_TO_PRODUCT = {
@@ -70,6 +74,21 @@ const LOCALE_TO_PRODUCT = {
 const JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID = {
   'FDX': 'fedex',
   'CP': 'canadapost'
+}
+
+const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
+  FDX: {
+    EXPRESS: 'E1AM',
+    GROUND: 'FG',
+    ECONOMY: 'E3',
+    OVERNIGHT: 'E1',
+    STANDARD_OVERNIGHT: 'E1',
+    'PRIORITY OVERNIGHT': 'E1AM'
+  },
+  CP: {
+    'EXPEDITED PARCEL': 'EP',
+    XPRESSPOST: 'E2'
+  }
 }
 
 /**
@@ -324,7 +343,7 @@ const convertShipments = (order, shipments) => {
     id: shipment.id,
     carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
-    carrier_service: shipment.value.shipmentDetails[0].serviceType || null,
+    carrier_service: shipment.value.shipmentDetails[0].carrierId? JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES[shipment.value.shipmentDetails[0].carrierId][shipment.value.shipmentDetails[0].serviceType] : null,
     items_info: [ { 
       quantity: shipment.value.shipmentDetails[0].quantityShipped,
       sku: findItemSku(order.lineItems, shipment.value.shipmentDetails[0].lineItemId),
