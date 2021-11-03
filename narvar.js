@@ -435,7 +435,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
     order_info: {
       order_number: order.orderNumber,
       order_date: order.custom.fields.orderDate || order.createdAt,
-      status: STATES_TO_NARVAR_STATUSES[state ? state.name[locale] : 'OPEN'],
+      status: STATES_TO_NARVAR_STATUSES[state ? state.name[order.locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
       checkout_locale: locale,
       order_items: await convertItems(order, states, shipments),
