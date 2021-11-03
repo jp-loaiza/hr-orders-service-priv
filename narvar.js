@@ -339,7 +339,7 @@ const convertItems = async (order, states, shipments) => {
  */
 
 const convertShipments = (order, shipments) => {
-  return order.custom.fields.isStorePickup || shipments.length ? shipments.map(shipment => { return {
+  return !order.custom.fields.isStorePickup && shipments.length ? shipments.map(shipment => { return {
     id: shipment.id,
     carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
     tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
@@ -392,7 +392,7 @@ const convertShipments = (order, shipments) => {
  */
 
 const convertPickups = (order, shipments) => {
-  return !order.custom.fields.isStorePickup || shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
+  return order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
     id: shipment.id,
     status: {
       code: STATES_TO_NARVAR_PICKUP_STATUSES[shipment.value.shipmentDetails[0].status],
