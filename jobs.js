@@ -1,8 +1,8 @@
 
 require('dotenv').config()
 
-const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
-const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynamicYield, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL, SEND_NARVAR_ORDERS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynamicYield, sendOrdersToNarvar, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
@@ -160,6 +160,22 @@ async function sendPurchaseEventsToDynamicYieldJob(sendToDynamicYieldInterval) {
   }
 }
 
+/**
+ * @param {number} sendToNarvarInterval
+ */
+async function sendOrdersToNarvarJob(sendToNarvarInterval) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      await sendOrdersToNarvar()
+    }
+    catch(error) {
+      console.error('Unable to send orders to Narvar:', error)
+    }
+    await sleep(sendToNarvarInterval)
+  }
+}
+
 const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
 if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
@@ -206,6 +222,14 @@ if (shouldSendDynamicYieldInfo) {
   console.log('Processing Dynamic Yield job at interval: ', sendDynamicYieldInfoInterval)
   if (!(sendDynamicYieldInfoInterval > 0)) throw new Error('SEND_DYNAMIC_YIELD_INFO_INTERVAL must be a positive number')
   sendPurchaseEventsToDynamicYieldJob(sendDynamicYieldInfoInterval)
+}
+
+const shouldSendOrderNarvar = process.env.SHOULD_SEND_NARVAR_ORDERS === 'true'
+if(shouldSendOrderNarvar) {
+  const sendToNarvarInterval = Number(SEND_NARVAR_ORDERS_INTERVAL)
+  console.log('Processing Narvar job at interval: ', sendToNarvarInterval)
+  if(!(sendToNarvarInterval > 0)) throw Error('SEND_NARVAR_ORDERS_INTERVAL must be a positive number')
+  sendOrdersToNarvarJob(sendToNarvarInterval)
 }
 
 const shouldSendCjConversions = process.env.SHOULD_SEND_CJ_CONVERSIONS === 'true'

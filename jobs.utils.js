@@ -1,7 +1,18 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('./validation')
-const { MAXIMUM_RETRIES, ORDER_CUSTOM_FIELDS, PAYMENT_STATES, TRANSACTION_TYPES, TRANSACTION_STATES, JESTA_ORDER_STATUSES, SENT_TO_ALGOLIA_STATUSES, SENT_TO_CJ_STATUSES, SENT_TO_DYNAMIC_YIELD_STATUSES } = require('./constants')
+const { 
+  MAXIMUM_RETRIES,
+  ORDER_CUSTOM_FIELDS,
+  PAYMENT_STATES, 
+  TRANSACTION_TYPES, 
+  TRANSACTION_STATES, 
+  JESTA_ORDER_STATUSES, 
+  SENT_TO_ALGOLIA_STATUSES, 
+  SENT_TO_CJ_STATUSES, 
+  SENT_TO_DYNAMIC_YIELD_STATUSES, 
+  SENT_TO_NARVAR_STATUSES 
+} = require('./constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -10,7 +21,10 @@ const {
   fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   fetchOrdersWhoseConversionsShouldBeSentToCj,
-  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield
+  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
+  fetchOrdersThatShouldBeSentToNarvar,
+  fetchStates,
+  fetchShipments
 } = require('./commercetools')
 const { sendOrderUpdateToJesta } = require('./jesta')
 const { generateCsvStringFromOrder } = require('./csv')
@@ -19,6 +33,7 @@ const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (pr
 const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
 const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('./dynamicYield')
 const { sendOrderConversionToCj } = require('./cj')
+const { convertOrderForNarvar, sendToNarvar } = require('./narvar')
 
 /**
  *
@@ -256,6 +271,36 @@ async function sendPurchaseEventsToDynamicYield() {
   }
 }
 
+async function sendOrdersToNarvar() {
+  const states = await fetchStates()
+  const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
+  console.log(total > 0 ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`: 'No orders found to send to Narvar.')
+
+  for (const order of orders) {
+    try {
+      const shipments = await fetchShipments(order.orderNumber)
+      const narvarOrder = await convertOrderForNarvar(order, shipments, states)
+      console.log(`Converted Order for Narvar: ${JSON.stringify(narvarOrder)}`)
+      if(narvarOrder) {
+        const now = new Date().valueOf()
+        await sendToNarvar(narvarOrder)
+        console.log(`Order Successfully Sent to NARVAR: ${order.orderNumber}`)
+        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
+        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME, new Date(now).toJSON())
+        console.log(`Narvar status fields for order: ${order.orderNumber} set successfully`)
+      }
+    } catch (error) {
+      console.error(`Failed to send order ${order.orderNumber}: to Narvar`, error)
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
+      })
+    }
+    await sleep(100) // prevent CT/Narvar from getting overloaded
+  }
+}
+
 /**
  * @param {{name: string, fetchRelevantOrders: function, processOrder: function, retryCountField: string, nextRetryAtField: string, statusField: string, statuses: {SUCCESS: string, FAILURE: string, PENDING: string} }} params
  */
@@ -314,6 +359,7 @@ module.exports = {
   sendOrderUpdates,
   sendConversionsToAlgolia,
   sendPurchaseEventsToDynamicYield,
+  sendOrdersToNarvar,
   startCjConversionJob,
   transformToOrderPayment
 }
