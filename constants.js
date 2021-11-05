@@ -46,6 +46,9 @@ const JESTA_TAX_DESCRIPTIONS = {
 }
 
 const CARD_TYPES_TO_JESTA_CODES = {
+  'apple pay - visa': '05',
+  'apple pay - mastercard': '06',
+  'apple pay - american express': '07',
   'visa': '05',
   'mastercard': '06',
   'american-express': '07',

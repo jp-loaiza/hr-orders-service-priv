@@ -189,6 +189,86 @@ const klarnaPayment = {
   }
 }
 
+const applePayVisaPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type: 'Apple Pay - Visa'
+      }
+    }
+  }
+}
+
+const applePayAmexPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type: 'Apple Pay - American Express'
+      }
+    }
+  }
+}
+
+const applePayMCPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type: 'Apple Pay - MasterCard'
+      }
+    }
+  }
+}
 
 const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
 
@@ -257,6 +337,21 @@ describe('getPosEquivalenceFromPayment', () => {
   it('returns the corret Jesta payment code when given an Klarna payment', () => {
     // @ts-ignore incomplete payment for testing
     expect(getPosEquivalenceFromPayment(klarnaPayment)).toBe('93')
+  })
+
+  it('returns the corret Jesta payment code when given an apple pay Visa payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(applePayVisaPayment)).toBe('05')
+  })
+
+  it('returns the corret Jesta payment code when given an apple pay MasterCard payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(applePayMCPayment)).toBe('06')
+  })
+
+  it('returns the corret Jesta payment code when given an apple pay Amex payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(applePayAmexPayment)).toBe('07')
   })
 
 
