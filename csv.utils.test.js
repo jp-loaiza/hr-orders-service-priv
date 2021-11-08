@@ -18,6 +18,7 @@ const {
   getTaxTotalFromTaxedPrice,
   getBarcodeInfoFromLineItem,
   lineItemIsEndlessAisle,
+  getSignatureRequiredIndicator,
   sumMoney,
   getPaymentReleasedStatus,
   getFirstLastName
@@ -161,6 +162,114 @@ const payPalPayment = {
   }
 }
 
+const klarnaPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 94000,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'Klarna',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type:'klarna'
+      }
+    }
+  }
+}
+
+const applePayVisaPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type: 'Apple Pay - Visa'
+      }
+    }
+  }
+}
+
+const applePayAmexPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type: 'Apple Pay - American Express'
+      }
+    }
+  }
+}
+
+const applePayMCPayment = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 113,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type: 'Apple Pay - MasterCard'
+      }
+    }
+  }
+}
+
 const nonCreditCardPayment = {...creditCardPayment, obj: { ...creditCardPayment.obj, paymentMethodInfo: { method: '' } } }
 
 describe('formatCardExpiryDateFromPayment', () => {
@@ -224,6 +333,58 @@ describe('getPosEquivalenceFromPayment', () => {
     // @ts-ignore incomplete payment for testing
     expect(getPosEquivalenceFromPayment(payPalPayment)).toBe('80')
   })
+
+  it('returns the corret Jesta payment code when given an Klarna payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(klarnaPayment)).toBe('93')
+  })
+
+  it('returns the corret Jesta payment code when given an apple pay Visa payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(applePayVisaPayment)).toBe('05')
+  })
+
+  it('returns the corret Jesta payment code when given an apple pay MasterCard payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(applePayMCPayment)).toBe('06')
+  })
+
+  it('returns the corret Jesta payment code when given an apple pay Amex payment', () => {
+    // @ts-ignore incomplete payment for testing
+    expect(getPosEquivalenceFromPayment(applePayAmexPayment)).toBe('07')
+  })
+
+
+  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount above 94000', () => {
+    
+    const paymentInfo = {
+      payments: [klarnaPayment]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('Y')
+  })
+
+  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount below 94000', () => {
+    
+    const klarnaPaymentBelow9400 = {...klarnaPayment}
+    klarnaPaymentBelow9400.obj.amountPlanned.centAmount = 5400
+
+    const paymentInfo = {
+      payments: [klarnaPaymentBelow9400]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('N')
+  })
+
+
+  it('returns the corret Jesta signature required indicator code when not a Klarna payment', () => {
+    const paymentInfo = {
+      payments: [payPalPayment]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('N')
+  })
+  
 })
 
 const incompleteLineItem = {
