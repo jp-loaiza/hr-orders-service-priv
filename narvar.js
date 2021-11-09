@@ -456,7 +456,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
           },
         },
         amount: (order.taxedPrice.totalGross.centAmount / 100.0),
-        tax_amount: (order.taxedPrice.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) / 100.0),
+        tax_amount: ((order.taxedPrice.totalGross.centAmount - order.taxedPrice.totalNet.centAmount) / 100.0),
         shipping_handling: (order.shippingInfo.shippingRate.price.centAmount / 100)
       },
       customer: {
@@ -477,7 +477,9 @@ const convertOrderForNarvar = async(order, shipments, states) => {
         orderLastModifiedDate: order.custom.fields.orderLastModifiedDate|| order.createdAt,
         shipping_tax1: order.custom.fields.shippingTax1? (order.custom.fields.shippingTax1.centAmount / 100).toString() :'0',
         shipping_tax2: order.custom.fields.shippingTax2? (order.custom.fields.shippingTax2.centAmount / 100).toString() :'0',
-        siteId: order.custom.fields.cartSourceWebsite || '00990'
+        siteId: order.custom.fields.cartSourceWebsite || '00990',
+        isStorePickup: order.custom.fields.isStorePickup === null || order.custom.fields.isStorePickup === false ? false : true,
+        subtotal: ((order.taxedPrice.totalNet.centAmount - order.shippingInfo.shippingRate.price.centAmount) / 100).toString()
       },
       is_shoprunner_eligible : false,
     }

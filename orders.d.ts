@@ -50,7 +50,7 @@ type NarvarOrder = {
     pickups?: Array<NarvarPickup>,
     billing: NarvarBilling,
     customer: NarvarCustomer,
-    attributes: { [key: string]: string },
+    attributes: { [key: string]: string | boolean },
     is_shoprunner_eligible: Boolean,
   }
 }
