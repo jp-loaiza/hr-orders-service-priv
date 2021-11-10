@@ -230,7 +230,7 @@ const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
   return null
 }
 
-const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => {
+const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name) => {
   if (!name) throw new Error('Shipping name is undefined')
 
   if (Object.keys(ENDLESS_AISLE_SHIPPING_NAMES_TO_SHIPPING_SERVICE_TYPES).includes(name.trim())) {
@@ -244,6 +244,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string} **/ name) => 
   }
   return null
 }
+
 
 /**
  * Determines payment signature required indicator based on payment 
@@ -348,6 +349,7 @@ module.exports = {
   getParsedTaxesFromLineItem,
   getPosEquivalenceFromPayment,
   getShippingInfoFromShippingName,
+  getShippingInfoForOrder,
   getShippingTaxAmountsFromShippingTaxes,
   getShippingTaxDescriptionsFromShippingTaxes,
   getTaxTotalFromTaxedPrice,
