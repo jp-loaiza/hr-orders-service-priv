@@ -268,6 +268,7 @@ type LineItem = {
       lineShippingCharges?: Price,
       orderDetailLastModifiedDate: string,
       category?: string,
+      reasonCode?: string,
       algoliaAnalyticsData?: {
         obj: {
           value: AlgoliaAnalyticsData
@@ -411,7 +412,8 @@ type Order = {
       orderDate?: string,
       orderCreatedDate?: string,
       shippingTax1?: string,
-      shippingTax2?: string
+      shippingTax2?: string,
+      reasonCode?: string
     }
   }
 }

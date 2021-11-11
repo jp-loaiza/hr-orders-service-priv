@@ -306,7 +306,7 @@ const convertItems = async (order, states, shipments) => {
         brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),
         size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
-        reasonCode: null,
+        reasonCode: item.custom.fields.reasonCode || order.custom.fields.reasonCode || null,
         deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
       },
       vendors: [
