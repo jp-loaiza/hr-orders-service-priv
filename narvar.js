@@ -210,7 +210,7 @@ const findItemSku = (items, item_id) => {
  */
 
 const lineNumberFromShipments = (shipments, lineItemId) => {
-  const shipment = shipments.find(s => s.value.shipmentDetails[0].lineItemId === lineItemId)
+  const shipment = shipments.find(s => (s.value.shipmentDetails[0] && (s.value.shipmentDetails[0].lineItemId === lineItemId)))
   return shipment ? shipment.value.shipmentDetails[0].line : null
 }
 
