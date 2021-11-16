@@ -478,7 +478,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
         shipping_tax1: order.custom.fields.shippingTax1? (order.custom.fields.shippingTax1.centAmount / 100).toString() :'0',
         shipping_tax2: order.custom.fields.shippingTax2? (order.custom.fields.shippingTax2.centAmount / 100).toString() :'0',
         siteId: order.custom.fields.cartSourceWebsite || '00990',
-        isStorePickup: order.custom.fields.isStorePickup === null || order.custom.fields.isStorePickup === false ? false : true,
+        isStorePickup: order.custom.fields.isStorePickup !== null && order.custom.fields.isStorePickup,
         subtotal: ((order.taxedPrice.totalNet.centAmount - order.shippingInfo.shippingRate.price.centAmount) / 100).toString()
       },
       is_shoprunner_eligible : false,
