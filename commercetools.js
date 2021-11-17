@@ -261,7 +261,14 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
-  const query = `(custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined)))`
+  const now = new Date()
+  let oneWeekAgo = new Date()
+  oneWeekAgo.setDate(now.getDate() - 7)
+  // CT complains about the not efficient query since we do not have any date range filter
+  // The goal is to reduce the amount of response time for CT server-timing less than 25 ms
+  // Using one week range filter, the response time is around 17 ms without losing any orders
+  // The current retry logic indicate the total retry time should be 15000 ms
+  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
@@ -286,7 +293,10 @@ const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
  * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
  */
 const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined)))`
+  const now = new Date()
+  let oneWeekAgo = new Date()
+  oneWeekAgo.setDate(now.getDate() - 7)
+  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
