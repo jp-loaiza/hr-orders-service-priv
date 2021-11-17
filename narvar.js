@@ -339,16 +339,16 @@ const convertItems = async (order, states, shipments) => {
  */
 
 const convertShipments = (order, shipments) => {
-  return !order.custom.fields.isStorePickup && shipments.length ? shipments.map(shipment => { return {
+  return !order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0] && (shipment.value.shipmentDetails[0].quantityShipped != 0)).map(shipment => { return {
     id: shipment.id,
-    carrier: (shipment.value.shipmentDetails[0] && shipment.value.shipmentDetails[0].carrierId) ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
-    tracking_number: (shipment.value.shipmentDetails[0] && shipment.value.shipmentDetails[0].trackingNumber) || null,
-    carrier_service: (shipment.value.shipmentDetails[0] && shipment.value.shipmentDetails[0].carrierId) ? JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES[shipment.value.shipmentDetails[0].carrierId][shipment.value.shipmentDetails[0].serviceType] : null,
-    items_info: (shipment.value.shipmentDetails[0] && [ { 
+    carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
+    tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
+    carrier_service: shipment.value.shipmentDetails[0].carrierId ? JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES[shipment.value.shipmentDetails[0].carrierId][shipment.value.shipmentDetails[0].serviceType] : null,
+    items_info: [ { 
       quantity: shipment.value.shipmentDetails[0].quantityShipped,
       sku: findItemSku(order.lineItems, shipment.value.shipmentDetails[0].lineItemId),
       item_id: shipment.value.shipmentDetails[0].lineItemId
-    } ]) || null,
+    } ],
     shipped_to: {
       first_name: order.shippingAddress.firstName,
       last_name: order.shippingAddress.lastName,
@@ -377,10 +377,10 @@ const convertShipments = (order, shipments) => {
       }
     },
     ship_date: shipment.value.shipmentDetails[0].shippedDate || null,
-    attributes: (shipment.value.shipmentDetails[0] && {
+    attributes: {
       deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate,
       [`${shipment.value.shipmentDetails[0].lineItemId}-deliveryItemLastModifiedDate`]: shipment.value.shipmentItemLastModifiedDate || shipment.value.shipmentLastModifiedDate,
-    }) || { [`${shipment.value.shipmentDetails[0].lineItemId}-deliveryItemLastModifiedDate`]: shipment.value.shipmentItemLastModifiedDate || shipment.value.shipmentLastModifiedDate }
+    }
   }}) : []
 }
 
@@ -392,7 +392,7 @@ const convertShipments = (order, shipments) => {
  */
 
 const convertPickups = (order, shipments) => {
-  return order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0].quantityShipped != 0).map(shipment => { return {
+  return order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0] && (shipment.value.shipmentDetails[0].quantityShipped != 0)).map(shipment => { return {
     id: shipment.id,
     status: {
       code: STATES_TO_NARVAR_PICKUP_STATUSES[shipment.value.shipmentDetails[0].status],
