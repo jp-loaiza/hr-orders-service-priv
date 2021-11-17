@@ -269,7 +269,7 @@ function checkShippedQuantity(shipment, order_number) {
  */
 
 const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
-  const shipment = shipments.find(s => s.value.shipmentDetails[0].lineItemId === lineItemId)
+  const shipment = shipments.find(s => (s.value.shipmentDetails[0] && (s.value.shipmentDetails[0].lineItemId === lineItemId)))
   return shipment && shipment.value.shipmentItemLastModifiedDate ? shipment.value.shipmentItemLastModifiedDate : null
 }
 
