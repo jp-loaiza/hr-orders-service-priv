@@ -431,11 +431,12 @@ const convertPickups = (order, shipments) => {
 const convertOrderForNarvar = async(order, shipments, states) => {
   const state = order.state ? states.find(s => order.state.id === s.id) : null
   const locale = order.locale.replace('-', '_')
+  const isStorePickup = (order.custom.fields.isStorePickup !== null && order.custom.fields.isStorePickup) || false
   return {
     order_info: {
       order_number: order.orderNumber,
       order_date: order.custom.fields.orderDate || order.createdAt,
-      status: STATES_TO_NARVAR_STATUSES[state ? state.name[order.locale] : 'OPEN'],
+      status: isStorePickup ? STATES_TO_NARVAR_PICKUP_STATUSES[state ? state.name[order.locale] : 'OPEN'] : STATES_TO_NARVAR_STATUSES[state ? state.name[order.locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
       checkout_locale: locale,
       order_items: await convertItems(order, states, shipments),
@@ -478,7 +479,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
         shipping_tax1: order.custom.fields.shippingTax1? (order.custom.fields.shippingTax1.centAmount / 100).toString() :'0',
         shipping_tax2: order.custom.fields.shippingTax2? (order.custom.fields.shippingTax2.centAmount / 100).toString() :'0',
         siteId: order.custom.fields.cartSourceWebsite || '00990',
-        isStorePickup: order.custom.fields.isStorePickup !== null && order.custom.fields.isStorePickup || false,
+        isStorePickup: isStorePickup,
         subtotal: ((order.taxedPrice.totalNet.centAmount - order.shippingInfo.shippingRate.price.centAmount) / 100).toString()
       },
       is_shoprunner_eligible : false,

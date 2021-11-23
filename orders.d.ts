@@ -42,7 +42,7 @@ type NarvarOrder = {
   order_info: {
     order_number: string,
     order_date: string,
-    status: string,
+    status: string | CommerceToolsOrderStates[],
     currency_code: string,
     checkout_locale: string,
     order_items: Array<NarvarOrderItem>,
