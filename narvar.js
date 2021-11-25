@@ -104,9 +104,12 @@ const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.sub
  * @param { 'en-CA' | 'fr-CA' } locale
  * @returns string
  */
-const getItemFulfillmentStatus = (item, states, locale) => {
+const getItemFulfillmentStatus = (item, states, locale, isStorePickup) => {
   const state = states.find(s => item.state[0].state.id === s.id)
-  return (state && STATES_TO_NARVAR_STATUSES[state.name[locale]])? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
+  if(isStorePickup) {
+    return (state && STATES_TO_NARVAR_PICKUP_STATUSES[state.name[locale]]) ? STATES_TO_NARVAR_PICKUP_STATUSES[state.name[locale]] : 'PROCESSING'
+  }
+  return (state && STATES_TO_NARVAR_STATUSES[state.name[locale]]) ? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
 }
 
 /**
@@ -280,7 +283,7 @@ const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
  * @param {Array<import('./orders').Shipment>} shipments 
  * @returns {Promise<Array<import('./orders').NarvarOrderItem>>}
  */
-const convertItems = async (order, states, shipments) => {
+const convertItems = async (order, states, shipments, isStorePickup) => {
   const locale = order.locale
   let lineCounter = 1
   return  Promise.all(order.lineItems.map(async(item) => {
@@ -296,7 +299,7 @@ const convertItems = async (order, states, shipments) => {
       item_image: item.variant.images[0].url,
       item_url: getItemUrl(item.productSlug[locale], locale),
       is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
-      fulfillment_status: getItemFulfillmentStatus(item, states, locale),
+      fulfillment_status: getItemFulfillmentStatus(item, states, locale, isStorePickup),
       fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
       is_gift: item.custom.fields.isGift,
       final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
@@ -439,7 +442,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
       status: isStorePickup ? STATES_TO_NARVAR_PICKUP_STATUSES[state ? state.name[order.locale] : 'OPEN'] : STATES_TO_NARVAR_STATUSES[state ? state.name[order.locale] : 'OPEN'],
       currency_code: order.totalPrice.currencyCode,
       checkout_locale: locale,
-      order_items: await convertItems(order, states, shipments),
+      order_items: await convertItems(order, states, shipments, isStorePickup),
       shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber))? shipment : null),
       pickups: convertPickups(order, shipments),
       billing: {
