@@ -56,8 +56,10 @@ const STATES_TO_NARVAR_STATUSES /** @type {import('./orders').NarvarStateMap} */
   'PICKEDUP': 'PICKED_UP'
 }
 
+// As of 2021-11-30 this is the same as the one above, see comments on HRC-4777
+// TODO: if it stays the same then merge these into one and simplify the code
 const STATES_TO_NARVAR_PICKUP_STATUSES /** @type {import('./orders').NarvarStateMap} */ = {
-  'SHIPPED': 'READY_FOR_CARRIER',
+  'SHIPPED': 'SHIPPED',
   'OPEN': 'PROCESSING',
   'HOLD': 'PROCESSING',
   'IN PICKING': 'PROCESSING',
