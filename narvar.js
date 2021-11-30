@@ -423,7 +423,9 @@ const convertPickups = (order, shipments) => {
     },
     attributes: {
       deliveryItemLastModifiedDate: shipment.value.shipmentLastModifiedDate
-    }
+    },
+    type: 'BOPIS',
+
   }}) : []
 }
 

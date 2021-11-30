@@ -105,7 +105,8 @@ type NarvarPickup = {
     id: string,
     address: NarvarAddress,
     phone_number: string
-  }
+  },
+  type: string
 }
 
 type NarvarItemsInfo = {
