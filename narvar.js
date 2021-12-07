@@ -409,16 +409,15 @@ const convertPickups = (order, shipments) => {
       item_id: shipment.value.shipmentDetails[0].lineItemId
     } ],
     store: {
-      id: shipment.value.shipmentDetails[0].siteId,
-      phone_number: shipment.value.fromHomePhone || 'N/A',
-      name: shipment.value.fromStoreName || 'N/A',
+      id: order.custom.fields.destinationSiteId || '',
+      phone_number: order.shippingAddress.phone,
+      name: order.shippingAddress.streetName,
       address: {
-        street_1: shipment.value.fromAddress1 || 'N/A',
-        street_2: shipment.value.fromAddress2 || 'N/A',
-        city: shipment.value.fromCity || 'N/A',
-        state: shipment.value.fromStateId || 'N/A',
-        zip: shipment.value.fromZipCode || 'N/A',
-        country: shipment.value.fromCountryId || 'N/A'
+        street_1: order.shippingAddress.streetName,
+        city: order.shippingAddress.city,
+        state: order.shippingAddress.state,
+        zip: order.shippingAddress.postalCode,
+        country: order.shippingAddress.country
       }
     },
     attributes: {
