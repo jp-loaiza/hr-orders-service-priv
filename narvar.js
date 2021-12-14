@@ -328,7 +328,7 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
       events: null,
       color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale] : null } }).value[locale],
       size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
-      style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
+      //style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
       original_unit_price: item.variant.prices[0].value.centAmount / 100,
       original_line_price: null,
       narvar_convert_id: null
