@@ -251,7 +251,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
     [retryCountField]: retryCount,
     errorMessage,
     [statusField]: status,
-    ...errorIsRecoverable ? { [nextRetryAtField]: nextRetryAt } : {},
+    ...shouldRetry ? { [nextRetryAtField]: nextRetryAt } : {},
   })
   const body = JSON.stringify({ version, actions })
 
