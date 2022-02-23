@@ -98,7 +98,7 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
  * @param {string} locale
  * @returns string
  */
-const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.substr(0,2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
+const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.substr(0, 2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
 
 /**
  * @param {import('./orders').LineItem} item
@@ -108,7 +108,7 @@ const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.sub
  */
 const getItemFulfillmentStatus = (item, states, locale, isStorePickup) => {
   const state = states.find(s => item.state[0].state.id === s.id)
-  if(isStorePickup) {
+  if (isStorePickup) {
     return (state && STATES_TO_NARVAR_PICKUP_STATUSES[state.name[locale]]) ? STATES_TO_NARVAR_PICKUP_STATUSES[state.name[locale]] : 'PROCESSING'
   }
   return (state && STATES_TO_NARVAR_STATUSES[state.name[locale]]) ? STATES_TO_NARVAR_STATUSES[state.name[locale]] : 'PROCESSING'
@@ -128,7 +128,7 @@ async function fetchProductCategory(item) {
   /**
    * @type {string[] | PromiseLike<string[]>}
    */
-  const categoryForNarvar = categoryInfo.reduce(function(filtered, x) {
+  const categoryForNarvar = categoryInfo.reduce(function (filtered, x) {
     if (x.key.match('^DPMROOTCATEGORY-l1.*-l2.*-l3.*$')) filtered.push(x.name['en-CA'])
     return filtered
   }, [])
@@ -192,7 +192,7 @@ const findDiscountedPrice = (item) => {
  * @returns {number | null}
  */
 const findDiscountPercent = (item) => {
-  return item.discountedPrice ? parseFloat((( (item.variant.prices[0].value.centAmount) - item.discountedPrice.value.centAmount ) / (item.variant.prices[0].value.centAmount / 100)).toFixed(2)) : null
+  return item.discountedPrice ? parseFloat((((item.variant.prices[0].value.centAmount) - item.discountedPrice.value.centAmount) / (item.variant.prices[0].value.centAmount / 100)).toFixed(2)) : null
 }
 
 /**
@@ -247,7 +247,7 @@ function checkShipmentItemIdForNull(shipment, order_number) {
     console.error(`Cannot process messages with no line item id. Order number: ${order_number}`)
     return false
   }
-  return true 
+  return true
 }
 
 /**
@@ -288,7 +288,7 @@ const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
 const convertItems = async (order, states, shipments, isStorePickup) => {
   const locale = order.locale
   let lineCounter = 1
-  return  Promise.all(order.lineItems.map(async(item) => {
+  return Promise.all(order.lineItems.map(async (item) => {
     return {
       item_id: item.id,
       sku: item.variant.sku,
@@ -300,7 +300,7 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
       discount_percent: findDiscountPercent(item),
       item_image: item.variant.images[0].url,
       item_url: getItemUrl(item.productSlug[locale], locale),
-      is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true}).value,
+      is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true }).value,
       fulfillment_status: getItemFulfillmentStatus(item, states, locale, isStorePickup),
       fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
       is_gift: item.custom.fields.isGift,
@@ -308,17 +308,17 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
       line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
       attributes: {
         orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate || order.createdAt,
-        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale] : null } }).value[locale],
+        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),
-        size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
+        size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
         reasonCode: item.custom.fields.reasonCode || order.custom.fields.reasonCode || null,
         deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
       },
       vendors: [
-        { 'name' :  getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
+        { 'name': getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
       ],
       line_price: (item.totalPrice.centAmount / 100),
-      product_type: getAttributeOrDefaultAny(item.variant.attributes, 'productType', { value:  null }).value,
+      product_type: getAttributeOrDefaultAny(item.variant.attributes, 'productType', { value: null }).value,
       product_id: item.productId,
       dimensions: null,
       is_backordered: null,
@@ -326,8 +326,8 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
       item_promise_date: null,
       return_reason_code: null,
       events: null,
-      color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale] : null } }).value[locale],
-      size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale] : null } }).value[locale],
+      color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale]: null } }).value[locale],
+      size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
       //style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
       original_unit_price: item.variant.prices[0].value.centAmount / 100,
       original_line_price: null,
@@ -344,49 +344,54 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
  */
 
 const convertShipments = (order, shipments) => {
-  return !order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0] && (shipment.value.shipmentDetails[0].quantityShipped != 0)).map(shipment => { return {
-    id: shipment.id,
-    carrier: shipment.value.shipmentDetails[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails[0].carrierId] : null,
-    tracking_number: shipment.value.shipmentDetails[0].trackingNumber || null,
-    carrier_service: shipment.value.shipmentDetails[0].carrierId ? JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES[shipment.value.shipmentDetails[0].carrierId][shipment.value.shipmentDetails[0].serviceType] : null,
-    items_info: [ { 
-      quantity: shipment.value.shipmentDetails[0].quantityShipped,
-      sku: findItemSku(order.lineItems, shipment.value.shipmentDetails[0].lineItemId),
-      item_id: shipment.value.shipmentDetails[0].lineItemId
-    } ],
-    shipped_to: {
-      first_name: order.shippingAddress.firstName,
-      last_name: order.shippingAddress.lastName,
-      phone: order.shippingAddress.phone,
-      email: order.shippingAddress.email,
-      address: {
-        street_1: order.shippingAddress.streetName,
-        city: order.shippingAddress.city,
-        state: order.shippingAddress.state,
-        zip: order.shippingAddress.postalCode,
-        country: order.shippingAddress.country
+  return !order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => getShipmentStatusMapping(shipment) === 'SHIPPED').map(shipment => {
+    return {
+      id: shipment.id,
+      carrier: shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].carrierId ? JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID[shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].carrierId] : null, // carrier
+      tracking_number: shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].trackingNumber || null, // tracking number
+      carrier_service: shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].carrierId ? JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES[shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].carrierId][shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].serviceType] : null, // service
+      items_info: shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped != 0).map(shipmentDetail => {
+        return {
+          quantity: shipmentDetail.quantityShipped,
+          sku: findItemSku(order.lineItems, shipmentDetail.lineItemId),
+          item_id: shipmentDetail.lineItemId
+        }
+      })
+      ,
+      shipped_to: {
+        first_name: order.shippingAddress.firstName,
+        last_name: order.shippingAddress.lastName,
+        phone: order.shippingAddress.phone,
+        email: order.shippingAddress.email,
+        address: {
+          street_1: order.shippingAddress.streetName,
+          city: order.shippingAddress.city,
+          state: order.shippingAddress.state,
+          zip: order.shippingAddress.postalCode,
+          country: order.shippingAddress.country
+        }
+      },
+      shipped_from: {
+        first_name: shipment.value.fromStoreName || 'N/A',
+        last_name: '',
+        phone: shipment.value.fromHomePhone || 'N/A',
+        email: '',
+        address: {
+          street_1: shipment.value.fromAddress1 || 'N/A',
+          street_2: shipment.value.fromAddress2 || 'N/A',
+          city: shipment.value.fromCity || 'N/A',
+          state: shipment.value.fromStateId || 'N/A',
+          zip: shipment.value.fromZipCode || 'N/A',
+          country: shipment.value.fromCountryId || 'N/A'
+        }
+      },
+      ship_date: shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].shippedDate || null,
+      attributes: {
+        deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate,
+        [`${shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped > 0)[0].lineItemId}-deliveryItemLastModifiedDate`]: shipment.value.shipmentItemLastModifiedDate || shipment.value.shipmentLastModifiedDate,
       }
-    },
-    shipped_from: {
-      first_name: shipment.value.fromStoreName || 'N/A',
-      last_name: '',
-      phone: shipment.value.fromHomePhone || 'N/A',
-      email: '',
-      address: {
-        street_1: shipment.value.fromAddress1 || 'N/A',
-        street_2: shipment.value.fromAddress2 || 'N/A',
-        city: shipment.value.fromCity || 'N/A',
-        state: shipment.value.fromStateId || 'N/A',
-        zip: shipment.value.fromZipCode || 'N/A',
-        country: shipment.value.fromCountryId || 'N/A'
-      }
-    },
-    ship_date: shipment.value.shipmentDetails[0].shippedDate || null,
-    attributes: {
-      deliveryLastModifiedDate: shipment.value.shipmentLastModifiedDate,
-      [`${shipment.value.shipmentDetails[0].lineItemId}-deliveryItemLastModifiedDate`]: shipment.value.shipmentItemLastModifiedDate || shipment.value.shipmentLastModifiedDate,
     }
-  }}) : []
+  }) : []
 }
 
 /**
@@ -395,37 +400,79 @@ const convertShipments = (order, shipments) => {
  * @param {Array<import('./orders').Shipment>} shipments
  * @returns {Array<import('./orders').NarvarPickup>}
  */
-
 const convertPickups = (order, shipments) => {
-  return order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => shipment.value.shipmentDetails[0] && (shipment.value.shipmentDetails[0].quantityShipped != 0)).map(shipment => { return {
-    id: shipment.id,
-    status: {
-      code: STATES_TO_NARVAR_PICKUP_STATUSES[shipment.value.shipmentDetails[0].status],
-      date: shipment.createdAt
-    },
-    items_info: [ { 
-      quantity: shipment.value.shipmentDetails[0].quantityShipped,
-      sku: findItemSku(order.lineItems, shipment.value.shipmentDetails[0].lineItemId),
-      item_id: shipment.value.shipmentDetails[0].lineItemId
-    } ],
-    store: {
-      id: order.custom.fields.destinationSiteId || '',
-      phone_number: order.shippingAddress.phone,
-      name: order.shippingAddress.streetName,
-      address: {
-        street_1: order.shippingAddress.streetName,
-        city: order.shippingAddress.city,
-        state: order.shippingAddress.state,
-        zip: order.shippingAddress.postalCode,
-        country: order.shippingAddress.country
-      }
-    },
-    attributes: {
-      deliveryItemLastModifiedDate: shipment.value.shipmentLastModifiedDate
-    },
-    type: 'BOPIS',
+  return order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => getShipmentStatusMapping(shipment) === 'PICKUP' || getShipmentStatusMapping(shipment) === 'PICKEDUP').map(shipment => {
+    return {
+      id: shipment.id,
+      status: {
+        code: STATES_TO_NARVAR_PICKUP_STATUSES[getShipmentStatusMapping(shipment)],
+        date: shipment.createdAt
+      },
+      items_info:
+        shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped != 0).map(shipmentDetail => {
+          return {
+            quantity: shipmentDetail.quantityShipped,
+            sku: findItemSku(order.lineItems, shipmentDetail.lineItemId),
+            item_id: shipmentDetail.lineItemId
+          }
+        })
+      ,
+      store: {
+        id: order.custom.fields.destinationSiteId || '',
+        phone_number: order.shippingAddress.phone,
+        name: order.shippingAddress.streetName,
+        address: {
+          street_1: order.shippingAddress.streetName,
+          city: order.shippingAddress.city,
+          state: order.shippingAddress.state,
+          zip: order.shippingAddress.postalCode,
+          country: order.shippingAddress.country
+        }
+      },
+      attributes: {
+        deliveryItemLastModifiedDate: shipment.value.shipmentLastModifiedDate
+      },
+      type: 'BOPIS',
 
-  }}) : []
+    }
+  }) : []
+}
+
+/** SHIPMENT_STATUS_MAPPING
+ * if ALL shipmentDetail status == CANCELLED => shipment status = CANCELLED
+ * if ANY shipmentDetail status == IN PICKING => shipment status = IN PICKING else
+ * if ANY shipmentDetail status == SHIPPED => shipment status = SHIPPED else
+ * if ANY shipmentDetail status == PICKUP => shipment status = PICKUP else
+ * if ANY shipmentDetail status == PICKEDUP => shipment status = PICKEDUP
+ */
+/**
+ * 
+ * @param {import('./orders').Shipment} shipment
+ */
+const getShipmentStatusMapping = (shipment) => {
+  let shipmentMapping;
+
+  const allCancelled = shipment.value.shipmentDetails.every(detail => detail.status === 'CANCELLED')
+  if (allCancelled) {
+    shipmentMapping = 'CANCELLED'
+  }
+
+  for (let shipmentDetail of shipment.value.shipmentDetails) {
+    if (shipmentDetail.status === 'IN PICKING') {
+      shipmentMapping = shipmentDetail.status
+      break;
+    } else if (shipmentDetail.status === 'SHIPPED') {
+      shipmentMapping = shipmentDetail.status
+      break;
+    } else if (shipmentDetail.status === 'PICKUP') {
+      shipmentMapping = shipmentDetail.status
+      break;
+    } else if (shipmentDetail.status === 'PICKEDUP') {
+      shipmentMapping = shipmentDetail.status
+      break;
+    }
+  }
+  return shipmentMapping;
 }
 
 /**
@@ -434,7 +481,7 @@ const convertPickups = (order, shipments) => {
  * @param {Array<import('./orders').OrderState>} states
  * @returns {Promise<import('./orders').NarvarOrder | undefined>}
  */
-const convertOrderForNarvar = async(order, shipments, states) => {
+const convertOrderForNarvar = async (order, shipments, states) => {
   const state = order.state ? states.find(s => order.state.id === s.id) : null
   const locale = order.locale.replace('-', '_')
   const isStorePickup = (order.custom.fields.isStorePickup !== null && order.custom.fields.isStorePickup) || false
@@ -446,7 +493,7 @@ const convertOrderForNarvar = async(order, shipments, states) => {
       currency_code: order.totalPrice.currencyCode,
       checkout_locale: locale,
       order_items: await convertItems(order, states, shipments, isStorePickup),
-      shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber))? shipment : null),
+      shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber)) ? shipment : null),
       pickups: convertPickups(order, shipments),
       billing: {
         billed_to: {
@@ -481,18 +528,18 @@ const convertOrderForNarvar = async(order, shipments, states) => {
         }
       },
       attributes: {
-        orderLastModifiedDate: order.custom.fields.orderLastModifiedDate|| order.createdAt,
-        shipping_tax1: order.custom.fields.shippingTax1? (order.custom.fields.shippingTax1.centAmount / 100).toString() :'0',
-        shipping_tax2: order.custom.fields.shippingTax2? (order.custom.fields.shippingTax2.centAmount / 100).toString() :'0',
+        orderLastModifiedDate: order.custom.fields.orderLastModifiedDate || order.createdAt,
+        shipping_tax1: order.custom.fields.shippingTax1 ? (order.custom.fields.shippingTax1.centAmount / 100).toString() : '0',
+        shipping_tax2: order.custom.fields.shippingTax2 ? (order.custom.fields.shippingTax2.centAmount / 100).toString() : '0',
         siteId: order.custom.fields.cartSourceWebsite || '00990',
         isStorePickup: isStorePickup,
         subtotal: ((order.taxedPrice.totalNet.centAmount - order.shippingInfo.shippingRate.price.centAmount) / 100).toString()
       },
-      is_shoprunner_eligible : false,
+      is_shoprunner_eligible: false,
     }
   }
 }
-  
+
 module.exports = {
   convertOrderForNarvar,
   sendToNarvar
