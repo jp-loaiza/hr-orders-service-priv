@@ -33,6 +33,9 @@ kubectl create configmap hr-orders-service \
   --from-literal=NEWRELIC_APP_NAME=$NEWRELIC_APP_NAME \
   --from-literal=MAXIMUM_RETRIES=$MAXIMUM_RETRIES \
   --from-literal=JOB_TASK_TIMEOUT=$JOB_TASK_TIMEOUT \
+  --from-literal=NARVAR_BASE_URL=$NARVAR_BASE_URL \
+  --from-literal=SHOULD_SEND_NARVAR_ORDERS=$SHOULD_SEND_NARVAR_ORDERS \
+  --from-literal=SEND_NARVAR_ORDERS_INTERVAL=$SEND_NARVAR_ORDERS_INTERVAL \
   -o yaml --dry-run | kubectl apply -f -
 
 # update existing secret
@@ -50,6 +53,8 @@ kubectl create secret generic hr-orders-service \
   --from-literal=JESTA_API_PASSWORD=$JESTA_API_PASSWORD \
   --from-literal=HEALTHZ_AUTHORIZATION=$HEALTHZ_AUTHORIZATION \
   --from-literal=NEWRELIC_LICENSE_KEY=$NEWRELIC_LICENSE_KEY \
+  --from-literal=NARVAR_USERNAME=$NARVAR_USERNAME \
+  --from-literal=NARVAR_PASSWORD=$NARVAR_PASSWORD \
   -o yaml --dry-run | kubectl apply -f -
 
 sed "s~{IMAGE}~$IMAGE~g; s~{HEALTHZ_AUTHORIZATION}~$HEALTHZ_AUTHORIZATION~g;" ./deployment.yaml > ./deployment-populated.yaml

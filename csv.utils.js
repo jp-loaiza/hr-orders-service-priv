@@ -281,7 +281,6 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
   return getShippingInfoFromShippingName(name)
 }
 
-
 const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
   const carrierId = getCarrierIdFromShippingName(name)
   const shippingServiceType = getShippingServiceTypeFromShippingName(name)

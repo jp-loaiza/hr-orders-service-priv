@@ -92,6 +92,45 @@ TODO: Currently all the traffic on Kubernetes is being routed via the Internet, 
 # CICD (IBM Cloud Toolchain)
 - If you have modified/added any environmental variables, the changes should be reflected in the toolchain configuration.
 
+# BOLD TO JESTA MAPPING
+## As up to Oct 5th 2021, PRODUCTION environment has the following mapping rule, latest mapping table could be viewed in google drive [here](https://docs.google.com/spreadsheets/d/1dCRfowbcuUem0Tsrzkwd05uRRUFzVRu2B-3-ZMlirY4/edit#gid=1539068486)
+
+| INPUT: Bold Payment Object attributes | Fields                  | Type             | Avaliable values               | Case sensitive | OUTPUT: Related CSV fields        | CSV values                                                              |
+|---------------------------------------|-------------------------|------------------|--------------------------------|----------------|-----------------------------------|-------------------------------------------------------------------------|
+| paymentMethodInfo                     | method                  | string           | "credit"                       | no             | TENDER_ROWS_ENUM.REFERENCENO      | `${bin[0]}${transaction_card_last4[3]}`                                 |
+|                                       |                         |                  | anything else                  |                |                                   | undefined                                                               |
+| amountPlanned                         | centAmount              | number           | any amount in cents            | no             | TENDER_ROWS_ENUM.AMOUNT           | centAmount / 100                                                        |
+| custom.fields                         | auth_number             | string           | any string                     | no             | TENDER_ROWS_ENUM.AUTHORIZATION_NO | auth_number                                                             |
+|                                       | bin                     | string           | first four digits              | no             | TENDER_ROWS_ENUM.REFERENCENO      | `${bin[0]}${transaction_card_last4[3]}`                                 |
+|                                       | transaction_card_expiry | string           | "MM-YYYY"                      | no             | TENDER_ROWS_ENUM.EXPDATE          | transaction_card_expiry.slice(0, 2) + transaction_card_expiry..slice(5) |
+|                                       | transaction_card_last4  | string           | anything else                  | yes            | TENDER_ROWS_ENUM.REFERENCENO      | `${bin[0]}${transaction_card_last4[3]}`                                 |
+|                                       |                         |                  |                                |                | TENDER_ROWS_ENUM.CARD_NO          | transaction_card_last4                                                  |
+|                                       |                         |                  |                                |                | TENDER_ROWS_ENUM.POS_EQUIVALENCE  | "55" (if transaction_card_type = "citcon payment")                      |
+|                                       |                         |                  | "upop"                         | yes            | TENDER_ROWS_ENUM.POS_EQUIVALENCE  | "45" (if transaction_card_type = "citcon payment")                      |
+|                                       | transaction_card_type   | string           | "visa"                         | no             | TENDER_ROWS_ENUM.POS_EQUIVALENCE  | "05"                                                                    |
+|                                       |                         |                  | "mastercard"                   |                |                                   | "06"                                                                    |
+|                                       |                         |                  | "american-express"             |                |                                   | "07"                                                                    |
+|                                       |                         |                  | "diners-club"                  |                |                                   | "09"                                                                    |
+|                                       |                         |                  | "discover"                     |                |                                   | "08"                                                                    |
+|                                       |                         |                  | "jcb"                          |                |                                   | "10"                                                                    |
+|                                       |                         |                  | "harry rosen giftcard"         |                |                                   | "14"                                                                    |
+|                                       |                         |                  | "harry rosen loyalty"          |                |                                   | "49"                                                                    |
+|                                       |                         |                  | "paypal"                       |                |                                   | "80"                                                                    |
+|                                       |                         |                  | "citcon payment"               |                |                                   | "45" (if transaction_card_last4 = "upop"), "55" otherwise               |
+| paymentStatus                         | interfaceCode           | string           | "cancelled"                    | yes            | HEADER_ROWS_ENUM.RELEASED         | Y / N                                                                   |
+|                                       |                         |                  | "disputed"                     |                |                                   |                                                                         |
+|                                       |                         |                  | "paid"                         |                |                                   |                                                                         |
+|                                       |                         |                  | "partially_paid"               |                |                                   |                                                                         |
+|                                       |                         |                  | "partially_refunded"           |                |                                   |                                                                         |
+|                                       |                         |                  | "pending"                      |                |                                   |                                                                         |
+|                                       |                         |                  | "preauthed"                    |                |                                   |                                                                         |
+|                                       |                         |                  | "refunded"                     |                |                                   |                                                                         |
+|                                       |                         |                  | "held_for_review"              |                |                                   |                                                                         |
+| transactions                          | -                       | Array of Objects | [{id, timestamp, amount, ...}] | -              | HEADER_ROWS_ENUM.RELEASED         | Y / N                                                                   |
+
+
+
+
 # Logs
 ## Guide for adding tags to logDNA logs
 Official guide can be found here:
