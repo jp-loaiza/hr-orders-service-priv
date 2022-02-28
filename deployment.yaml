@@ -257,3 +257,28 @@ spec:
             secretKeyRef:
               key: CJ_SIGNATURE
               name: hr-orders-service
+        - name: NARVAR_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: NARVAR_USERNAME
+              name: hr-orders-service
+        - name: NARVAR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: NARVAR_PASSWORD
+              name: hr-orders-service
+        - name: NARVAR_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NARVAR_BASE_URL
+              name: hr-orders-service
+        - name: SHOULD_SEND_NARVAR_ORDERS
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_NARVAR_ORDERS
+              name: hr-orders-service
+        - name: SEND_NARVAR_ORDERS_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SEND_NARVAR_ORDERS_INTERVAL
+              name: hr-orders-service

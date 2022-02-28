@@ -2,6 +2,8 @@ type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
 type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
 type BoldTaxDescription = 'GST' | 'HST' | 'PST' | 'QST'
 type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discover' | 'jcb'
+type NarvarFulfillmentStatuses = 'FULFILLED' | 'NOT_SHIPPED' | 'SHIPPED' | 'CANCELLED' | 'RETURNED' | 'PARTIAL' | 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP'
+type CommerceToolsOrderStates = 'SHIPPED' | 'IN PICKING' | 'HOLD' | 'OPEN' | 'CANCELLED'
 
 interface Env {
   [key: string]: string,
@@ -34,6 +36,133 @@ interface Env {
   DYNAMIC_YIELD_API_KEY_SERVER: string,
   SEND_DYNAMIC_YIELD_INFO_INTERVAL: string,
   SHOULD_SEND_DYNAMIC_YIELD_INFO: string
+}
+
+type NarvarOrder = {
+  order_info: {
+    order_number: string,
+    order_date: string,
+    status: string | CommerceToolsOrderStates[],
+    currency_code: string,
+    checkout_locale: string,
+    order_items: Array<NarvarOrderItem>,
+    shipments?: Array<NarvarShipment>,
+    pickups?: Array<NarvarPickup>,
+    billing: NarvarBilling,
+    customer: NarvarCustomer,
+    attributes: { [key: string]: string | boolean },
+    is_shoprunner_eligible: Boolean,
+  }
+}
+
+type NarvarOrderItem = {
+  item_id: string,
+  name: string,
+  quantity: number,
+  categories: Array<string>,
+  item_image: string,
+  item_url?: string,
+  sku: string,
+  is_final_sale: boolean,
+  unit_price: number,
+  discount_amount: number | null,
+  discount_percent: number | null,
+  line_price: number,
+  fulfillment_type: string,
+  fulfillment_status: string,
+  is_gift: boolean,
+  final_sale_date: string,
+  line_number?: number,
+  attributes: { [key: string]: string | null },
+  vendors: Array<{
+    name: string,
+    phone?: string,
+    adddress?: string
+  }>
+}
+
+type NarvarShipment = {
+  id: string,
+  items_info: Array<NarvarItemsInfo>,
+  tracking_number: string | null,
+  carrier: string | null,
+  shipped_to: NarvarShippedTo,
+  ship_date: string | null,
+  carrier_service: string | null,
+  shipped_from: NarvarShippedFrom,
+  attributes: { [key: string]: string},
+}
+
+type NarvarPickup = {
+  id: string,
+  items_info: Array<NarvarItemsInfo>,
+  status: {
+    code: string,
+    date: string
+  },
+  attributes: { [key: string]: string},
+  store: {
+    id: string,
+    address: NarvarAddress,
+    phone_number: string
+  },
+  type: string
+}
+
+type NarvarItemsInfo = {
+  item_id: string,
+  sku: string,
+  quantity: number
+}
+
+type NarvarBilling = {
+  billed_to: NarvarShippedTo, // SIC as per Narvar API spec
+  amount: number,
+  tax_amount: number,
+  shipping_handling: number
+}
+
+type NarvarCustomer = {
+  first_name: string,
+  last_name: string,
+  customer_id: string,
+  phone: string,
+  email: string,
+  address: NarvarAddress
+}
+
+type NarvarShippedTo = {
+  first_name: string,
+  last_name: string,
+  phone: string,
+  email: string,
+  address: NarvarAddress,
+
+}
+
+type NarvarShippedFrom = {
+  first_name: string,
+  last_name: string,
+  phone: string,
+  address: NarvarAddress,
+
+}
+
+type NarvarAddress = {
+  street_1: string,
+  street_2?: string,
+  city: string,
+  state: string,
+  zip: string,
+  country: string
+}
+
+type OrderState = {
+  id: string,
+  name: {
+    'en-CA': CommerceToolsOrderStates,
+    'fr-CA': CommerceToolsOrderStates
+  }
 }
 
 type Price = {
@@ -115,14 +244,19 @@ type DynamicYieldCartItem = {
 
 type LineItem = {
   id: string,
+  productId: string,
+  name: {'en-CA':string, 'fr-CA':string},
+  productSlug: {'en-CA':string, 'fr-CA':string},
   variant: {
     sku: string,
     prices: Array<{ value: Price }>,
+    images: Array<{ url: string }>
     attributes: Array<{
       name: string,
       value: any
     }>
   },
+  state: Array<{ quantity: number, state: { typeId: string, id: string} }>,
   price: { value: Price },
   discountedPrice?: { value: Price }
   totalPrice: Price,
@@ -133,6 +267,9 @@ type LineItem = {
       salespersonId?: number,
       itemTaxes: string // stringified JSON
       lineShippingCharges?: Price,
+      orderDetailLastModifiedDate: string,
+      category?: string,
+      reasonCode?: string,
       algoliaAnalyticsData?: {
         obj: {
           value: AlgoliaAnalyticsData
@@ -141,7 +278,22 @@ type LineItem = {
     }
   },
   taxedPrice: TaxedPrice,
-  taxRate: TaxRate
+  taxRate: TaxRate,
+  lastModifiedAt: string,
+  product_type: string | null,
+  product_id: string | null,
+  dimensions: null,
+  is_backordered: null,
+  vendor: null,
+  item_promise_date: null,
+  return_reason_code: null,
+  events: null,
+  color: string | null,
+  size: string | null,
+  style: string | null,
+  original_unit_price: number | null,
+  original_line_price: null,
+  narvar_convert_id: null
 }
 
 type Address = {
@@ -153,7 +305,8 @@ type Address = {
   firstName: string,
   lastName: string,
   phone: string,
-  additionalAddressInfo?: string
+  additionalAddressInfo?: string,
+  email: string
 }
 
 type ShippingInfo = {
@@ -207,6 +360,7 @@ type Order = {
   type: string,
   id: string,
   orderNumber: string,
+  state: { typeId: string, id: string },
   createdAt: string,
   customerId?: string,
   anonymousId?: string,
@@ -214,6 +368,7 @@ type Order = {
   totalPrice: Price,
   lineItems: Array<LineItem>,
   shippingAddress: Address,
+  itemShippingAddress: Address,
   billingAddress: Address,
   locale: 'en-CA' | 'fr-CA',
   paymentState: 'Pending' | 'Paid'
@@ -228,6 +383,7 @@ type Order = {
   }>,
   custom: {
     fields: {
+      orderLastModifiedDate: string,
       cjEvent?: string,
       cartSourceWebsite?: string,
       sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
@@ -253,8 +409,97 @@ type Order = {
           value: DynamicYieldCustomFieldData
         }
       },
-      giftMessage: string
+      giftMessage: string,
+      orderDate?: string,
+      orderCreatedDate?: string,
+      shippingTax1?: string,
+      shippingTax2?: string,
+      reasonCode?: string
     }
+  }
+}
+
+type Shipment = {
+  id: string,
+  createdAt: string,
+  value: {
+    fillSiteId: string,
+    destinationSiteId: string,
+    shipmentId: string,
+    shipmentLastModifiedDate: string,
+    fromZipCode?: string,
+    fromAddress1?: string,
+    fromAddress2?: string,
+    fromCity?: string,
+    fromCountryId?: string,
+    fromHomePhone?: string,
+    fromStateId?: string,
+    fromStoreName?: string,
+    trackingNumber?: string,
+    shipmentItemLastModifiedDate?: string,
+    shipmentDetails: Array<{
+      siteId: string,
+      line: number,
+      businessUnitId: string,
+      status: string, // TODO: commercetools lineitem state
+      quantityShipped: number,
+      lineItemId: string,
+      shipmentDetailId: string,
+      carrierId?: string,
+      trackingNumber?: string,
+      serviceType?: string,
+      shippedDate?: string
+    }>
+  }
+}
+
+type ProductVariant = {
+  id: number
+}
+
+type ProductDetails = {
+  name: {
+    'en-CA': string,
+    'fr-CA': string,
+  },
+  description: {
+    'en-CA': string,
+    'fr-CA': string,
+  },
+  categories: Array<{
+    typeId: string,
+    id: string
+  }>,
+  slug: {
+    'en-CA': string,
+    'fr-CA': string,
+  },
+  masterVariant: ProductVariant
+}
+
+type Product = {
+  id: string,
+  createdAt: string,
+  lastModifiedAt: string,
+  masterData: {
+    current: ProductDetails,
+    staged: ProductDetails,
+    published: boolean,
+    hasStagedChanges: boolean
+  },
+  key: string
+  taxCategory: {
+    typeId: string,
+    id: string
+  },
+  lastVariantId: number
+}
+
+type ProductCategory = {
+  key: string,
+  name: {
+    'en-CA': string,
+    'fr-CA': string
   }
 }
 
@@ -293,5 +538,14 @@ export {
   TaxDescriptionKey,
   TaxedPrice,
   Transaction,
-  tCARD_TYPES_TO_JESTA_CODES
+  NarvarOrder,
+  NarvarOrderItem,
+  NarvarShipment,
+  NarvarPickup,
+  OrderState,
+  CommerceToolsOrderStates,
+  Shipment,
+  tCARD_TYPES_TO_JESTA_CODES,
+  Product,
+  ProductCategory
 }
