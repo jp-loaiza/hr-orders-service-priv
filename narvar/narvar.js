@@ -7,7 +7,7 @@ const baseUrl = process.env.NARVAR_BASE_URL
 const username = process.env.NARVAR_USERNAME
 const password = process.env.NARVAR_PASSWORD
 
-const { fetchItemInfo, fetchCategoryInfo } = require('./commercetools')
+const { fetchItemInfo, fetchCategoryInfo } = require('../commercetools/commercetools')
 
 /**
  * @param {string} path Path to the Api
@@ -30,7 +30,7 @@ const makeNarvarRequest = async (path, options) => {
 
 /**
  * 
- * @param {import('./orders').NarvarOrder} order The order to send to Narvar
+ * @param {import('../orders').NarvarOrder} order The order to send to Narvar
  */
 
 const sendToNarvar = async (order) => {
@@ -101,8 +101,8 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
 const getItemUrl = (productSlug, locale) => `https://harryrosen.com/${locale.substr(0, 2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
 
 /**
- * @param {import('./orders').LineItem} item
- * @param {Array<import('./orders').OrderState>} states
+ * @param {import('../orders').LineItem} item
+ * @param {Array<import('../orders').OrderState>} states
  * @param { 'en-CA' | 'fr-CA' } locale
  * @returns string
  */
@@ -115,7 +115,7 @@ const getItemFulfillmentStatus = (item, states, locale, isStorePickup) => {
 }
 
 /**
- * @param {import('./orders').LineItem} item
+ * @param {import('../orders').LineItem} item
  * @returns {Promise<Array<string>>}
  */
 
@@ -170,7 +170,7 @@ const findBarcode = (attributes) => {
 
 /**
  * 
- * @param {import('./orders').LineItem} item
+ * @param {import('../orders').LineItem} item
  * @returns {number}
  */
 const findUnitPrice = (item) => {
@@ -179,7 +179,7 @@ const findUnitPrice = (item) => {
 
 /**
  * 
- * @param {import('./orders').LineItem} item
+ * @param {import('../orders').LineItem} item
  * @returns {number | null}
  */
 const findDiscountedPrice = (item) => {
@@ -188,7 +188,7 @@ const findDiscountedPrice = (item) => {
 
 /**
  * 
- * @param {import('./orders').LineItem} item
+ * @param {import('../orders').LineItem} item
  * @returns {number | null}
  */
 const findDiscountPercent = (item) => {
@@ -197,7 +197,7 @@ const findDiscountPercent = (item) => {
 
 /**
  * 
- * @param {Array<import('./orders').LineItem>} items 
+ * @param {Array<import('../orders').LineItem>} items 
  * @param {string} item_id 
  * @returns {string}
  */
@@ -209,7 +209,7 @@ const findItemSku = (items, item_id) => {
 
 /**
  * 
- * @param {Array<import('./orders').Shipment>} shipments 
+ * @param {Array<import('../orders').Shipment>} shipments 
  * @param {string} lineItemId 
  * @returns {number | null}
  */
@@ -221,7 +221,7 @@ const lineNumberFromShipments = (shipments, lineItemId) => {
 
 /**
  * 
- * @param {import('./orders').NarvarShipment} shipment 
+ * @param {import('../orders').NarvarShipment} shipment 
  * @param {string} order_number 
  * @returns {boolean}
  */
@@ -236,7 +236,7 @@ function filterMissingTrackingNumberMessages(shipment, order_number) {
 
 /**
  * 
- * @param {import('./orders').NarvarShipment} shipment 
+ * @param {import('../orders').NarvarShipment} shipment 
  * @param {string} order_number 
  * @returns {boolean}
  */
@@ -252,7 +252,7 @@ function checkShipmentItemIdForNull(shipment, order_number) {
 
 /**
  * 
- * @param {import('./orders').NarvarShipment} shipment 
+ * @param {import('../orders').NarvarShipment} shipment 
  * @param {string} order_number 
  * @returns {boolean}
  */
@@ -268,7 +268,7 @@ function checkShippedQuantity(shipment, order_number) {
 
 /**
  * 
- * @param {Array<import('./orders').Shipment>} shipments 
+ * @param {Array<import('../orders').Shipment>} shipments 
  * @param {string} lineItemId 
  * @returns {string | null}
  */
@@ -280,10 +280,10 @@ const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
 
 /**
  * 
- * @param {import('./orders').Order} order
- * @param {Array<import('./orders').OrderState>} states
- * @param {Array<import('./orders').Shipment>} shipments 
- * @returns {Promise<Array<import('./orders').NarvarOrderItem>>}
+ * @param {import('../orders').Order} order
+ * @param {Array<import('../orders').OrderState>} states
+ * @param {Array<import('../orders').Shipment>} shipments 
+ * @returns {Promise<Array<import('../orders').NarvarOrderItem>>}
  */
 const convertItems = async (order, states, shipments, isStorePickup) => {
   const locale = order.locale
@@ -338,9 +338,9 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
 
 /**
  * 
- * @param {import('./orders').Order} order
- * @param {Array<import('./orders').Shipment>} shipments
- * @returns {Array<import('./orders').NarvarShipment>}
+ * @param {import('../orders').Order} order
+ * @param {Array<import('../orders').Shipment>} shipments
+ * @returns {Array<import('../orders').NarvarShipment>}
  */
 
 const convertShipments = (order, shipments) => {
@@ -396,9 +396,9 @@ const convertShipments = (order, shipments) => {
 
 /**
  * 
- * @param {import('./orders').Order} order
- * @param {Array<import('./orders').Shipment>} shipments
- * @returns {Array<import('./orders').NarvarPickup>}
+ * @param {import('../orders').Order} order
+ * @param {Array<import('../orders').Shipment>} shipments
+ * @returns {Array<import('../orders').NarvarPickup>}
  */
 const convertPickups = (order, shipments) => {
   return order.custom.fields.isStorePickup && shipments.length ? shipments.filter(shipment => getShipmentStatusMapping(shipment) === 'PICKUP' || getShipmentStatusMapping(shipment) === 'PICKEDUP').map(shipment => {
@@ -447,7 +447,7 @@ const convertPickups = (order, shipments) => {
  */
 /**
  * 
- * @param {import('./orders').Shipment} shipment
+ * @param {import('../orders').Shipment} shipment
  */
 const getShipmentStatusMapping = (shipment) => {
   let shipmentMapping;
@@ -476,10 +476,10 @@ const getShipmentStatusMapping = (shipment) => {
 }
 
 /**
- * @param {import('./orders').Order} order
- * @param {Array<import('./orders').Shipment>} shipments
- * @param {Array<import('./orders').OrderState>} states
- * @returns {Promise<import('./orders').NarvarOrder | undefined>}
+ * @param {import('../orders').Order} order
+ * @param {Array<import('../orders').Shipment>} shipments
+ * @param {Array<import('../orders').OrderState>} states
+ * @returns {Promise<import('../orders').NarvarOrder | undefined>}
  */
 const convertOrderForNarvar = async (order, shipments, states) => {
   const state = order.state ? states.find(s => order.state.id === s.id) : null

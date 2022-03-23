@@ -1,13 +1,13 @@
-const { fetchFullOrder } = require('./commercetools')
-const { EMAIL_API_OWNER_ID } = require('./constants')
-const { fetchWithTimeout } = require('./request.utils.js')
+const { fetchFullOrder } = require('../commercetools/commercetools')
+const { EMAIL_API_OWNER_ID } = require('../constants')
+const { fetchWithTimeout } = require('../request.utils.js')
 
 const { EMAIL_API_USERNAME,
   EMAIL_API_URL,
-  EMAIL_API_PASSWORD } = (/** @type {import('./orders').Env} */ (process.env))
+  EMAIL_API_PASSWORD } = (/** @type {import('../orders').Env} */ (process.env))
 
 /**
- * @param {import('./orders').Order} order 
+ * @param {import('../orders').Order} order 
  */
 const formatEmailApiRequestBodyFromOrder = order => {
   let Topic = order.custom.fields.isStorePickup ? 'ConfirmationBOPIS' : 'Confirmation'

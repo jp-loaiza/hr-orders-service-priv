@@ -1,6 +1,4 @@
-const { formatEmailApiRequestBodyFromOrder } = require('./email')
-
-const completeOrderEnglishUntyped = {
+const COMPLETE_ORDER_ENGLISH_UNTYPED = {
   type: 'Order',
   id: '3d7a60fd-3108-497d-bb4a-def424b53553',
   version: 2,
@@ -82,18 +80,18 @@ const completeOrderEnglishUntyped = {
             name: 'fabricAndMaterials',
             value: {
               'fr-CA':
-                  '<li> Cuir\n<li> Effet bruni\n<li> Motif botanique estampé\n<li> Brun foncé',
+                                '<li> Cuir\n<li> Effet bruni\n<li> Motif botanique estampé\n<li> Brun foncé',
               'en-CA':
-                  '<li> Leather\n<li> Burnished finish\n<li> Embossed botanical pattern\n<li> Dark brown',
+                                '<li> Leather\n<li> Burnished finish\n<li> Embossed botanical pattern\n<li> Dark brown',
             },
           },
           {
             name: 'styleAndMeasurements',
             value: {
               'fr-CA':
-                  '<li> Largeur : 3,2 cm (1,25 po)\n<li> Sélectionnez la ceinture qui mesure 2 po de plus (ou le nombre entier le plus proche) que le tour de taille de votre pantalon.',
+                                '<li> Largeur : 3,2 cm (1,25 po)\n<li> Sélectionnez la ceinture qui mesure 2 po de plus (ou le nombre entier le plus proche) que le tour de taille de votre pantalon.',
               'en-CA':
-                  '<li> Width: 1.25 in\n<li> Select one size (2 inches, to nearest even number) up from your trouser waist size for a standard fit',
+                                '<li> Width: 1.25 in\n<li> Select one size (2 inches, to nearest even number) up from your trouser waist size for a standard fit',
             },
           },
           {
@@ -377,27 +375,27 @@ const completeOrderEnglishUntyped = {
             name: 'fabricAndMaterials',
             value: {
               'fr-CA':
-                  '<li> 98 % coton, 2 % polyuréthane\n<li> Écusson-logo en cuir sur la taille\n<li> Délavage foncé\n<li> Bleu marine',
+                                '<li> 98 % coton, 2 % polyuréthane\n<li> Écusson-logo en cuir sur la taille\n<li> Délavage foncé\n<li> Bleu marine',
               'en-CA':
-                  '<li> 98% cotton, 2% polyurethane\n<li> Leather logo patch on waistband\n<li> Dark wash\n<li> Navy',
+                                '<li> 98% cotton, 2% polyurethane\n<li> Leather logo patch on waistband\n<li> Dark wash\n<li> Navy',
             },
           },
           {
             name: 'styleAndMeasurements',
             value: {
               'fr-CA':
-                  '<li> Coupe amincie\n<li> Coupe moderne amincie Tellis d¿AG\n<li> Taille moyenne\n<li> Fourche avant de 25,4 cm (10 po)\n<li> Fourche arrière de 35,6 cm (14 po)\n<li> Entrejambe de 83,8 cm (33 po)\n<li> Mesures prises sur la taille 32',
+                                '<li> Coupe amincie\n<li> Coupe moderne amincie Tellis d¿AG\n<li> Taille moyenne\n<li> Fourche avant de 25,4 cm (10 po)\n<li> Fourche arrière de 35,6 cm (14 po)\n<li> Entrejambe de 83,8 cm (33 po)\n<li> Mesures prises sur la taille 32',
               'en-CA':
-                  '<li> Slim fit\n<li> AG The Tellis Modern Slim fit\n<li> Mid-rise style\n<li> Front rise: 10 in\n<li> Back rise: 14 in\n<li> Inseam: 33 in\n<li> Measurements are based on size 32',
+                                '<li> Slim fit\n<li> AG The Tellis Modern Slim fit\n<li> Mid-rise style\n<li> Front rise: 10 in\n<li> Back rise: 14 in\n<li> Inseam: 33 in\n<li> Measurements are based on size 32',
             },
           },
           {
             name: 'careInstructions',
             value: {
               'fr-CA':
-                  '<li> Laver à la machine à l¿eau froide\n<li> Sécher par culbutage à température moyenne\n<li> Repasser à température moyenne\n<li> Ne pas nettoyer à sec',
+                                '<li> Laver à la machine à l¿eau froide\n<li> Sécher par culbutage à température moyenne\n<li> Repasser à température moyenne\n<li> Ne pas nettoyer à sec',
               'en-CA':
-                  '<li> Machine wash, cold\n<li> Tumble dry, medium\n<li> Iron, medium\n<li> Do not dry clean',
+                                '<li> Machine wash, cold\n<li> Tumble dry, medium\n<li> Iron, medium\n<li> Do not dry clean',
             },
           },
           {
@@ -756,40 +754,6 @@ const completeOrderEnglishUntyped = {
   },
   itemShippingAddresses: [],
   refusedGifts: [],
-}
+};
 
-/** @type {import('./orders').Order} */
-// @ts-ignore re-assigning to get around excess property checks
-const completeOrderEnglish = completeOrderEnglishUntyped
-
-describe('formatEmailApiRequestBodyFromOrder', () => {
-  it('returns a correctly formmated object when given a vaild order', () => {
-    expect(formatEmailApiRequestBodyFromOrder(completeOrderEnglish)).toEqual({
-      request: {
-        Channel: 'Email',
-        OwnerId: 'F6UJ9A000002',
-        Recipient: '{"address":"example01@example.com","locale":"en-CA"}',
-        Sender: '',
-        Subject: '{"Name":"Salesorder","Id":"122004"}',
-        Topic: 'Confirmation',
-        Data: expect.any(String)
-      }
-    })
-  })
-
-  it('returns a correctly formmated object when given a vaild BOPIS order', () => {
-    const completeOrderEnglishBOPIS = { ...completeOrderEnglish, custom: { ...completeOrderEnglish.custom, fields: { ...completeOrderEnglish.custom.fields, isStorePickup: true } } }
-    expect(formatEmailApiRequestBodyFromOrder(completeOrderEnglishBOPIS)).toEqual({
-      request: {
-        Channel: 'Email',
-        OwnerId: 'F6UJ9A000002',
-        Recipient: '{"address":"example01@example.com","locale":"en-CA"}',
-        Sender: '',
-        Subject: '{"Name":"Salesorder","Id":"122004"}',
-        Topic: 'ConfirmationBOPIS',
-        Data: expect.any(String)
-      }
-    })
-  })
-
-})
+module.exports = { COMPLETE_ORDER_ENGLISH_UNTYPED };

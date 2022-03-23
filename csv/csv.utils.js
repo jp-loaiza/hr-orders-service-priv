@@ -13,11 +13,11 @@ const {
   TRANSACTION_TYPES,
   TRANSACTION_STATES,
   ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS
-} = require('./constants')
+} = require('../constants')
 
 /**
  * Determines payment released status based on payment methods and current payment state 
- * @param {import('./orders').PaymentInfo} paymentInfo
+ * @param {import('../orders').PaymentInfo} paymentInfo
  */
 const getPaymentReleasedStatus = (paymentInfo) => {
   const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
@@ -68,25 +68,25 @@ const convertAndFormatDate = jsonDateString => {
 }
 
 
-const paymentIsByCreditCard =  (/** @type {import('./orders').Payment} */ payment) => (
+const paymentIsByCreditCard =  (/** @type {import('../orders').Payment} */ payment) => (
   payment.obj.paymentMethodInfo.method
   && payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit'
 )
 
-const getCardReferenceNumberFromPayment =  (/** @type {import('./orders').Payment} */ payment)  => {
+const getCardReferenceNumberFromPayment =  (/** @type {import('../orders').Payment} */ payment)  => {
   if (!paymentIsByCreditCard(payment)) return undefined
   const firstDigit = payment.obj.custom.fields.bin[0]
   const lastDigit = payment.obj.custom.fields.transaction_card_last4[3]
   return `${firstDigit}${lastDigit}`
 }
 
-const getLastFourDigitsOfCardFromPayment = (/** @type {import('./orders').Payment} */ payment) => (
+const getLastFourDigitsOfCardFromPayment = (/** @type {import('../orders').Payment} */ payment) => (
   paymentIsByCreditCard(payment)
     ? payment.obj.custom.fields.transaction_card_last4
     : undefined
 )
 
-const getAuthorizationNumberFromPayment = (/** @type {import('./orders').Payment} */ payment) => (
+const getAuthorizationNumberFromPayment = (/** @type {import('../orders').Payment} */ payment) => (
   paymentIsByCreditCard(payment)
     ? payment.obj.custom.fields.auth_number
     : undefined
@@ -94,7 +94,7 @@ const getAuthorizationNumberFromPayment = (/** @type {import('./orders').Payment
 
 /**
  * Bold stores the date as `MM-YYYY`, but JESTA expects it to be given in `MMYY` format
- * @param {import('./orders').Payment} payment
+ * @param {import('../orders').Payment} payment
  */
 const formatCardExpiryDateFromPayment = payment => {
   if (!paymentIsByCreditCard(payment)) return undefined
@@ -108,10 +108,10 @@ const formatCardExpiryDateFromPayment = payment => {
  * parsing issues, line one is stored in `streetName` and line two is stored
  * in `additionalAddressInfo`.
  */
-const getLineOneFromAddress = (/** @type {import('./orders').Address} */ address) => address.streetName
-const getLineTwoFromAddress = (/** @type {import('./orders').Address} */ address) => address.additionalAddressInfo
+const getLineOneFromAddress = (/** @type {import('../orders').Address} */ address) => address.streetName
+const getLineTwoFromAddress = (/** @type {import('../orders').Address} */ address) => address.additionalAddressInfo
 
-const getLineTotalTaxFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem) => {
+const getLineTotalTaxFromLineItem = (/** @type {import('../orders').LineItem} */ lineItem) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
   const taxAmounts = Object.values(taxes).map(Number) 
   return sumMoney(taxAmounts)
@@ -122,41 +122,41 @@ const getShippingTaxAmountsFromShippingTaxes = (/** @type {string} */ rawShippin
   return Object.values(shippingTaxes).map(Number) // dollars
 }
 
-const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes, /** @type {import('./orders').StateCode} */ stateCode) => {
+const getShippingTaxDescriptionsFromShippingTaxes = (/** @type {string} */ rawShippingTaxes, /** @type {import('../orders').StateCode} */ stateCode) => {
   const shippingTaxes = JSON.parse(rawShippingTaxes)
   // @ts-ignore casting to exact type
-  /** @type {Array<import('./orders').BoldTaxDescription>} */ const boldShippingTaxDescriptions = Object.keys(shippingTaxes)
+  /** @type {Array<import('../orders').BoldTaxDescription>} */ const boldShippingTaxDescriptions = Object.keys(shippingTaxes)
   return boldShippingTaxDescriptions.map(boldTaxDescription => formatJestaTaxDescriptionFromBoldTaxDescription(boldTaxDescription, stateCode))
 }
 
-const getTaxTotalFromTaxedPrice = (/** @type {import('./orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount - taxedPrice.totalNet.centAmount
+const getTaxTotalFromTaxedPrice = (/** @type {import('../orders').TaxedPrice} */ taxedPrice) => taxedPrice.totalGross.centAmount - taxedPrice.totalNet.centAmount
 
 /**
- * @returns {Array<import('./orders').ParsedTax>}
+ * @returns {Array<import('../orders').ParsedTax>}
  */
-const getParsedTaxesFromLineItem = (/** @type {import('./orders').LineItem} */ lineItem, /** @type {import('./orders').StateCode} */ stateCode) => {
+const getParsedTaxesFromLineItem = (/** @type {import('../orders').LineItem} */ lineItem, /** @type {import('../orders').StateCode} */ stateCode) => {
   const taxes = JSON.parse(lineItem.custom.fields.itemTaxes)
   return Object.entries(taxes).map(([boldTaxDescription, unroundedDollarAmount]) => ({
     // @ts-ignore casting to exact type
-    description: formatJestaTaxDescriptionFromBoldTaxDescription(/** @type {import('./orders').BoldTaxDescription} */ boldTaxDescription, stateCode),
+    description: formatJestaTaxDescriptionFromBoldTaxDescription(/** @type {import('../orders').BoldTaxDescription} */ boldTaxDescription, stateCode),
     dollarAmount: currency(unroundedDollarAmount, { precision: 4 }).value
   }))
 }
 
 /**
- * @param {import('./orders').BoldTaxDescription} boldTaxDescription 
- * @param {import('./orders').StateCode} stateCode
+ * @param {import('../orders').BoldTaxDescription} boldTaxDescription 
+ * @param {import('../orders').StateCode} stateCode
  */
 const formatJestaTaxDescriptionFromBoldTaxDescription = (boldTaxDescription, stateCode) => {
   if (boldTaxDescription === 'GST') return JESTA_TAX_DESCRIPTIONS.GST
   // @ts-ignore casting to exact type
-  /** @type {import('./orders').TaxDescriptionKey} */ const key = `${boldTaxDescription}_${stateCode}`
+  /** @type {import('../orders').TaxDescriptionKey} */ const key = `${boldTaxDescription}_${stateCode}`
   return JESTA_TAX_DESCRIPTIONS[key]
 }
 
 /**
- * @param {import('./orders').Payment} payment 
- * @param {import('./orders').tCARD_TYPES_TO_JESTA_CODES} CARD_TYPES_TO_JESTA_CODES 
+ * @param {import('../orders').Payment} payment 
+ * @param {import('../orders').tCARD_TYPES_TO_JESTA_CODES} CARD_TYPES_TO_JESTA_CODES 
  */
 const jestaCodeFromCardType = (payment,CARD_TYPES_TO_JESTA_CODES) => {
   if ((payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'citcon payment') && (payment.obj.custom.fields.transaction_card_last4 === 'upop')) {
@@ -168,16 +168,16 @@ const jestaCodeFromCardType = (payment,CARD_TYPES_TO_JESTA_CODES) => {
 }
 
 /**
- * @param {import('./orders').Payment} payment 
+ * @param {import('../orders').Payment} payment 
  */
 const getPosEquivalenceFromPayment = payment => jestaCodeFromCardType(payment,CARD_TYPES_TO_JESTA_CODES)
 
-const formatBarcodeInfo = (/** @type {import('./orders').Barcode} */ barcode) => ({
+const formatBarcodeInfo = (/** @type {import('../orders').Barcode} */ barcode) => ({
   number: barcode.obj.value.barcode,
   type: barcode.obj.value.subType
 })
 
-const barcodeIsApplicable = (/** @type {import('./orders').Barcode} **/ barcode) => {
+const barcodeIsApplicable = (/** @type {import('../orders').Barcode} **/ barcode) => {
   if (!barcode.obj.value.effectiveAt || !barcode.obj.value.expiresAt) return true
   const now = new Date()
   return new Date(barcode.obj.value.effectiveAt) <= now && new Date(barcode.obj.value.expiresAt) > now
@@ -186,12 +186,12 @@ const barcodeIsApplicable = (/** @type {import('./orders').Barcode} **/ barcode)
 /**
  * If more than one barcode exists on the line item, returns the information
  * from the non-UPCE barcode.
- * @param {import('./orders').LineItem} lineItem 
+ * @param {import('../orders').LineItem} lineItem 
  * @returns {{number: string, type: string}}
  */
 const getBarcodeInfoFromLineItem = lineItem => {
   // @ts-ignore casting to known type
-  /** @type {{name: any, value: Array<import('./orders').Barcode>} | undefined} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
+  /** @type {{name: any, value: Array<import('../orders').Barcode>} | undefined} **/ const barcodes = lineItem.variant.attributes.find(({ name }) => name === 'barcodes')
   if (!barcodes || barcodes.value.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has no barcodes`)
   const applicableBarcodes = barcodes.value.filter(barcodeIsApplicable)
   if (applicableBarcodes.length === 0) throw new Error(`SKU ${lineItem.variant.sku} has barcodes, but none are valid`)
@@ -208,7 +208,7 @@ const getBarcodeInfoFromLineItem = lineItem => {
 }
 
 /**
- * @param {{payments: Array<import('./orders').Payment>}} paymentInfo 
+ * @param {{payments: Array<import('../orders').Payment>}} paymentInfo 
  * @returns Sum of the payments in cents
  */
 const getPaymentTotalFromPaymentInfo = paymentInfo => (
@@ -248,7 +248,7 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
 
 /**
  * Determines payment signature required indicator based on payment 
- * @param {import('./orders').PaymentInfo} paymentInfo
+ * @param {import('../orders').PaymentInfo} paymentInfo
  */
 const getSignatureRequiredIndicator = (paymentInfo) => {
   const klarnaPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna')
@@ -298,8 +298,8 @@ const getShippingInfoFromShippingName = (/** @type {string} **/ name) => {
 }
 
 /**
- * @param {import('./orders').Address} address1 
- * @param {import('./orders').Address} address2 
+ * @param {import('../orders').Address} address1 
+ * @param {import('../orders').Address} address2 
  * @param {boolean} isStorePickup 
  */
 const getFirstLastName = (address1, address2, isStorePickup) => {
@@ -326,7 +326,7 @@ const getFirstLastName = (address1, address2, isStorePickup) => {
   }
 }
 
-const lineItemIsEndlessAisle = (/** @type {import('./orders').LineItem} */ lineItem) => {
+const lineItemIsEndlessAisle = (/** @type {import('../orders').LineItem} */ lineItem) => {
   const endlessAisleAttribute = lineItem.variant.attributes.find(attribute => attribute.name === 'isEndlessAisle')
   return endlessAisleAttribute ? endlessAisleAttribute.value : false 
 }
