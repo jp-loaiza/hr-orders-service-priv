@@ -16,7 +16,7 @@ const {
   SENT_TO_NARVAR_STATUSES,
   SENT_TO_CRM_STATUS,
   STATUS_FIELDS_TO_AVAILABLE_STATUSES,
-} = require('./constants')
+} = require('../constants')
 
 dotenv.config()
 
@@ -112,7 +112,7 @@ const setOrderCustomField = async (orderId, name, value) => {
 
 /**
  * Fetches all orders that need to be updated in OMS
- * @returns {Promise<{orders: Array<import('./orders').Order>, total: number}>}
+ * @returns {Promise<{orders: Array<import('../orders').Order>, total: number}>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS () {
   const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
@@ -134,7 +134,7 @@ async function fetchOrderIdsThatShouldBeSentToCrm () {
   /**
    * @type Array<string>
    */
-  const orderIds = body.results.map((/** @type {import('./orders').Order} */ order) => order.id)
+  const orderIds = body.results.map((/** @type {import('../orders').Order} */ order) => order.id)
   return { orderIds, total: body.total }
 }
 
@@ -148,7 +148,7 @@ function setOrderSentToCrmStatus (orderId, status) {
 
 /**
  * @param {string} orderId
- * @returns {Promise<import('./orders').Order>}
+ * @returns {Promise<import('../orders').Order>}
  */
 const fetchFullOrder = async orderId => {
   // See https://docs.commercetools.com/http-api.html#reference-expansion
@@ -166,7 +166,7 @@ const fetchFullOrder = async orderId => {
  *  both orders that we have never tried to send to the OMS, and ones that
  *  it is time to re-try sending to the OMS. Excludes orders that lack
  *  LoginRadius UIDs.
- * @returns {Promise<{orders: Array<(import('./orders').Order)>, total: number}>}
+ * @returns {Promise<{orders: Array<(import('../orders').Order)>, total: number}>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = `custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}")) and custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))) and custom(fields(loginRadiusUid is defined))`
@@ -179,13 +179,13 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
   /**
    * @type Array<string>
    */
-  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
   return { orders: await Promise.all(orderIds.map(fetchFullOrder)), total: body.total }
 }
 
 /**
  * An order counts as "stuck" if it's neither succeeded or failed to be processed within a configurable time.
- * @returns {Promise<{results: Array<import('./orders').Order>, total: number}>}
+ * @returns {Promise<{results: Array<import('../orders').Order>, total: number}>}
  */
 const fetchStuckOrderResults = async () => {
   const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
@@ -196,7 +196,7 @@ const fetchStuckOrderResults = async () => {
 }
 
 /**
- * @param {import('./orders').Order} order
+ * @param {import('../orders').Order} order
  * @param {string} statusField
  */
 function setOrderAsSentToOms (order, statusField) {
@@ -226,7 +226,7 @@ const getActionsFromCustomFields = customFields => (
 )
 
 /**
- * @param {import('./orders').Order} order
+ * @param {import('../orders').Order} order
  * @param {string} errorMessage
  * @param {boolean} errorIsRecoverable
  * @param {object} orderCustomFields
@@ -259,7 +259,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
 }
 
 /**
- * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
  */
 const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   const now = new Date()
@@ -272,7 +272,7 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
   return {
     orders: await Promise.all(orderIds.map(fetchFullOrder)),
     total: body.total
@@ -283,7 +283,7 @@ const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
   const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} = "${SENT_TO_CJ_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.CJ_EVENT} is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} is not defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
   return {
     orders: await Promise.all(orderIds.map(fetchFullOrder)),
     total: body.total
@@ -291,7 +291,7 @@ const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
 }
 
 /**
- * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
  */
 const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
   const now = new Date()
@@ -300,7 +300,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
   const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
   return {
     orders: await Promise.all(orderIds.map(fetchFullOrder)),
     total: body.total
@@ -308,13 +308,13 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
 }
 
 /**
- * @returns {Promise<{ orders: Array<(import('./orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
   const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)) and (createdAt > "2021-10-01")`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('./orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
   return {
     orders: await Promise.all(orderIds.map(fetchFullOrder)),
     total: body.total
@@ -322,18 +322,18 @@ const fetchOrdersThatShouldBeSentToNarvar = async () => {
 }
 
 /**
- * @returns {Promise<Array<import('./orders').OrderState>>}
+ * @returns {Promise<Array<import('../orders').OrderState>>}
  */
 const fetchStates = async () => {
   const uri = requestBuilder.states.build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  return body.results.map((/** @type {import('./orders').OrderState} */ result) => result)
+  return body.results.map((/** @type {import('../orders').OrderState} */ result) => result)
 }
 
 /**
  * 
  * @param {string} orderNumber 
- * @returns {Promise<Array<import('./orders').Shipment>>}
+ * @returns {Promise<Array<import('../orders').Shipment>>}
  */
 
 const fetchShipments = async orderNumber => {
@@ -345,7 +345,7 @@ const fetchShipments = async orderNumber => {
 /**
  * 
  * @param {string} itemNumber 
- * @returns {Promise<import('./orders').Product>}
+ * @returns {Promise<import('../orders').Product>}
  */
 
 const fetchItemInfo = async itemNumber => {
@@ -358,7 +358,7 @@ const fetchItemInfo = async itemNumber => {
 /**
  * 
  * @param {Array<string>} categoryIds 
- * @returns {Promise<Array<import('./orders').ProductCategory>>}
+ * @returns {Promise<Array<import('../orders').ProductCategory>>}
  */
 
 const fetchCategoryInfo = async categoryIds => {

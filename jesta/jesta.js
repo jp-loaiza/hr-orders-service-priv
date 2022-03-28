@@ -5,13 +5,13 @@ const dontValidateCertAgent = new https.Agent({
 })
 const { JESTA_RESPONSE_STATES } = require('./jesta.constants')
 const { getJestaApiResponseState } = require('./jesta.utils')
-const { ONLINE_SITE_ID } = require('./constants')
-const { fetchWithTimeout } = require('./request.utils.js')
+const { ONLINE_SITE_ID } = require('../constants')
+const { fetchWithTimeout } = require('../request.utils.js')
 
 const { JESTA_API_HOST,
   JESTA_API_USERNAME,
   JESTA_API_PASSWORD,
-  ENVIRONMENT } = (/** @type {import('./orders').Env} */ (process.env))
+  ENVIRONMENT } = (/** @type {import('../orders').Env} */ (process.env))
 
 /**
  * 

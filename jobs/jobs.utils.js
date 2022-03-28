@@ -1,6 +1,6 @@
 const client = require('ssh2-sftp-client')
 
-const { validateOrder } = require('./validation')
+const { validateOrder } = require('../validation')
 const { 
   MAXIMUM_RETRIES,
   ORDER_CUSTOM_FIELDS,
@@ -12,7 +12,7 @@ const {
   SENT_TO_CJ_STATUSES, 
   SENT_TO_DYNAMIC_YIELD_STATUSES, 
   SENT_TO_NARVAR_STATUSES 
-} = require('./constants')
+} = require('../constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
@@ -25,15 +25,15 @@ const {
   fetchOrdersThatShouldBeSentToNarvar,
   fetchStates,
   fetchShipments
-} = require('./commercetools')
-const { sendOrderUpdateToJesta } = require('./jesta')
-const { generateCsvStringFromOrder } = require('./csv')
-const { sftpConfig } = require('./config')
-const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('./orders').Env} */ (process.env))
-const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('./algolia')
-const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('./dynamicYield')
-const { sendOrderConversionToCj } = require('./cj')
-const { convertOrderForNarvar, sendToNarvar } = require('./narvar')
+} = require('../commercetools/commercetools')
+const { sendOrderUpdateToJesta } = require('../jesta/jesta')
+const { generateCsvStringFromOrder } = require('../csv/csv')
+const { sftpConfig } = require('../config')
+const { SFTP_INCOMING_ORDERS_PATH } = (/** @type {import('../orders').Env} */ (process.env))
+const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('../algolia/algolia')
+const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('../dynamicyield/dynamicYield')
+const { sendOrderConversionToCj } = require('../cj/cj')
+const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
 
 /**
  *
@@ -82,7 +82,7 @@ function retry (fn, maxRetries = MAXIMUM_RETRIES, backoff = 1000) {
 
 /**
  *
- * @param {Array<import('./orders').Transaction>} transactions
+ * @param {Array<import('../orders').Transaction>} transactions
  * @param {string} type
  * @param {string} state
  */
@@ -90,7 +90,7 @@ const getTransaction = (transactions, type, state) => transactions.find(transact
 
 /**
  *
- * @param {import('./orders').Order} order
+ * @param {import('../orders').Order} order
  */
 const transformToOrderPayment = order => {
   const orderUpdate = {
@@ -126,7 +126,7 @@ const transformToOrderPayment = order => {
 
 /**
  *
- * @param {import('./orders').Order} order
+ * @param {import('../orders').Order} order
  * @explain JESTA expects CSV filenames to be of the form `Orders-YYYY-MM-DD-HHMMSS<orderNumber>.csv`.
  */
 const generateFilenameFromOrder = order => {

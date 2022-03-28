@@ -12,7 +12,7 @@ const {
   TAXES_ROWS_ENUM,
   TENDER_ROWS,
   TENDER_ROWS_ENUM
-} = require('./constants')
+} = require('../constants')
 const {
   convertAndFormatDate,
   convertToDollars,
@@ -42,7 +42,7 @@ const {
 // we can feed into the CSV generator to create the CSV
 
 /**
- * @param {import('./orders').Order} order 
+ * @param {import('../orders').Order} order 
  */
 const getHeaderObjectFromOrder = ({
   billingAddress,
@@ -104,7 +104,7 @@ const getHeaderObjectFromOrder = ({
   }
 }
 
-const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
+const getDetailsObjectFromOrderAndLineItem = (/** @type {import('../orders').Order} */ order) => (/** @type {import('../orders').LineItem} */ lineItem, /** @type {number} */ index) => ({
   [DETAILS_ROWS_ENUM.RECORD_TYPE]: 'D',
   [DETAILS_ROWS_ENUM.SITE_ID]: order.custom.fields.cartSourceWebsite || '00990',
   [DETAILS_ROWS_ENUM.LINE]: index + 1,
@@ -124,7 +124,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('./orders').Orde
 })
 
 /**
- * @param {{ siteId: string, lineNumber: number, orderNumber: string, sequenceNumber: number, tax: import('./orders').ParsedTax }} lineItemTaxInfo
+ * @param {{ siteId: string, lineNumber: number, orderNumber: string, sequenceNumber: number, tax: import('../orders').ParsedTax }} lineItemTaxInfo
  */
 const getSingleTaxesObject = ({ siteId, lineNumber, orderNumber, sequenceNumber, tax }) => ({
   [TAXES_ROWS_ENUM.RECORD_TYPE]: 'T',
@@ -136,7 +136,7 @@ const getSingleTaxesObject = ({ siteId, lineNumber, orderNumber, sequenceNumber,
   [TAXES_ROWS_ENUM.MERCHANDISE_TAX_DESC]: tax.description
 })
 
-const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').LineItem} */ lineItem, /** @type {number} */ lineIndex) => {
+const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('../orders').Order} */ order) => (/** @type {import('../orders').LineItem} */ lineItem, /** @type {number} */ lineIndex) => {
   const taxes = getParsedTaxesFromLineItem(lineItem, order.shippingAddress.state)
   return taxes.map((tax, taxIndex) => getSingleTaxesObject({
     siteId: order.custom.fields.cartSourceWebsite || '00990',
@@ -147,7 +147,7 @@ const getallTaxesObjectsFromOrderAndLineItem = (/** @type {import('./orders').Or
   }))
 }
 
-const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders').Order} */ order) => (/** @type {import('./orders').Payment} */ payment, /** @type {number} */ index) => ({
+const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('../orders').Order} */ order) => (/** @type {import('../orders').Payment} */ payment, /** @type {number} */ index) => ({
   [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
   [TENDER_ROWS_ENUM.SITE_ID]: order.custom.fields.cartSourceWebsite || '00990',
   [TENDER_ROWS_ENUM.LINE]: index + 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
@@ -166,7 +166,7 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('./orders'
 // so we format the data associated with each header separately, and then combine the
 // individual strings with `generateCsvStringFromOrder`.
 
-const generateHeadersCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+const generateHeadersCsvStringFromOrder = (/** @type {import('../orders').Order} */ order) => {
   const options = {
     ...GENERAL_CSV_OPTIONS,
     fields: HEADER_ROWS
@@ -176,7 +176,7 @@ const generateHeadersCsvStringFromOrder = (/** @type {import('./orders').Order} 
   return parse([headerObject], options)
 }
 
-const generateDetailsCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+const generateDetailsCsvStringFromOrder = (/** @type {import('../orders').Order} */ order) => {
   const options = {
     ...GENERAL_CSV_OPTIONS,
     fields: DETAILS_ROWS
@@ -186,7 +186,7 @@ const generateDetailsCsvStringFromOrder = (/** @type {import('./orders').Order} 
   return parse(detailsObjects, options)
 }
 
-const generateTaxCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+const generateTaxCsvStringFromOrder = (/** @type {import('../orders').Order} */ order) => {
   const options = {
     ...GENERAL_CSV_OPTIONS,
     fields: TAXES_ROWS
@@ -196,7 +196,7 @@ const generateTaxCsvStringFromOrder = (/** @type {import('./orders').Order} */ o
   return parse(taxesObjects, options)
 }
 
-const generateTendersCsvStringFromOrder = (/** @type {import('./orders').Order} */ order) => {
+const generateTendersCsvStringFromOrder = (/** @type {import('../orders').Order} */ order) => {
   const options = {
     ...GENERAL_CSV_OPTIONS,
     fields: TENDER_ROWS
@@ -228,7 +228,7 @@ const generateCsvHeaderNamesString = () => {
 }
 
 /**
- * @param {import('./orders').Order} order 
+ * @param {import('../orders').Order} order 
  * @return {string}
  */
 const generateCsvStringFromOrder = order => {

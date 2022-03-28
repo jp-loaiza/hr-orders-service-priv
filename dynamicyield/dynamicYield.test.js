@@ -1,7 +1,7 @@
 const { getDYReportEventFromOrder } = require('./dynamicYield')
-const BASE_ORDER = require('./example-orders/24845933.json')
+const BASE_ORDER = require('../example-orders/24845933.json')
 
-jest.mock('./config')
+jest.mock('../config')
 
 const DYNAMIC_YIELD_DATA = Object.freeze({
   obj: {

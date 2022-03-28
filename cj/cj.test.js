@@ -1,7 +1,7 @@
 const { getUrlParamMappingFromOrder } = require('./cj')
-const orderWithOneLineItemAndNoDiscounts = require('./example-orders/24596603.json')
-const orderWithManyLineItemsAndNoDiscounts = require('./example-orders/24600493.json')
-const orderWithManyLineItemsAndOneDiscount = require('./example-orders/25068048.json')
+const orderWithOneLineItemAndNoDiscounts = require('../example-orders/24596603.json')
+const orderWithManyLineItemsAndNoDiscounts = require('../example-orders/24600493.json')
+const orderWithManyLineItemsAndOneDiscount = require('../example-orders/25068048.json')
 
 describe('getUrlParamMappingFromOrder', () => {
   it('returns a correct mapping for an order with one line item and no discounts', () => {

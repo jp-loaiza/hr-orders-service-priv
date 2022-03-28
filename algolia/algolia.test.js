@@ -1,6 +1,6 @@
 const { getConversionsFromOrder } = require('./algolia')
 
-jest.mock('./config')
+jest.mock('../config')
 
 const analyticsData = {
   userToken: 'user-123456',

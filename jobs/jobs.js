@@ -1,15 +1,15 @@
 
 require('dotenv').config()
 
-const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL, SEND_NARVAR_ORDERS_INTERVAL } = (/** @type {import('./orders').Env} */ (process.env))
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL, SEND_NARVAR_ORDERS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
 const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynamicYield, sendOrdersToNarvar, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
   fetchStuckOrderResults
-} = require('./commercetools')
-const { sendOrderEmailNotificationByOrderId } = require('./email')
-const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('./constants')
+} = require('../commercetools/commercetools')
+const { sendOrderEmailNotificationByOrderId } = require('../emails/email')
+const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('../constants')
 
 const timeoutSymbol = Symbol('timeout')
 

@@ -4,7 +4,7 @@ const {
   setOrderErrorFields,
   fetchFullOrder 
 } = require('./commercetools')
-const { BACKOFF, ORDER_CUSTOM_FIELDS } = require('./constants')
+const { BACKOFF, ORDER_CUSTOM_FIELDS } = require('../constants')
 
 describe('getNextRetryDateFromRetryCount', () => {
   it('returns a date object', () => {

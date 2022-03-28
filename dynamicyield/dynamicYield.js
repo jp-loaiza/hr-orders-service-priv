@@ -1,10 +1,10 @@
-const { fetchWithTimeout: fetch } = require('./request.utils')
-const { DYNAMIC_YIELD_API_KEY_SERVER } = require('./config')
-const { DYNAMIC_YIELD_API_URL } = require('./constants')
+const { fetchWithTimeout: fetch } = require('../request.utils')
+const { DYNAMIC_YIELD_API_KEY_SERVER } = require('../config')
+const { DYNAMIC_YIELD_API_URL } = require('../constants')
 
 /**
- * @param {import('./orders').Order} order
- * @returns {import('./orders').DynamicYieldReportEventData | undefined}
+ * @param {import('../orders').Order} order
+ * @returns {import('../orders').DynamicYieldReportEventData | undefined}
  */
 const getDYReportEventFromOrder = order => {
   const dynamicYieldData = order.custom && order.custom.fields.dynamicYieldData && order.custom.fields.dynamicYieldData.obj.value
@@ -30,8 +30,8 @@ const getDYReportEventFromOrder = order => {
 }
 
 /**
- * @param {import('./orders').LineItem} lineItem
- * @returns {import('./orders').DynamicYieldCartItem}
+ * @param {import('../orders').LineItem} lineItem
+ * @returns {import('../orders').DynamicYieldCartItem}
  */
 const convertLineItemToDYCartItem = (lineItem) => {
   const productSlug = lineItem.productSlug && (lineItem.productSlug['en-CA'] || lineItem.productSlug['fr-CA']) || ''
@@ -50,7 +50,7 @@ const convertLineItemToDYCartItem = (lineItem) => {
 }
 
 /**
- * @param {import('./orders').LineItem} lineItem
+ * @param {import('../orders').LineItem} lineItem
  * @returns {number}
  */
 const getLineItemPriceInDollars = (lineItem) => {
@@ -70,13 +70,13 @@ const convertToDollars = (centAmount) => {
 }
 
 /**
- * @param {Array<import('./orders').DynamicYieldReportEventData>} dynamicYieldEventData
+ * @param {Array<import('../orders').DynamicYieldReportEventData>} dynamicYieldEventData
  */
 const sendPurchaseEventToDynamicYield = dynamicYieldEventData =>
   fetch(`${DYNAMIC_YIELD_API_URL}/v2/collect/user/event`, formatDynamicYieldRequestOptionsFromEventData(dynamicYieldEventData))
 
 /**
- * @param {Array<import('./orders').DynamicYieldReportEventData>} dynamicYieldEventData
+ * @param {Array<import('../orders').DynamicYieldReportEventData>} dynamicYieldEventData
  */
 const formatDynamicYieldRequestOptionsFromEventData = dynamicYieldEventData => ({
   method: 'post',

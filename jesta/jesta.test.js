@@ -1,9 +1,9 @@
 const { getJestaApiResponseState } = require('./jesta.utils')
 const { sendOrderUpdateToJesta } = require('./jesta')
-const { fetchWithTimeout } = require('./request.utils')
+const { fetchWithTimeout } = require('../request.utils')
 
 jest.mock('./jesta.utils')
-jest.mock('./request.utils')
+jest.mock('../request.utils')
 
 describe('sendOrderUpdateToJesta', () => {
   // @ts-ignore
