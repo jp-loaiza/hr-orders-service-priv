@@ -28,8 +28,8 @@ module.exports = {
             'single'
         ],
         'semi': [
-            1,
-            'always'
+            'error',
+            'never'
         ]
     }
 }
