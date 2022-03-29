@@ -1,14 +1,14 @@
 const { stringify } = require('qs')
-const { convertToDollars } = require('./csv.utils')
-const { fetchWithTimeout } = require('./request.utils')
+const { convertToDollars } = require('../csv/csv.utils')
+const { fetchWithTimeout } = require('../request.utils')
 
-const getLineItemDiscountValue = (/** @type {import('./orders').LineItem} */ lineItem) =>
+const getLineItemDiscountValue = (/** @type {import('../orders').LineItem} */ lineItem) =>
   lineItem.price.value.centAmount - (lineItem.discountedPrice ? lineItem.discountedPrice.value.centAmount : lineItem.price.value.centAmount)
 
-const getTotalValueOfDiscounts = (/** @type {import('./orders').Order} */ order) =>
-  order.lineItems.reduce((/** @type {number} */ total, /** @type {import('./orders').LineItem} */ lineItem) => total + getLineItemDiscountValue(lineItem), 0)
+const getTotalValueOfDiscounts = (/** @type {import('../orders').Order} */ order) =>
+  order.lineItems.reduce((/** @type {number} */ total, /** @type {import('../orders').LineItem} */ lineItem) => total + getLineItemDiscountValue(lineItem), 0)
 
-const getUrlParamMappingFromOrder = (/** @type {import('./orders').Order} */ order) => 
+const getUrlParamMappingFromOrder = (/** @type {import('../orders').Order} */ order) => 
   order.lineItems.reduce((mapping, lineItem, index) => ({
     ...mapping,
     [`ITEM${index + 1}`]: lineItem.variant.sku,
@@ -29,7 +29,7 @@ const getUrlParamMappingFromOrder = (/** @type {import('./orders').Order} */ ord
     amount: convertToDollars(order.taxedPrice.totalNet.centAmount - order.shippingInfo.price.centAmount) // total price of order excluding shipping and taxes
   })
 
-const sendOrderConversionToCj = (/** @type {import('./orders').Order} */ order) => {
+const sendOrderConversionToCj = (/** @type {import('../orders').Order} */ order) => {
   const urlParamMapping = getUrlParamMappingFromOrder(order)
   const urlParamString = stringify(urlParamMapping)
   return fetchWithTimeout(`${process.env.CJ_CONVERSION_BASE_URL}?${urlParamString}`, { method: 'post' })

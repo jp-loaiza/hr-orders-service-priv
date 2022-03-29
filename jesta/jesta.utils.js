@@ -1,7 +1,7 @@
 const { JESTA_RESPONSE_STATES, FAILURE_CODES, WARNING_CODES, SUCCESS_CODES } = require('./jesta.constants')
 
 /**
- * @param {import('./orders').JestaApiResponseBody} response
+ * @param {import('../orders').JestaApiResponseBody} response
  * @returns {'failure'|'success'|'warning'}
  */
 const getJestaApiResponseState = response => {
