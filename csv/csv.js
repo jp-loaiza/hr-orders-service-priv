@@ -233,7 +233,7 @@ const generateCsvHeaderNamesString = () => {
  */
 const generateCsvStringFromOrder = order => {
   //Remove \n that are sometimes added in JSON coming from CT
-  order = JSON.parse(JSON.stringify(order).replace(/(\r\n|\\n|\r)/gm, ''))
+  order = JSON.parse(JSON.stringify(order).replace(/(\r\n|\\n|\r|\t)/gm, ''))
 
   const headerNames = generateCsvHeaderNamesString()
   const headerData = generateHeadersCsvStringFromOrder(order)

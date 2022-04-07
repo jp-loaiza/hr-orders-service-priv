@@ -971,7 +971,7 @@ const COMPLETE_ORDER_ENGLISH_NEWLINES = {
     payments: [
       {
         typeId: 'payment',
-        id: 'e507ad6d-4293-40da-a14a-9a8e7fa71bcc',
+        id: 'e507ad6d-4293-40da-a14a-9a8e7fa71bcc\r',
         obj: {
           id: 'e507ad6d-4293-40da-a14a-9a8e7fa71bcc',
           version: 1,
@@ -1068,8 +1068,8 @@ const COMPLETE_ORDER_ENGLISH_NEWLINES = {
   },
   itemShippingAddresses: [
     {
-      firstName: 'Harry',
-      lastName: 'Rosen',
+      firstName: 'Harry\t',
+      lastName: 'Rosen\r',
       streetName: '55 Fake St',
       postalCode: 'M4V 1H6',
       city: 'Toronto',
