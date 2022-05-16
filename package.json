@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "jest",
-    "pretest": "eslint . --ignore-pattern newrelic.js"
+    "pretest": "eslint . --ignore-pattern newrelic.js",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
@@ -47,7 +48,7 @@
     "@types/node-fetch": "^2.5.7",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^6.8.0",
-    "husky": "^4.3.0"
+    "husky": "^8.0.1"
   },
   "config": {
     "commitizen": {
