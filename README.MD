@@ -1,3 +1,5 @@
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 # Initial/Local Deployment Guide
 Since our kubernetes deployment is based off our docker image, we need to fist build the docker image and the push it to IBM Cloud registry.
 
