@@ -9,11 +9,6 @@
     "pretest": "eslint . --ignore-pattern newrelic.js",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "exec < /dev/tty && npx cz --hook || true"
-    }
-  },
   "author": "Houman Kamali",
   "license": "UNLICENSED",
   "dependencies": {
@@ -39,20 +34,16 @@
     "node-fetch": "^2.6.0",
     "qs": "^6.7.0",
     "ssh2-sftp-client": "^5.1.2",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "base-64": "^1.0.0"
   },
   "devDependencies": {
+    "@types/base-64": "^1.0.0",
     "@types/express": "^4.17.6",
     "@types/newrelic": "^6.4.0",
     "@types/node": "^13.13.4",
     "@types/node-fetch": "^2.5.7",
-    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^6.8.0",
     "husky": "^8.0.1"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }
