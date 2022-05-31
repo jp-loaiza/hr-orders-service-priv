@@ -183,9 +183,9 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
     const exampleOrderNumbers = ['24600493', '24600955', '24839685', '24845933', '25068048', '24596603', '24738417', '24846490']
 
     for (const orderNumber of exampleOrderNumbers) {
-      const rawOrderJson = readFileSync(path.join('example-orders', `${orderNumber}.json`), 'utf8')
+      const rawOrderJson = readFileSync(path.join('src/example-orders', `${orderNumber}.json`), 'utf8')
       const parsedOrderJson = JSON.parse(rawOrderJson)
-      const expectedOrderCsvString = readFileSync(path.join('example-orders', `${orderNumber}.csv`), 'utf8')
+      const expectedOrderCsvString = readFileSync(path.join('src/example-orders', `${orderNumber}.csv`), 'utf8')
       const actualOrderCsvString = generateCsvStringFromOrder(parsedOrderJson)
 
       expect(actualOrderCsvString).toEqual(expectedOrderCsvString)

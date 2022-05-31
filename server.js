@@ -5,13 +5,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
 
-require('./jobs/jobs')
-const { sftpConfig } = require('./config')
-const { keepAliveRequest } = require('./commercetools/commercetools')
-const { sendOrderEmailNotificationByOrderId } = require('./emails/email')
-const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./jobs/jobs')
+require('./src/jobs/jobs')
+const { sftpConfig } = require('./src/config')
+const { keepAliveRequest } = require('./src/commercetools/commercetools')
+const { sendOrderEmailNotificationByOrderId } = require('./src/emails/email')
+const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./src/jobs/jobs')
 
-const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./src/orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
