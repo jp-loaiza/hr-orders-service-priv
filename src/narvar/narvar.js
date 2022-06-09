@@ -406,7 +406,7 @@ const convertPickups = (order, shipments) => {
       id: shipment.id,
       status: {
         code: STATES_TO_NARVAR_PICKUP_STATUSES[getShipmentStatusMapping(shipment)],
-        date: shipment.createdAt
+        date: shipment.value.shipmentLastModifiedDate || shipment.createdAt
       },
       items_info:
         shipment.value.shipmentDetails.filter(shipmentDetail => shipmentDetail.quantityShipped != 0).map(shipmentDetail => {
@@ -542,5 +542,6 @@ const convertOrderForNarvar = async (order, shipments, states) => {
 
 module.exports = {
   convertOrderForNarvar,
-  sendToNarvar
+  sendToNarvar,
+  convertPickups
 }

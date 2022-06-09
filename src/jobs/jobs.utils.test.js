@@ -1,12 +1,19 @@
 // @ts-nocheck The linter gets confused by Jest mocks
 
-const { generateFilenameFromOrder, createAndUploadCsvs, sendOrderUpdates, transformToOrderPayment } = require('./jobs.utils')
-const { setOrderAsSentToOms, setOrderErrorFields } = require('../commercetools/commercetools')
+const { 
+  generateFilenameFromOrder, 
+  createAndUploadCsvs, 
+  sendOrderUpdates, 
+  transformToOrderPayment,
+  sendOrdersToNarvar} = require('./jobs.utils')
+const { setOrderAsSentToOms, setOrderErrorFields, setOrderCustomField } = require('../commercetools/commercetools')
+const { sendToNarvar } = require('../narvar/narvar')
 
 jest.mock('../config')
 jest.mock('../commercetools/commercetools')
 jest.mock('../request.utils')
 jest.mock('../jesta/jesta')
+jest.mock('../narvar/narvar')
 
 describe('generateFilenameFromOrder', () => {
   const mockOrder1 = {
@@ -171,4 +178,21 @@ describe('transformToOrderPayment', () => {
       status: 'Success'
     })
   })
+})
+
+describe('sendOrdersToNarvar', () => {
+  it('Sends NARVAR order successfully', async () => {
+    await sendOrdersToNarvar()
+    await Promise.resolve()
+
+    expect(sendToNarvar).toHaveBeenCalled()
+  })
+
+  it('sets NARVAR success status fields in CT', async () => {
+    await sendOrdersToNarvar()
+    await Promise.resolve()
+
+    expect(setOrderCustomField).toHaveBeenCalledWith(undefined, 'narvarStatus', 'SUCCESS')
+  })
+
 })
