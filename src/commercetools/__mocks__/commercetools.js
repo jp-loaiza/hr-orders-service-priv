@@ -1,8 +1,40 @@
+const state = {
+  typeId: 'state',
+  id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629'
+}
+
+const shipments = [{
+  'typeId': 'key-value-document',
+  'id': '017da04b-5c57-4f72-a0cc-04503c23fa1f'
+},
+{
+  'typeId': 'key-value-document',
+  'id': '5ca4fc42-2671-4748-8e6c-4b7653d5b907'
+},
+{
+  'typeId': 'key-value-document',
+  'id': '03280ad2-3db7-4044-b155-d8142bdd7e9c'
+}]
+
+const taxPortions = [
+  {
+    rate: 0.13,
+    amount: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 11414,
+      fractionDigits: 2
+    },
+    name: 'HST'
+  }
+]
+
 const validOrder = {
   type: 'Order',
   id: '6feea16b-a8b1-4d3e-a602-8be1a70d0e05',
   version: 5,
   lastMessageSequenceNumber: 1,
+  state: { typeId: 'typeId', id: 'string' },
   createdAt: '2020-08-04T15:39:23.259Z',
   lastModifiedAt: '2020-08-04T15:39:39.299Z',
   lastModifiedBy: {
@@ -37,18 +69,7 @@ const validOrder = {
       centAmount: 99214,
       fractionDigits: 2
     },
-    taxPortions: [
-      {
-        rate: 0.13,
-        amount: {
-          type: 'centPrecision',
-          currencyCode: 'CAD',
-          centAmount: 11414,
-          fractionDigits: 2
-        },
-        name: 'HST'
-      }
-    ]
+    taxPortions
   },
   country: 'CA',
   orderState: 'Open',
@@ -98,7 +119,8 @@ const validOrder = {
         currencyCode: 'CAD',
         centAmount: 3164,
         fractionDigits: 2
-      }
+      },
+      taxPortions
     },
     shippingMethodState: 'MatchesCart'
   },
@@ -353,10 +375,7 @@ const validOrder = {
       state: [
         {
           quantity: 1,
-          state: {
-            typeId: 'state',
-            id: '0e02ceb9-b46f-4e38-a494-38e67f2ae629'
-          }
+          state
         }
       ],
       priceMode: 'Platform',
@@ -378,7 +397,8 @@ const validOrder = {
           currencyCode: 'CAD',
           centAmount: 85000,
           fractionDigits: 2
-        }
+        },
+        taxPortions
       },
       custom: {
         type: {
@@ -387,7 +407,8 @@ const validOrder = {
         },
         fields: {
           itemTaxes: '{"HST":110.5}',
-          isGift: false
+          isGift: false,
+          orderDetailLastModifiedDate: '2022-06-08T20:27:02.045Z',
         }
       },
       lineItemMode: 'Standard',
@@ -399,7 +420,22 @@ const validOrder = {
           }
         ],
         valid: true
-      }
+      },
+      lastModifiedAt: '2022-06-08T20:27:02.045Z',
+      product_type: null,
+      product_id: null,
+      dimensions: null,
+      is_backordered: null,
+      vendor: null,
+      item_promise_date: null,
+      return_reason_code: null,
+      events: null,
+      color: null,
+      size: null,
+      style: null,
+      original_unit_price: null,
+      original_line_price: null,
+      narvar_convert_id: null
     }
   ],
   customLineItems: [],
@@ -415,6 +451,9 @@ const validOrder = {
       id: '4525a9be-e60e-4d48-b27f-8c5d12b6aada'
     },
     fields: {
+      orderDetailLastModifiedDate: '2022-06-08T20:27:02.045Z',
+      itemTaxes: 'itemTaxes',
+      isGift: false,
       sentToOmsStatus: 'PENDING',
       paymentIsReleased: true,
       transactionTotal: {
@@ -534,7 +573,7 @@ const validOrder = {
     phone: '5551231234',
     email: 'user@gmail.com'
   },
-  itemShippingAddresses: [
+  itemShippingAddress: 
     {
       firstName: 'Harry',
       lastName: 'Rosen',
@@ -547,8 +586,7 @@ const validOrder = {
       phone: '5551231234',
       email: 'user@gmail.com',
       key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
-    }
-  ],
+    },
   refusedGifts: []
 }
 
@@ -566,5 +604,13 @@ module.exports = {
     .mockImplementationOnce(() => ({ orders: [validOrder], total: 1}))
     .mockImplementationOnce(() => ({ orders: [], total: 1 })),
   setOrderAsSentToOms: jest.fn(),
-  setOrderErrorFields: jest.fn()  
+  setOrderErrorFields: jest.fn(),
+  fetchStates: jest.fn().mockReturnValue(Promise.resolve(state)),
+  fetchOrdersThatShouldBeSentToNarvar: jest.fn()
+    .mockImplementationOnce(() => ({ orders: [Promise.resolve(validOrder)], total: 1}))
+    .mockImplementationOnce(() => ({ orders: [Promise.resolve(validOrder)], total: 1}))
+    .mockImplementationOnce(() => ({ orders: [Promise.resolve(validOrder)], total: 1})),
+  fetchShipments: jest.fn().mockImplementationOnce(() => shipments),
+  setOrderCustomField: jest.fn(),
+  validOrder
 }
