@@ -1153,7 +1153,8 @@
             "sentToOmsStatus": "SUCCESS",
             "cartClaimed": true,
             "carrierId": "CP",
-            "shippingTaxes": "{\"GST\":1,\"QST\":2}"
+            "shippingTaxes": "{\"GST\":1,\"QST\":2}",
+            "isStorePickup": true
         }
     },
     "paymentInfo": {
