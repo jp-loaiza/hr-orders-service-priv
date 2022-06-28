@@ -25,27 +25,49 @@ jobs:
       - run: npm ci
       - run: npm run test
       
-      - name: Semantic versioning
-        id: versioning
-        uses: PaulHatch/semantic-version@v4.0.2
-        with:
-         branch: main
-         tag_prefix: "v"
-         major_pattern: "BREAKING_CHANGE:"
-         minor_pattern: "feat:"
-         format: "v${major}.${minor}.${patch}-prerelease${increment}"
+      - name: Tag new version
+        id: release
+        run: |
+          git config --global user.name "github"
+          git config --global user.email "github@users.noreply.github.com"
+          npm version --patch
+          VERSION=$(cat ./package.json | grep -m 1 version | sed 's/[^0-9.]//g')
+          echo "::set-output name=version::$VERSION"
       
-      - name: Build the tagged Docker image
-        run: docker build . --file Dockerfile --tag hr-orders-service:${{steps.versioning.outputs.version}}
-      
-      - name: Build the latest Docker image
-        run: docker build . --file Dockerfile --tag hr-orders-service:latest
-        
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
         with:
-           tag_name: ${{ steps.versioning.outputs.version }}
-           release_name: ${{ steps.versioning.outputs.version }}
-           prerelease: true
+          images: ghcr.io/HarryRosen/hr-orders-service
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.release.outputs.version}}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.release.outputs.version}}
+      
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+
+      - name: Login to github container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Push release tag
+        run: |
+          git config pull.rebase true
+          git pull
+          git push --follow-tags
