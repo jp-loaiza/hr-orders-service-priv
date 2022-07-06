@@ -1,4 +1,4 @@
-name: Docker Image build
+name: Release
 
 on:
   push:
@@ -22,17 +22,22 @@ jobs:
           
       - name: Setup node and Run tests
         uses: actions/setup-node@v2
-      - run: npm ci
-      - run: npm run test
+
+      - name: Install Exact version dependencies   
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
       
-      - name: Tag new version
-        id: release
-        run: |
-          git config --global user.name "github"
-          git config --global user.email "github@users.noreply.github.com"
-          npm version --patch
-          VERSION=$(cat ./package.json | grep -m 1 version | sed 's/[^0-9.]//g')
-          echo "::set-output name=version::$VERSION"
+      - name: Semantic versioning
+        id: version
+        uses: PaulHatch/semantic-version@v4.0.2
+        with:
+         branch: main
+         tag_prefix: "v"
+         major_pattern: "BREAKING_CHANGE:"
+         minor_pattern: "feat:"
+         format: "v${major}.${minor}.${patch}"
       
       - name: Docker meta
         id: meta
@@ -40,8 +45,8 @@ jobs:
         with:
           images: ghcr.io/HarryRosen/hr-orders-service
           tags: |
-            type=semver,pattern={{version}},value=${{ steps.release.outputs.version}}
-            type=semver,pattern={{major}}.{{minor}},value=${{ steps.release.outputs.version}}
+            type=semver,pattern={{version}},value=${{ steps.version.outputs.version}}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.version.outputs.version}}
       
       - name: Set up Docker Buildx
         id: buildx
