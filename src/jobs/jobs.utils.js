@@ -97,6 +97,11 @@ const transformToOrderPayment = order => {
     orderNumber: order.orderNumber
   }
 
+  // Checking for fully discounted orders
+  if(order.paymentState && order.paymentState.toLowerCase() === PAYMENT_STATES.PAID && order.totalPrice.centAmount === 0) {
+    return { ...orderUpdate, status: 'Success'}
+  }
+
   const creditPaymentInfo = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
   if (!creditPaymentInfo) {
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
