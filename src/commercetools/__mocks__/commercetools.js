@@ -611,6 +611,8 @@ module.exports = {
     .mockImplementationOnce(() => ({ orders: [Promise.resolve(validOrder)], total: 1}))
     .mockImplementationOnce(() => ({ orders: [Promise.resolve(validOrder)], total: 1})),
   fetchShipments: jest.fn().mockImplementationOnce(() => shipments),
+  getLoginRadiusIdforOrderEmail: jest.fn(() => ('124578qwer')),
+  getMainAccountId: jest.fn(()=>{return 'Testrosen@gmail.com'}),
   setOrderCustomField: jest.fn(),
   validOrder
 }

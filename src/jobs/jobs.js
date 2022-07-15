@@ -6,14 +6,17 @@ const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynam
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
-  fetchStuckOrderResults
+  fetchStuckOrderResults,
+  getLoginRadiusIdforOrderEmail,
+  getMainAccountId,
+  setOrderPrimaryemail
 } = require('../commercetools/commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('../emails/email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('../constants')
 
 const timeoutSymbol = Symbol('timeout')
 
-const jobTotalTimeout = (MAXIMUM_RETRIES + 1) *  JOB_TASK_TIMEOUT
+const jobTotalTimeout = (MAXIMUM_RETRIES + 1) * JOB_TASK_TIMEOUT
 console.log(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
 
 const lastJobsRunTime = {
@@ -26,7 +29,7 @@ const lastJobsRunTime = {
 /**
  * @param {number} orderUploadInterval interval between each job in ms
  */
-async function createAndUploadCsvsJob (orderUploadInterval) {
+async function createAndUploadCsvsJob(orderUploadInterval) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     console.time('Create and uploads CSVs')
@@ -50,7 +53,7 @@ async function createAndUploadCsvsJob (orderUploadInterval) {
 /**
  * @param {number} orderUploadInterval interval between each job in ms
  */
-async function sendOrderUpdatesJob (orderUploadInterval) {
+async function sendOrderUpdatesJob(orderUploadInterval) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
@@ -70,7 +73,7 @@ async function sendOrderUpdatesJob (orderUploadInterval) {
 }
 
 
-async function sendOrderEmailNotification () {
+async function sendOrderEmailNotification() {
   const { orderIds, total } = await fetchOrderIdsThatShouldBeSentToCrm()
   if (orderIds.length) {
     console.log(`Sending ${orderIds.length} orders to CRM (total in backlog: ${total}): ${orderIds}`)
@@ -91,7 +94,7 @@ async function sendOrderEmailNotification () {
 /**
  * @param {*} sendNotificationsInterval interval between each job in ms
  */
-async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
+async function sendOrderEmailNotificationJob(sendNotificationsInterval) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
@@ -114,12 +117,22 @@ async function sendOrderEmailNotificationJob (sendNotificationsInterval) {
  * @param {*} stuckOrderCheckInterval interval between each job in ms
  */
 async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
-  // eslint-disable-next-line no-constant-condition
-  while(true) {
+  //eslint-disable-next-line no-constant-condition
+  while (true) {
     const { results: stuckOrders, total: stuckOrderCount } = await fetchStuckOrderResults()
+
     if (stuckOrderCount > 0) {
       const stringifiedStuckOrderNumbersAndIds = stuckOrders.map(order => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
       console.warn(`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`)
+
+      stuckOrders.forEach(async order => {
+        const lrid = await getLoginRadiusIdforOrderEmail(order.customerEmail)
+        const primaryMailId = await getMainAccountId(lrid)
+        if (primaryMailId !== order.customerEmail) {
+          setOrderPrimaryemail(order.id, primaryMailId)
+        }
+      })
+
     } else {
       console.log('No stuck orders')
     }
@@ -137,7 +150,7 @@ async function sendConversionsToAlgoliaJob(sendToAlgoliaInterval) {
     try {
       await sendConversionsToAlgolia()
     }
-    catch(error) {
+    catch (error) {
       console.error('Unable to send conversions to Algolia:', error)
     }
     await sleep(sendToAlgoliaInterval)
@@ -153,7 +166,7 @@ async function sendPurchaseEventsToDynamicYieldJob(sendToDynamicYieldInterval) {
     try {
       await sendPurchaseEventsToDynamicYield()
     }
-    catch(error) {
+    catch (error) {
       console.error('Unable to send purchase events to Dynamic Yield:', error)
     }
     await sleep(sendToDynamicYieldInterval)
@@ -169,7 +182,7 @@ async function sendOrdersToNarvarJob(sendToNarvarInterval) {
     try {
       await sendOrdersToNarvar()
     }
-    catch(error) {
+    catch (error) {
       console.error('Unable to send orders to Narvar:', error)
     }
     await sleep(sendToNarvarInterval)
@@ -225,10 +238,10 @@ if (shouldSendDynamicYieldInfo) {
 }
 
 const shouldSendOrderNarvar = process.env.SHOULD_SEND_NARVAR_ORDERS === 'true'
-if(shouldSendOrderNarvar) {
+if (shouldSendOrderNarvar) {
   const sendToNarvarInterval = Number(SEND_NARVAR_ORDERS_INTERVAL)
   console.log('Processing Narvar job at interval: ', sendToNarvarInterval)
-  if(!(sendToNarvarInterval > 0)) throw Error('SEND_NARVAR_ORDERS_INTERVAL must be a positive number')
+  if (!(sendToNarvarInterval > 0)) throw Error('SEND_NARVAR_ORDERS_INTERVAL must be a positive number')
   sendOrdersToNarvarJob(sendToNarvarInterval)
 }
 
@@ -239,7 +252,6 @@ if (shouldSendCjConversions) {
   if (!(sendCjConversionsInterval > 0)) throw new Error('SEND_CJ_CONVERSIONS_INTERVAL must be a positive number')
   startCjConversionJob(sendCjConversionsInterval)
 }
-
 
 module.exports = {
   getEnabledJobsLastExecutionTime: () => {
