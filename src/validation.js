@@ -26,17 +26,6 @@ const addressSchema = {
   ]
 }
 
-const paymentSchema = {
-  type: 'object',
-  properties: {
-    obj: {
-      type: 'object',
-      required: ['amountPlanned', 'custom', 'paymentMethodInfo']
-    }
-  },
-  required: ['obj']
-}
-
 const lineItemSchema = {
   type: 'object',
   properties: {
@@ -55,16 +44,6 @@ const orderSchema = {
   properties: {
     shippingAddress: addressSchema,
     bullingAddress: addressSchema,
-    paymentInfo: {
-      type: 'object',
-      properties: {
-        payments: {
-          type: 'array',
-          values: paymentSchema
-        }
-      },
-      required: ['payments']
-    },
     lineItems: {
       type: 'array',
       values: lineItemSchema
@@ -89,7 +68,6 @@ const orderSchema = {
     'customerEmail',
     'locale',
     'orderNumber',
-    'paymentInfo',
     'shippingAddress',
     'shippingInfo',
     'taxedPrice'
