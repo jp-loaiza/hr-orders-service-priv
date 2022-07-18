@@ -126,10 +126,12 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
       console.warn(`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`)
 
       stuckOrders.forEach(async order => {
-        const lrid = await getLoginRadiusIdforOrderEmail(order.customerEmail)
-        const primaryMailId = await getMainAccountId(lrid)
-        if (primaryMailId !== order.customerEmail) {
-          setOrderPrimaryemail(order.id, primaryMailId)
+        try{const lrid = await getLoginRadiusIdforOrderEmail(order.customerEmail)
+          const primaryMail = await getMainAccountId(lrid)
+          if (primaryMail !== order.customerEmail) {
+            setOrderPrimaryemail(order.id, primaryMail)
+          }} catch(error ){
+          console.log(' error while processing the stuck ordr '+order +'with error :'+ error);
         }
       })
 

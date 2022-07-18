@@ -40,7 +40,7 @@ const clientSecret = process.env.CT_CLIENT_SECRET
 
 const requestBuilder = createRequestBuilder({ projectKey })
 
-const axios = require('axios')
+const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('./LoginRadiusRepository')
 
 const ctClient = createClient({
   middlewares: [
@@ -215,74 +215,11 @@ const setOrderPrimaryemail = async (orderId, emailId) => {
  * 
  */
 const getLoginRadiusIdforOrderEmail = async (email) => {
-  var data = JSON.stringify({
-    'from': '2002-07-01',
-    'to': '2092-11-22',
-    'q': {
-      'group': {
-        'operator': 'AND',
-        'rules': [
-          {
-            'name': 'Email.Value',
-            'operator': '=',
-            'value': email
-          }
-        ]
-      }
-    },
-    'size': 1000
-  })
-
-  var config = {
-    method: 'post',
-    url: 'https://cloud-api.loginradius.com/identity?apikey=' + process.env.LR_APIKEY + '&apisecret=' + process.env.LR_APISECRET,
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: data
-  }
-  let lrid = ''
-  await axios(config)
-    .then(function (response) {
-
-      console.log(response.data.data[0].Uid)
-      lrid = response.data.data[0].Uid
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-  return lrid
+  return getLoginRadiusIdforEmail(email)
 }
 
 const getMainAccountId = async (LRUUID) => {
-
-  var config = {
-    method: 'GET',
-    url: 'https://api.loginradius.com/identity/v2/manage/account/' + LRUUID + '?apikey=' + process.env.LR_APIKEY + '&apisecret=' + process.env.LR_APISECRET,
-    headers: {
-      'Content-Type': 'application/json'
-    },
-
-  }
-  let res
-  await axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data))
-      res = response
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-  console.log(res.data.Email[0])
-  const email = res.data.Email
-  if (email.length > 0) {
-    email.forEach(e => {
-      if (e.Type === 'Primary') {
-        return e.Value
-      }
-    })
-    return email[0].Value
-  }
+  return getIdentityforLRUUID(LRUUID)
 }
 
 /**
