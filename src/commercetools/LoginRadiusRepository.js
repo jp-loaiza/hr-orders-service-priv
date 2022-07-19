@@ -32,7 +32,6 @@ const getLoginRadiusIdforEmail = async (email) => {
   await axios(config)
     .then(function (response) {
 
-      console.log(response.data.data[0].Uid)
       lrid = response.data.data[0].Uid
     })
     .catch(function (error) {

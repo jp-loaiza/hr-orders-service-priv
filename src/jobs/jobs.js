@@ -131,7 +131,7 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
           if (primaryMail !== order.customerEmail) {
             setOrderPrimaryemail(order.id, primaryMail)
           }} catch(error ){
-          console.log(' error while processing the stuck ordr '+order +'with error :'+ error);
+          console.log(' error while processing the stuck ordr '+order.id +'with error :'+ error);
         }
       })
 
