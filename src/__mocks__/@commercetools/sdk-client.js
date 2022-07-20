@@ -575,6 +575,445 @@ const mockOrder = {
   refusedGifts: []
 }
 
+const mockOrderNoPayment = {
+  'anonymousId': '11081e3e-bf99-44c3-beb0-8f5137b3910d',
+  'billingAddress': {
+    'city': 'Toronto',
+    'country': 'CA',
+    'email': 'user@gmail.com',
+    'firstName': 'Harry',
+    'lastName': 'Rosen',
+    'phone': '5551231234',
+    'postalCode': 'M4V 1H6',
+    'state': 'ON',
+    'streetName': 'Fake St',
+    'streetNumber': '55'
+  },
+  'cart': {
+    'id': '4907963f-f36c-4874-83af-4c7b3c106594',
+    'typeId': 'cart'
+  },
+  'country': 'CA',
+  'createdAt': '2020-08-04T15:39:23.259Z',
+  'createdBy': {
+    'clientId': 'k6QQpXCp89k8R8k7rwxem-h-',
+    'isPlatformClient': false
+  },
+  'custom': {
+    'fields': {
+      'carrierId': 'FDX',
+      'loginRadiusUid': 'ed6c636af37a4d738ba8d374fa219cbc',
+      'paymentIsReleased': true,
+      'retryCount': 0,
+      'returnsAreFree': true,
+      'sentToOmsStatus': 'PENDING',
+      'shippingIsRush': false,
+      'shippingServiceType': 'EXPRESS',
+      'shippingTaxes': '{"HST":3.64}',
+      'signatureIsRequired': true,
+      'transactionTotal': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      }
+    },
+    'type': {
+      'id': '4525a9be-e60e-4d48-b27f-8c5d12b6aada',
+      'typeId': 'type'
+    }
+  },
+  'customLineItems': [],
+  'customerEmail': 'user@gmail.com',
+  'customerId': 'mockOrder',
+  'discountCodes': [],
+  'id': '1',
+  'inventoryMode': 'None',
+  'itemShippingAddresses': [{
+    'city': 'Toronto',
+    'country': 'CA',
+    'email': 'user@gmail.com',
+    'firstName': 'Harry',
+    'key': '9ee04fc1-17a5-4a83-9416-5cde81258c97',
+    'lastName': 'Rosen',
+    'phone': '5551231234',
+    'postalCode': 'M4V 1H6',
+    'state': 'ON',
+    'streetName': 'Fake St',
+    'streetNumber': '55'
+  }],
+  'lastMessageSequenceNumber': 1,
+  'lastModifiedAt': '2020-08-04T15:39:39.299Z',
+  'lastModifiedBy': {
+    'clientId': 'kCdIHF2Ojlv7-yp1Dq2itE4O',
+    'isPlatformClient': false
+  },
+  'lineItems': [{
+    'custom': {
+      'fields': {
+        'isGift': false,
+        'itemTaxes': '{"HST":110.5}'
+      },
+      'type': {
+        'id': '72953947-9bf8-4d31-8a2e-9a9c22d40649',
+        'typeId': 'type'
+      }
+    },
+    'discountedPricePerQuantity': [],
+    'id': '496332a3-45d9-4ed8-ae44-5b55693c89ce',
+    'lineItemMode': 'Standard',
+    'name': {
+      'en-CA': 'Huge6/Genius5 Suit ',
+      'fr-CA': 'Complet Huge6/Genius5'
+    },
+    'price': {
+      'country': 'CA',
+      'custom': {
+        'fields': {
+          'priceType': 'originalPrice'
+        },
+        'type': {
+          'id': 'af9c14ac-6b56-48d4-b152-2b751d2c9c24',
+          'typeId': 'type'
+        }
+      },
+      'id': '1160c52f-c16d-4390-8018-e26b2f96e1ff',
+      'value': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      }
+    },
+    'priceMode': 'Platform',
+    'productId': 'b238f925-d071-4ac5-a00b-e2b5c335c74e',
+    'productSlug': {
+      'en-CA': '20052807',
+      'fr-CA': '20052807'
+    },
+    'productType': {
+      'id': '3f69b1dd-631c-4913-b015-c20c083a7940',
+      'typeId': 'product-type'
+    },
+    'quantity': 1,
+    'shippingDetails': {
+      'targets': [{
+        'addressKey': '9ee04fc1-17a5-4a83-9416-5cde81258c97',
+        'quantity': 1
+      }],
+      'valid': true
+    },
+    'state': [{
+      'quantity': 1,
+      'state': {
+        'id': '0e02ceb9-b46f-4e38-a494-38e67f2ae629',
+        'typeId': 'state'
+      }
+    }],
+    'taxRate': {
+      'amount': 0.13,
+      'country': 'CA',
+      'includedInPrice': false,
+      'name': '',
+      'subRates': [{
+        'amount': 0.13,
+        'name': 'HST'
+      }]
+    },
+    'taxedPrice': {
+      'totalGross': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      },
+      'totalNet': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      }
+    },
+    'totalPrice': {
+      'centAmount': 0,
+      'currencyCode': 'CAD',
+      'fractionDigits': 2,
+      'type': 'centPrecision'
+    },
+    'variant': {
+      'assets': [],
+      'attributes': [{
+        'name': 'brandName',
+        'value': {
+          'en-CA': 'BOSS',
+          'fr-CA': 'BOSS'
+        }
+      },
+      {
+        'name': 'construction',
+        'value': {
+          'en-CA': 'construction',
+          'fr-CA': 'construction'
+        }
+      },
+      {
+        'name': 'fabricAndMaterials',
+        'value': {
+          'en-CA': 'fabricAndMaterials',
+          'fr-CA': 'fabricAndMaterials'
+        }
+      },
+      {
+        'name': 'styleAndMeasurements',
+        'value': {
+          'en-CA': 'styleAndMeasurements',
+          'fr-CA': 'styleAndMeasurements'
+        }
+      },
+      {
+        'name': 'careInstructions',
+        'value': {
+          'en-CA': '<li> Dry clean only',
+          'fr-CA': '<li> Nettoyage à sec seulement'
+        }
+      },
+      {
+        'name': 'advice',
+        'value': {
+          'en-CA': '',
+          'fr-CA': ''
+        }
+      }, {
+        'name': 'webStatus',
+        'value': true
+      }, {
+        'name': 'season',
+        'value': 'FA-19'
+      },
+      {
+        'name': 'vsn',
+        'value': '50418716'
+      }, {
+        'name': 'relatedProductId',
+        'value': '50418716030305BOSS'
+      },
+      {
+        'name': 'styleLastModifiedInternal',
+        'value': '2020-07-28T01:10:33.000Z'
+      }, {
+        'name': 'isOutlet',
+        'value': false
+      },
+      {
+        'name': 'styleOutletLastModifiedInternal',
+        'value': '2020-07-27T14:05:00.000Z'
+      }, {
+        'name': 'colorId',
+        'value': '402'
+      }, {
+        'name': 'dimensionId',
+        'value': 'R'
+      }, {
+        'name': 'skuLastModifiedInternal',
+        'value': '2020-07-09T14:09:52.000Z'
+      }, {
+        'name': 'size',
+        'value': {
+          'en-CA': '40',
+          'fr-CA': '40'
+        }
+      }, {
+        'name': 'sizeId',
+        'value': '110'
+      }, {
+        'name': 'colour',
+        'value': {
+          'en-CA': 'Dark Blue',
+          'fr-CA': 'Bleu marine'
+        }
+      }, {
+        'name': 'colourGroup',
+        'value': {
+          'en-CA': 'Blue',
+          'fr-CA': 'Bleu'
+        }
+      }, {
+        'name': 'sizeChart',
+        'value': 5
+      }, {
+        'name': 'originalPrice',
+        'value': {
+          'centAmount': 85000,
+          'currencyCode': 'CAD',
+          'fractionDigits': 2,
+          'type': 'centPrecision'
+        }
+      }, {
+        'name': 'barcodes',
+        'value': [{
+          'id': '8a14a95e-7628-495f-85f7-9553478b82ea',
+          'obj': {
+            'container': 'barcodes',
+            'createdAt': '2020-03-31T20:27:02.045Z',
+            'createdBy': {
+              'clientId': '9YnDCNDg16EER7mWlMjXeHkF',
+              'isPlatformClient': false
+            },
+            'id': '8a14a95e-7628-495f-85f7-9553478b82ea',
+            'key': '89950453-01',
+            'lastModifiedAt': '2020-03-31T20:27:02.045Z',
+            'lastModifiedBy': {
+              'clientId': '9YnDCNDg16EER7mWlMjXeHkF',
+              'isPlatformClient': false
+            },
+            'value': {
+              'barcode': '89950453-01',
+              'id': '89950453-01',
+              'lastModifiedDate': 1560197040000,
+              'skuId': '-2913407',
+              'styleId': '20048361',
+              'subType': 'UPCE'
+            },
+            'version': 1
+          },
+          'typeId': 'key-value-document'
+        }]
+      }
+      ],
+      'id': 20,
+      'images': [{
+        'dimensions': {
+          'h': 288,
+          'w': 242
+        },
+        'url': 'https://i1.adis.ws/i/harryrosen/20052807?$prp-4col-xl$'
+      }],
+      'prices': [{
+        'country': 'CA',
+        'custom': {
+          'fields': {
+            'priceType': 'originalPrice'
+          },
+          'type': {
+            'id': 'af9c14ac-6b56-48d4-b152-2b751d2c9c24',
+            'typeId': 'type'
+          }
+        },
+        'id': '1160c52f-c16d-4390-8018-e26b2f96e1ff',
+        'value': {
+          'centAmount': 0,
+          'currencyCode': 'CAD',
+          'fractionDigits': 2,
+          'type': 'centPrecision'
+        }
+      }],
+      'sku': '-2998709'
+    }
+  }],
+  'locale': 'en-CA',
+  'orderNumber': '23551711',
+  'orderState': 'Open',
+  'origin': 'Customer',
+  'paymentState': 'paid',
+  'refusedGifts': [],
+  'returnInfo': [],
+  'shipmentState': 'Pending',
+  'shippingAddress': {
+    'city': 'Toronto',
+    'country': 'CA',
+    'email': 'user@gmail.com',
+    'firstName': 'Harry',
+    'key': '9ee04fc1-17a5-4a83-9416-5cde81258c97',
+    'lastName': 'Rosen',
+    'phone': '5551231234',
+    'postalCode': 'M4V 1H6',
+    'state': 'ON',
+    'streetName': 'Fake St',
+    'streetNumber': '55'
+  },
+  'shippingInfo': {
+    'deliveries': [],
+    'price': {
+      'centAmount': 0,
+      'currencyCode': 'CAD',
+      'fractionDigits': 2,
+      'type': 'centPrecision'
+    },
+    'shippingMethodName': 'FedEx Priority Overnight',
+    'shippingMethodState': 'MatchesCart',
+    'shippingRate': {
+      'price': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      },
+      'tiers': []
+    },
+    'taxRate': {
+      'amount': 0.13,
+      'country': 'CA',
+      'includedInPrice': true,
+      'name': '',
+      'subRates': [{
+        'amount': 0.13,
+        'name': 'HST'
+      }]
+    },
+    'taxedPrice': {
+      'totalGross': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      },
+      'totalNet': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      }
+    }
+  },
+  'syncInfo': [],
+  'taxCalculationMode': 'LineItemLevel',
+  'taxMode': 'ExternalAmount',
+  'taxRoundingMode': 'HalfEven',
+  'taxedPrice': {
+    'taxPortions': [{
+      'amount': {
+        'centAmount': 0,
+        'currencyCode': 'CAD',
+        'fractionDigits': 2,
+        'type': 'centPrecision'
+      },
+      'name': 'HST',
+      'rate': 0.13
+    }],
+    'totalGross': {
+      'centAmount': 0,
+      'currencyCode': 'CAD',
+      'fractionDigits': 2,
+      'type': 'centPrecision'
+    },
+    'totalNet': {
+      'centAmount': 0,
+      'currencyCode': 'CAD',
+      'fractionDigits': 2,
+      'type': 'centPrecision'
+    }
+  },
+  'totalPrice': {
+    'centAmount': 0,
+    'currencyCode': 'CAD',
+    'fractionDigits': 2,
+    'type': 'centPrecision'
+  },
+  'transactionFee': true,
+  'type': 'Order',
+  'version': 1
+}
+
 const ctMockResponse = (orderId) => {
   if (orderId === 'orderNoLocale') {
     return { ...mockOrder, locale: null }
@@ -582,6 +1021,8 @@ const ctMockResponse = (orderId) => {
     return { ...mockOrder, locale: 'fr-CA' }
   } else if (orderId === 'orderEnLocale') {
     return { ...mockOrder, locale: 'en-CA' }
+  } else if (orderId === 'orderNoPayments') {
+    return mockOrderNoPayment
   }
   return { results: [mockOrder] }
 }

@@ -8,6 +8,7 @@ const {
   sendOrdersToNarvar} = require('./jobs.utils')
 const { setOrderAsSentToOms, setOrderErrorFields, setOrderCustomField } = require('../commercetools/commercetools')
 const { sendToNarvar } = require('../narvar/narvar')
+const { pluginPayment } = require('./mock_orders')
 
 jest.mock('../config')
 jest.mock('../commercetools/commercetools')
@@ -120,8 +121,20 @@ describe('transformToOrderPayment', () => {
     orderNumber: '12345',
     paymentInfo: {
       payments: []
-    } 
+    }
   }
+
+  const mockOrderNoPayment = {
+    orderNumber: '12345',
+    paymentState: 'PAID',
+    totalPrice: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 0,
+      fractionDigits: 2
+    }
+  }
+
   it('invalid order update; no credit card payment', () => {
     const mockOrderNoCredit = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentMethodInfo: { method: 'notCredit' } } }] } }
     expect(transformToOrderPayment(mockOrderNoCredit)).toEqual({
@@ -143,6 +156,23 @@ describe('transformToOrderPayment', () => {
       orderNumber: mockOrderInvalidStatus.orderNumber
     })
   })
+
+  it('valid discounted order update: no payment should transform', () => {
+    expect(transformToOrderPayment(mockOrderNoPayment)).toEqual({
+      orderNumber: mockOrderNoPayment.orderNumber,
+      status: 'Success'
+    })
+  })
+
+  /**TODO: We should look into other payments apart from credit, like paypal and 'plugin'- (whatever that means)
+          The mock_orders contains examples of payments that commented test below will use..**/
+  xit('valid pluginPayment order update: should transform', () => {
+    expect(transformToOrderPayment(pluginPayment)).toEqual({
+      orderNumber: pluginPayment.orderNumber,
+      status: 'Success'
+    })
+  })
+
   it('valid order update; cancel order delayed capture ON', () => {
     const mockOrderCancelDelayedCaptureOn = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, paymentStatus: { interfaceCode: 'cancelled' }, transactions: [{ ...mockTransaction, state: 'Failure' }] } }] } }
     expect(transformToOrderPayment(mockOrderCancelDelayedCaptureOn)).toEqual({

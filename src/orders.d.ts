@@ -90,7 +90,7 @@ type NarvarShipment = {
   ship_date: string | null,
   carrier_service: string | null,
   shipped_from: NarvarShippedFrom,
-  attributes: { [key: string]: string},
+  attributes: { [key: string]: string },
 }
 
 type NarvarPickup = {
@@ -100,7 +100,7 @@ type NarvarPickup = {
     code: string,
     date: string
   },
-  attributes: { [key: string]: string},
+  attributes: { [key: string]: string },
   store: {
     id: string,
     address: NarvarAddress,
@@ -245,8 +245,8 @@ type DynamicYieldCartItem = {
 type LineItem = {
   id: string,
   productId: string,
-  name: {'en-CA':string, 'fr-CA':string},
-  productSlug: {'en-CA':string, 'fr-CA':string},
+  name: { 'en-CA': string, 'fr-CA': string },
+  productSlug: { 'en-CA': string, 'fr-CA': string },
   variant: {
     sku: string,
     prices: Array<{ value: Price }>,
@@ -256,7 +256,7 @@ type LineItem = {
       value: any
     }>
   },
-  state: Array<{ quantity: number, state: { typeId: string, id: string} }>,
+  state: Array<{ quantity: number, state: { typeId: string, id: string } }>,
   price: { value: Price },
   discountedPrice?: { value: Price }
   totalPrice: Price,
@@ -372,7 +372,7 @@ type Order = {
   billingAddress: Address,
   locale: 'en-CA' | 'fr-CA',
   paymentState: 'Pending' | 'Paid'
-  paymentInfo: PaymentInfo,
+  paymentInfo?: PaymentInfo,
   shippingInfo: ShippingInfo,
   taxedPrice: TaxedPrice,
   discountCodes: Array<{
@@ -396,7 +396,7 @@ type Order = {
       shippingIsRush: boolean,
       transactionTotal: Price,
       signatureIsRequired: boolean,
-      carrierId:  'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
+      carrierId: 'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
       shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
       returnsAreFree: boolean,
       destinationSiteId?: string,
