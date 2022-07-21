@@ -86,7 +86,7 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
     [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
     [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
-    [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: convertToDollars(getPaymentTotalFromPaymentInfo(paymentInfo)),
+    [HEADER_ROWS_ENUM.TRANSACTION_TOTAL]: paymentInfo !== undefined ? convertToDollars(getPaymentTotalFromPaymentInfo(paymentInfo)) : 0,
     [HEADER_ROWS_ENUM.ORDER_DATE]: convertAndFormatDate(createdAt),
     [HEADER_ROWS_ENUM.ADDITIONAL_METADATA]: custom.fields.loginRadiusUid,
     [HEADER_ROWS_ENUM.SHIPPING_TAX1]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[0],
@@ -98,8 +98,8 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.SERVICE_TYPE]:  getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingServiceType,
     [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
     [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'N',
-    [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: getSignatureRequiredIndicator(paymentInfo),
-    [HEADER_ROWS_ENUM.RELEASED]: getPaymentReleasedStatus(paymentInfo),
+    [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: paymentInfo !== undefined ? getSignatureRequiredIndicator(paymentInfo) : 'N',
+    [HEADER_ROWS_ENUM.RELEASED]: paymentInfo !== undefined ? getPaymentReleasedStatus(paymentInfo) : 'Y',
     [HEADER_ROWS_ENUM.GIFT_NOTE]: custom.fields.giftMessage
   }
 }
@@ -119,7 +119,9 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('../orders').Ord
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: lineItemIsEndlessAisle(lineItem) ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
-  [DETAILS_ROWS_ENUM.SALESPERSON_ID]: lineItem.custom.fields.salespersonId,
+  [DETAILS_ROWS_ENUM.SALESPERSON_ID]: (order.custom.fields.userEmailDomain === 'harryrosen.com' || !lineItem.custom.fields.salespersonId)
+    ? '999'
+    : lineItem.custom.fields.salespersonId,
   [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
 })
 
@@ -239,7 +241,11 @@ const generateCsvStringFromOrder = order => {
   const headerData = generateHeadersCsvStringFromOrder(order)
   const details =  generateDetailsCsvStringFromOrder(order)
   const tax = generateTaxCsvStringFromOrder(order)
-  const tenders = generateTendersCsvStringFromOrder(order)
+  const tenders = order.paymentInfo ? generateTendersCsvStringFromOrder(order) : ''
+
+  if (!tenders) {
+    return `${headerNames}\r\n${headerData}\r\n${details}\r\n${tax}\r\n`
+  }
 
   return `${headerNames}\r\n${headerData}\r\n${details}\r\n${tax}\r\n${tenders}\r\n`
 }
