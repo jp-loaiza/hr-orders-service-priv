@@ -383,7 +383,7 @@ type Order = {
   }>,
   custom: {
     fields: {
-      userEmailDomain: any
+      userEmailDomain: string,
       orderLastModifiedDate: string,
       cjEvent?: string,
       cartSourceWebsite?: string,
