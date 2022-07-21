@@ -1,0 +1,1087 @@
+{
+    "type": "Order",
+    "id": "5817de12-a187-4a6f-a09a-5a15437fe126",
+    "version": 183,
+    "lastMessageSequenceNumber": 19,
+    "createdAt": "2022-06-20T22:58:52.938Z",
+    "lastModifiedAt": "2022-06-24T19:52:57.872Z",
+    "lastModifiedBy": {
+        "clientId": "zYxXiV2BA7lsH-NwacYsONon",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+        "isPlatformClient": false
+    },
+    "orderNumber": "68063034",
+    "customerId": "bb95ccb9-16ad-40cf-9a1d-6ab0dbee685b",
+    "customerEmail": "ibrahimqalamchy@harryrosen.com",
+    "customerGroup": {
+        "typeId": "customer-group",
+        "id": "a9159ef4-0c69-4486-ac5c-7cf85ed70d1d"
+    },
+    "locale": "en-CA",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "CAD",
+        "centAmount": 29300,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 29300,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 30765,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.05,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 1465,
+                    "fractionDigits": 2
+                },
+                "name": "GST"
+            }
+        ],
+        "totalTax": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 1465,
+            "fractionDigits": 2
+        }
+    },
+    "country": "CA",
+    "orderState": "Confirmed",
+    "shipmentState": "Pending",
+    "paymentState": "Paid",
+    "syncInfo": [],
+    "returnInfo": [],
+    "state": {
+        "typeId": "state",
+        "id": "9f7bc955-f31f-4bdc-8b2d-1c6a823fc6ba"
+    },
+    "taxMode": "ExternalAmount",
+    "inventoryMode": "None",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "origin": "Customer",
+    "shippingInfo": {
+        "shippingMethodName": " Standard",
+        "price": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 0,
+            "fractionDigits": 2
+        },
+        "shippingRate": {
+            "price": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "tiers": []
+        },
+        "taxRate": {
+            "name": "",
+            "amount": 0.05,
+            "includedInPrice": false,
+            "country": "CA",
+            "subRates": [
+                {
+                    "name": "GST",
+                    "amount": 0.05
+                }
+            ]
+        },
+        "deliveries": [],
+        "taxedPrice": {
+            "totalNet": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "totalGross": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "totalTax": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            }
+        },
+        "shippingMethodState": "MatchesCart"
+    },
+    "shippingAddress": {
+        "firstName": "Ibrahim",
+        "lastName": "Alqalami",
+        "streetName": "Unit 804 - 10141 124St NW",
+        "postalCode": "T5N 1R3",
+        "city": "Edmonton",
+        "state": "AB",
+        "country": "CA",
+        "phone": "6472922224",
+        "email": "ibrahimqalamchy@harryrosen.com",
+        "additionalAddressInfo": "804",
+        "key": "fa0b95f1-c3b8-45cc-a340-feee0e999fad"
+    },
+    "lineItems": [
+        {
+            "id": "83891fbd-3d9c-47e6-9016-d43ecba7cdce",
+            "productId": "2339998f-8030-442f-b58b-f509386cfa6a",
+            "productKey": "20078660523",
+            "name": {
+                "en-CA": "Paddy 1 Cotton Polo",
+                "fr-CA": "Polo Paddy 1 en coton"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "2dc01154-c743-4d36-8d4a-71b1504bfe3b"
+            },
+            "productSlug": {
+                "en-CA": "20078660523",
+                "fr-CA": "20078660523"
+            },
+            "variant": {
+                "id": 13,
+                "sku": "-3529992",
+                "prices": [
+                    {
+                        "id": "1efcd7da-5b3a-4e65-bf4b-20d38062302b",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 14800,
+                            "fractionDigits": 2
+                        },
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "493275e3-23ad-492c-9ed1-7a174ad43182"
+                            },
+                            "fields": {
+                                "priceType": "originalPrice"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20078660523?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "colorId",
+                        "value": "523"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2022-03-22T17:42:00.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "M",
+                            "fr-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "d760893b-bc5d-4c5e-9bf7-2b356e3004a4",
+                                "obj": {
+                                    "id": "d760893b-bc5d-4c5e-9bf7-2b356e3004a4",
+                                    "version": 80,
+                                    "versionModifiedAt": "2022-07-14T11:32:33.153Z",
+                                    "createdAt": "2021-09-17T04:06:48.565Z",
+                                    "lastModifiedAt": "2022-07-14T11:32:33.153Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "container": "barcodes",
+                                    "key": "604552037585",
+                                    "value": {
+                                        "lastModifiedDate": 1657798311000,
+                                        "barcode": "604552037585",
+                                        "subType": "UPCA",
+                                        "skuId": "-3529992",
+                                        "styleId": "20078660523",
+                                        "effectiveAt": "1970-01-01T05:00:00.000Z",
+                                        "expiresAt": "+010000-01-01T04:59:59.000Z",
+                                        "id": "604552037585"
+                                    }
+                                }
+                            },
+                            {
+                                "typeId": "key-value-document",
+                                "id": "937e70f0-c935-4b1f-a88a-15d0205638bd",
+                                "obj": {
+                                    "id": "937e70f0-c935-4b1f-a88a-15d0205638bd",
+                                    "version": 80,
+                                    "versionModifiedAt": "2022-07-14T11:33:11.669Z",
+                                    "createdAt": "2021-09-17T04:06:54.909Z",
+                                    "lastModifiedAt": "2022-07-14T11:33:11.669Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "container": "barcodes",
+                                    "key": "89983126-04",
+                                    "value": {
+                                        "lastModifiedDate": 1657798315000,
+                                        "barcode": "89983126-04",
+                                        "subType": "UPCE",
+                                        "skuId": "-3529992",
+                                        "styleId": "20078660523",
+                                        "effectiveAt": "1970-01-01T05:00:00.000Z",
+                                        "expiresAt": "+010000-01-01T04:59:59.000Z",
+                                        "id": "89983126-04"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "BOSS",
+                            "fr-CA": "BOSS"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Spread collar\n<li> Two-button placket\n<li> Embroidered logo on left chest",
+                            "fr-CA": "<li> Col italien\n<li> Patte à deux boutons\n<li> Logo brodé sur la poitrine"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "<li> Contemporary fit\n<li> BOSS Regular fit",
+                            "fr-CA": "<li> Coupe contemporaine\n<li> Coupe standard (<i>regular</i>) de BOSS\n"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "<li> Machine wash, cold\n<li> Do not tumble dry\n<li> Iron, low\n<li> Safe to dry clean",
+                            "fr-CA": "<li> Lavage à la machine à l’eau froide\n<li> Pas de séchage par culbutage\n<li> Repassage à basse température\n<li> Nettoyage à sec possible"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Purple",
+                            "fr-CA": "Violet"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Purple",
+                            "fr-CA": "Bleu moyen"
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "SP-22"
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 14800,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "50462682"
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 2
+                    },
+                    {
+                        "name": "isEndlessAisle",
+                        "value": false
+                    },
+                    {
+                        "name": "isReturnable",
+                        "value": true
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "50462682010336BOSS"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2022-06-20T14:06:55.000Z"
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    },
+                    {
+                        "name": "hasOnlineAts",
+                        "value": true
+                    },
+                    {
+                        "name": "brandId",
+                        "value": "1"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "is997",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2022-06-19T06:21:26.000Z"
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "id": "1efcd7da-5b3a-4e65-bf4b-20d38062302b",
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 14800,
+                    "fractionDigits": 2
+                },
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "493275e3-23ad-492c-9ed1-7a174ad43182"
+                    },
+                    "fields": {
+                        "priceType": "originalPrice"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.05,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "GST",
+                        "amount": 0.05
+                    }
+                ]
+            },
+            "addedAt": "2022-06-20T22:55:34.148Z",
+            "lastModifiedAt": "2022-06-20T22:58:52.713Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "bf63e3e1-9706-4006-80a9-f2b597091676"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "lineItemMode": "Standard",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 14800,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 14800,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 15540,
+                    "fractionDigits": 2
+                },
+                "totalTax": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 740,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "71f02695-a9b5-4f17-97ff-ccf3c78b66f3"
+                },
+                "fields": {
+                    "itemTaxes": "{\"GST\":7.4}",
+                    "size": "M",
+                    "orderDetailLastModifiedDate": "2022-06-24T19:51:03.000Z",
+                    "reasonCode": "",
+                    "lineNumber": 1,
+                    "category": "Polos",
+                    "unitPrice": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 14800,
+                        "fractionDigits": 2
+                    },
+                    "quantityCancelled": 0,
+                    "algoliaAnalyticsData": {
+                        "typeId": "key-value-document",
+                        "id": "7ca4505f-bf05-4b06-ab75-820b6865620a",
+                        "obj": {
+                            "id": "7ca4505f-bf05-4b06-ab75-820b6865620a",
+                            "version": 1,
+                            "createdAt": "2022-06-20T22:55:34.052Z",
+                            "lastModifiedAt": "2022-06-20T22:55:34.052Z",
+                            "lastModifiedBy": {
+                                "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                                "isPlatformClient": false
+                            },
+                            "createdBy": {
+                                "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                                "isPlatformClient": false
+                            },
+                            "container": "algolia-analytics",
+                            "key": "algolia-analytics-20078660523-3529992-f88391afbfd8665e0af5bcd2d203ab00",
+                            "value": {
+                                "userToken": "anonymous-2de68340-9c8c-41e7-b973-826fbd594281",
+                                "index": "styles_production_consumer",
+                                "eventName": "purchase",
+                                "queryID": "f88391afbfd8665e0af5bcd2d203ab00",
+                                "objectIDs": [
+                                    "20078660523"
+                                ]
+                            }
+                        }
+                    },
+                    "salespersonId": 97467,
+                    "isGift": false
+                }
+            },
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "fa0b95f1-c3b8-45cc-a340-feee0e999fad",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        },
+        {
+            "id": "6b8db66e-0e17-455e-8006-6c4468c118d8",
+            "productId": "b35e8bc6-c6d0-43cd-a239-d7482c97acdd",
+            "productKey": "20101803035",
+            "name": {
+                "en-CA": "Dylan Gradient Bunny Polo",
+                "fr-CA": "Polo Dylan avec logo dégradé"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "2dc01154-c743-4d36-8d4a-71b1504bfe3b"
+            },
+            "productSlug": {
+                "en-CA": "20101803035",
+                "fr-CA": "20101803035"
+            },
+            "variant": {
+                "id": 13,
+                "sku": "-4056665",
+                "prices": [
+                    {
+                        "id": "9b7f6f39-ef95-4bc5-8d76-0c8c26eff99a",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 14500,
+                            "fractionDigits": 2
+                        },
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "493275e3-23ad-492c-9ed1-7a174ad43182"
+                            },
+                            "fields": {
+                                "priceType": "originalPrice"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20101803035?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "colorId",
+                        "value": "035"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2022-06-01T18:22:46.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "M",
+                            "fr-CA": "M"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "176"
+                    },
+                    {
+                        "name": "hasOnlineAts",
+                        "value": true
+                    },
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "740bf05f-96e7-4e89-bbff-5db1cc616d2c",
+                                "obj": {
+                                    "id": "740bf05f-96e7-4e89-bbff-5db1cc616d2c",
+                                    "version": 12,
+                                    "versionModifiedAt": "2022-07-13T11:35:49.957Z",
+                                    "createdAt": "2022-05-25T05:04:05.247Z",
+                                    "lastModifiedAt": "2022-07-13T11:35:49.957Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "container": "barcodes",
+                                    "key": "90008187-04",
+                                    "value": {
+                                        "lastModifiedDate": 1657711933000,
+                                        "barcode": "90008187-04",
+                                        "subType": "UPCE",
+                                        "skuId": "-4056665",
+                                        "styleId": "20101803035",
+                                        "effectiveAt": "1970-01-01T05:00:00.000Z",
+                                        "expiresAt": "+010000-01-01T04:59:59.000Z",
+                                        "id": "90008187-04"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "Psycho Bunny",
+                            "fr-CA": "Psycho Bunny"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Spread collar\n<li> Contrast placket\n<li> Taped seams\n<li> Side vents\n<li> Embroidered ombre patch logo on chest",
+                            "fr-CA": "<li> Col italien\n<li> Patte contrastante\n<li> Coutures scellées\n<li> Fentes latérales\n<li> Écusson de marque sur la poitrine"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "<li> 100% pima cotton",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "<li> Machine wash, cold\n<li> Line dry\n<li> Iron, low\n<li> Do not dry clean",
+                            "fr-CA": "<li> Laver à la machine à l’eau froide\n<li> Suspendre pour sécher\n<li> Repasser à basse température\n<li> Ne pas nettoyer à sec\n"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Light Green",
+                            "fr-CA": "Vert pâle"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Green",
+                            "fr-CA": "Vert"
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "SP-22"
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 14500,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "62742b40dc240800010d3494"
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 2
+                    },
+                    {
+                        "name": "isEndlessAisle",
+                        "value": true
+                    },
+                    {
+                        "name": "isReturnable",
+                        "value": true
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "62742b40dc240800010d3494350736Psycho Bunny"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2022-06-20T00:33:13.000Z"
+                    },
+                    {
+                        "name": "onSale",
+                        "value": false
+                    },
+                    {
+                        "name": "brandId",
+                        "value": "1"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "is997",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2022-06-19T06:17:08.000Z"
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "id": "9b7f6f39-ef95-4bc5-8d76-0c8c26eff99a",
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 14500,
+                    "fractionDigits": 2
+                },
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "493275e3-23ad-492c-9ed1-7a174ad43182"
+                    },
+                    "fields": {
+                        "priceType": "originalPrice"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.05,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "GST",
+                        "amount": 0.05
+                    }
+                ]
+            },
+            "addedAt": "2022-06-20T22:56:22.953Z",
+            "lastModifiedAt": "2022-06-20T22:58:52.714Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "bf63e3e1-9706-4006-80a9-f2b597091676"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "lineItemMode": "Standard",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 14500,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 14500,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 15225,
+                    "fractionDigits": 2
+                },
+                "totalTax": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 725,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "71f02695-a9b5-4f17-97ff-ccf3c78b66f3"
+                },
+                "fields": {
+                    "itemTaxes": "{\"GST\":7.25}",
+                    "size": "M",
+                    "orderDetailLastModifiedDate": "2022-06-24T19:51:03.000Z",
+                    "reasonCode": "",
+                    "lineNumber": 2,
+                    "category": "Polos",
+                    "unitPrice": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 14500,
+                        "fractionDigits": 2
+                    },
+                    "quantityCancelled": 0,
+                    "algoliaAnalyticsData": {
+                        "typeId": "key-value-document",
+                        "id": "413dc5b5-35ec-47b7-b390-5d7ec04256b1",
+                        "obj": {
+                            "id": "413dc5b5-35ec-47b7-b390-5d7ec04256b1",
+                            "version": 1,
+                            "createdAt": "2022-06-20T22:56:22.644Z",
+                            "lastModifiedAt": "2022-06-20T22:56:22.644Z",
+                            "lastModifiedBy": {
+                                "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                                "isPlatformClient": false
+                            },
+                            "createdBy": {
+                                "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                                "isPlatformClient": false
+                            },
+                            "container": "algolia-analytics",
+                            "key": "algolia-analytics-20101803035-4056665-f88391afbfd8665e0af5bcd2d203ab00",
+                            "value": {
+                                "userToken": "anonymous-2de68340-9c8c-41e7-b973-826fbd594281",
+                                "index": "styles_production_consumer",
+                                "eventName": "purchase",
+                                "queryID": "f88391afbfd8665e0af5bcd2d203ab00",
+                                "objectIDs": [
+                                    "20101803035"
+                                ]
+                            }
+                        }
+                    },
+                    "salespersonId": 97467,
+                    "isGift": false
+                }
+            },
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "fa0b95f1-c3b8-45cc-a340-feee0e999fad",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        }
+    ],
+    "customLineItems": [],
+    "transactionFee": true,
+    "discountCodes": [],
+    "directDiscounts": [],
+    "cart": {
+        "typeId": "cart",
+        "id": "f9b62562-fe25-40a9-99bb-a74cddb9bb6a"
+    },
+    "custom": {
+        "type": {
+            "typeId": "type",
+            "id": "1666bac6-7c71-418d-9dbe-e3d15ab07c9a"
+        },
+        "fields": {
+            "orderDate": "2022-06-20T22:58:00.000Z",
+            "shipments": [
+                {
+                    "typeId": "key-value-document",
+                    "id": "1e34246b-bd3a-4745-9677-7b1d7478a961"
+                },
+                {
+                    "typeId": "key-value-document",
+                    "id": "779439fd-3bec-447d-98f6-261677ed4d37"
+                }
+            ],
+            "orderLastModifiedDate": "2022-06-24T19:51:03.000Z",
+            "sentToAlgoliaStatus": "SUCCESS",
+            "dynamicYieldData": {
+                "typeId": "key-value-document",
+                "id": "27b40a3d-6d02-4831-8c26-1eecfcb08228",
+                "obj": {
+                    "id": "27b40a3d-6d02-4831-8c26-1eecfcb08228",
+                    "version": 1,
+                    "createdAt": "2022-06-20T22:47:44.039Z",
+                    "lastModifiedAt": "2022-06-20T22:47:44.039Z",
+                    "lastModifiedBy": {
+                        "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                        "isPlatformClient": false
+                    },
+                    "container": "dynamic-yield-purchase",
+                    "key": "dy-purchase--f9b62562-fe25-40a9-99bb-a74cddb9bb6a-2756203166879295186--sjb4vwgzagzp5yyqthbhqgzjkqnikri9",
+                    "value": {
+                        "user": {
+                            "dyid": "2756203166879295186",
+                            "dyid_server": "2756203166879295186"
+                        },
+                        "session": {
+                            "dy": "sjb4vwgzagzp5yyqthbhqgzjkqnikri9"
+                        }
+                    }
+                }
+            },
+            "sentToDynamicYieldStatus": "SUCCESS",
+            "cartSourceSessionData": "eyJzb3VyY2VXZWJzaXRlVXJsIjoid3d3LmhhcnJ5cm9zZW4uY29tIiwic291cmNlV2Vic2l0ZUxhbmciOiIvZW4iLCJjb29raWVzIjoibG9nZ2x5dHJhY2tpbmdzZXNzaW9uPTFiNTg2YThhLTVmZmMtNDc5NC04ZGFkLTRjN2U1MGFlYTExOTsgV0NYU0lEX2V4cGlyeT0xNjU1NzY1Nzg5MjQ2OyBfZGRfcz1sb2dzPTEmaWQ9ODNiY2ExYjUtNzNhOS00Y2YwLWIyYTUtYjY1MjVlZGVhY2JhJmNyZWF0ZWQ9MTY1NTc2MzM2ODMwNyZleHBpcmU9MTY1NTc2NjY4OTQyNCZydW09MTsgY09iXz0yMzM5OTk4Zi04MDMwLTQ0MmYtYjU4Yi1mNTA5Mzg2Y2ZhNmFfXzEzLV8tMjAwNzg2NjA1MjMtXy1QYWRkeSAxIENvdHRvbiBQb2xvLV8tUG9sb3MtXy1QdXJwbGUtXy1CT1NTLV8tTS1fLTE0OC1fI18tYjM1ZThiYzYtYzZkMC00M2NkLWEyMzktZDc0ODJjOTdhY2RkX18xMy1fLTIwMTAxODAzMDM1LV8tRHlsYW4gR3JhZGllbnQgQnVubnkgUG9sby1fLVBvbG9zLV8tTGlnaHQgR3JlZW4tXy1Qc3ljaG8gQnVubnktXy1NLV8tMTQ1OyBQRVJTT05JRlk9MTY1NTAyMzMxODc4MC1hOThkOGU4OC0wMWRhLTI3YTgtZDMxMC0zODQyMmNmNjE0NTA7IGV4dG9sZV9hY2Nlc3NfdG9rZW49NkdGR0I4Nk9EVDRMM0lEQU1GRkRUMlVKUDY7IGxyX2VtYWlsPWMyOWRiOWExMWRlOTIwY2Q3NzMzOGYzMmY4N2ZhZjUyZmQ3ZGVmZDU1YzljZGRjZDQ5ZTIxZDIwMzZjZjg2MjE7IGxyX3VpZD1lZjhmYWRiY2E0YTY0NGI3YjFlNDdiNGFlMjBkOTRkOTsgX2ZicD1mYi4wLjE2NTUwMjMzMTc4OTYuMzAwNzc4NzQ2OyBfZ2E9R0ExLjIuNDkzNjQ2MDE3LjE2NTUwMjMzMTg7IF9naWQ9R0ExLjIuMjUzODQ3OTExLjE2NTU3NjMzNzA7IGNqVXNlcj0wN2E3MjNkZS02ZjhiLTQyMDktOGQzOS02NmUzNmIyMDdhMmY7IHN0aW1ncz17JTIyc2Vzc2lvbklkJTIyOjIwNzIwMjQ3JTJDJTIyZGlkUmVwb3J0Q2FtZXJhSW1wcmVzc2lvbiUyMjpmYWxzZSUyQyUyMm5ld1VzZXIlMjI6ZmFsc2V9OyBhYWlzPWQ1M2ZiY2UyLWVmYmUtNDkxOC1iYzBlLWI0NmI0ZjhhZmE1ZDsgYWpzX2Fub255bW91c19pZD01ZGQ2NzViZC0wYzJkLTRmNmQtOWZhOC00MDBkMzM4Y2I2OWU7IG1hdGNoYm94PXtcIm1hdGNoYm94XCI6ZmFsc2UsXCJza3VzXCI6W1wiMjAwNzg2NjA1MjNcIixcIjIwMTAxODAzMDM1XCIsXCJcIl19OyBfZ2F0X1VBLTUyMDUzNTgtMz0xOyBwZXJzb25hbGlzYXRpb25fc2Vzc2lvbl9za3VzX2xzPXslMjIyMDcyMDI0NyUyMjpbJTIyMjAwNzg2NjA1MjMlMjIlMkMlMjIyMDEwMTgwMzAzNSUyMl19OyBfZHlpZF9zZXJ2ZXI9Mjc1NjIwMzE2Njg3OTI5NTE4NjsgX2R5anNlc3Npb249c2piNHZ3Z3phZ3pwNXl5cXRoYmhxZ3pqa3FuaWtyaTk7IF9femxjbWlkPTFBUmt6bENnaVhiTXhTWjsgX3R0X2VuYWJsZV9jb29raWU9MTsgX3R0cD02ODI0MjQyMC04MmVmLTRmMzEtOWUxNC05NjQwMDUyN2Q4MmI7IGN0b19idW5kbGU9VVFRTGpsODRkU1V5UmpKYWRtdzNUSGhPWlZJemRXNXFPVWc0TTIwbE1rWktWMkpaU1hwTGFXOVdZazFhVFd0aVMyOU9WM0p1TWtOSVZuZFNjbU5STWlVeVFraFhaMDVMTTJzNFlubG1NakF5VkZGQlpUUjZSMkZtVjBKT01rZFRObU4wUWpsSmQwaHdhemxNV2pGR01saGFURFZDZUVVNE1VeFdTMUIxYjJwa1RtMVBTVms1VGxaNVNROyBrdTEtc2lkPW1vcDdzc0hwbzZ1ZWhSc2xvdDAzdjsga3UxLXZpZD1kNmVlMGViMy1mOTA5LWU4OTUtMmM2ZC0yYzQ2NDM3NTA3NzQ7IF9waW5fdW5hdXRoPWRXbGtQVnBIVFRWT2JVa3lUbXBWZEU1dFZtbE5lVEF3VFZSQk1reFVhM3BPUkVGMFRVZGFhbGt5UlhsWmVtTjVUVVJCTVE7IHN5dGVfdXVpZD04NTAxZTUzMC1lYTJiLTExZWMtOTZkZi1iNzgwYmM1ODkzMzE7IF9keV9kZl9nZW89Q2FuYWRhLi5FZG1vbnRvbjsgX2R5X2dlbz1DQS5OQS5DQV9BQi5DQV9BQl9FZG1vbnRvbjsgX2R5X3RvZmZzZXQ9LTM7IF9keWNuc3Q9ZGc7IF9keWNzdD1kLmlwLnMuc3MuOyBfZHlpZD0yNzU2MjAzMTY2ODc5Mjk1MTg2OyBfZHlfY19hdHRfZXhwcz07IF9keV9jX2V4cHM9OyBfZHlfY3NjX3Nlcz1zamI0dndnemFnenA1eXlxdGhiaHFnemprcW5pa3JpOTsgX2R5anNlc3Npb249c2piNHZ3Z3phZ3pwNXl5cXRoYmhxZ3pqa3FuaWtyaTk7IF9keV9jX2V4cHM9OyBfZHlfc29jdD01NTM0MDkuMTA2NzU5OS4xNjU1NzY1Njc5KjYwNzM3OS4xMTcyNzQzLjE2NTUwMjMzMTYuc2piNHZ3Z3phZ3pwNXl5cXRoYmhxZ3pqa3FuaWtyaTkqNjA3Mzc5LjExNzI3NDQuMTY1NTc2MzM2OC5zamI0dndnemFnenA1eXlxdGhiaHFnemprcW5pa3JpOTsgc3l0ZV9hYl90ZXN0cz17fTsgc2Zfd2R0X3RyYWNraW5nX3JlcD05NzQ2NzsgX2R5X3NvY3Q9NTUzNDA5LjEwNjc1OTkuMTY1NTc2NTQ1MCo2MDczNzkuMTE3Mjc0My4xNjU1MDIzMzE2LnNqYjR2d2d6YWd6cDV5eXF0aGJocWd6amtxbmlrcmk5KjYwNzM3OS4xMTcyNzQ0LjE2NTU3NjMzNjguc2piNHZ3Z3phZ3pwNXl5cXRoYmhxZ3pqa3FuaWtyaTk7IHNmX3dkdF90cmFja2luZ19yZXA9OTc0Njc7IF9kZF9zPWxvZ3M9MSZpZD04M2JjYTFiNS03M2E5LTRjZjAtYjJhNS1iNjUyNWVkZWFjYmEmY3JlYXRlZD0xNjU1NzYzMzY4MzA3JmV4cGlyZT0xNjU1NzY2MzUwNzc4JnJ1bT0xOyBXQ1hTSURfZXhwaXJ5PTE2NTU3NjUzNjUwNDg7IF9femxjbWlkPTFBUmt6bENnaVhiTXhTWjsgX3R0X2VuYWJsZV9jb29raWU9MTsgX3R0cD02ODI0MjQyMC04MmVmLTRmMzEtOWUxNC05NjQwMDUyN2Q4MmI7IGN0b19idW5kbGU9NklEZlBGODRkU1V5UmpKYWRtdzNUSGhPWlZJemRXNXFPVWc0TTJsbE5XSnhjVkpJVEdOcFVrUmhZamgzYmxKa05VdDFKVEpHVEZvemVIY2xNa0l4WWlVeVJrSlJjbFZ0YjJWaGREbEdaMVIyUW1GeFdGSnlUU1V5UWpFMWMzbGtla2xLVXpaTlNWWlFKVEpDVFhGaFpFUTJhVnBIUVhSMFFtWlZjaVV5UWxadVVGcFViVGQzTjFwaWNUbHRkekJWZUd0VjsgX2NjX2lkPTU3NjJlNzkxYTM0Zjk5NjQ2NDVkNzM1MDgwNTVlZGU4OyBrdTEtc2lkPW1vcDdzc0hwbzZ1ZWhSc2xvdDAzdjsga3UxLXZpZD1kNmVlMGViMy1mOTA5LWU4OTUtMmM2ZC0yYzQ2NDM3NTA3NzQ7IHBhbm9yYW1hSWRfZXhwaXJ5PTE2NTU4NTE3NTE1MDA7IF9nYT1HQTEuMi40OTM2NDYwMTcuMTY1NTAyMzMxODsgX2dpZD1HQTEuMi4yNTM4NDc5MTEuMTY1NTc2MzM3MDsgX3JkdF91dWlkPTE2NTU3NjUyNzA0MDguNWQ4OTc0OGQtOTg5OS00ZGI0LTgyNGYtMzJjZTMxMGFiOGI1OyBjalVzZXI9MDdhNzIzZGUtNmY4Yi00MjA5LThkMzktNjZlMzZiMjA3YTJmOyBzdGltZ3M9eyUyMnNlc3Npb25JZCUyMjoyMDcyMDI0NyUyQyUyMmRpZFJlcG9ydENhbWVyYUltcHJlc3Npb24lMjI6ZmFsc2UlMkMlMjJuZXdVc2VyJTIyOmZhbHNlfTsgc3l0ZV91dWlkPTg1MDFlNTMwLWVhMmItMTFlYy05NmRmLWI3ODBiYzU4OTMzMTsgdGVzdFRMRD10ZXN0OyBocl90b2tlbl9leHBpcnk9MjAyMi0wNi0yMFQyMyUzQTAwJTNBMzAuMTA0WjsgZ2lzY2FsbHVzZXJ1dWlkPWV2eXE3djZvLWJwYWMtdzdtbC04ODFjLXdzaGRiamo2ODU5bzsgX3NjdHI9MXwxNjU1NzA0ODAwMDAwOyBfX3FjYT1QMC0xODkwMTM2NTM2LTE2NTU3NjMzNzAxMTc7IF9zY2lkPTVkYzQ1NDgxLTgyOGItNDEwZi05NGRkLWYyZTNiNTAyMTk1MjsgY2pDb25zZW50PU1IeE9mREI4VG53dzsgX2R5Y25zdD1kZzsgNTQ5MzAwMDB8SFJfY2xvZ2luPWw9ODU3MTc3NDE2NTU3NjMzNjk2NDMmdj0zJmU9MTY1NTc2NTE2OTg1MTsgQ29yZUlENj01MzQ0MDUzNzUzNDUxNjU1MDIzMzE3NyZjaT01NDkzMDAwMHxIUjsgV0NYU0lEPTAwMDA4NTcxNzc0MTY1NTc2MzM2OTY0MzU0OTMwMDAwOyBXQ1hVSUQ9ODYzMzIyODQwNDk1MTY1NTc2MzM2OTY7IF9nY2xfYXU9MS4xLjE1MzkwODcwNTcuMTY1NTc2MzM2OTsgYWFpaWQ9NjRiZmIyYmQtMjgwOC00MTJlLTkwNzgtNjUyMmZiNzQyYWRhOyBhYWlqNHU9eyUyMm5hbWUlMjI6JTIyJTIyfTsgYWFpbWJ2Mj17JTIybGFzdE5vdGlmaWVkJTIyOjAlMkMlMjJzdXBwcmVzcyUyMjpmYWxzZX07IGF1dG9tYXQtcG9wdXA9eyUyMnRpbWVzU2VlbiUyMjowJTJDJTIydGltZUxlZnQlMjI6bnVsbH07IGNtVFBTZXQ9WTsgaHRnPTA6TGVnYWN5OyBfQUxHT0xJQT1hbm9ueW1vdXMtMmRlNjgzNDAtOWM4Yy00MWU3LWI5NzMtODI2ZmJkNTk0MjgxOyBhc2hfYXV0b21hdF9haT17JTIydXNlcklkJTIyOiUyMmI4MzgyNTVkLWNkOWYtNDg3My1iMzdjLWVmZTgwZGYyMTA4YyUyMn0iLCJjb29raWVEb21haW5zSGFuZGxlZCI6dHJ1ZX0=",
+            "narvarLastSuccessTime": "2022-06-24T19:52:57.209Z",
+            "sentToCrmStatus": "SUCCESS",
+            "sentToOmsStatus": "SUCCESS",
+            "cartClaimed": true,
+            "payment_gateway_shipping_method": "lowcost",
+            "narvarStatus": "SUCCESS",
+            "shippingTax2": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "userEmailDomain": "harryrosen.com",
+            "cartSourceWebsite": "00990",
+            "shippingTax1": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "termsAndConditionsAccepted": true,
+            "shippingTaxes": "{\"GST\":0}",
+            "orderCreatedDate": "2022-06-20T22:59:34.000Z",
+            "loginRadiusUid": "ef8fadbca4a644b7b1e47b4ae20d94d9"
+        }
+    },
+    "paymentInfo": {
+        "payments": [
+            {
+                "typeId": "payment",
+                "id": "fa9f7a92-e445-45f0-a283-053936827838",
+                "obj": {
+                    "id": "fa9f7a92-e445-45f0-a283-053936827838",
+                    "version": 5,
+                    "lastMessageSequenceNumber": 2,
+                    "createdAt": "2022-06-20T22:58:52.535Z",
+                    "lastModifiedAt": "2022-06-20T22:58:54.871Z",
+                    "lastModifiedBy": {
+                        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 30765,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "plugin_v2",
+                        "method": "plugin",
+                        "name": {
+                            "en": "plugin_v2"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "3d81c9ea-bb2e-47d3-9a80-07a37fa7dd96"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "Klarna",
+                            "transaction_card_expiry": "",
+                            "user_agent_string": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1",
+                            "avs_result": "N/A",
+                            "auth_number": "",
+                            "user_ip_address": "2001:56a:f86a:0:cc9:11cb:c757:7702",
+                            "transaction_card_type": "klarna",
+                            "transaction_time": "225850",
+                            "bin": "N/A",
+                            "transaction_date": "20220620"
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "paid",
+                        "interfaceText": "paid"
+                    },
+                    "transactions": [
+                        {
+                            "id": "baa1fe4c-288c-45c5-82bb-39390a44f9b4",
+                            "timestamp": "2022-06-20T22:58:53.000Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 30765,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "8e23534b-60ba-4e74-841b-12f17568c3c7",
+                            "state": "Success"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            }
+        ]
+    },
+    "billingAddress": {
+        "firstName": "Ibrahim",
+        "lastName": "Alqalami",
+        "streetName": "Unit 804 - 10141 124St NW",
+        "postalCode": "T5N 1R3",
+        "city": "Edmonton",
+        "state": "AB",
+        "country": "CA",
+        "phone": "6472922224",
+        "email": "ibrahimqalamchy@harryrosen.com",
+        "additionalAddressInfo": "804"
+    },
+    "itemShippingAddresses": [
+        {
+            "firstName": "Ibrahim",
+            "lastName": "Alqalami",
+            "streetName": "Unit 804 - 10141 124St NW",
+            "postalCode": "T5N 1R3",
+            "city": "Edmonton",
+            "state": "AB",
+            "country": "CA",
+            "phone": "6472922224",
+            "email": "ibrahimqalamchy@harryrosen.com",
+            "additionalAddressInfo": "804",
+            "key": "fa0b95f1-c3b8-45cc-a340-feee0e999fad"
+        }
+    ],
+    "refusedGifts": []
+}

@@ -120,7 +120,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('../orders').Ord
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.SALESPERSON_ID]: (order.custom.fields.userEmailDomain === 'harryrosen.com' || !lineItem.custom.fields.salespersonId)
-    ? '999'
+    ? 999
     : lineItem.custom.fields.salespersonId,
   [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
 })
