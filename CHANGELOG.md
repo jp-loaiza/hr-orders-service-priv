@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.0.1...v1.1.0) (2022-07-21)
+
+
+### Features
+
+* **hrc-5915:** add fully discounted orders ([9abdb64](https://github.com/HarryRosen/hr-orders-service/commit/9abdb645e2f22351c3df707aae8caad11f5b3134))
+* **order csv:** set commerceTools salespersonId for harryrosen staff purchases ([c332451](https://github.com/HarryRosen/hr-orders-service/commit/c332451afed2ee7ba191c45564cc70640ead335a))
+
+
+### Bug Fixes
+
+* **hrc-5915:** fix csv creation ([94b6fdc](https://github.com/HarryRosen/hr-orders-service/commit/94b6fdcbddcf73c374101315c373e674c2306436))
+* **hrc-5915:** remove ajv payments validation ([7b91dd0](https://github.com/HarryRosen/hr-orders-service/commit/7b91dd08cc86dbefdabe1d6157befe036454fa93))
+
 ## [1.0.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.0.0...v1.0.1) (2022-07-21)
 
 
