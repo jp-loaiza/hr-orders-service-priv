@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.0.0...v1.0.1) (2022-07-21)
+
+
+### Bug Fixes
+
+* checking out code during image build ([30a0db7](https://github.com/HarryRosen/hr-orders-service/commit/30a0db7a36ac62401f3e2ed3c9bec0534825629b))
+
 ## [1.0.0](https://github.com/HarryRosen/hr-orders-service/compare/v0.1.1-prerelease1...v1.0.0) (2022-07-21)
 
 
