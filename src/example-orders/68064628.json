@@ -1,0 +1,759 @@
+{
+    "type": "Order",
+    "id": "21ee8271-aae2-4838-ac0c-ae9e420ebf9e",
+    "version": 93,
+    "lastMessageSequenceNumber": 10,
+    "createdAt": "2022-06-20T23:56:16.588Z",
+    "lastModifiedAt": "2022-06-21T14:42:58.028Z",
+    "lastModifiedBy": {
+        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+        "isPlatformClient": false
+    },
+    "orderNumber": "68064628",
+    "customerId": "196a31a0-0021-48bf-8ff1-3c4e1833497d",
+    "customerEmail": "jsarmel@rogers.com",
+    "customerGroup": {
+        "typeId": "customer-group",
+        "id": "bd585ced-0b38-4543-aedd-3068159d897e"
+    },
+    "locale": "en-CA",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "CAD",
+        "centAmount": 13299,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 13299,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 15028,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.13,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 1729,
+                    "fractionDigits": 2
+                },
+                "name": "HST"
+            }
+        ],
+        "totalTax": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 1729,
+            "fractionDigits": 2
+        }
+    },
+    "country": "CA",
+    "orderState": "Confirmed",
+    "shipmentState": "Pending",
+    "paymentState": "Paid",
+    "syncInfo": [],
+    "returnInfo": [],
+    "state": {
+        "typeId": "state",
+        "id": "9f7bc955-f31f-4bdc-8b2d-1c6a823fc6ba"
+    },
+    "taxMode": "ExternalAmount",
+    "inventoryMode": "None",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "origin": "Customer",
+    "shippingInfo": {
+        "shippingMethodName": "Standard",
+        "price": {
+            "type": "centPrecision",
+            "currencyCode": "CAD",
+            "centAmount": 0,
+            "fractionDigits": 2
+        },
+        "shippingRate": {
+            "price": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "tiers": []
+        },
+        "taxRate": {
+            "name": "",
+            "amount": 0.13,
+            "includedInPrice": false,
+            "country": "CA",
+            "subRates": [
+                {
+                    "name": "HST",
+                    "amount": 0.13
+                }
+            ]
+        },
+        "deliveries": [],
+        "taxedPrice": {
+            "totalNet": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "totalGross": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "totalTax": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            }
+        },
+        "shippingMethodState": "MatchesCart"
+    },
+    "shippingAddress": {
+        "firstName": "Jeffrey",
+        "lastName": "Armel",
+        "streetName": "186 Worth Blvd.",
+        "postalCode": "L4J 7V6",
+        "city": "Thornhill",
+        "state": "ON",
+        "country": "CA",
+        "phone": "4163575799",
+        "email": "jsarmel@rogers.com",
+        "key": "bce8ee7e-d89d-4f17-98b4-dcb64f687bae"
+    },
+    "lineItems": [
+        {
+            "id": "18b0a693-333c-464e-bc3a-d1958ae65e8e",
+            "productId": "fb429563-3ff0-4325-a802-77dfd718f0a6",
+            "productKey": "20090342037",
+            "name": {
+                "en-CA": "Short-Sleeve Floral Cotton Shirt",
+                "fr-CA": "Chemise en coton à motif floral et à manches courtes"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "2dc01154-c743-4d36-8d4a-71b1504bfe3b"
+            },
+            "productSlug": {
+                "en-CA": "20090342037",
+                "fr-CA": "20090342037"
+            },
+            "variant": {
+                "id": 6,
+                "sku": "-3864355",
+                "prices": [
+                    {
+                        "id": "159067e3-5b03-4606-ba85-7d65599d375b",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 13299,
+                            "fractionDigits": 2
+                        },
+                        "country": "CA",
+                        "custom": {
+                            "type": {
+                                "typeId": "type",
+                                "id": "493275e3-23ad-492c-9ed1-7a174ad43182"
+                            },
+                            "fields": {
+                                "priceType": "permanentMarkdown",
+                                "processDateCreated": "2022-06-10T19:38:28.000Z",
+                                "priceChangeId": "6392"
+                            }
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://i1.adis.ws/i/harryrosen/20090342037?$prp-4col-xl$",
+                        "dimensions": {
+                            "w": 242,
+                            "h": 288
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "barcodes",
+                        "value": [
+                            {
+                                "typeId": "key-value-document",
+                                "id": "c99281a1-c565-45c3-a00a-ff7650ed91a8",
+                                "obj": {
+                                    "id": "c99281a1-c565-45c3-a00a-ff7650ed91a8",
+                                    "version": 58,
+                                    "versionModifiedAt": "2022-07-21T11:37:47.453Z",
+                                    "createdAt": "2022-01-19T05:05:31.756Z",
+                                    "lastModifiedAt": "2022-07-21T11:37:47.453Z",
+                                    "lastModifiedBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "createdBy": {
+                                        "clientId": "mF5cOLalhe4mwAVLsrsAunl9",
+                                        "isPlatformClient": false
+                                    },
+                                    "container": "barcodes",
+                                    "key": "89996058-05",
+                                    "value": {
+                                        "lastModifiedDate": 1658403144000,
+                                        "barcode": "89996058-05",
+                                        "subType": "UPCE",
+                                        "skuId": "-3864355",
+                                        "styleId": "20090342037",
+                                        "effectiveAt": "1970-01-01T05:00:00.000Z",
+                                        "expiresAt": "+010000-01-01T04:59:59.000Z",
+                                        "id": "89996058-05"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "colorId",
+                        "value": "037"
+                    },
+                    {
+                        "name": "skuLastModifiedInternal",
+                        "value": "2022-04-01T14:40:57.000Z"
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-CA": "S",
+                            "fr-CA": "P"
+                        }
+                    },
+                    {
+                        "name": "sizeId",
+                        "value": "180"
+                    },
+                    {
+                        "name": "brandName",
+                        "value": {
+                            "en-CA": "JOOP!",
+                            "fr-CA": "JOOP!"
+                        }
+                    },
+                    {
+                        "name": "construction",
+                        "value": {
+                            "en-CA": "<li> Notch collar\n<li> Button placket\n<li> Short sleeves\n<li> Side vents\n<li> Patch logo left seam \n<li> Made in Europe",
+                            "fr-CA": "<li> Col cranté\n<li> Patte boutonnée\n<li> Manches courtes\n<li> Fentes latérales\n<li> Écusson de marque sur la couture gauche\n<li> Fabriquée en Europe"
+                        }
+                    },
+                    {
+                        "name": "fabricAndMaterials",
+                        "value": {
+                            "en-CA": "<li> 100% cotton\n<li> Flower pattern\n<li> Green, white",
+                            "fr-CA": "<li> 100 % coton\n<li> Motif floral\n<li> Vert et blanc\n"
+                        }
+                    },
+                    {
+                        "name": "styleAndMeasurements",
+                        "value": {
+                            "en-CA": "<li> Contemporary fit\n",
+                            "fr-CA": "<li> Coupe contemporaine\n"
+                        }
+                    },
+                    {
+                        "name": "careInstructions",
+                        "value": {
+                            "en-CA": "<li> Machine wash, cold\n<li> Do not tumble dry\n<li> Iron, medium\n<li> Dry clean safe",
+                            "fr-CA": "<li> Laver à la machine à l’eau froide\n<li> Ne pas sécher par culbutage\n<li> Repasser à température moyenne\n<li> Nettoyage à sec possible\n"
+                        }
+                    },
+                    {
+                        "name": "advice",
+                        "value": {
+                            "en-CA": "",
+                            "fr-CA": ""
+                        }
+                    },
+                    {
+                        "name": "colour",
+                        "value": {
+                            "en-CA": "Green",
+                            "fr-CA": "Vert"
+                        }
+                    },
+                    {
+                        "name": "colourGroup",
+                        "value": {
+                            "en-CA": "Green",
+                            "fr-CA": "Vert"
+                        }
+                    },
+                    {
+                        "name": "webStatus",
+                        "value": true
+                    },
+                    {
+                        "name": "season",
+                        "value": "SP-22"
+                    },
+                    {
+                        "name": "originalPrice",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "CAD",
+                            "centAmount": 17800,
+                            "fractionDigits": 2
+                        }
+                    },
+                    {
+                        "name": "vsn",
+                        "value": "30031212"
+                    },
+                    {
+                        "name": "sizeChart",
+                        "value": 3
+                    },
+                    {
+                        "name": "isEndlessAisle",
+                        "value": false
+                    },
+                    {
+                        "name": "isReturnable",
+                        "value": true
+                    },
+                    {
+                        "name": "relatedProductId",
+                        "value": "30031212351734JOOP!"
+                    },
+                    {
+                        "name": "styleLastModifiedInternal",
+                        "value": "2022-06-20T14:07:02.000Z"
+                    },
+                    {
+                        "name": "onSale",
+                        "value": true
+                    },
+                    {
+                        "name": "brandId",
+                        "value": "1"
+                    },
+                    {
+                        "name": "isOutlet",
+                        "value": false
+                    },
+                    {
+                        "name": "is997",
+                        "value": false
+                    },
+                    {
+                        "name": "styleOutletLastModifiedInternal",
+                        "value": "2022-06-20T06:19:07.000Z"
+                    },
+                    {
+                        "name": "hasOnlineAts",
+                        "value": true
+                    }
+                ],
+                "assets": []
+            },
+            "price": {
+                "id": "159067e3-5b03-4606-ba85-7d65599d375b",
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 13299,
+                    "fractionDigits": 2
+                },
+                "country": "CA",
+                "custom": {
+                    "type": {
+                        "typeId": "type",
+                        "id": "493275e3-23ad-492c-9ed1-7a174ad43182"
+                    },
+                    "fields": {
+                        "priceType": "permanentMarkdown",
+                        "processDateCreated": "2022-06-10T19:38:28.000Z",
+                        "priceChangeId": "6392"
+                    }
+                }
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [],
+            "taxRate": {
+                "name": "",
+                "amount": 0.13,
+                "includedInPrice": false,
+                "country": "CA",
+                "subRates": [
+                    {
+                        "name": "HST",
+                        "amount": 0.13
+                    }
+                ]
+            },
+            "addedAt": "2022-06-20T15:28:00.274Z",
+            "lastModifiedAt": "2022-06-20T23:56:16.402Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "bf63e3e1-9706-4006-80a9-f2b597091676"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "lineItemMode": "Standard",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 13299,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 13299,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 15028,
+                    "fractionDigits": 2
+                },
+                "totalTax": {
+                    "type": "centPrecision",
+                    "currencyCode": "CAD",
+                    "centAmount": 1729,
+                    "fractionDigits": 2
+                }
+            },
+            "custom": {
+                "type": {
+                    "typeId": "type",
+                    "id": "71f02695-a9b5-4f17-97ff-ccf3c78b66f3"
+                },
+                "fields": {
+                    "itemTaxes": "{\"HST\":17.2887}",
+                    "isGift": false,
+                    "size": "S",
+                    "orderDetailLastModifiedDate": "2022-06-21T14:42:05.000Z",
+                    "reasonCode": "",
+                    "lineNumber": 1,
+                    "category": "Sport Shirts",
+                    "unitPrice": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 13299,
+                        "fractionDigits": 2
+                    },
+                    "quantityCancelled": 0,
+                    "algoliaAnalyticsData": {
+                        "typeId": "key-value-document",
+                        "id": "d37149d0-e02d-49b8-8281-ae5edc4cd87c",
+                        "obj": {
+                            "id": "d37149d0-e02d-49b8-8281-ae5edc4cd87c",
+                            "version": 1,
+                            "createdAt": "2022-06-20T15:05:19.447Z",
+                            "lastModifiedAt": "2022-06-20T15:05:19.447Z",
+                            "lastModifiedBy": {
+                                "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                                "isPlatformClient": false
+                            },
+                            "createdBy": {
+                                "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                                "isPlatformClient": false
+                            },
+                            "container": "algolia-analytics",
+                            "key": "algolia-analytics-20090342037-3864355-424db989acc573935dda7888d86e17e0",
+                            "value": {
+                                "userToken": "anonymous-ca3f5125-f9cb-4023-9711-c54178c99ae0",
+                                "index": "styles_production_consumer",
+                                "eventName": "purchase",
+                                "queryID": "424db989acc573935dda7888d86e17e0",
+                                "objectIDs": [
+                                    "20090342037"
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "shippingDetails": {
+                "targets": [
+                    {
+                        "addressKey": "bce8ee7e-d89d-4f17-98b4-dcb64f687bae",
+                        "quantity": 1
+                    }
+                ],
+                "valid": true
+            }
+        }
+    ],
+    "customLineItems": [],
+    "transactionFee": true,
+    "discountCodes": [],
+    "directDiscounts": [],
+    "cart": {
+        "typeId": "cart",
+        "id": "d878f5ba-a674-44bf-951d-1dbc57043ee9"
+    },
+    "custom": {
+        "type": {
+            "typeId": "type",
+            "id": "1666bac6-7c71-418d-9dbe-e3d15ab07c9a"
+        },
+        "fields": {
+            "orderDate": "2022-06-20T23:56:00.000Z",
+            "shipments": [
+                {
+                    "typeId": "key-value-document",
+                    "id": "45061f88-329a-4c60-a504-385c424bbdc3"
+                }
+            ],
+            "orderLastModifiedDate": "2022-06-21T14:42:05.000Z",
+            "sentToAlgoliaStatus": "SUCCESS",
+            "dynamicYieldData": {
+                "typeId": "key-value-document",
+                "id": "68d64408-e620-46c7-9e23-4935b8332a0d",
+                "obj": {
+                    "id": "68d64408-e620-46c7-9e23-4935b8332a0d",
+                    "version": 1,
+                    "createdAt": "2022-06-20T23:53:04.112Z",
+                    "lastModifiedAt": "2022-06-20T23:53:04.112Z",
+                    "lastModifiedBy": {
+                        "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "rOt-hy9-M46i3mHvSYfayoOH",
+                        "isPlatformClient": false
+                    },
+                    "container": "dynamic-yield-purchase",
+                    "key": "dy-purchase--d878f5ba-a674-44bf-951d-1dbc57043ee9-4908923810237933765--1atkfhu940xfsm2oxq7mconedr0ozrdd",
+                    "value": {
+                        "user": {
+                            "dyid": "4908923810237933765",
+                            "dyid_server": "4908923810237933765"
+                        },
+                        "session": {
+                            "dy": "1atkfhu940xfsm2oxq7mconedr0ozrdd"
+                        }
+                    }
+                }
+            },
+            "sentToDynamicYieldStatus": "SUCCESS",
+            "cartSourceSessionData": "eyJzb3VyY2VXZWJzaXRlVXJsIjoid3d3LmhhcnJ5cm9zZW4uY29tIiwic291cmNlV2Vic2l0ZUxhbmciOiIvZW4iLCJjb29raWVzIjoiV0NYU0lEX2V4cGlyeT0xNjU1NzY5MTE2NDA0OyBjT2JfPWZiNDI5NTYzLTNmZjAtNDMyNS1hODAyLTc3ZGZkNzE4ZjBhNl9fNi1fLTIwMDkwMzQyMDM3LV8tU2hvcnQtU2xlZXZlIEZsb3JhbCBDb3R0b24gU2hpcnQtXy1TcG9ydCBTaGlydHMtXy1HcmVlbi1fLUpPT1AhLV8tUy1fLTEzMi45OTsgX2RkX3M9bG9ncz0xJmlkPThmMDNjZmU1LTY2ZTEtNGNhNy1iM2YyLWQxMTg1YmEzNmYxOCZjcmVhdGVkPTE2NTU3Njg5MDI3NTkmZXhwaXJlPTE2NTU3NzAwMTU5MTMmcnVtPTE7IGFqc19hbm9ueW1vdXNfaWQ9MGU0N2MxYjAtZDY0MC00NjZmLWE2YjUtZDNjYjc0ZTJiZDA3OyBQRVJTT05JRlk9MTY1NTY1NjkzODUwMC1lZDE1ODI0Yy04MmY3LTk1YTYtYjBiYS04NzIzYTdmZWVkMTk7IF9mYnA9ZmIuMC4xNjU1NjU2OTM2OTU2LjExNzg4Mzk5OTg7IF9nYT1HQTEuMi42MTUxMDU0NDEuMTY1NTY1NjkzNzsgX2dpZD1HQTEuMi4yMTEwNzEzMzMzLjE2NTU2NTY5Mzc7IGNqVXNlcj1jODg3YTBhOC05MDVkLTRjOTYtYmJhMi0yMDllOTQ4YTAzM2E7IGV4dG9sZV9hY2Nlc3NfdG9rZW49MUU1OUdUNlNITDA4OVZJRk1MUVNERE8zUEY7IGxyX2VtYWlsPWM4OTE5OTBkMjdhYzBlYjEyOTE4ZGRjNmE0NmIwMDcyZmFhYmQ0NDIyMmFiYzNiMDQ3OWE1ZWQxMmRkZGZmY2Y7IGxyX3VpZD1hOWNiNmRkZjA4NzQ0NzZjYTA0YjVjZDVmYzY0ZjQ4Zjsgc3RpbWdzPXslMjJzZXNzaW9uSWQlMjI6Njc3NzU0MTYlMkMlMjJkaWRSZXBvcnRDYW1lcmFJbXByZXNzaW9uJTIyOmZhbHNlJTJDJTIybmV3VXNlciUyMjpmYWxzZX07IGFhaXM9YjFiYjU2YTYtNjE3NS00N2Q5LTllNTMtMmM3YmQ1ZTkwOGQ1OyBwZXJzb25hbGlzYXRpb25fc2Vzc2lvbl9za3VzX2xzPXslMjI2Nzc3NTQxNiUyMjpbJTIyMjAwOTAzNDIwMzclMjIlMkMlMjIyMDA5MDMyNzAzNyUyMiUyQyUyMjIwMDgzNjczMDQ3JTIyJTJDJTIyMjAwODM2NzUwNDYlMjIlMkMlMjIyMDA4MzMwMTAzNyUyMl19OyBfZHlpZF9zZXJ2ZXI9NDkwODkyMzgxMDIzNzkzMzc2NTsgX2R5anNlc3Npb249MWF0a2ZodTk0MHhmc20yb3hxN21jb25lZHIwb3pyZGQ7IF9nYXRfVUEtNTIwNTM1OC0zPTE7IGxvZ2dseXRyYWNraW5nc2Vzc2lvbj0xMjhjMjZlYi00ZDMwLTQ4NjEtYTAxMi1jOTUyNDkzYjcwZGM7IGhyX3Rva2VuX2V4cGlyeT0yMDIyLTA2LTIxVDAwJTNBMDMlM0EzNC40MTRaOyBfX3psY21pZD0xQVpsMTA5dThQOGFrV247IF90dF9lbmFibGVfY29va2llPTE7IF90dHA9NjJiZDRjMmQtZmUwNC00OTM3LWEwOGMtODA3NWQ2MWJhZmU2OyBrdTEtc2lkPWhiSkRkMTA4RXV3QzdRMjBIaVVrVjsga3UxLXZpZD1jODIzMzUzMi00ZTZmLTc5OTYtMDBkMi1iMmNmMmYyOTRjZTU7IHN5dGVfdXVpZD1jN2U3OTJhMC1lZmVlLTExZWMtYWQ1Yi02YjBiMjU5MTQwYWE7IF9keV9kZl9nZW89Q2FuYWRhLi5Ub3JvbnRvOyBfZHlfZ2VvPUNBLk5BLkNBX09OLkNBX09OX1Rvcm9udG87IF9keV90b2Zmc2V0PS0xOyBfZHljc3Q9ZGsubS5zLm1zLjsgX2R5aWQ9NDkwODkyMzgxMDIzNzkzMzc2NTsgX2R5Y25zdD1kZzsgY3RvX2J1bmRsZT1rbE9WQmw5U2VXaFJaelJDVm1OQ2RtSjFUblpZV2xsWlREaG9Ra2xMTkhCNlRuTlRUR0ZZYVVaRmRFRjNhRFVsTWtac2VIcHhlWEpGV1daTWNrVlBUR2RuTmxkMlFWRXdlVUZ3YnlVeVFuUklkVk5OVW5sME4xWkRhMVZFWjBab1RuWkpiMFV4TTFwQlp6Vm5UMUprWTFCSmNWQnBjVVJVUzFvMmNtRTRTamxTWVRVeVJGVXhkVE07IDU0OTMwMDAwfEhSX2Nsb2dpbj1sPTE2NTc4MzgxNjU1NzY4OTAyOTkyJnY9MyZlPTE2NTU3NzA3MDM2Njk7IF9waW5fdW5hdXRoPWRXbGtQVTVYVVRSTmVsRXhUVWRGZEUxVVFtcE9lVEF3V1RKR2FVeFVaekZPYWtWMFdWUlJkMDVxUm0xYVIxRXpUWHBPYXc7IGF1dG9tYXQtcG9wdXA9eyUyMnRpbWVzU2VlbiUyMjowJTJDJTIydGltZUxlZnQlMjI6bnVsbH07IGNtVFBTZXQ9WTsgX2R5X2NfYXR0X2V4cHM9OyBfZHlfY19leHBzPTsgX2R5X2NzY19zZXM9MWF0a2ZodTk0MHhmc20yb3hxN21jb25lZHIwb3pyZGQ7IF9keV9zb2N0PTU1MzQwOS4xMDY3NTk5LjE2NTU3Njg5MDIqNjA3Mzc5LjExNzI3NDMuMTY1NTcyODMyOC4xYXRrZmh1OTQweGZzbTJveHE3bWNvbmVkcjBvenJkZCo2MDczNzkuMTE3Mjc0NC4xNjU1NzY4OTAxLjFhdGtmaHU5NDB4ZnNtMm94cTdtY29uZWRyMG96cmRkOyBfZHlqc2Vzc2lvbj0xYXRrZmh1OTQweGZzbTJveHE3bWNvbmVkcjBvenJkZDsgV0NYU0lEPTAwMDAxNjU3ODM4MTY1NTc2ODkwMjk5MjU0OTMwMDAwOyBzeXRlX2FiX3Rlc3RzPXt9OyBnaXNjYWxsdXNlcnV1aWQ9dm8wZDRodnEteG51Mi15NmtoLWVvbWMtZXhkOWNkY2VpZGlrOyBfc2N0cj0xfDE2NTU2MTEyMDAwMDA7IF9fcWNhPVAwLTg5ODMwMjU5OS0xNjU1NjU2OTM3NzExOyBjakNvbnNlbnQ9TUh4T2ZEQjhUbnd3OyBfc2NpZD1kM2JhOTdmNi0zNGE0LTRlNWItYjBiOC0xYjE2MzM3MGZiZDc7IENvcmVJRDY9ODU0MzE0MTQxMDQ2MTY1NTY1NjkzNjgmY2k9NTQ5MzAwMDB8SFI7IGFhaWlkPTdmYjhiMWE4LTg4NWItNDI1YS05YmVlLTJhMjgyMTdjN2Y4OTsgYWFpajR1PXslMjJuYW1lJTIyOiUyMiUyMn07IGFhaW1idjI9eyUyMmxhc3ROb3RpZmllZCUyMjowJTJDJTIyc3VwcHJlc3MlMjI6ZmFsc2V9OyBodGc9MDpMZWdhY3k7IFdDWFVJRD01MDY3ODYxNzU2NTcxNjU1NjU2OTM1MzsgX0FMR09MSUE9YW5vbnltb3VzLTYwOTFiMTI2LWM5MGEtNDUxNy1iMDA2LTg1YTg0ZWI5Y2ZlOTsgX2djbF9hdT0xLjEuMTQ3Mzc0NTk0MC4xNjU1NjU2OTM2OyBhc2hfYXV0b21hdF9haT17JTIydXNlcklkJTIyOiUyMmMxMDI4Mjc1LTUwY2YtNDE5Mi04NWQ1LTkxYjlkZWExZGU0NSUyMn0iLCJjb29raWVEb21haW5zSGFuZGxlZCI6dHJ1ZX0=",
+            "narvarLastSuccessTime": "2022-06-21T14:42:51.355Z",
+            "sentToCrmStatus": "SUCCESS",
+            "sentToOmsStatus": "SUCCESS",
+            "cartClaimed": true,
+            "payment_gateway_shipping_method": "lowcost",
+            "narvarStatus": "SUCCESS",
+            "shippingTax2": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "userEmailDomain": "rogers.com",
+            "cartSourceWebsite": "00990",
+            "shippingTax1": {
+                "type": "centPrecision",
+                "currencyCode": "CAD",
+                "centAmount": 0,
+                "fractionDigits": 2
+            },
+            "termsAndConditionsAccepted": true,
+            "shippingTaxes": "{\"HST\":0}",
+            "orderCreatedDate": "2022-06-20T23:56:32.000Z",
+            "loginRadiusUid": "a9cb6ddf0874476ca04b5cd5fc64f48f"
+        }
+    },
+    "paymentInfo": {
+        "payments": [
+            {
+                "typeId": "payment",
+                "id": "3863670a-47c2-4f78-bff7-ea051d7c036d",
+                "obj": {
+                    "id": "3863670a-47c2-4f78-bff7-ea051d7c036d",
+                    "version": 5,
+                    "lastMessageSequenceNumber": 2,
+                    "createdAt": "2022-06-20T23:56:16.125Z",
+                    "lastModifiedAt": "2022-06-20T23:56:19.513Z",
+                    "lastModifiedBy": {
+                        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 10000,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "plugin_v2",
+                        "method": "plugin",
+                        "name": {
+                            "en": "plugin_v2"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "3d81c9ea-bb2e-47d3-9a80-07a37fa7dd96"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "Giftcard #431847",
+                            "transaction_card_expiry": "",
+                            "user_agent_string": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15",
+                            "avs_result": "N/A",
+                            "auth_number": "",
+                            "user_ip_address": "2607:fea8:3f01:af00:44bb:fd4a:be:d617",
+                            "transaction_card_type": "Harry Rosen Giftcard",
+                            "transaction_time": "235611",
+                            "bin": "N/A",
+                            "transaction_date": "20220620"
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "paid",
+                        "interfaceText": "paid"
+                    },
+                    "transactions": [
+                        {
+                            "id": "211f1345-3bb8-4613-9a28-811325e7c2fa",
+                            "timestamp": "2022-06-20T23:56:17.000Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 10000,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "GR48910211",
+                            "state": "Success"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            },
+            {
+                "typeId": "payment",
+                "id": "92ce5cbe-df5e-49ff-b92d-6b9b6e4fb67d",
+                "obj": {
+                    "id": "92ce5cbe-df5e-49ff-b92d-6b9b6e4fb67d",
+                    "version": 5,
+                    "lastMessageSequenceNumber": 2,
+                    "createdAt": "2022-06-20T23:56:16.179Z",
+                    "lastModifiedAt": "2022-06-20T23:56:20.356Z",
+                    "lastModifiedBy": {
+                        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+                        "isPlatformClient": false
+                    },
+                    "createdBy": {
+                        "clientId": "Q7Ct9f3B8iSG-DCGSOj3uk_8",
+                        "isPlatformClient": false
+                    },
+                    "amountPlanned": {
+                        "type": "centPrecision",
+                        "currencyCode": "CAD",
+                        "centAmount": 5028,
+                        "fractionDigits": 2
+                    },
+                    "paymentMethodInfo": {
+                        "paymentInterface": "braintree",
+                        "method": "credit",
+                        "name": {
+                            "en": "Braintree : braintree"
+                        }
+                    },
+                    "custom": {
+                        "type": {
+                            "typeId": "type",
+                            "id": "3d81c9ea-bb2e-47d3-9a80-07a37fa7dd96"
+                        },
+                        "fields": {
+                            "transaction_card_last4": "1008",
+                            "transaction_card_expiry": "06/2026",
+                            "user_agent_string": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15",
+                            "avs_result": "",
+                            "auth_number": "124144",
+                            "user_ip_address": "2607:fea8:3f01:af00:44bb:fd4a:be:d617",
+                            "transaction_card_type": "American Express",
+                            "transaction_time": "235613",
+                            "bin": "379858",
+                            "transaction_date": "20220620"
+                        }
+                    },
+                    "paymentStatus": {
+                        "interfaceCode": "paid",
+                        "interfaceText": "paid"
+                    },
+                    "transactions": [
+                        {
+                            "id": "b0e50505-0a3c-47ad-9675-b100b0ab2882",
+                            "timestamp": "2022-06-20T23:56:18.000Z",
+                            "type": "Charge",
+                            "amount": {
+                                "type": "centPrecision",
+                                "currencyCode": "CAD",
+                                "centAmount": 5028,
+                                "fractionDigits": 2
+                            },
+                            "interactionId": "ce2e1syn",
+                            "state": "Success"
+                        }
+                    ],
+                    "interfaceInteractions": []
+                }
+            }
+        ]
+    },
+    "billingAddress": {
+        "firstName": "Jeffrey",
+        "lastName": "Armel",
+        "streetName": "186 Worth Blvd.",
+        "postalCode": "L4J 7V6",
+        "city": "Thornhill",
+        "state": "ON",
+        "country": "CA",
+        "phone": "4163575799",
+        "email": "jsarmel@rogers.com"
+    },
+    "itemShippingAddresses": [
+        {
+            "firstName": "Jeffrey",
+            "lastName": "Armel",
+            "streetName": "186 Worth Blvd.",
+            "postalCode": "L4J 7V6",
+            "city": "Thornhill",
+            "state": "ON",
+            "country": "CA",
+            "phone": "4163575799",
+            "email": "jsarmel@rogers.com",
+            "key": "bce8ee7e-d89d-4f17-98b4-dcb64f687bae"
+        }
+    ],
+    "refusedGifts": []
+}
