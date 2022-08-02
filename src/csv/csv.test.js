@@ -180,7 +180,7 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
   })
 
   it('returns strings that match example CSVs that were processed correctly by JESTA', () => {
-    const exampleOrderNumbers = ['24600493', '24600955', '24839685', '24845933', '25068048', '24596603', '24738417', '24846490', '68064628', '68063034']
+    const exampleOrderNumbers = ['24600493', '24600955', '24839685', '24845933', '25068048', '24596603', '24738417', '24846490']
 
     for (const orderNumber of exampleOrderNumbers) {
       const rawOrderJson = readFileSync(path.join('src/example-orders', `${orderNumber}.json`), 'utf8')
