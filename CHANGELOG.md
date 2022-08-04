@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.0...v1.1.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* **hrc-6023:** fix issue with assigning 999 ([d2a6449](https://github.com/HarryRosen/hr-orders-service/commit/d2a6449cbea5bfbcd4a77fe0322045ca3c71ef27))
+* **hrc-6023:** revert salesPersonId changes ([897d8eb](https://github.com/HarryRosen/hr-orders-service/commit/897d8ebb6b42b10c0050ff18908d1caacdbacde8))
+
 ## [1.1.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.0.1...v1.1.0) (2022-07-21)
 
 
