@@ -180,5 +180,3 @@ Alternatively, for a one time setup, you can update the configuration of logDNA 
 
 ## Couldn't find key ... in ConfigMap default/hr-orders-service
 - Possibly a mismatch between enviroment variables set in `deploy.sh` and those defined in `deployment.yaml`. Make sure that, for each enviroment variable defined in `deployment.yaml`, there is a corresponding enviroment variable set in `deploy.sh`
-
-Test Change
