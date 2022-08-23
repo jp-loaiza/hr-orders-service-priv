@@ -331,6 +331,10 @@ const lineItemIsEndlessAisle = (/** @type {import('../orders').LineItem} */ line
   return endlessAisleAttribute ? endlessAisleAttribute.value : false 
 }
 
+const getDomainFromEmail = (/** @type {import('../orders').Order} */ order) => {
+  return order.customerEmail ? order.customerEmail.substring(order.customerEmail.indexOf('@') + 1) : ''
+}
+
 module.exports = {
   barcodeIsApplicable,
   convertAndFormatDate,
@@ -357,5 +361,6 @@ module.exports = {
   sumMoney,
   getPaymentReleasedStatus,
   getSignatureRequiredIndicator,
-  getFirstLastName
+  getFirstLastName,
+  getDomainFromEmail
 }

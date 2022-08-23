@@ -35,7 +35,8 @@ const {
   getPaymentReleasedStatus,
   getTaxTotalFromTaxedPrice,
   getFirstLastName,
-  lineItemIsEndlessAisle
+  lineItemIsEndlessAisle,
+  getDomainFromEmail
 } = require('./csv.utils')
 
 // The following group of functions turn the CT order object into objects that
@@ -119,7 +120,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('../orders').Ord
   [DETAILS_ROWS_ENUM.ENDLESS_AISLE_IND]: lineItemIsEndlessAisle(lineItem) ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.EXT_REF_ID]: lineItem.id,
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
-  [DETAILS_ROWS_ENUM.SALESPERSON_ID]: order.custom.fields.userEmailDomain === 'harryrosen.com'
+  [DETAILS_ROWS_ENUM.SALESPERSON_ID]: getDomainFromEmail(order) === 'harryrosen.com'
     ? 999
     : lineItem.custom.fields.salespersonId,
   [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
