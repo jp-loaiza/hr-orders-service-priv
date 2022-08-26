@@ -11,7 +11,7 @@ const {
 } = require('../commercetools/commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('../emails/email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('../constants')
-const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('../commercetools/LoginRadiusRepository.js')
+const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('../commercetools/LoginRadiusClient.js')
 
 const timeoutSymbol = Symbol('timeout')
 
