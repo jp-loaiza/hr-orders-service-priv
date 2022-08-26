@@ -40,8 +40,6 @@ const clientSecret = process.env.CT_CLIENT_SECRET
 
 const requestBuilder = createRequestBuilder({ projectKey })
 
-// const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('./LoginRadiusRepository')
-
 const ctClient = createClient({
   middlewares: [
     createAuthMiddlewareForClientCredentialsFlow({
