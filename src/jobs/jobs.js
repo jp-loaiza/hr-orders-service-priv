@@ -7,12 +7,11 @@ const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
   fetchStuckOrderResults,
-  getLoginRadiusIdforOrderEmail,
-  getMainAccountId,
   setOrderPrimaryemail
 } = require('../commercetools/commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('../emails/email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('../constants')
+const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('../commercetools/LoginRadiusClient.js')
 
 const timeoutSymbol = Symbol('timeout')
 
@@ -126,8 +125,8 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
       console.warn(`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`)
 
       stuckOrders.forEach(async order => {
-        try{const lrid = await getLoginRadiusIdforOrderEmail(order.customerEmail)
-          const primaryMail = await getMainAccountId(lrid)
+        try{const lrid = await getLoginRadiusIdforEmail(order.customerEmail)
+          const primaryMail = await getIdentityforLRUUID(lrid)
           if (primaryMail !== order.customerEmail) {
             setOrderPrimaryemail(order.id, primaryMail)
           }} catch(error ){

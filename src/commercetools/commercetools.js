@@ -40,8 +40,6 @@ const clientSecret = process.env.CT_CLIENT_SECRET
 
 const requestBuilder = createRequestBuilder({ projectKey })
 
-const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('./LoginRadiusRepository')
-
 const ctClient = createClient({
   middlewares: [
     createAuthMiddlewareForClientCredentialsFlow({
@@ -210,16 +208,6 @@ const setOrderPrimaryemail = async (orderId, emailId) => {
     ]
   })
   return ctClient.execute({ method: 'POST', uri, body })
-}
-/**
- * 
- */
-const getLoginRadiusIdforOrderEmail = async (email) => {
-  return getLoginRadiusIdforEmail(email)
-}
-
-const getMainAccountId = async (LRUUID) => {
-  return getIdentityforLRUUID(LRUUID)
 }
 
 /**
@@ -416,7 +404,6 @@ module.exports = {
   keepAliveRequest,
   fetchItemInfo,
   fetchCategoryInfo,
-  getLoginRadiusIdforOrderEmail,
-  getMainAccountId,
+
   setOrderPrimaryemail
 }
