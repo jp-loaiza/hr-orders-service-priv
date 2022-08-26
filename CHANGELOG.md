@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.2...v1.1.3) (2022-08-26)
+
+
+### Bug Fixes
+
+* refactored the file name to loginradiusclient ([16c2230](https://github.com/HarryRosen/hr-orders-service/commit/16c22303693a8e15f9bb9cacbdf733a8c826e8a2))
+* removed the comments in the file ([aa6d846](https://github.com/HarryRosen/hr-orders-service/commit/aa6d846e537821cbb954ea3dd3bec2a5b753f078))
+* to call LoginRadiusRepository from job.js  instead of calling Commercetools.js ([5fdf4e0](https://github.com/HarryRosen/hr-orders-service/commit/5fdf4e0038edca48fc94221471403ef67def16dc))
+
 ## [1.1.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.1...v1.1.2) (2022-08-23)
 
 
