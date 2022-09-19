@@ -6,12 +6,10 @@ const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynam
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
-  fetchStuckOrderResults,
-  setOrderPrimaryemail
+  fetchStuckOrderResults
 } = require('../commercetools/commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('../emails/email')
 const { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } = require('../constants')
-const {getLoginRadiusIdforEmail,getIdentityforLRUUID} = require('../commercetools/LoginRadiusClient.js')
 
 const timeoutSymbol = Symbol('timeout')
 
@@ -123,16 +121,6 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval) {
     if (stuckOrderCount > 0) {
       const stringifiedStuckOrderNumbersAndIds = stuckOrders.map(order => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
       console.warn(`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`)
-
-      stuckOrders.forEach(async order => {
-        try{const lrid = await getLoginRadiusIdforEmail(order.customerEmail)
-          const primaryMail = await getIdentityforLRUUID(lrid)
-          if (primaryMail !== order.customerEmail) {
-            setOrderPrimaryemail(order.id, primaryMail)
-          }} catch(error ){
-          console.log(' error while processing the stuck ordr '+order.id +'with error :'+ error);
-        }
-      })
 
     } else {
       console.log('No stuck orders')
