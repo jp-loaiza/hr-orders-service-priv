@@ -196,10 +196,6 @@ const fetchStuckOrderResults = async () => {
 }
 
 /**
- * 
- */
-
-/**
  * @param {import('../orders').Order} order
  * @param {string} statusField
  */
