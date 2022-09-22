@@ -195,21 +195,6 @@ const fetchStuckOrderResults = async () => {
   return (await ctClient.execute({ method: 'GET', uri })).body
 }
 
-const setOrderPrimaryemail = async (orderId, emailId) => {
-  const uri = requestBuilder.orders.byId(orderId).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-  const body = JSON.stringify({
-    version: version,
-    actions: [
-      {
-        action: 'setCustomerEmail',
-        email: emailId
-      }
-    ]
-  })
-  return ctClient.execute({ method: 'POST', uri, body })
-}
-
 /**
  * @param {import('../orders').Order} order
  * @param {string} statusField
@@ -403,7 +388,5 @@ module.exports = {
   setOrderSentToCrmStatus,
   keepAliveRequest,
   fetchItemInfo,
-  fetchCategoryInfo,
-
-  setOrderPrimaryemail
+  fetchCategoryInfo
 }
