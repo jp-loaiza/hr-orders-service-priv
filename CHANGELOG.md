@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.3...v1.1.4) (2022-09-22)
+
+
+### Bug Fixes
+
+* removed the commented lines ([bbe6874](https://github.com/HarryRosen/hr-orders-service/commit/bbe6874155c6bdda83dac3d4126c9e81fc30d0ee))
+* removed the logic for ensuring the correct emailid to csv ([7be3be1](https://github.com/HarryRosen/hr-orders-service/commit/7be3be13dad72f8d7c25bf34bd8a249345239294))
+
 ## [1.1.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.2...v1.1.3) (2022-08-26)
 
 
