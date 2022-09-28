@@ -282,3 +282,18 @@ spec:
             configMapKeyRef:
               key: SEND_NARVAR_ORDERS_INTERVAL
               name: hr-orders-service
+        - name: SHOULD_SEND_SEGMENT_ORDERS
+          valueFrom:
+            configMapKeyRef:
+              key: SHOULD_SEND_SEGMENT_ORDERS
+              name: hr-orders-service
+        - name: SEND_SEGMENT_ORDERS_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SEND_SEGMENT_ORDERS_INTERVAL
+              name: hr-orders-service
+        - name: SEGMENT_WRITE_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SEGMENT_WRITE_KEY
+              name: hr-orders-service

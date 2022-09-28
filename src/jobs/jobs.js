@@ -1,8 +1,8 @@
 
 require('dotenv').config()
 
-const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL, SEND_NARVAR_ORDERS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
-const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynamicYield, sendOrdersToNarvar, sendOrderUpdates, sleep, retry, startCjConversionJob } = require('./jobs.utils')
+const { ORDER_UPDATE_INTERVAL, ORDER_UPLOAD_INTERVAL, SEND_NOTIFICATIONS_INTERVAL, STUCK_ORDER_CHECK_INTERVAL, SEND_ALGOLIA_INFO_INTERVAL, SEND_CJ_CONVERSIONS_INTERVAL, SEND_DYNAMIC_YIELD_INFO_INTERVAL, SEND_NARVAR_ORDERS_INTERVAL, SEND_SEGMENT_ORDERS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
+const { createAndUploadCsvs, sendConversionsToAlgolia, sendPurchaseEventsToDynamicYield, sendOrdersToNarvar, sendOrderUpdates, sleep, retry, startCjConversionJob, sendOrdersToSegment } = require('./jobs.utils')
 const {
   fetchOrderIdsThatShouldBeSentToCrm,
   setOrderSentToCrmStatus,
@@ -178,6 +178,22 @@ async function sendOrdersToNarvarJob(sendToNarvarInterval) {
   }
 }
 
+/**
+ * @param {number} sendToSegmentInterval
+ */
+async function sendOrdersToSegmentJob(sendToSegmentInterval) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      await sendOrdersToSegment()
+    }
+    catch(error) {
+      console.error('Unable to send orders to Segment:', error)
+    }
+    await sleep(sendToSegmentInterval)
+  }
+}
+
 const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
 if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
@@ -240,6 +256,14 @@ if (shouldSendCjConversions) {
   console.log('Processing CJ job at interval: ', sendCjConversionsInterval)
   if (!(sendCjConversionsInterval > 0)) throw new Error('SEND_CJ_CONVERSIONS_INTERVAL must be a positive number')
   startCjConversionJob(sendCjConversionsInterval)
+}
+
+const shouldSendOrderSegment = process.env.SHOULD_SEND_SEGMENT_ORDERS === 'true'
+if (shouldSendOrderSegment) {
+  const sendToSegmentInterval = Number(SEND_SEGMENT_ORDERS_INTERVAL)
+  console.log('Processing Segment job at interval: ', sendToSegmentInterval)
+  if(!(sendToSegmentInterval > 0)) throw Error('SEND_SEGMENT_ORDERS_INTERVAL must be a positive number')
+  sendOrdersToSegmentJob(sendToSegmentInterval)
 }
 
 module.exports = {

@@ -16,6 +16,7 @@ const {
   SENT_TO_NARVAR_STATUSES,
   SENT_TO_CRM_STATUS,
   STATUS_FIELDS_TO_AVAILABLE_STATUSES,
+  SENT_TO_SEGMENT_STATUSES,
 } = require('../constants')
 
 dotenv.config()
@@ -368,6 +369,24 @@ const fetchCategoryInfo = async categoryIds => {
   return body.results
 }
 
+/**
+ * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
+ */
+const fetchOrdersToSendToSegment = async () => {
+  const now = new Date()
+  let oneWeekAgo = new Date()
+  oneWeekAgo.setDate(now.getDate() - 7)
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.LR_USER_ID} is defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined)) and (createdAt > "2022-03-27")`
+  // const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined))))`
+  const uri = requestBuilder.orders.where(query).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
+  return {
+    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    total: body.total
+  }
+}
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
@@ -388,5 +407,6 @@ module.exports = {
   setOrderSentToCrmStatus,
   keepAliveRequest,
   fetchItemInfo,
-  fetchCategoryInfo
+  fetchCategoryInfo,
+  fetchOrdersToSendToSegment
 }

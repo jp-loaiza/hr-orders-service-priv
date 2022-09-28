@@ -11,7 +11,8 @@ const {
   SENT_TO_ALGOLIA_STATUSES, 
   SENT_TO_CJ_STATUSES, 
   SENT_TO_DYNAMIC_YIELD_STATUSES, 
-  SENT_TO_NARVAR_STATUSES 
+  SENT_TO_NARVAR_STATUSES,
+  SENT_TO_SEGMENT_STATUSES 
 } = require('../constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
@@ -24,7 +25,8 @@ const {
   fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
   fetchOrdersThatShouldBeSentToNarvar,
   fetchStates,
-  fetchShipments
+  fetchShipments,
+  fetchOrdersToSendToSegment
 } = require('../commercetools/commercetools')
 const { sendOrderUpdateToJesta } = require('../jesta/jesta')
 const { generateCsvStringFromOrder } = require('../csv/csv')
@@ -34,6 +36,8 @@ const { sendManyConversionsToAlgolia, getConversionsFromOrder } = require('../al
 const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('../dynamicyield/dynamicYield')
 const { sendOrderConversionToCj } = require('../cj/cj')
 const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
+const { getOrderData } = require('../segment/segment')
+const { sendSegmentTrackCall } = require('../segment/segment.utils')
 
 /**
  *
@@ -356,6 +360,43 @@ const startCjConversionJob = createJob({
   statuses: SENT_TO_CJ_STATUSES
 })
 
+//Sending order events to Segment
+async function sendOrdersToSegment() {
+  const { orders, total } = await fetchOrdersToSendToSegment()
+  console.log(total > 0 ? `Sending purchase events to Segment. ${total} orders pending.`: 'No orders with purchase data to send to Segment.')
+
+  for (const order of orders) {
+    try {
+      const orderData = await getOrderData(order)
+      var eventName = ''
+      if (!order.custom.fields.segmentOrderState){
+        eventName = 'Order Created'
+        sendSegmentTrackCall(eventName, orderData.customer_id, orderData)
+        console.log(`Sent Segment Call for order: ${order.orderNumber}`)
+      }else if(order.orderState === 'Cancelled'){
+        eventName = 'Order Cancelled'
+        sendSegmentTrackCall(eventName, orderData.customer_id, orderData)
+        console.log(`Sent Segment Call for order: ${order.orderNumber}`)
+      }
+      else if(order.orderState !== order.custom.fields.segmentOrderState) {
+        eventName = 'Order Modified'
+        sendSegmentTrackCall(eventName, orderData.customer_id, orderData)
+        console.log(`Sent Segment Call for order: ${order.orderNumber}`)
+      }
+      await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_STATUS, SENT_TO_SEGMENT_STATUSES.SUCCESS)
+      await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_ORDER_STATE, orderData.order_state)
+    } catch (error) {
+      console.error(`Failed to send order event for order ${order.orderNumber}:`, error)
+      await retry(setOrderErrorFields)(order, error.message, true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.SEGMENT_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.SEGMENT_STATUS,
+      })
+    }
+    await sleep(100) // prevent Segment from getting overloaded
+  }
+}
+
 module.exports = {
   sleep,
   retry,
@@ -366,5 +407,6 @@ module.exports = {
   sendPurchaseEventsToDynamicYield,
   sendOrdersToNarvar,
   startCjConversionJob,
-  transformToOrderPayment
+  transformToOrderPayment,
+  sendOrdersToSegment
 }

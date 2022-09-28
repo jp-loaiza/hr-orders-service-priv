@@ -543,5 +543,10 @@ const convertOrderForNarvar = async (order, shipments, states) => {
 module.exports = {
   convertOrderForNarvar,
   sendToNarvar,
-  convertPickups
+  convertPickups,
+  convertShipments,
+  convertItems,
+  checkShipmentItemIdForNull,
+  checkShippedQuantity,
+  filterMissingTrackingNumberMessages
 }

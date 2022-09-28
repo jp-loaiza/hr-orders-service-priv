@@ -336,7 +336,8 @@ type Payment = {
         bin: string,
         transaction_card_expiry: string,
         transaction_card_last4: string,
-        transaction_card_type: Card
+        transaction_card_type: Card,
+        user_agent_string: string;      
       }
     },
     paymentStatus: {
@@ -361,7 +362,10 @@ type Order = {
   id: string,
   orderNumber: string,
   state: { typeId: string, id: string },
+  orderState: string | CommerceToolsOrderStates[],
+  shipmentState: string,
   createdAt: string,
+  lastModifiedAt: string,
   customerId?: string,
   anonymousId?: string,
   customerEmail: string,
@@ -415,7 +419,9 @@ type Order = {
       orderCreatedDate?: string,
       shippingTax1?: string,
       shippingTax2?: string,
-      reasonCode?: string
+      reasonCode?: string,
+      segmentLastSuccessTime?: string,
+      segmentOrderState?: string
     }
   }
 }
