@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.4...v1.2.0) (2022-09-28)
+
+
+### Features
+
+* CDP-3 -- Add Segment to `hr-orders-service` ([#412](https://github.com/HarryRosen/hr-orders-service/issues/412)) ([32de03d](https://github.com/HarryRosen/hr-orders-service/commit/32de03d8ac3090debb3d13ee969b7c5347fb923a))
+
 ## [1.1.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.3...v1.1.4) (2022-09-22)
 
 
