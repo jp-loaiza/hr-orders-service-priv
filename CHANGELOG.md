@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.0...v1.2.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* HRC-6074 - fixing query fields to CT ([#415](https://github.com/HarryRosen/hr-orders-service/issues/415)) ([406af89](https://github.com/HarryRosen/hr-orders-service/commit/406af897b855d569adb8a3c76d66774876e4923e))
+
 ## [1.2.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.1.4...v1.2.0) (2022-09-28)
 
 
