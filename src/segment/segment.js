@@ -40,7 +40,7 @@ const getOrderData = async (order) => {
     modified_at: order.lastModifiedAt,
     first_name: order.shippingAddress.firstName,
     last_name: order.shippingAddress.lastName,
-    customer_id: order.custom.fields.loginRadiusUid,
+    loginradius_id: order.custom.fields.loginRadiusUid,
     email: order.shippingAddress.email,
     phone_number: order.shippingAddress.phone,
     total: ((order.taxedPrice.totalNet.centAmount - order.shippingInfo.shippingRate.price.centAmount) / 100),
