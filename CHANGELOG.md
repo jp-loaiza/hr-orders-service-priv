@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.1...v1.2.2) (2022-10-27)
+
+
+### Bug Fixes
+
+* CDP-34: renamed customer_id to loginradius_id ([#417](https://github.com/HarryRosen/hr-orders-service/issues/417)) ([5a731c5](https://github.com/HarryRosen/hr-orders-service/commit/5a731c509f69d40b25fee613002ffc81b22c907c))
+
 ## [1.2.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.0...v1.2.1) (2022-10-03)
 
 
