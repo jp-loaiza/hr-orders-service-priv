@@ -37,7 +37,7 @@ const { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } = require('
 const { sendOrderConversionToCj } = require('../cj/cj')
 const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
 const { getOrderData } = require('../segment/segment')
-const { sendSegmentTrackCall } = require('../segment/segment.utils')
+const { sendSegmentTrackCall, sendSegmentIdentifyCall } = require('../segment/segment.utils')
 
 /**
  *
@@ -360,6 +360,16 @@ const startCjConversionJob = createJob({
   statuses: SENT_TO_CJ_STATUSES
 })
 
+const getIdentifyTraitsFromOrder = order => {
+  return { 
+    loginradius_id: order.loginradius_id,
+    email: order.email,
+    first_name: order.first_name,
+    last_name: order.last_name,
+    phone_number: order.phone_number,
+  }
+}
+
 //Sending order events to Segment
 async function sendOrdersToSegment() {
   const { orders, total } = await fetchOrdersToSendToSegment()
@@ -371,16 +381,17 @@ async function sendOrdersToSegment() {
       var eventName = ''
       if (!order.custom.fields.segmentOrderState){
         eventName = 'Order Created'
-        sendSegmentTrackCall(eventName, orderData.customer_id, orderData)
+        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
+        sendSegmentIdentifyCall(orderData.loginradius_id, getIdentifyTraitsFromOrder(orderData))
         console.log(`Sent Segment Call for order: ${order.orderNumber}`)
       }else if(order.orderState === 'Cancelled'){
         eventName = 'Order Cancelled'
-        sendSegmentTrackCall(eventName, orderData.customer_id, orderData)
+        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
         console.log(`Sent Segment Call for order: ${order.orderNumber}`)
       }
       else if(order.orderState !== order.custom.fields.segmentOrderState) {
         eventName = 'Order Modified'
-        sendSegmentTrackCall(eventName, orderData.customer_id, orderData)
+        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
         console.log(`Sent Segment Call for order: ${order.orderNumber}`)
       }
       await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_STATUS, SENT_TO_SEGMENT_STATUSES.SUCCESS)

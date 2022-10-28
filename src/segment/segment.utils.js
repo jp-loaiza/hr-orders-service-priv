@@ -19,16 +19,16 @@ const sendSegmentTrackCall = (eventName, userId, properties) => {
 }
 
 /**
- * @param {string} eventName
  * @param {string} userId
  * @param {object} properties
  */
 
-const sendSegmentIdentifyCall = (eventName, userId, properties) => {
-  analytics.track({
+const sendSegmentIdentifyCall = (userId, properties) => {
+  analytics.identify({
     userId: userId,
-    event: eventName,
-    properties: properties
+    traits: {
+      ...properties
+    }
   })
 }
 
