@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.2...v1.2.3) (2022-10-28)
+
+
+### Bug Fixes
+
+* CDP-34: Added Identify Calls for Order Created Events ([#419](https://github.com/HarryRosen/hr-orders-service/issues/419)) ([86da10b](https://github.com/HarryRosen/hr-orders-service/commit/86da10b7be3a1775b6c9ba1ecd48c9ee916dc84a))
+
 ## [1.2.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.1...v1.2.2) (2022-10-27)
 
 
