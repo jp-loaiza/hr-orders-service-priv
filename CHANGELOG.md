@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.3...v1.3.0) (2022-11-03)
+
+
+### Features
+
+* added the DD metrics to show the graph for csv ([#421](https://github.com/HarryRosen/hr-orders-service/issues/421)) ([5981f1f](https://github.com/HarryRosen/hr-orders-service/commit/5981f1fab28007d9d9b42ae7fe5d72b2b0c84c23))
+
 ## [1.2.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.2...v1.2.3) (2022-10-28)
 
 
