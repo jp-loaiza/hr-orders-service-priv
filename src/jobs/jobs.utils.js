@@ -1,3 +1,4 @@
+// @ts-ignore
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('../validation')
@@ -38,6 +39,8 @@ const { sendOrderConversionToCj } = require('../cj/cj')
 const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
 const { getOrderData } = require('../segment/segment')
 const { sendSegmentTrackCall, sendSegmentIdentifyCall } = require('../segment/segment.utils')
+const {statsClient} = require('../../src/statsClient')
+const  { STATS_DISABLE_FLAG } = require( '../config')
 
 /**
  *
@@ -106,8 +109,10 @@ const transformToOrderPayment = order => {
     return { ...orderUpdate, status: 'Success'}
   }
 
+  // @ts-ignore
   const creditPaymentInfo = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
   if (!creditPaymentInfo) {
+    // @ts-ignore
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
     console.error(`Failed to find credit payment info for order ${order.orderNumber}: `, JSON.stringify(order.paymentInfo, null, 3))
     return orderUpdate
@@ -125,6 +130,7 @@ const transformToOrderPayment = order => {
   }
 
   if (!transaction) {
+    // @ts-ignore
     orderUpdate.errorMessage = `Order update is not for a status that jesta recognizes: ${interfaceCode}`
     console.error(`Failed to set transaction for order ${order.orderNumber}: `, JSON.stringify(creditPaymentInfo.obj.transactions, null, 3))
     return orderUpdate
@@ -154,15 +160,15 @@ const createAndUploadCsvs = async () => {
     sftp = new client()
     await sftp.connect(sftpConfig)
     console.log('Connected to SFTP server')
-
     const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
     console.log(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
-
+    let exportedOrders=0;
     for (const order of orders) {
       let csvString
       try {
         if (!validateOrder(order)) throw new Error('Invalid order')
         csvString = generateCsvStringFromOrder(order)
+        exportedOrders = exportedOrders+1;
       } catch (err) {
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
         console.error(`Unable to generate CSV for order ${order.orderNumber}: `, errorMessage)
@@ -190,6 +196,14 @@ const createAndUploadCsvs = async () => {
       }
       // we retry in case the version of the order has changed by the notifications job
       await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
+    }
+    
+    if(!STATS_DISABLE_FLAG){
+      const statsDclient  = statsClient.childClient({
+        globalTags: {product: 'HR-ORDER-SERVICE'}
+      })
+      statsDclient.increment('orders.ct.total',total)
+      statsDclient.increment('orders.ct.exported',exportedOrders)
     }
     console.log('Done processing orders')
   } catch (err) {
@@ -359,6 +373,7 @@ const startCjConversionJob = createJob({
   statusField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_STATUS,
   statuses: SENT_TO_CJ_STATUSES
 })
+
 
 const getIdentifyTraitsFromOrder = order => {
   return { 
