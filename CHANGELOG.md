@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.0...v1.3.1) (2022-11-08)
+
+
+### Bug Fixes
+
+* HRC-6222: Fixed the indentation issues ([#423](https://github.com/HarryRosen/hr-orders-service/issues/423)) ([c0ad65a](https://github.com/HarryRosen/hr-orders-service/commit/c0ad65a6d2f459f4b8c59e1391e7a2ce22a7b8cb))
+
 ## [1.3.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.2.3...v1.3.0) (2022-11-03)
 
 
