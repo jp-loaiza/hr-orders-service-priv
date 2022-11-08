@@ -1,4 +1,3 @@
-// const { SFTP_HOST, SFTP_PORT, SFTP_USERNAME, SFTP_PRIVATE_KEY, ALGOLIA_APP_ID, ALGOLIA_API_KEY, DYNAMIC_YIELD_API_KEY_SERVER,STATS_UDS_PROTOCOL_ENABLED,LOG_FORMAT,STATS_DISABLE } = (/** @type {import('./orders').Env} */ (process.env))
 const envProperties= (/** @type {import('./orders').Env} */ (process.env))
 
 const sftpConfig = {
@@ -11,14 +10,14 @@ const sftpConfig = {
 /**
  * Disable the creation of the statsd client. This is mostly used for local development.
  */
-const STATS_DISABLE_FLAG = envProperties.STATS_DISABLE === 'true' ? true: false
+const STATS_DISABLE = envProperties.STATS_DISABLE === 'true' ? true: false
 
 /**
   * Enabling UDS protocol. Fallsback to UDP.
   *
   * Default (true)
   */
-const STATS_UDS_PROTOCOL_ENABLED_FLAG = envProperties.STATS_UDS_PROTOCOL_ENABLED == 'true' ? true : false
+const STATS_UDS_PROTOCOL_ENABLED = envProperties.STATS_UDS_PROTOCOL_ENABLED == 'true' ? true : false
  
 const LOG_FORMAT_TYPE = envProperties.LOG_FORMAT === 'simple' ? 'simple' : 'json'
 
@@ -33,7 +32,7 @@ module.exports = {
   ALGOLIA_APP_ID,
   ALGOLIA_API_KEY,
   DYNAMIC_YIELD_API_KEY_SERVER,
-  STATS_DISABLE_FLAG,
-  STATS_UDS_PROTOCOL_ENABLED_FLAG,
+  STATS_DISABLE,
+  STATS_UDS_PROTOCOL_ENABLED,
   LOG_FORMAT_TYPE
 }

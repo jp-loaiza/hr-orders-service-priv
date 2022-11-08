@@ -1,4 +1,3 @@
-// @ts-ignore
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('../validation')
@@ -40,7 +39,7 @@ const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
 const { getOrderData } = require('../segment/segment')
 const { sendSegmentTrackCall, sendSegmentIdentifyCall } = require('../segment/segment.utils')
 const {statsClient} = require('../../src/statsClient')
-const  { STATS_DISABLE_FLAG } = require( '../config')
+const  { STATS_DISABLE } = require( '../config')
 
 /**
  *
@@ -109,10 +108,8 @@ const transformToOrderPayment = order => {
     return { ...orderUpdate, status: 'Success'}
   }
 
-  // @ts-ignore
   const creditPaymentInfo = order.paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method === 'credit')
   if (!creditPaymentInfo) {
-    // @ts-ignore
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
     console.error(`Failed to find credit payment info for order ${order.orderNumber}: `, JSON.stringify(order.paymentInfo, null, 3))
     return orderUpdate
@@ -130,7 +127,6 @@ const transformToOrderPayment = order => {
   }
 
   if (!transaction) {
-    // @ts-ignore
     orderUpdate.errorMessage = `Order update is not for a status that jesta recognizes: ${interfaceCode}`
     console.error(`Failed to set transaction for order ${order.orderNumber}: `, JSON.stringify(creditPaymentInfo.obj.transactions, null, 3))
     return orderUpdate
@@ -198,7 +194,7 @@ const createAndUploadCsvs = async () => {
       await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
     
-    if(!STATS_DISABLE_FLAG){
+    if(!STATS_DISABLE){
       const statsDclient  = statsClient.childClient({
         globalTags: {product: 'HR-ORDER-SERVICE'}
       })
