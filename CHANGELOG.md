@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.1...v1.3.2) (2022-11-11)
+
+
+### Bug Fixes
+
+* HRC-6218 - fixing query params to retrieve shipments properly ([#426](https://github.com/HarryRosen/hr-orders-service/issues/426)) ([3afbd16](https://github.com/HarryRosen/hr-orders-service/commit/3afbd16065635fc5594af7a19798fa0c8f405ffb))
+
 ## [1.3.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.0...v1.3.1) (2022-11-08)
 
 
