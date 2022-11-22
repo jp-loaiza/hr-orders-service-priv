@@ -338,7 +338,10 @@ const fetchStates = async () => {
  */
 
 const fetchShipments = async orderNumber => {
-  const uri = requestBuilder.customObjects.where(`container="shipments" and value(orderNumber="${orderNumber}")`).build()
+  const uri = requestBuilder.customObjects.parse({
+    where: [`container="shipments" and value(orderNumber="${orderNumber}")`],
+    sort: [{ by: 'lastModifiedAt', direction: 'desc'}]
+  }).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   return body.results
 }
