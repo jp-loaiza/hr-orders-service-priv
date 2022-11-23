@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.3...v1.3.4) (2022-11-23)
+
+
+### Bug Fixes
+
+* HRC-6313 removing sorting method ([#430](https://github.com/HarryRosen/hr-orders-service/issues/430)) ([9b8dc38](https://github.com/HarryRosen/hr-orders-service/commit/9b8dc389d79463f11516078ee0acd754ebaeb393))
+
 ## [1.3.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.2...v1.3.3) (2022-11-22)
 
 
