@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.10](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.9...v1.3.10) (2022-11-26)
+
+
+### Bug Fixes
+
+* HRC-6313: Adding flag to change sort direction for narvar job ([083efe7](https://github.com/HarryRosen/hr-orders-service/commit/083efe7a59391c5676cf379caafc06b6c2522650))
+
 ## [1.3.9](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.8...v1.3.9) (2022-11-26)
 
 
