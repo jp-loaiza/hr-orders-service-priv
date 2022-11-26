@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.4...v1.3.5) (2022-11-26)
+
+
+### Bug Fixes
+
+* HRC-6313: Reversing Narvar order fetch to LIFO ([#432](https://github.com/HarryRosen/hr-orders-service/issues/432)) ([989bce4](https://github.com/HarryRosen/hr-orders-service/commit/989bce4a34c606936dc0b0c6d445617e6e41992c))
+
 ## [1.3.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.3...v1.3.4) (2022-11-23)
 
 
