@@ -112,6 +112,20 @@ const setOrderCustomField = async (orderId, name, value) => {
 }
 
 /**
+ * This function doesn't necessarily require only actions for custom fields. It can process any order action.
+ *
+ * @param {string} orderId
+ * @param {string} orderVersion
+ * @param {any} actions
+ */
+const setOrderCustomFields = async (orderId, orderVersion, actions) => {
+  const uri = requestBuilder.orders.byId(orderId).build()
+  const body = JSON.stringify({ version: orderVersion, actions })
+  console.log(`Updating order ${orderId}: ${body}`)
+  return ctClient.execute({ method: 'POST', uri, body })
+}
+
+/**
  * Fetches all orders that need to be updated in OMS
  * @returns {Promise<{orders: Array<import('../orders').Order>, total: number}>}
  */
@@ -313,11 +327,18 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
   const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)) and (createdAt >= "2022-02-27")`
-  const uri = requestBuilder.orders.where(query).sort('lastModifiedAt', false).build()
+  const uri = requestBuilder.orders
+    .where(query)
+    .expand('lineItems[*].variant.attributes[*].value[*]')
+    .expand('paymentInfo.payments[*].paymentStatus.state')
+    .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
+    .expand('custom.fields.dynamicYieldData')
+    .sort('lastModifiedAt', false)
+    .build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
+
   return {
-    orders: await Promise.all(orderIds.map(fetchFullOrder)),
+    orders: body.results,
     total: body.total
   }
 }
@@ -402,6 +423,7 @@ module.exports = {
   setOrderAsSentToOms,
   setOrderErrorFields,
   setOrderCustomField,
+  setOrderCustomFields,
   fetchOrderIdsThatShouldBeSentToCrm,
   fetchOrdersThatShouldBeUpdatedInOMS,
   setOrderSentToCrmStatus,

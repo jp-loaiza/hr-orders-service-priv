@@ -6,7 +6,7 @@ const {
   sendOrderUpdates, 
   transformToOrderPayment,
   sendOrdersToNarvar} = require('./jobs.utils')
-const { setOrderAsSentToOms, setOrderErrorFields, setOrderCustomField } = require('../commercetools/commercetools')
+const { setOrderAsSentToOms, setOrderErrorFields, setOrderCustomFields } = require('../commercetools/commercetools')
 const { sendToNarvar } = require('../narvar/narvar')
 const { pluginPayment } = require('./mock_orders')
 
@@ -222,7 +222,7 @@ describe('sendOrdersToNarvar', () => {
     await sendOrdersToNarvar()
     await Promise.resolve()
 
-    expect(setOrderCustomField).toHaveBeenCalledWith(undefined, 'narvarStatus', 'SUCCESS')
+    expect(setOrderCustomFields).toHaveBeenCalled()
   })
 
 })

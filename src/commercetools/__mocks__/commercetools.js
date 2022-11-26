@@ -612,5 +612,6 @@ module.exports = {
     .mockImplementationOnce(() => ({ orders: [Promise.resolve(validOrder)], total: 1})),
   fetchShipments: jest.fn().mockImplementationOnce(() => shipments),
   setOrderCustomField: jest.fn(),
+  setOrderCustomFields: jest.fn(),
   validOrder
 }

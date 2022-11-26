@@ -18,6 +18,7 @@ const {
   fetchOrdersThatShouldBeSentToOms,
   setOrderAsSentToOms,
   setOrderCustomField,
+  setOrderCustomFields,
   setOrderErrorFields,
   fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
@@ -290,6 +291,9 @@ async function sendPurchaseEventsToDynamicYield() {
   }
 }
 
+// @todo HRC-6313 Remove this once optimized query has been validated.
+const NARVAR_DISABLE_UPDATE = process.env.NARVAR_DISABLE_UPDATE === 'true' ? true : false
+
 async function sendOrdersToNarvar() {
   const states = await fetchStates()
   const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
@@ -299,13 +303,28 @@ async function sendOrdersToNarvar() {
     try {
       const shipments = await fetchShipments(order.orderNumber)
       const narvarOrder = await convertOrderForNarvar(order, shipments, states)
+
+      // @todo Remove this log entry so we dont log sensitive data.
       console.log(`Converted Order for Narvar: ${JSON.stringify(narvarOrder)}`)
-      if(narvarOrder) {
+
+      if(narvarOrder && !NARVAR_DISABLE_UPDATE) {
         const now = new Date().valueOf()
         await sendToNarvar(narvarOrder)
         console.log(`Order Successfully Sent to NARVAR: ${order.orderNumber}`)
-        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_STATUS, SENT_TO_NARVAR_STATUSES.SUCCESS)
-        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME, new Date(now).toJSON())
+
+        const actions = [
+          {
+            action: 'setCustomField',
+            name: ORDER_CUSTOM_FIELDS.NARVAR_STATUS,
+            value: SENT_TO_NARVAR_STATUSES.SUCCESS
+          },
+          {
+            action: 'setCustomField',
+            name: ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME,
+            value: new Date(now).toJSON()
+          }
+        ]
+        await retry(setOrderCustomFields)(order.id, order.version, actions)
         console.log(`Narvar status fields for order: ${order.orderNumber} set successfully`)
       }
     } catch (error) {
@@ -316,7 +335,6 @@ async function sendOrdersToNarvar() {
         statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
       })
     }
-    await sleep(100) // prevent CT/Narvar from getting overloaded
   }
 }
 
