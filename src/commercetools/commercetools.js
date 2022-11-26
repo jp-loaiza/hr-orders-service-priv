@@ -338,6 +338,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
 }
 
 const NARVAR_BATCH_SIZE = process.env.NARVAR_BATCH_SIZE ? parseInt(process.env.NARVAR_BATCH_SIZE) : 50
+const NARVAR_BATCH_SORT_RECENT = process.env.NARVAR_BATCH_SORT_RECENT === 'true' ? true : false
 
 /**
  * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
@@ -351,7 +352,7 @@ const fetchOrdersThatShouldBeSentToNarvar = async () => {
     .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
     .expand('custom.fields.dynamicYieldData')
     .perPage(NARVAR_BATCH_SIZE)
-    .sort('lastModifiedAt', false)
+    .sort('lastModifiedAt', NARVAR_BATCH_SORT_RECENT)
     .build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
