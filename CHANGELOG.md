@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.7...v1.3.8) (2022-11-26)
+
+
+### Bug Fixes
+
+* HRC-6313: Retry with new version upon concurrent modification failure ([#437](https://github.com/HarryRosen/hr-orders-service/issues/437)) ([9026362](https://github.com/HarryRosen/hr-orders-service/commit/9026362afb526657a5c354b36fde14606eed3b4d))
+
 ## [1.3.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.6...v1.3.7) (2022-11-26)
 
 
