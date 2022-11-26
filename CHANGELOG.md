@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.9](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.8...v1.3.9) (2022-11-26)
+
+
+### Bug Fixes
+
+* HRC-6313: Narvar batch size is configurable ([68c1f51](https://github.com/HarryRosen/hr-orders-service/commit/68c1f518046d0f58319db7b0eb394a2cfb0a796b))
+
 ## [1.3.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.7...v1.3.8) (2022-11-26)
 
 
