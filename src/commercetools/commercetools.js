@@ -119,10 +119,25 @@ const setOrderCustomField = async (orderId, name, value) => {
  * @param {any} actions
  */
 const setOrderCustomFields = async (orderId, orderVersion, actions) => {
-  const uri = requestBuilder.orders.byId(orderId).build()
-  const body = JSON.stringify({ version: orderVersion, actions })
-  console.log(`Updating order ${orderId}: ${body}`)
-  return ctClient.execute({ method: 'POST', uri, body })
+  try {
+    const uri = requestBuilder.orders.byId(orderId).build()
+    const body = JSON.stringify({ version: orderVersion, actions })
+    console.log(`Updating order ${orderId}: ${body}`)
+    return ctClient.execute({ method: 'POST', uri, body })
+  } catch (error) {
+
+    if (error.statusCode === 409) {
+      // @todo HRC-6313: Please upgrade node for null coalescing.
+      if (error.body && error.body.errors && error.body.errors[0] && error.body.errors[0].currentVersion) {
+        const newVersion = error.body.errors[0].currentVersion
+        return setOrderCustomFields(orderId, newVersion, actions)
+      }
+    }
+
+    console.error(error)
+
+    throw error
+  }
 }
 
 /**
