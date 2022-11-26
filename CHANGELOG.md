@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.6...v1.3.7) (2022-11-26)
+
+
+### Bug Fixes
+
+* HRC-6313: Optimizing Narvar sending functionality ([#435](https://github.com/HarryRosen/hr-orders-service/issues/435)) ([b7e9c68](https://github.com/HarryRosen/hr-orders-service/commit/b7e9c68698b598e785c81380720bdbc6c91c70e2))
+
 ## [1.3.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.5...v1.3.6) (2022-11-26)
 
 
