@@ -5,7 +5,10 @@ global.console = {
   error: jest.fn()
 }
 
+jest.useFakeTimers()
+
 process.env.CJ_CID = 'CJ_CID'
 process.env.CJ_SIGNATURE = 'CJ_SIGNATURE'
 process.env.CJ_TYPE = 'CJ_TYPE'
 process.env.CJ_CONVERSION_BASE_URL = 'https://www.emjcd.com/u'
+process.env.SFTP_PRIVATE_KEY = 'SFTP_PRIVATE_KEY'

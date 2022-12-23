@@ -31,6 +31,7 @@ const { createAuthMiddlewareForClientCredentialsFlow } = require('@commercetools
 const { createRequestBuilder } = require('@commercetools/api-request-builder')
 // @ts-ignore no types available for commercetools sdk
 const { createHttpMiddleware } = require('@commercetools/sdk-middleware-http')
+const { default: logger, serializeError } = require('../logger')
 
 // commercetools SDK setup
 const projectKey = process.env.CT_PROJECT_KEY
@@ -218,11 +219,20 @@ const fetchOrdersThatShouldBeSentToOms = async () => {
  * @returns {Promise<{results: Array<import('../orders').Order>, total: number}>}
  */
 const fetchStuckOrderResults = async () => {
-  const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
-  const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
-  const query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
-  const uri = requestBuilder.orders.where(query).build()
-  return (await ctClient.execute({ method: 'GET', uri })).body
+  try {
+    const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
+    const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
+    const query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
+    const uri = requestBuilder.orders.where(query).build()
+    return (await ctClient.execute({ method: 'GET', uri })).body
+  } catch (error) {
+    logger.error({
+      type: 'stuck_orders_fetch_failure',
+      message: 'Failed to fetch stuck orders',
+      error: serializeError(error)
+    })
+  }
+
 }
 
 /**

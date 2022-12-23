@@ -8,7 +8,6 @@ Dockerfile
 .ssh
 .DS_Store
 .eslintrc.js
-tsconfig.json
 orders.d.ts
 # k8s yamls
 secrets.yaml

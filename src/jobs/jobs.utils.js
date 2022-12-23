@@ -39,7 +39,7 @@ const { sendOrderConversionToCj } = require('../cj/cj')
 const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
 const { getOrderData } = require('../segment/segment')
 const { sendSegmentTrackCall, sendSegmentIdentifyCall } = require('../segment/segment.utils')
-const {statsClient} = require('../../src/statsClient')
+const { statsClient } = require('../statsClient')
 const  { STATS_DISABLE } = require( '../config')
 
 /**

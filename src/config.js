@@ -1,4 +1,4 @@
-const envProperties= (/** @type {import('./orders').Env} */ (process.env))
+const envProperties = (/** @type {import('./orders').Env} */ (process.env))
 
 const sftpConfig = {
   host: envProperties.SFTP_HOST,
@@ -10,7 +10,7 @@ const sftpConfig = {
 /**
  * Disable the creation of the statsd client. This is mostly used for local development.
  */
-const STATS_DISABLE = envProperties.STATS_DISABLE === 'true' ? true: false
+const STATS_DISABLE = envProperties.STATS_DISABLE === 'true' ? true : false
 
 /**
   * Enabling UDS protocol. Fallsback to UDP.
@@ -18,14 +18,16 @@ const STATS_DISABLE = envProperties.STATS_DISABLE === 'true' ? true: false
   * Default (true)
   */
 const STATS_UDS_PROTOCOL_ENABLED = envProperties.STATS_UDS_PROTOCOL_ENABLED == 'true' ? true : false
- 
-const LOG_FORMAT_TYPE = envProperties.LOG_FORMAT === 'simple' ? 'simple' : 'json'
 
-const ALGOLIA_APP_ID =envProperties.ALGOLIA_APP_ID;
+const LOG_FORMAT_TYPE = envProperties.LOG_FORMAT
 
-const  ALGOLIA_API_KEY = envProperties.ALGOLIA_API_KEY;
+const ALGOLIA_APP_ID = envProperties.ALGOLIA_APP_ID;
 
-const DYNAMIC_YIELD_API_KEY_SERVER= envProperties.DYNAMIC_YIELD_API_KEY_SERVER;
+const ALGOLIA_API_KEY = envProperties.ALGOLIA_API_KEY;
+
+const DYNAMIC_YIELD_API_KEY_SERVER = envProperties.DYNAMIC_YIELD_API_KEY_SERVER;
+
+const LOG_LEVEL = envProperties.LOG_LEVEL
 
 module.exports = {
   sftpConfig,
@@ -34,5 +36,6 @@ module.exports = {
   DYNAMIC_YIELD_API_KEY_SERVER,
   STATS_DISABLE,
   STATS_UDS_PROTOCOL_ENABLED,
-  LOG_FORMAT_TYPE
+  LOG_FORMAT_TYPE,
+  LOG_LEVEL
 }

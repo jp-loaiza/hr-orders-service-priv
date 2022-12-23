@@ -1,9 +1,31 @@
-FROM node:12
-RUN mkdir -p /home/node/service/node_modules && chown -R node:node /home/node/service
-WORKDIR /home/node/service
+# We're using a multi stage build to avoid huge images containing the whole src folder
+FROM node:16.15-alpine as build
+
+WORKDIR /app
+
 COPY package*.json ./
-USER node
+
 RUN npm install
-COPY --chown=node:node . .
+
+COPY . .
+
+RUN npm run build
+
+FROM node:16.15-alpine as production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+USER node
+
+WORKDIR /app
+
+COPY --chown=node:node package*.json ./
+
+RUN npm set-script prepare '' && npm install --omit=dev
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/version.txt ./
+
 EXPOSE 8080
-CMD [ "node", "server.js" ]
+CMD [ "node", "dist/server.js" ]

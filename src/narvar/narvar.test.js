@@ -1,7 +1,7 @@
 //const commercetools = require('../commercetools/__mocks__/commercetools')
 const { convertPickups } = require('./narvar')
 
-const BASE_ORDER = require('../../src/example-orders/24845933.json')
+const BASE_ORDER = require('../example-orders/24845933.json')
 
 const getShipment = (/** @type {string} */ createdAtDate, /** @type {string} */ lastModifedDate) =>  {
   return [{

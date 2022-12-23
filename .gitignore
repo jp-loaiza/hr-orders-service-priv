@@ -6,3 +6,5 @@ id_rsa
 secrets.yaml
 newrelic_agent.log
 *.swp
+dist
+.vscode/

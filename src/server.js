@@ -5,13 +5,14 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
 
-require('./src/jobs/jobs')
-const { sftpConfig } = require('./src/config')
-const { keepAliveRequest } = require('./src/commercetools/commercetools')
-const { sendOrderEmailNotificationByOrderId } = require('./src/emails/email')
-const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./src/jobs/jobs')
+require('./jobs/jobs')
+const { sftpConfig } = require('./config')
+const { keepAliveRequest } = require('./commercetools/commercetools')
+const { sendOrderEmailNotificationByOrderId } = require('./emails/email')
+const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./jobs/jobs')
+const { default: logger, serializeError } = require('./logger')
 
-const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./src/orders').Env} */ (process.env))
+const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -24,10 +25,10 @@ app.disable('x-powered-by')
 /**
  * @param {Express.Response} res 
  */
-async function checkServicesHealth (res) {
+async function checkServicesHealth(res) {
   try {
     const sftp = new client()
-    console.log('Initiating health check...')
+    logger.info('Initiating health check...')
     await sftp.connect(sftpConfig)
     await Promise.all([
       keepAliveRequest(),
@@ -37,11 +38,16 @@ async function checkServicesHealth (res) {
     console.log('Health check successful.')
     res.status(200).send('ok')
   } catch (error) {
-    console.error('Health check failed: ')
+    const message = 'Health check failed:'
     if (error.body && Array.isArray(error.body.errors)) {
+      console.error(message)
       error.body.errors.forEach(console.error)
     } else {
-      console.error(error)
+      logger.error({
+        type: 'health_check_failure',
+        message: message,
+        error: serializeError(error)
+      })
     }
     res.status(500).send('failed')
   }
@@ -50,13 +56,16 @@ async function checkServicesHealth (res) {
 /**
  * @param {Express.Response} res 
  */
-function checkJobsHealth (res) {
+function checkJobsHealth(res) {
   const enabledJobsLastExecutionTime = getEnabledJobsLastExecutionTime()
   const currentTime = new Date()
   for (const job in enabledJobsLastExecutionTime) {
     const lastExectuionTime = (enabledJobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'|'checkForStuckOrdersJob'|'sendOrderUpdatesJob'} */ (job)]).getTime()
     if ((currentTime.getTime() - lastExectuionTime) > jobTotalTimeout + 1000) {
-      console.error(`${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExectuionTime}.`)
+      logger.error({
+        type: 'check_job_health_failure',
+        message: `${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExectuionTime}.`
+      })
       res.status(500).send('failed')
       return false
     }
@@ -64,13 +73,13 @@ function checkJobsHealth (res) {
   return true
 }
 
-app.get('/healthz', async function(req, res) {
+app.get('/healthz', async function (req, res) {
   const healthzAuthorization = process.env.HEALTHZ_AUTHORIZATION
   const authorization = req.headers.authorization
   if (authorization && healthzAuthorization && authorization === healthzAuthorization) {
-    console.log('Kubernetes initiating liveliness probe...')
+    logger.info('Kubernetes initiating liveliness probe...')
     // jobs have not ran in the expected time
-    if(checkJobsHealth(res)) {
+    if (checkJobsHealth(res)) {
       // some of the outgoing calls cannot be made
       await checkServicesHealth(res)
     }
