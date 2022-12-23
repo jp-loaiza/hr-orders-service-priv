@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.10...v1.4.0) (2022-12-23)
+
+
+### Features
+
+* HRC-6386: Upgrade node, add dd-trace and make ts ready ([#441](https://github.com/HarryRosen/hr-orders-service/issues/441)) ([308352f](https://github.com/HarryRosen/hr-orders-service/commit/308352fea288c09ae8fc90740cb1d401803cd8b2))
+
 ## [1.3.10](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.9...v1.3.10) (2022-11-26)
 
 
