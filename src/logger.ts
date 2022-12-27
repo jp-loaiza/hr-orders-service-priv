@@ -1,12 +1,10 @@
 import { createLogger, format, transports } from 'winston'
-import { LOG_FORMAT_TYPE, LOG_LEVEL } from './config'
-
-const logFormat = LOG_FORMAT_TYPE === 'simple' ? format.simple() : format.json();
+import { LOG_FORMAT, LOG_LEVEL } from './config'
 
 const logger = createLogger({
   level: LOG_LEVEL,
   exitOnError: true,
-  format: logFormat,
+  format: format[LOG_FORMAT](),
   transports: [new transports.Console({ handleExceptions: true })],
 })
 
