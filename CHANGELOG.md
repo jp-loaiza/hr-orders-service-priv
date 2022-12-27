@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.4.1...v1.4.2) (2022-12-27)
+
+
+### Bug Fixes
+
+* HRC-6386: fix unix-dgram missing error ([#445](https://github.com/HarryRosen/hr-orders-service/issues/445)) ([2a258bd](https://github.com/HarryRosen/hr-orders-service/commit/2a258bd3e81ada9d892d1faf4ad708023c17ab6c))
+
 ## [1.4.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.4.0...v1.4.1) (2022-12-27)
 
 
