@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.4.0...v1.4.1) (2022-12-27)
+
+
+### Bug Fixes
+
+* HRC-6386: Logger error ([#443](https://github.com/HarryRosen/hr-orders-service/issues/443)) ([bf2b01c](https://github.com/HarryRosen/hr-orders-service/commit/bf2b01cfda4aba2623ee8bbd3204464bf3c1431b))
+
 ## [1.4.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.3.10...v1.4.0) (2022-12-23)
 
 
