@@ -1,18 +1,18 @@
 const client = require('ssh2-sftp-client')
 
 const { validateOrder } = require('../validation')
-const { 
+const {
   MAXIMUM_RETRIES,
   ORDER_CUSTOM_FIELDS,
-  PAYMENT_STATES, 
-  TRANSACTION_TYPES, 
-  TRANSACTION_STATES, 
-  JESTA_ORDER_STATUSES, 
-  SENT_TO_ALGOLIA_STATUSES, 
-  SENT_TO_CJ_STATUSES, 
-  SENT_TO_DYNAMIC_YIELD_STATUSES, 
+  PAYMENT_STATES,
+  TRANSACTION_TYPES,
+  TRANSACTION_STATES,
+  JESTA_ORDER_STATUSES,
+  SENT_TO_ALGOLIA_STATUSES,
+  SENT_TO_CJ_STATUSES,
+  SENT_TO_DYNAMIC_YIELD_STATUSES,
   SENT_TO_NARVAR_STATUSES,
-  SENT_TO_SEGMENT_STATUSES 
+  SENT_TO_SEGMENT_STATUSES
 } = require('../constants')
 const {
   fetchOrdersThatShouldBeSentToOms,
@@ -40,7 +40,8 @@ const { convertOrderForNarvar, sendToNarvar } = require('../narvar/narvar')
 const { getOrderData } = require('../segment/segment')
 const { sendSegmentTrackCall, sendSegmentIdentifyCall } = require('../segment/segment.utils')
 const { statsClient } = require('../statsClient')
-const  { STATS_DISABLE } = require( '../config')
+const { STATS_DISABLE } = require('../config')
+const { default: logger, serializeError } = require('../logger')
 
 /**
  *
@@ -122,7 +123,7 @@ const transformToOrderPayment = order => {
     transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.SUCCESS)
   } else if (interfaceCode === PAYMENT_STATES.CANCELLED) { // delated capture is ON or OFF but DM rejected
     transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.FAILURE)
-                  || getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE)
+      || getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE)
   } else if (interfaceCode === PAYMENT_STATES.PAID) { // delayed capture is OFF and DM accepted
     transaction = getTransaction(creditPaymentInfo.obj.transactions, TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.SUCCESS)
   }
@@ -156,16 +157,15 @@ const createAndUploadCsvs = async () => {
   try {
     sftp = new client()
     await sftp.connect(sftpConfig)
-    console.log('Connected to SFTP server')
+    logger.info('Connected to SFTP server')
     const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
-    console.log(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
-    let exportedOrders=0;
+    logger.info(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
+    let exportedOrders = 0
     for (const order of orders) {
       let csvString
       try {
         if (!validateOrder(order)) throw new Error('Invalid order')
         csvString = generateCsvStringFromOrder(order)
-        exportedOrders = exportedOrders+1;
       } catch (err) {
         const errorMessage = err.message === 'Invalid order' ? JSON.stringify(validateOrder.errors) : 'Unable to generate CSV'
         console.error(`Unable to generate CSV for order ${order.orderNumber}: `, errorMessage)
@@ -179,11 +179,16 @@ const createAndUploadCsvs = async () => {
         continue
       }
       try {
-        console.log(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
+        logger.info(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
         await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
-        console.log(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
+        exportedOrders++
+        logger.info(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
       } catch (err) {
-        console.error(`Unable to upload CSV to JESTA for order ${order.orderNumber}`)
+        logger.error({
+          type: 'upload_csv_failure',
+          message: `Unable to upload CSV to JESTA for order ${order.orderNumber}`,
+          stack: serializeError(err)
+        })
         await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
           retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
           nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
@@ -194,29 +199,36 @@ const createAndUploadCsvs = async () => {
       // we retry in case the version of the order has changed by the notifications job
       await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
-    
-    if(!STATS_DISABLE){
-      const statsDclient  = statsClient.childClient({
-        globalTags: {product: 'HR-ORDER-SERVICE'}
+
+    if (!STATS_DISABLE && statsClient) {
+      const statsDclient = statsClient.childClient({
+        globalTags: { product: 'HR-ORDER-SERVICE' }
       })
-      statsDclient.increment('orders.ct.total',total)
-      statsDclient.increment('orders.ct.exported',exportedOrders)
+      statsDclient.increment('orders.ct.total', total)
+      statsDclient.increment('orders.ct.exported', exportedOrders)
     }
-    console.log('Done processing orders')
+    logger.info('Done processing orders')
   } catch (err) {
-    console.error('Unable to process orders:')
-    console.error(err)
+    logger.error({
+      type: 'process_orders_failure',
+      message: 'Unable to process orders',
+      error: serializeError(err),
+    })
   } finally {
     if (sftp) {
       await sftp.end()
         .catch(function (err) {
-          console.error('Unable to close SFTP connection: ', err)
+          logger.error({
+            type: 'sftp_connection_failure',
+            message: 'Unable to end SFTP connection',
+            error: serializeError(err),
+          })
         })
     }
   }
 }
 
-async function sendOrderUpdates () {
+async function sendOrderUpdates() {
   const { orders: ordersToUpdate, total } = await fetchOrdersThatShouldBeUpdatedInOMS()
   if (ordersToUpdate.length) {
     console.log(`Sending ${ordersToUpdate.length} order updates to OMS (total in backlog: ${total}): ${JSON.stringify(ordersToUpdate)}`)
@@ -250,7 +262,7 @@ async function sendOrderUpdates () {
 
 async function sendConversionsToAlgolia() {
   const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
-  console.log(total > 0 ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.`: 'No orders with conversion data to send to Algolia.')
+  console.log(total > 0 ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.` : 'No orders with conversion data to send to Algolia.')
   for (const order of orders) {
     try {
       const conversions = getConversionsFromOrder(order)
@@ -271,7 +283,7 @@ async function sendConversionsToAlgolia() {
 
 async function sendPurchaseEventsToDynamicYield() {
   const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
-  console.log(total > 0 ? `Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`: 'No orders with purchase data to send to Dynamic Yield.')
+  console.log(total > 0 ? `Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.` : 'No orders with purchase data to send to Dynamic Yield.')
 
   for (const order of orders) {
     try {
@@ -297,7 +309,7 @@ const NARVAR_DISABLE_UPDATE = process.env.NARVAR_DISABLE_UPDATE === 'true' ? tru
 async function sendOrdersToNarvar() {
   const states = await fetchStates()
   const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
-  console.log(total > 0 ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`: 'No orders found to send to Narvar.')
+  console.log(total > 0 ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}` : 'No orders found to send to Narvar.')
 
   for (const order of orders) {
     try {
@@ -307,7 +319,7 @@ async function sendOrdersToNarvar() {
       // @todo Remove this log entry so we dont log sensitive data.
       console.log(`Converted Order for Narvar: ${JSON.stringify(narvarOrder)}`)
 
-      if(narvarOrder && !NARVAR_DISABLE_UPDATE) {
+      if (narvarOrder && !NARVAR_DISABLE_UPDATE) {
         const now = new Date().valueOf()
         await sendToNarvar(narvarOrder)
         console.log(`Order Successfully Sent to NARVAR: ${order.orderNumber}`)
@@ -352,7 +364,7 @@ function createJob({
 }) {
   async function processOrders() {
     const { orders, total } = await fetchRelevantOrders()
-    console.log(total > 0 ? `Processing orders for ${name} job (total in backlog: ${total}).`: `No orders for ${name} job to process.`)
+    console.log(total > 0 ? `Processing orders for ${name} job (total in backlog: ${total}).` : `No orders for ${name} job to process.`)
     for (const order of orders) {
       try {
         await processOrder(order)
@@ -390,7 +402,7 @@ const startCjConversionJob = createJob({
 
 
 const getIdentifyTraitsFromOrder = order => {
-  return { 
+  return {
     loginradius_id: order.loginradius_id,
     email: order.email,
     first_name: order.first_name,

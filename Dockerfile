@@ -16,11 +16,11 @@ FROM node:16.15-alpine as production
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-USER node
-
 WORKDIR /app
+#Installs unix-dgram which is required for hot-shots client
+RUN apk add --no-cache python3 make g++
 
-COPY --chown=node:node package*.json ./
+COPY package*.json ./
 
 RUN npm set-script prepare '' && npm install --omit=dev
 
