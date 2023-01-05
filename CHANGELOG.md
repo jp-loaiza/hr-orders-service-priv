@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.4.2...v1.5.0) (2023-01-05)
+
+
+### Features
+
+* HRC-6452: update orderservice CT SDK to V2 ([#447](https://github.com/HarryRosen/hr-orders-service/issues/447)) ([d77356c](https://github.com/HarryRosen/hr-orders-service/commit/d77356cfaa3911ac9d6259df93deb6bb0f763e1e))
+
 ## [1.4.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.4.1...v1.4.2) (2022-12-27)
 
 
