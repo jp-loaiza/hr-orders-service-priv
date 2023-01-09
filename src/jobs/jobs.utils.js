@@ -200,7 +200,9 @@ const createAndUploadCsvs = async () => {
       await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
 
+    logger.info(`Check the values ${STATS_DISABLE}, ${statsClient}`)
     if (!STATS_DISABLE && statsClient) {
+      logger.info('Exporting logs to DD')
       const statsDclient = statsClient.childClient({
         globalTags: { product: 'HR-ORDER-SERVICE' }
       })
