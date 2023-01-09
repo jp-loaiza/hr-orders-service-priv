@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.0...v1.5.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* added the logs to check the status of metrics ([#449](https://github.com/HarryRosen/hr-orders-service/issues/449)) ([ffde7d4](https://github.com/HarryRosen/hr-orders-service/commit/ffde7d49e18ae0ff58284c4a80099dea1faefdda))
+
 ## [1.5.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.4.2...v1.5.0) (2023-01-05)
 
 
