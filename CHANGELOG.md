@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.2...v1.5.3) (2023-01-10)
+
+
+### Features
+
+* HRC-6441: create order-service actor for consume message and update CT orders ([#451](https://github.com/HarryRosen/hr-orders-service/issues/451)) ([bb90db8](https://github.com/HarryRosen/hr-orders-service/commit/bb90db8be54165d0cf2675fe756cbe2be8435508))
+
 ## [1.5.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.1...v1.5.2) (2023-01-10)
 
 
