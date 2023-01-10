@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.1...v1.5.2) (2023-01-10)
+
+
+### Bug Fixes
+
+* HRC-6388: To fix the issue that is broken on the DD related to orders ([#452](https://github.com/HarryRosen/hr-orders-service/issues/452)) ([ea46e6b](https://github.com/HarryRosen/hr-orders-service/commit/ea46e6bb7a28fb752323a2019e4879bf05ea9788))
+
 ## [1.5.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.0...v1.5.1) (2023-01-09)
 
 
