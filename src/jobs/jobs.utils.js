@@ -200,7 +200,9 @@ const createAndUploadCsvs = async () => {
       await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
 
-    logger.info(`Check the values ${STATS_DISABLE}, ${statsClient}`)
+    logger.info(`orders.ct.total: ${total}`)
+    logger.info(`orders.ct.exported: ${ exportedOrders }`)
+
     if (!STATS_DISABLE && statsClient) {
       logger.info('Exporting logs to DD')
       const statsDclient = statsClient.childClient({
