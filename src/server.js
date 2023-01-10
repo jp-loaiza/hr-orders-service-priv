@@ -6,13 +6,15 @@ const bodyParser = require('body-parser')
 const client = require('ssh2-sftp-client')
 
 require('./jobs/jobs')
-const { sftpConfig } = require('./config')
+const { sftpConfig, DISABLE_ORDER_SAVE_ACTOR } = require('./config')
 const { keepAliveRequest } = require('./commercetools/commercetools')
 const { sendOrderEmailNotificationByOrderId } = require('./emails/email')
 const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./jobs/jobs')
 const { default: logger, serializeError } = require('./logger')
 
 const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
+const { default: kafkaClient } = require('./events/kafkaClient')
+const { default: OrderSaveConsumer } = require('./events/OrderSaveConsumer')
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -139,6 +141,26 @@ async function list (req, res) {
 }
 
 const port = process.env.PORT || 8080
-app.listen(port, function() {
-  console.log('Server started at port: ' + port)
-})
+
+export const start = async () => {
+  logger.info('hr-order-service starting')
+  app.listen(port, () => {
+    logger.info('Server started at port: ' + port)
+  })
+  const orderSaveConsumer = new OrderSaveConsumer(kafkaClient, logger)
+  if (DISABLE_ORDER_SAVE_ACTOR === 'false') {
+    await orderSaveConsumer.startConsumer()
+  }
+
+  const stop = async () => {
+    logger.info('hr-order-service stopping')
+    await orderSaveConsumer.disconnect()
+    logger.info('hr-order-service stopped')
+    process.exit()
+  }
+
+  process.on('SIGINT', stop)
+  process.on('SIGTERM', stop)
+}
+
+start()
