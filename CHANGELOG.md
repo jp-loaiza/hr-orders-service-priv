@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.3...v1.5.4) (2023-01-10)
+
+
+### Bug Fixes
+
+* HRC-6441: fix for environment variables ([#455](https://github.com/HarryRosen/hr-orders-service/issues/455)) ([8aef9b4](https://github.com/HarryRosen/hr-orders-service/commit/8aef9b4be582b5db5d9b09a0a58d94ddda7a4357))
+
 ## [1.5.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.2...v1.5.3) (2023-01-10)
 
 
