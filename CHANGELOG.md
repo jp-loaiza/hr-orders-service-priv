@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.4...v1.5.5) (2023-01-12)
+
+
+### Bug Fixes
+
+* HRC-6388: Added the logs for importing and exporting orders ([#457](https://github.com/HarryRosen/hr-orders-service/issues/457)) ([c370ccc](https://github.com/HarryRosen/hr-orders-service/commit/c370ccc59ff80a9712b52fd5a398b76e2f048ea9))
+
 ## [1.5.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.3...v1.5.4) (2023-01-10)
 
 
