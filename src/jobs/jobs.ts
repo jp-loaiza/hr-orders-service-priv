@@ -158,8 +158,12 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval: number) {
 
     if (stuckOrderCount > 0) {
       const stringifiedStuckOrderNumbersAndIds = stuckOrders.map((order: Order) => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
-      logger.info(`Found stuck orders ${stuckOrders.length}`)
-      logger.warn(`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`)
+
+      logger.warn({
+        type: 'stuck_orders',
+        stuck_orders: stuckOrderCount,
+        message:`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`
+      })
 
     } else {
       logger.info('No stuck orders')

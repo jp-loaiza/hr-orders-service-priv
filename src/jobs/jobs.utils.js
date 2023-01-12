@@ -200,8 +200,15 @@ const createAndUploadCsvs = async () => {
       await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     }
 
-    logger.info(`orders.ct.total: ${total}`)
-    logger.info(`orders.ct.exported: ${ exportedOrders }`)
+    logger.warn({
+      type: 'orders_ct_total',
+      ct_total: total
+    })
+    
+    logger.warn({
+      type: 'orders_ct_exported',
+      ct_exported: exportedOrders
+    })
 
     if (!STATS_DISABLE && statsClient) {
       logger.info('Exporting logs to DD')
