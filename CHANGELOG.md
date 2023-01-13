@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.5...v1.5.6) (2023-01-13)
+
+
+### Bug Fixes
+
+* HRC-6439: restructure jobs to produce message ([#459](https://github.com/HarryRosen/hr-orders-service/issues/459)) ([a899083](https://github.com/HarryRosen/hr-orders-service/commit/a899083870e21eb448df2055ca4e1f12074006b4))
+
 ## [1.5.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.4...v1.5.5) (2023-01-12)
 
 
