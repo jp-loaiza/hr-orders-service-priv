@@ -9,6 +9,7 @@
 	"TIMESTAMP": 1672951035,
 	"ORDER_NUMBER": "77758201",
 	"VERSION": 15,
+	LASTMODIFIEDDATE: 1672951035,
 	"ACTIONS": [
 		{
 			"action": "setCustomField",

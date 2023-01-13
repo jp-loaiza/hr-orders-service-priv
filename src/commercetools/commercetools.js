@@ -19,6 +19,12 @@ const {
   SENT_TO_SEGMENT_STATUSES,
 } = require('../constants')
 
+const {
+  DISABLE_ORDER_SAVE_ACTOR
+} = require('../config')
+const { default: OrderSaveProducer } = require('../events/OrderSaveProducer')
+const { default: kafkaClient } = require('../events/kafkaClient')
+
 dotenv.config()
 
 // commercetools SDK
@@ -91,6 +97,29 @@ const keepAlive = async () => {
 keepAlive()
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 
+const orderSaveProducer = new OrderSaveProducer(kafkaClient, logger)
+const produceOrderSaveMsg = async (ctBody, actions) => {
+  const { version, orderNumber, id, lastModifiedAt } = ctBody
+  const msg = JSON.stringify({
+    MESSAGE_KEY: id,
+    TIMESTAMP: Date.now(),
+    ORDER_NUMBER: orderNumber,
+    VERSION: version,
+    LASTMODIFIEDDATE: new Date(lastModifiedAt).valueOf(),
+    ACTIONS: actions
+  })
+  logger.info(`Order update action sending to Kafka, Order number: ${orderNumber}`)
+  try {
+    await orderSaveProducer.connect()
+    await orderSaveProducer.send(msg, id)
+    await orderSaveProducer.flush()
+  } catch (e) {
+    logger.error(`Order number: ${orderNumber} Failed to send kafka update action. error:`, e)
+  }
+  logger.info(`Order update action successfully sent to Kafka, Order number: ${orderNumber}`)
+  return true
+}
+
 /**
  * @param {string} orderId
  * @param {string} name
@@ -98,18 +127,29 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
  */
 const setOrderCustomField = async (orderId, name, value) => {
   const uri = requestBuilder.orders.byId(orderId).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
-  const body = JSON.stringify({
-    version: version,
-    actions: [
+  const ctBody = (await ctClient.execute({ method: 'GET', uri })).body
+
+  if (DISABLE_ORDER_SAVE_ACTOR === 'false') { // Produce message in Kafka
+    return produceOrderSaveMsg(ctBody, [
       {
-        action: 'setCustomField',
-        name,
-        value
+        'action': 'setCustomField',
+        'name': name,
+        'value': value
       }
-    ]
-  })
-  return ctClient.execute({ method: 'POST', uri, body })
+    ])
+  } else { // old updates using jobs
+    const body = JSON.stringify({
+      version: ctBody.version,
+      actions: [
+        {
+          action: 'setCustomField',
+          name,
+          value
+        }
+      ]
+    })
+    return ctClient.execute({ method: 'POST', uri, body })
+  }
 }
 
 /**
@@ -123,8 +163,15 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
   try {
     const uri = requestBuilder.orders.byId(orderId).build()
     const body = JSON.stringify({ version: orderVersion, actions })
-    console.log(`Updating order ${orderId}: ${body}`)
-    return ctClient.execute({ method: 'POST', uri, body })
+    
+    if (DISABLE_ORDER_SAVE_ACTOR === 'false') { // Produce message in Kafka
+      // Query ctBody again since the body defined above does not have enough data
+      const ctBody = (await ctClient.execute({ method: 'GET', uri })).body
+      return produceOrderSaveMsg(ctBody, actions)
+    } else {
+      console.log(`Updating order ${orderId}: ${body}`)
+      return ctClient.execute({ method: 'POST', uri, body })
+    }
   } catch (error) {
 
     if (error.statusCode === 409) {
@@ -273,7 +320,7 @@ const getActionsFromCustomFields = customFields => (
  */
 const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { retryCountField, nextRetryAtField, statusField }) => {
   const uri = requestBuilder.orders.byId(order.id).build()
-  const { version } = (await ctClient.execute({ method: 'GET', uri })).body
+  const ctBody = (await ctClient.execute({ method: 'GET', uri })).body
   const retryCount = order.custom.fields[retryCountField] === undefined ? 0 : order.custom.fields[retryCountField] + 1
 
   const isOrderCreation = statusField === ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
@@ -293,9 +340,12 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
     [statusField]: status,
     ...shouldRetry ? { [nextRetryAtField]: nextRetryAt } : {},
   })
-  const body = JSON.stringify({ version, actions })
-
-  return ctClient.execute({ method: 'POST', uri, body })
+  if (DISABLE_ORDER_SAVE_ACTOR === 'false') { 
+    return produceOrderSaveMsg(ctBody, actions)
+  } else {
+    const body = JSON.stringify({ version: ctBody.version, actions })
+    return ctClient.execute({ method: 'POST', uri, body })
+  }
 }
 
 /**
