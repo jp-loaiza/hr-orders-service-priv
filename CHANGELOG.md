@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.6...v1.5.7) (2023-01-16)
+
+
+### Bug Fixes
+
+* HRC-6439: Fix the kafka order-save message format issue ([#461](https://github.com/HarryRosen/hr-orders-service/issues/461)) ([554bee7](https://github.com/HarryRosen/hr-orders-service/commit/554bee744ea322f15f57b55eb20a8c33f332698a))
+
 ## [1.5.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.5...v1.5.6) (2023-01-13)
 
 
