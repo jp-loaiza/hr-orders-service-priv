@@ -100,14 +100,14 @@ setInterval(keepAlive, KEEP_ALIVE_INTERVAL)
 const orderSaveProducer = new OrderSaveProducer(kafkaClient, logger)
 const produceOrderSaveMsg = async (ctBody, actions) => {
   const { version, orderNumber, id, lastModifiedAt } = ctBody
-  const msg = JSON.stringify({
+  const msg = {
     MESSAGE_KEY: id,
     TIMESTAMP: Date.now(),
     ORDER_NUMBER: orderNumber,
     VERSION: version,
     LASTMODIFIEDDATE: new Date(lastModifiedAt).valueOf(),
     ACTIONS: actions
-  })
+  }
   logger.info(`Order update action sending to Kafka, Order number: ${orderNumber}`)
   try {
     await orderSaveProducer.connect()
@@ -138,7 +138,7 @@ const setOrderCustomField = async (orderId, name, value) => {
       }
     ])
   } else { // old updates using jobs
-    const body = JSON.stringify({
+    const body = {
       version: ctBody.version,
       actions: [
         {
@@ -147,7 +147,7 @@ const setOrderCustomField = async (orderId, name, value) => {
           value
         }
       ]
-    })
+    }
     return ctClient.execute({ method: 'POST', uri, body })
   }
 }
@@ -343,7 +343,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   if (DISABLE_ORDER_SAVE_ACTOR === 'false') { 
     return produceOrderSaveMsg(ctBody, actions)
   } else {
-    const body = JSON.stringify({ version: ctBody.version, actions })
+    const body = { version: ctBody.version, actions }
     return ctClient.execute({ method: 'POST', uri, body })
   }
 }
