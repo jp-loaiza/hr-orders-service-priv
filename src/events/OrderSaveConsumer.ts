@@ -74,7 +74,9 @@ export default class OrderSaveConsumer extends BaseConsumer<OrderSaveMessage> {
       })
 
       // Send to DLQ
-      await this.dlqProducer?.send(msg)
+      if (msg.MESSAGE_KEY && msg.ORDER_NUMBER && msg.ACTIONS) {
+        await this.dlqProducer?.send(msg)
+      }
     }
   }
 }
