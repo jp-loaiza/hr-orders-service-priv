@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.7...v1.5.8) (2023-01-19)
+
+
+### Bug Fixes
+
+* HRC-6439: filter the DLQ logic for invalid msg ([#463](https://github.com/HarryRosen/hr-orders-service/issues/463)) ([1bd3330](https://github.com/HarryRosen/hr-orders-service/commit/1bd3330c99b03e61683a8443d3ed0887298f9269))
+
 ## [1.5.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.6...v1.5.7) (2023-01-16)
 
 
