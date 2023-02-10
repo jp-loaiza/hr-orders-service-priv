@@ -251,10 +251,18 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
  * @param {import('../orders').PaymentInfo} paymentInfo
  */
 const getSignatureRequiredIndicator = (paymentInfo) => {
+  //checking Klarna Signature Required Inidcator (HRC-5233)
   const klarnaPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna')
   if(klarnaPaymentInfo && klarnaPaymentInfo.obj.amountPlanned.centAmount >= 94000) {
     return 'Y'
   }
+
+  //checking PayPal Signature Required Inidcator (HRC-6526)
+  const payPalPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'paypal')
+  if(payPalPaymentInfo && payPalPaymentInfo.obj.amountPlanned.centAmount >= 85000) {
+    return 'Y'
+  }
+
   return 'N'
 }
 
