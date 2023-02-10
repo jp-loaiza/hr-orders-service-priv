@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.8...v1.6.0) (2023-02-10)
+
+
+### Features
+
+* HRC-6525 - adding signature requirements for EDOM csv ([#465](https://github.com/HarryRosen/hr-orders-service/issues/465)) ([c4eb8db](https://github.com/HarryRosen/hr-orders-service/commit/c4eb8db0f46fb3cdb876f0d6abe90b074e44c790))
+
 ## [1.5.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.7...v1.5.8) (2023-01-19)
 
 
