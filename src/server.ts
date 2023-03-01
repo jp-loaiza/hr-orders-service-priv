@@ -1,20 +1,26 @@
 require('dotenv').config()
 require('newrelic')
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const client = require('ssh2-sftp-client')
+import express, { Request, Response } from 'express'
+import bodyParser from 'body-parser'
+import client from 'ssh2-sftp-client'
 
 require('./jobs/jobs')
-const { sftpConfig, DISABLE_ORDER_SAVE_ACTOR } = require('./config')
-const { keepAliveRequest } = require('./commercetools/commercetools')
-const { sendOrderEmailNotificationByOrderId } = require('./emails/email')
-const { getEnabledJobsLastExecutionTime, jobTotalTimeout } = require('./jobs/jobs')
-const { default: logger, serializeError } = require('./logger')
+import {
+  sftpConfig,
+  DISABLE_ORDER_SAVE_ACTOR,
+  PROCESS_ORDER_EVENTS,
+  SFTP_INCOMING_ORDERS_PATH,
+  NOTIFICATIONS_BEARER_TOKEN
+} from './config'
+import { keepAliveRequest } from './commercetools/commercetools'
+import { sendOrderEmailNotificationByOrderId } from './emails/email'
+import logger, { serializeError } from './logger'
 
-const { SFTP_INCOMING_ORDERS_PATH, NOTIFICATIONS_BEARER_TOKEN } = (/** @type {import('./orders').Env} */ (process.env))
-const { default: kafkaClient } = require('./events/kafkaClient')
-const { default: OrderSaveConsumer } = require('./events/OrderSaveConsumer')
+import kafkaClient from './events/kafkaClient'
+import OrderSaveConsumer from './events/OrderSaveConsumer'
+import OrderProcessingConsumer from './events/OrderProcessingConsumer'
+import { checkJobsHealth } from './jobs/jobs.utils'
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -27,7 +33,7 @@ app.disable('x-powered-by')
 /**
  * @param {Express.Response} res 
  */
-async function checkServicesHealth(res) {
+async function checkServicesHealth(res: Response) {
   try {
     const sftp = new client()
     logger.info('Initiating health check...')
@@ -46,7 +52,7 @@ async function checkServicesHealth(res) {
       error.body.errors.forEach(console.error)
     } else {
       logger.error({
-        type: 'health_check_failure',
+        type: 'health_check',
         message: message,
         error: serializeError(error)
       })
@@ -55,27 +61,7 @@ async function checkServicesHealth(res) {
   }
 }
 
-/**
- * @param {Express.Response} res 
- */
-function checkJobsHealth(res) {
-  const enabledJobsLastExecutionTime = getEnabledJobsLastExecutionTime()
-  const currentTime = new Date()
-  for (const job in enabledJobsLastExecutionTime) {
-    const lastExectuionTime = (enabledJobsLastExecutionTime[/** @type {'createAndUploadCsvsJob'|'sendOrderEmailNotificationJob'|'checkForStuckOrdersJob'|'sendOrderUpdatesJob'} */ (job)]).getTime()
-    if ((currentTime.getTime() - lastExectuionTime) > jobTotalTimeout + 1000) {
-      logger.error({
-        type: 'check_job_health_failure',
-        message: `${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExectuionTime}.`
-      })
-      res.status(500).send('failed')
-      return false
-    }
-  }
-  return true
-}
-
-app.get('/healthz', async function (req, res) {
+app.get('/healthz', async function (req: Request, res: Response) {
   const healthzAuthorization = process.env.HEALTHZ_AUTHORIZATION
   const authorization = req.headers.authorization
   if (authorization && healthzAuthorization && authorization === healthzAuthorization) {
@@ -90,7 +76,7 @@ app.get('/healthz', async function (req, res) {
   }
 })
 
-app.use('/notifications', (req, res, next) => {
+app.use('/notifications', (req: Request, res: Response, next) => {
   const authorization = req.header('authorization') || ''
   const [, bearerToken] = authorization.split(' ')
 
@@ -103,7 +89,7 @@ app.use('/notifications', (req, res, next) => {
 })
 
 // Can be invoked to send the notification for a specific order e.g. in the case that we failed to send it via the job.
-app.post('/notifications/order-created', async (req, res) => {
+app.post('/notifications/order-created', async (req: Request, res: Response) => {
   let orderId
   try {
     orderId = req.body.orderId
@@ -122,13 +108,13 @@ app.post('/notifications/order-created', async (req, res) => {
  */
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
-async function list (req, res) {
+async function list(req: Request, res: Response) {
   try {
     const config = await req.body.config
     const sftp = new client()
     await sftp.connect({
       ...config,
-      privateKey: Buffer.from(config.privateKey,'base64')
+      privateKey: Buffer.from(config.privateKey, 'base64')
     })
     const list = await sftp.list(SFTP_INCOMING_ORDERS_PATH)
     sftp.end()
@@ -150,6 +136,10 @@ export const start = async () => {
   const orderSaveConsumer = new OrderSaveConsumer(kafkaClient, logger)
   if (DISABLE_ORDER_SAVE_ACTOR === 'false') {
     await orderSaveConsumer.startConsumer()
+  }
+  const orderProcessingConsumer = new OrderProcessingConsumer(kafkaClient, logger)
+  if (PROCESS_ORDER_EVENTS) {
+    await orderProcessingConsumer.startConsumer()
   }
 
   const stop = async () => {

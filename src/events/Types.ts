@@ -1,4 +1,6 @@
 import { MessageSetEntry, RecordBatchEntry } from 'kafkajs'
+import { Order, OrderStateTransitionMessage } from '@commercetools/platform-sdk'
+import { Custom } from '../orders'
 
 export type MessageType = {
   MESSAGE_KEY: string
@@ -25,3 +27,5 @@ export type HeartBeatPayload = {
 }
 
 export type HeartBeat = ({ deltaTime }: HeartBeatPayload) => Promise<void>
+
+export type OrderProcessMessage = MessageType & OrderStateTransitionMessage & Custom & Order

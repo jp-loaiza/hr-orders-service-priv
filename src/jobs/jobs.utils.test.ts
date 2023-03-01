@@ -1,14 +1,20 @@
 // @ts-nocheck The linter gets confused by Jest mocks
 
-const { 
-  generateFilenameFromOrder, 
-  createAndUploadCsvs, 
-  sendOrderUpdates, 
+import {
+  generateFilenameFromOrder,
+  createAndUploadCsvs,
+  sendOrderUpdates,
   transformToOrderPayment,
-  sendOrdersToNarvar} = require('./jobs.utils')
-const { setOrderAsSentToOms, setOrderErrorFields, setOrderCustomFields } = require('../commercetools/commercetools')
-const { sendToNarvar } = require('../narvar/narvar')
-const { pluginPayment } = require('./mock_orders')
+  sendOrdersToNarvar,
+  checkJobsHealth,
+  orderMessageDisperse
+} from './jobs.utils'
+import { setOrderAsSentToOms, setOrderErrorFields, setOrderCustomFields } from '../commercetools/commercetools'
+import { sendToNarvar } from '../narvar/narvar'
+import { pluginPayment, mockOrder } from './mock_orders'
+import { validOrder, invalidOrder } from '../commercetools/__mocks__/commercetools'
+import { Response } from 'express'
+import { SENT_TO_OMS_STATUSES } from '../constants'
 
 jest.mock('../config')
 jest.mock('../commercetools/commercetools')
@@ -89,7 +95,7 @@ describe('sendOrderUpdates', () => {
   })
 
   it('processes [validOrder] correctly', async () => {
-    await sendOrderUpdates()
+    await sendOrderUpdates([])
     expect(setOrderAsSentToOms.mock.calls.length).toBe(1)
     expect(setOrderErrorFields.mock.calls.length).toBe(0)
   })
@@ -104,7 +110,7 @@ describe('sendOrderUpdates', () => {
 describe('transformToOrderPayment', () => {
   const mockTransaction = {
     type: 'Authorization',
-    state: 'Success' 
+    state: 'Success'
   }
   const mockPayment = {
     obj: {
@@ -115,7 +121,7 @@ describe('transformToOrderPayment', () => {
         interfaceCode: 'preauthed'
       },
       transactions: []
-    } 
+    }
   }
   const mockOrder = {
     orderNumber: '12345',
@@ -202,7 +208,7 @@ describe('transformToOrderPayment', () => {
     })
   })
   it('valid order update; at least 1 transaction with release order delayed capture ON', () => {
-    const mockOrderReleaseDelayedCaptureOn = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, transactions: [{ ...mockTransaction },{ ...mockTransaction, state: 'Failure'}] } }] } }
+    const mockOrderReleaseDelayedCaptureOn = { ...mockOrder, paymentInfo: { payments: [{ ...mockPayment, obj: { ...mockPayment.obj, transactions: [{ ...mockTransaction }, { ...mockTransaction, state: 'Failure' }] } }] } }
     expect(transformToOrderPayment(mockOrderReleaseDelayedCaptureOn)).toEqual({
       orderNumber: mockOrderReleaseDelayedCaptureOn.orderNumber,
       status: 'Success'
@@ -225,4 +231,17 @@ describe('sendOrdersToNarvar', () => {
     expect(setOrderCustomFields).toHaveBeenCalled()
   })
 
+})
+
+describe('checkJobsHealth', () => {
+
+  it('should return true if job is healthy', async () => {
+    const response = {}
+    const result = checkJobsHealth(response as Response)
+    expect(result).toBeTruthy()
+  })
+
+  it('should return false if job is unhealthy', async () => {
+
+  })
 })

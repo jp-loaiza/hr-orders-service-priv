@@ -3,8 +3,8 @@ const { DYNAMIC_YIELD_API_KEY_SERVER } = require('../config')
 const { DYNAMIC_YIELD_API_URL } = require('../constants')
 
 /**
- * @param {import('../orders').Order} order
- * @returns {import('../orders').DynamicYieldReportEventData | undefined}
+ * @param {import('@commercetools/platform-sdk').Order} order
+ * @returns {import('../orders').DynamicYieldReportEventData| undefined}
  */
 const getDYReportEventFromOrder = order => {
   const dynamicYieldData = order.custom && order.custom.fields.dynamicYieldData && order.custom.fields.dynamicYieldData.obj.value

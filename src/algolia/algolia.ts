@@ -1,11 +1,13 @@
-const { fetchWithTimeout: fetch } = require('../request.utils')
-const { ALGOLIA_APP_ID, ALGOLIA_API_KEY } = require('../config')
-const { ALGOLIA_INSIGHTS_URL } = require('../constants')
+import { AlgoliaAnalyticsData, LineItem } from "../orders"
+
+import { fetchWithTimeout as fetch } from '../request.utils'
+import { ALGOLIA_APP_ID, ALGOLIA_API_KEY } from '../config'
+import { ALGOLIA_INSIGHTS_URL } from '../constants'
 
 /**
  * @param {Array<import('../orders').AlgoliaAnalyticsData>} conversions 
  */
-const formatAlgoliaRequestOptionsFromConversions = conversions => ({
+const formatAlgoliaRequestOptionsFromConversions = (conversions: AlgoliaAnalyticsData) => ({
   method: 'post',
   headers: {
     'x-algolia-api-key': ALGOLIA_API_KEY,
@@ -21,26 +23,20 @@ const formatAlgoliaRequestOptionsFromConversions = conversions => ({
  * @param {import('../orders').LineItem} lineItem
  * @returns {import('../orders').AlgoliaAnalyticsData | undefined}
  */
-const getConversionFromLineItem = lineItem => {
+const getConversionFromLineItem = (lineItem: LineItem) => {
   const conversion = lineItem.custom && lineItem.custom.fields.algoliaAnalyticsData && lineItem.custom.fields.algoliaAnalyticsData.obj.value
-  return conversion && {eventType: 'conversion', ...conversion }
+  return conversion && { eventType: 'conversion', ...conversion }
 }
 
 /**
- * @param {import('../orders').Order} order
+ * @param {import('@commercetools/platform-sdk').Order} order
  * @returns {Array<import('../orders').AlgoliaAnalyticsData>}
  */
 // @ts-ignore typescript doesn't understand that any undefined items have been filtered from the resulting array
-const getConversionsFromOrder = order => order.lineItems.map(getConversionFromLineItem).filter(Boolean)
+export const getConversionsFromOrder = (order: Order) => order.lineItems.map(getConversionFromLineItem).filter(Boolean)
 
 /**
  * @param {Array<import('../orders').AlgoliaAnalyticsData>} conversions
  */
-const sendManyConversionsToAlgolia = conversions =>
+export const sendManyConversionsToAlgolia = (conversions: AlgoliaAnalyticsData) =>
   fetch(`${ALGOLIA_INSIGHTS_URL}/1/events`, formatAlgoliaRequestOptionsFromConversions(conversions))
-
-
-module.exports = {
-  getConversionsFromOrder,
-  sendManyConversionsToAlgolia
-}

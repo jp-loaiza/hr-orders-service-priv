@@ -163,7 +163,7 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
   try {
     const uri = requestBuilder.orders.byId(orderId).build()
     const body = JSON.stringify({ version: orderVersion, actions })
-    
+
     if (DISABLE_ORDER_SAVE_ACTOR === 'false') { // Produce message in Kafka
       // Query ctBody again since the body defined above does not have enough data
       const ctBody = (await ctClient.execute({ method: 'GET', uri })).body
@@ -190,7 +190,7 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
 
 /**
  * Fetches all orders that need to be updated in OMS
- * @returns {Promise<{orders: Array<import('../orders').Order>, total: number}>}
+ * @returns {Promise<{orders: Array<import('../orders').IOrder>, total: number}>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS() {
   const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
@@ -244,7 +244,7 @@ const fetchFullOrder = async orderId => {
  *  both orders that we have never tried to send to the OMS, and ones that
  *  it is time to re-try sending to the OMS. Excludes orders that lack
  *  LoginRadius UIDs.
- * @returns {Promise<{orders: Array<(import('../orders').Order)>, total: number}>}
+ * @returns {Promise<{orders: Array<(import('../orders').IOrder)>, total: number}>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
   const query = `custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}")) and custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))) and custom(fields(loginRadiusUid is defined))`
@@ -313,7 +313,7 @@ const getActionsFromCustomFields = customFields => (
 )
 
 /**
- * @param {import('../orders').Order} order
+ * @param {import('../events/OrderProcessMessage').IOrder} order
  * @param {string} errorMessage
  * @param {boolean} errorIsRecoverable
  * @param {object} orderCustomFields
@@ -340,7 +340,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
     [statusField]: status,
     ...shouldRetry ? { [nextRetryAtField]: nextRetryAt } : {},
   })
-  if (DISABLE_ORDER_SAVE_ACTOR === 'false') { 
+  if (DISABLE_ORDER_SAVE_ACTOR === 'false') {
     return produceOrderSaveMsg(ctBody, actions)
   } else {
     const body = { version: ctBody.version, actions }
@@ -349,7 +349,7 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
 }
 
 /**
- * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('../orders').IOrder)>, total: number }>}
  */
 const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   const now = new Date()
@@ -381,7 +381,7 @@ const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
 }
 
 /**
- * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('../orders').IOrder)>, total: number }>}
  */
 const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
   const now = new Date()
@@ -390,7 +390,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
   const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').IOrder} */ order) => order.id)
   return {
     orders: await Promise.all(orderIds.map(fetchFullOrder)),
     total: body.total
@@ -401,7 +401,7 @@ const NARVAR_BATCH_SIZE = process.env.NARVAR_BATCH_SIZE ? parseInt(process.env.N
 const NARVAR_BATCH_SORT_RECENT = process.env.NARVAR_BATCH_SORT_RECENT === 'true' ? true : false
 
 /**
- * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('@commercetools/platform-sdk').Order)>, total: number }>}
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
   const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)) and (createdAt >= "2022-02-27")`
@@ -470,7 +470,7 @@ const fetchCategoryInfo = async categoryIds => {
 }
 
 /**
- * @returns {Promise<{ orders: Array<(import('../orders').Order)>, total: number }>}
+ * @returns {Promise<{ orders: Array<(import('../orders').IOrder)>, total: number }>}
  */
 const fetchOrdersToSendToSegment = async () => {
   const now = new Date()
@@ -480,7 +480,7 @@ const fetchOrdersToSendToSegment = async () => {
   // const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
-  const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
+  const orderIds = body.results.map(( /** @type {import('../orders').IOrder} */ order) => order.id)
   return {
     orders: await Promise.all(orderIds.map(fetchFullOrder)),
     total: body.total

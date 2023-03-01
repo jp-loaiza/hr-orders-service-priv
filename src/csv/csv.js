@@ -60,7 +60,7 @@ const getHeaderObjectFromOrder = ({
   const { firstName: firstNameShipping, lastName: lastNameShipping } = getFirstLastName(shippingAddress, billingAddress, custom.fields.isStorePickup)
   const { firstName: firstNameBilling, lastName: lastNameBilling } = getFirstLastName(billingAddress, shippingAddress, false)
 
-  return { 
+  return {
     [HEADER_ROWS_ENUM.RECORD_TYPE]: 'H',
     [HEADER_ROWS_ENUM.SITE_ID]: custom.fields.cartSourceWebsite || '00990',
     [HEADER_ROWS_ENUM.WFE_TRANS_ID]: orderNumber,
@@ -83,7 +83,7 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.BILL_TO_HOME_PHONE]: billingAddress.phone || shippingAddress.phone, // From JESTA's docs: "Both [BILL_TO_HOME_PHONE and SHIP_TO_HOME_PHONE] are copied from this field"
     [HEADER_ROWS_ENUM.EMAIL_ADDRESS]: customerEmail,
     [HEADER_ROWS_ENUM.CARRIER_ID]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).carrierId,
-    [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]:  getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingIsRush ? 'Y' : 'N',
+    [HEADER_ROWS_ENUM.RUSH_SHIPPING_IND]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingIsRush ? 'Y' : 'N',
     [HEADER_ROWS_ENUM.SHIP_COMPLETE_IND]: 'N',
     [HEADER_ROWS_ENUM.SHIPPING_CHARGES_TOTAL]: convertToDollars(shippingInfo.taxedPrice.totalNet.centAmount),
     [HEADER_ROWS_ENUM.TAX_TOTAL]: convertToDollars(getTaxTotalFromTaxedPrice(taxedPrice)),
@@ -96,7 +96,7 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
     [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: custom.fields.cartSourceWebsite || '00990',
     [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
-    [HEADER_ROWS_ENUM.SERVICE_TYPE]:  getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingServiceType,
+    [HEADER_ROWS_ENUM.SERVICE_TYPE]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingServiceType,
     [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
     [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'N',
     [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: paymentInfo !== undefined ? getSignatureRequiredIndicator(paymentInfo) : 'N',
@@ -122,7 +122,7 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('../orders').Ord
   [DETAILS_ROWS_ENUM.GIFT_WRAP_IND]: lineItem.custom.fields.isGift ? 'Y' : 'N',
   [DETAILS_ROWS_ENUM.SALESPERSON_ID]: getDomainFromEmail(order) === 'harryrosen.com'
     ? 999
-    : lineItem.custom.fields.salespersonId,  
+    : lineItem.custom.fields.salespersonId,
   [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
 })
 
@@ -231,7 +231,7 @@ const generateCsvHeaderNamesString = () => {
 }
 
 /**
- * @param {import('../orders').Order} order 
+ * @param {import('../events/OrderProcessMessage').IOrder} order 
  * @return {string}
  */
 const generateCsvStringFromOrder = order => {
@@ -240,7 +240,7 @@ const generateCsvStringFromOrder = order => {
 
   const headerNames = generateCsvHeaderNamesString()
   const headerData = generateHeadersCsvStringFromOrder(order)
-  const details =  generateDetailsCsvStringFromOrder(order)
+  const details = generateDetailsCsvStringFromOrder(order)
   const tax = generateTaxCsvStringFromOrder(order)
   const tenders = order.paymentInfo ? generateTendersCsvStringFromOrder(order) : ''
 

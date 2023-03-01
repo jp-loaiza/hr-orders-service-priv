@@ -1,7 +1,4 @@
 import logger, { serializeError } from "../logger"
-import { Order } from "../orders"
-
-require('dotenv').config()
 import tracer from '../tracer'
 
 const {
@@ -21,21 +18,30 @@ import {
   sendOrdersToNarvar,
   sendOrderUpdates,
   sleep,
-  retry,
   startCjConversionJob,
-  sendOrdersToSegment
+  sendOrdersToSegment,
+  sendOrderEmailNotificationByOrderIds,
+  jobTotalTimeout
 } from './jobs.utils'
 import {
   fetchOrderIdsThatShouldBeSentToCrm,
-  setOrderSentToCrmStatus,
   fetchStuckOrderResults
 } from '../commercetools/commercetools'
-import { sendOrderEmailNotificationByOrderId } from '../emails/email'
-import { MAXIMUM_RETRIES, JOB_TASK_TIMEOUT } from '../constants'
+import {
+  shouldCheckForStuckOrders,
+  shouldSendAlgoliaInfo,
+  shouldSendCjConversions,
+  shouldSendDynamicYieldInfo,
+  shouldSendNotifications,
+  shouldSendOrderNarvar,
+  shouldSendOrderSegment,
+  shouldSendOrderUpdates,
+  shouldUploadOrders
+} from "../config"
+import { Order } from "../orders"
 
 const timeoutSymbol = Symbol('timeout')
 
-const jobTotalTimeout = (MAXIMUM_RETRIES + 1) * JOB_TASK_TIMEOUT
 logger.info(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
 
 const lastJobsRunTime = {
@@ -99,27 +105,11 @@ async function sendOrderUpdatesJob(orderUploadInterval: number) {
   }
 }
 
-
-async function sendOrderEmailNotification() {
+export async function sendOrderEmailNotification() {
   const { orderIds, total } = await fetchOrderIdsThatShouldBeSentToCrm()
-  if (orderIds.length) {
-    console.log(`Sending ${orderIds.length} orders to CRM (total in backlog: ${total}): ${orderIds}`)
-  }
-  await Promise.all(orderIds.map(async (orderId: string) => {
-    try {
-      await sendOrderEmailNotificationByOrderId(orderId)
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, true)
-    } catch (error) {
-      logger.error({
-        type: 'order_email_notification_failure',
-        message: `Failed to send order email notification to CRM for orderID:${orderId}`,
-        error: serializeError(error)
-      })
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, false)
-    }
-  }))
+  orderIds.length ? logger.info(`Sending ${orderIds.length} orders to CRM (total in backlog: ${total}): ${orderIds}`) : null
+
+  await sendOrderEmailNotificationByOrderIds(orderIds)
 }
 
 /**
@@ -162,7 +152,7 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval: number) {
       logger.warn({
         type: 'stuck_orders',
         stuck_orders: stuckOrderCount,
-        message:`Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`
+        message: `Found stuck orders (total: ${stuckOrderCount}): [${stringifiedStuckOrderNumbersAndIds.join(', ')}]`
       })
 
     } else {
@@ -253,7 +243,6 @@ async function sendOrdersToSegmentJob(sendToSegmentInterval: number) {
   }
 }
 
-const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
 if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
   logger.info('Processing orders upload job at interval: ', orderUploadInterval)
@@ -262,7 +251,6 @@ if (shouldUploadOrders) {
   handleTraceCreateAndUploadCsvsJob(orderUploadInterval)
 }
 
-const shouldSendOrderUpdates = process.env.SHOULD_SEND_ORDER_UPDATES === 'true'
 if (shouldSendOrderUpdates) {
   const orderUpdateInterval = Number(ORDER_UPDATE_INTERVAL)
   logger.info('Processing orders update job at interval: ', orderUpdateInterval)
@@ -271,7 +259,6 @@ if (shouldSendOrderUpdates) {
   handleTraceSendOrderUpdatesJob(orderUpdateInterval)
 }
 
-const shouldSendNotifications = process.env.SHOULD_SEND_NOTIFICATIONS === 'true'
 if (shouldSendNotifications) {
   const sendNotificationsInterval = Number(SEND_NOTIFICATIONS_INTERVAL)
   logger.info('Processing notifications job at interval: ', sendNotificationsInterval)
@@ -280,7 +267,6 @@ if (shouldSendNotifications) {
   handleTraceSendOrderEmailNotificationJob(sendNotificationsInterval)
 }
 
-const shouldCheckForStuckOrders = process.env.SHOULD_CHECK_FOR_STUCK_ORDERS === 'true'
 if (shouldCheckForStuckOrders) {
   const stuckOrderCheckInterval = Number(STUCK_ORDER_CHECK_INTERVAL)
   logger.info('Processing stuck order check job at interval: ', stuckOrderCheckInterval)
@@ -289,7 +275,6 @@ if (shouldCheckForStuckOrders) {
   handleTraceCheckForStuckOrdersJob(stuckOrderCheckInterval)
 }
 
-const shouldSendAlgoliaInfo = process.env.SHOULD_SEND_ALGOLIA_INFO === 'true'
 if (shouldSendAlgoliaInfo) {
   const sendAlgoliaInfoInterval = Number(SEND_ALGOLIA_INFO_INTERVAL)
   logger.info('Processing Algolia job at interval: ', sendAlgoliaInfoInterval)
@@ -298,7 +283,6 @@ if (shouldSendAlgoliaInfo) {
   handleTraceSendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
 }
 
-const shouldSendDynamicYieldInfo = process.env.SHOULD_SEND_DYNAMIC_YIELD_INFO === 'true'
 if (shouldSendDynamicYieldInfo) {
   const sendDynamicYieldInfoInterval = Number(SEND_DYNAMIC_YIELD_INFO_INTERVAL)
   logger.info('Processing Dynamic Yield job at interval: ', sendDynamicYieldInfoInterval)
@@ -307,7 +291,6 @@ if (shouldSendDynamicYieldInfo) {
   handleTraceSendPurchaseEventsToDynamicYieldJob(sendDynamicYieldInfoInterval)
 }
 
-const shouldSendOrderNarvar = process.env.SHOULD_SEND_NARVAR_ORDERS === 'true'
 if (shouldSendOrderNarvar) {
   const sendToNarvarInterval = Number(SEND_NARVAR_ORDERS_INTERVAL)
   logger.info('Processing Narvar job at interval: ', sendToNarvarInterval)
@@ -316,7 +299,6 @@ if (shouldSendOrderNarvar) {
   handleTraceSendOrdersToNarvarJob(sendToNarvarInterval)
 }
 
-const shouldSendCjConversions = process.env.SHOULD_SEND_CJ_CONVERSIONS === 'true'
 if (shouldSendCjConversions) {
   const sendCjConversionsInterval = Number(SEND_CJ_CONVERSIONS_INTERVAL)
   logger.info('Processing CJ job at interval: ', sendCjConversionsInterval)
@@ -325,30 +307,10 @@ if (shouldSendCjConversions) {
   handleTraceStartCjConversionJob(sendCjConversionsInterval)
 }
 
-const shouldSendOrderSegment = process.env.SHOULD_SEND_SEGMENT_ORDERS === 'true'
 if (shouldSendOrderSegment) {
   const sendToSegmentInterval = Number(SEND_SEGMENT_ORDERS_INTERVAL)
   logger.info('Processing Segment job at interval: ', sendToSegmentInterval)
   if (!(sendToSegmentInterval > 0)) throw Error('SEND_SEGMENT_ORDERS_INTERVAL must be a positive number')
   const handleTraceSendOrdersToSegmentJob = tracer.wrap('send.orders.to.segment', sendOrdersToSegmentJob)
   handleTraceSendOrdersToSegmentJob(sendToSegmentInterval)
-}
-
-type JobTime = {
-  createAndUploadCsvsJob?: Date;
-  sendOrderEmailNotificationJob?: Date;
-  checkForStuckOrdersJob?: Date;
-  sendOrderUpdatesJob?: Date;
-}
-
-module.exports = {
-  getEnabledJobsLastExecutionTime: () => {
-    const lastEnabledJobsRunTime: JobTime = {}
-    if (shouldUploadOrders) lastEnabledJobsRunTime.createAndUploadCsvsJob = lastJobsRunTime.createAndUploadCsvsJob
-    if (shouldSendNotifications) lastEnabledJobsRunTime.sendOrderEmailNotificationJob = lastJobsRunTime.sendOrderEmailNotificationJob
-    if (shouldCheckForStuckOrders) lastEnabledJobsRunTime.checkForStuckOrdersJob = lastJobsRunTime.checkForStuckOrdersJob
-    if (shouldSendOrderUpdates) lastEnabledJobsRunTime.sendOrderUpdatesJob = lastJobsRunTime.sendOrderUpdatesJob
-    return lastEnabledJobsRunTime
-  },
-  jobTotalTimeout
 }

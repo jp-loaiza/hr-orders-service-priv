@@ -2,7 +2,7 @@
 const { fetchShipments, fetchStates } = require('../commercetools/commercetools')
 
 //Reutilizing Narvar Functions
-const {convertItems, convertPickups, convertShipments, checkShipmentItemIdForNull, checkShippedQuantity, filterMissingTrackingNumberMessages} = require('../narvar/narvar')
+const { convertItems, convertPickups, convertShipments, checkShipmentItemIdForNull, checkShippedQuantity, filterMissingTrackingNumberMessages } = require('../narvar/narvar')
 
 /**
  * 
@@ -13,15 +13,15 @@ const {convertItems, convertPickups, convertShipments, checkShipmentItemIdForNul
 const getTotalDiscountAmount = async (lineItems) => {
   var /** @type number */ total = 0
   var /** @type number */ discountPrice = 0
-  for (const item of lineItems){
+  for (const item of lineItems) {
     total = total + item.totalPrice.centAmount
-    item.discountedPrice? discountPrice = discountPrice + item.discountedPrice.value.centAmount : total
+    item.discountedPrice ? discountPrice = discountPrice + item.discountedPrice.value.centAmount : total
   }
   return (total - discountPrice) / 100
 };
 
 /**
- * @param {import('../orders.d').Order} order
+ * @param {import('@commercetools/platform-sdk').Order} order
  */
 const getOrderData = async (order) => {
   const shipments = await fetchShipments(order.orderNumber)
@@ -30,7 +30,7 @@ const getOrderData = async (order) => {
   const storeId = order.custom.fields.cartSourceWebsite || '00990'
   const orderData = {
     store_id: order.custom.fields.cartSourceWebsite || '00990',
-    storefront_name: (storeId === '0990')? 'retail' : 'outlet',
+    storefront_name: (storeId === '0990') ? 'retail' : 'outlet',
     source: 'online',
     id: order.id,
     order_number: order.orderNumber,
@@ -73,6 +73,7 @@ const getOrderData = async (order) => {
     products: await convertItems(order, states, shipments, isStorePickup),
     shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber)) ? shipment : null),
     pickups: convertPickups(order, shipments),
+    order
   }
   return orderData
 }

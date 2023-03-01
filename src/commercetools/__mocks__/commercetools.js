@@ -573,20 +573,20 @@ const validOrder = {
     phone: '5551231234',
     email: 'user@gmail.com'
   },
-  itemShippingAddress: 
-    {
-      firstName: 'Harry',
-      lastName: 'Rosen',
-      streetName: 'Fake St',
-      streetNumber: '55',
-      postalCode: 'M4V 1H6',
-      city: 'Toronto',
-      state: 'ON',
-      country: 'CA',
-      phone: '5551231234',
-      email: 'user@gmail.com',
-      key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
-    },
+  itemShippingAddress:
+  {
+    firstName: 'Harry',
+    lastName: 'Rosen',
+    streetName: 'Fake St',
+    streetNumber: '55',
+    postalCode: 'M4V 1H6',
+    city: 'Toronto',
+    state: 'ON',
+    country: 'CA',
+    phone: '5551231234',
+    email: 'user@gmail.com',
+    key: '9ee04fc1-17a5-4a83-9416-5cde81258c97'
+  },
   refusedGifts: []
 }
 
@@ -613,5 +613,9 @@ module.exports = {
   fetchShipments: jest.fn().mockImplementationOnce(() => shipments),
   setOrderCustomField: jest.fn(),
   setOrderCustomFields: jest.fn(),
-  validOrder
+  validOrder,
+  invalidOrder,
+  taxPortions,
+  shipments,
+  state
 }

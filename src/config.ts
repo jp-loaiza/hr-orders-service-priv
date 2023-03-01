@@ -29,6 +29,27 @@ export const DYNAMIC_YIELD_API_KEY_SERVER = envProperties.DYNAMIC_YIELD_API_KEY_
 
 export const LOG_LEVEL = envProperties.LOG_LEVEL
 
+export const SFTP_INCOMING_ORDERS_PATH = envProperties.SFTP_INCOMING_ORDERS_PATH ?? './EDOM/pending/'
+
+export const NOTIFICATIONS_BEARER_TOKEN = envProperties.NOTIFICATIONS_BEARER_TOKEN
+
+export const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
+
+export const shouldSendNotifications = process.env.SHOULD_SEND_NOTIFICATIONS === 'true'
+
+export const shouldCheckForStuckOrders = process.env.SHOULD_CHECK_FOR_STUCK_ORDERS === 'true'
+
+export const shouldSendOrderUpdates = process.env.SHOULD_SEND_ORDER_UPDATES === 'true'
+
+export const shouldSendAlgoliaInfo = process.env.SHOULD_SEND_ALGOLIA_INFO === 'true'
+
+export const shouldSendDynamicYieldInfo = process.env.SHOULD_SEND_DYNAMIC_YIELD_INFO === 'true'
+
+export const shouldSendOrderNarvar = process.env.SHOULD_SEND_NARVAR_ORDERS === 'true'
+
+export const shouldSendCjConversions = process.env.SHOULD_SEND_CJ_CONVERSIONS === 'true'
+
+export const shouldSendOrderSegment = process.env.SHOULD_SEND_SEGMENT_ORDERS === 'true'
 /**
  * Kafka connection credentials
  */
@@ -44,3 +65,23 @@ export const ORDER_SAVE_MAX_BYTES_PER_PARTITION = parseInt(envProperties.ORDER_S
 export const ORDER_SAVE_MAX_BYTES = parseInt(envProperties.ORDER_SAVE_MAX_BYTES ?? '10485760')
 export const ORDER_SAVE_CONCURRENT_PARTITIONS = parseInt(envProperties.ORDER_SAVE_CONCURRENT_PARTITIONS ?? '1')
 export const DISABLE_ORDER_SAVE_ACTOR = envProperties.DISABLE_ORDER_SAVE_ACTOR ?? true
+
+export const HR_COMMERCE_TOPIC = envProperties.HR_COMMERCE_TOPIC ?? 'commercetools-messages'
+export const KAFKA_ORDER_PROCESS_CONSUMER_GROUP_ID = envProperties.KAFKA_ORDER_PROCESS_CONSUMER_GROUP_ID ?? 'commercetools-order-process-consumer-group-id'
+export const ORDER_PROCESS_MAX_BYTES_PER_PARTITION = parseInt(envProperties.ORDER_PROCESS_MAX_BYTES_PER_PARTITION ?? '1048576')
+export const ORDER_PROCESS_MAX_BYTES = parseInt(envProperties.ORDER_PROCESS_MAX_BYTES ?? '1048576')
+export const ORDER_PROCESS_CONCURRENT_PARTITIONS = parseInt(process.env.ORDER_PROCESS_CONCURRENT_PARTITIONS ?? '3')
+export const PROCESS_ORDER_EVENTS = envProperties.PROCESS_ORDER_EVENTS ?? false
+
+export const EMAIL_API_URL = envProperties.EMAIL_API_URL
+export const EMAIL_API_USERNAME = envProperties.EMAIL_API_USERNAME
+export const EMAIL_API_PASSWORD = envProperties.EMAIL_API_PASSWORD
+
+export const CREATE_UPLOAD_CSV_EVENT = envProperties.CREATE_UPLOAD_CSV_EVENT ?? false
+export const ORDER_UPDATE_EVENT = envProperties.ORDER_UPDATE_EVENT ?? false
+export const EMAIL_NOTIFY_CRM_EVENT = envProperties.EMAIL_NOTIFY_CRM_EVENT ?? false
+export const ALGOLIA_CONVERSIONS_EVENT = envProperties.ALGOLIA_CONVERSIONS_EVENT ?? false
+export const PURCHASE_EVENTS_DY_EVENT = envProperties.PURCHASE_EVENTS_DY_EVENT ?? false
+export const NARVAR_ORDER_EVENT = envProperties.NARVAR_ORDER_EVENT ?? false
+export const SEGMENT_ORDER_EVENT = envProperties.SEGMENT_ORDER_EVENT ?? false
+export const ORDER_CONVERSION_TO_CJ_EVENT = envProperties.ORDER_CONVERSION_TO_CJ_EVENT ?? false

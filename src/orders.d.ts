@@ -1,9 +1,17 @@
+import { CustomFields, Order } from '@commercetools/platform-sdk'
+
 type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
 type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
 type BoldTaxDescription = 'GST' | 'HST' | 'PST' | 'QST'
 type Card = 'visa' | 'mastercard' | 'american-express' | 'diners-club' | 'discover' | 'jcb'
 type NarvarFulfillmentStatuses = 'FULFILLED' | 'NOT_SHIPPED' | 'SHIPPED' | 'CANCELLED' | 'RETURNED' | 'PARTIAL' | 'PROCESSING' | 'READY_FOR_PICKUP' | 'DELAYED' | 'PICKED_UP' | 'NOT_PICKED_UP'
 type CommerceToolsOrderStates = 'SHIPPED' | 'IN PICKING' | 'HOLD' | 'OPEN' | 'CANCELLED'
+type LocaleType = 'en-CA' | 'fr-CA'
+type PaymentState = 'Pending' | 'Paid'
+type SentToOmsStatus = 'PENDING' | 'SUCCESS' | 'FAILURE'
+type OmsUpdate = 'PENDING' | 'SUCCESS' | 'FAILURE'
+type CarrierId = 'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS'
+type ShippingServiceType = 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST'
 
 interface Env {
   [key: string]: string,
@@ -337,7 +345,7 @@ type Payment = {
         transaction_card_expiry: string,
         transaction_card_last4: string,
         transaction_card_type: Card,
-        user_agent_string: string;      
+        user_agent_string: string;
       }
     },
     paymentStatus: {
@@ -356,74 +364,64 @@ type PaymentInfo = {
   payments: Array<Payment>
 }
 
-type Order = {
-  version: number,
-  type: string,
-  id: string,
-  orderNumber: string,
-  state: { typeId: string, id: string },
-  orderState: string | CommerceToolsOrderStates[],
-  shipmentState: string,
-  createdAt: string,
-  lastModifiedAt: string,
-  customerId?: string,
-  anonymousId?: string,
-  customerEmail: string,
-  totalPrice: Price,
-  lineItems: Array<LineItem>,
-  shippingAddress: Address,
-  itemShippingAddress: Address,
-  billingAddress: Address,
-  locale: 'en-CA' | 'fr-CA',
-  paymentState: 'Pending' | 'Paid'
-  paymentInfo?: PaymentInfo,
-  shippingInfo: ShippingInfo,
-  taxedPrice: TaxedPrice,
-  discountCodes: Array<{
-    discountCode: {
-      typeId: string,
-      id: string
+export interface Custom extends CustomFields {
+  cjNextRetryAt?: string
+  sentToCjStatus?: string
+  segmentNextRetryAt?: string
+  segmentStatus?: string
+  narvarNextRetryAt?: string
+  narvarStatus?: string
+  dynamicYieldPurchaseNextRetryAt?: string
+  sentToDynamicYieldStatus?: string
+  sentToAlgoliaStatus?: string,
+  createdAt?: string
+  sentToCrmStatus?: string
+  omsUpdatedStatus?: string
+  userEmailDomain: string,
+  orderLastModifiedDate: string,
+  cjEvent?: string,
+  cartSourceWebsite?: string,
+  sentToOmsStatus: SentToOmsStatus,
+  omsUpdate: OmsUpdate,
+  omsUpdateNextRetryAt?: string,
+  omsUpdateRetryCount?: number,
+  errorMessage?: string,
+  shippingTaxes: string, // stringified JSON
+  paymentIsReleased: boolean,
+  shippingIsRush: boolean,
+  transactionTotal: Price,
+  signatureIsRequired: boolean,
+  carrierId: CarrierId,
+  shippingServiceType: ShippingServiceType,
+  returnsAreFree: boolean,
+  destinationSiteId?: string,
+  retryCount?: number,
+  nextRetryAt?: string,
+  loginRadiusUid: string,
+  isStorePickup: boolean,
+  dynamicYieldData?: {
+    obj: {
+      value: DynamicYieldCustomFieldData
     }
-  }>,
-  custom: {
-    fields: {
-      userEmailDomain: string,
-      orderLastModifiedDate: string,
-      cjEvent?: string,
-      cartSourceWebsite?: string,
-      sentToOmsStatus: 'PENDING' | 'SUCCESS' | 'FAILURE',
-      omsUpdate: 'PENDING' | 'SUCCESS' | 'FAILURE',
-      omsUpdateNextRetryAt?: string,
-      omsUpdateRetryCount?: number,
-      errorMessage?: string,
-      shippingTaxes: string, // stringified JSON
-      paymentIsReleased: boolean,
-      shippingIsRush: boolean,
-      transactionTotal: Price,
-      signatureIsRequired: boolean,
-      carrierId: 'CP' | 'FDX' | 'PUR' | 'DHL' | 'USPS' | 'UPS',
-      shippingServiceType: 'EXPRESS' | 'SHIPMENT' | 'EXPEDITED PARCEL' | 'XPRESSPOST',
-      returnsAreFree: boolean,
-      destinationSiteId?: string,
-      retryCount?: number,
-      nextRetryAt?: string,
-      loginRadiusUid: string,
-      isStorePickup: boolean,
-      dynamicYieldData?: {
-        obj: {
-          value: DynamicYieldCustomFieldData
-        }
-      },
-      giftMessage: string,
-      orderDate?: string,
-      orderCreatedDate?: string,
-      shippingTax1?: string,
-      shippingTax2?: string,
-      reasonCode?: string,
-      segmentLastSuccessTime?: string,
-      segmentOrderState?: string
-    }
-  }
+  },
+  giftMessage: string,
+  orderDate?: string,
+  orderCreatedDate?: string,
+  shippingTax1?: string,
+  shippingTax2?: string,
+  reasonCode?: string,
+  segmentLastSuccessTime?: string,
+  segmentOrderState?: string
+}
+
+export interface IOrder extends Order {
+  custom?: Custom
+}
+
+export type OrderUpdate = {
+  orderNumber?: string,
+  status?: 'success' | 'released' | 'cancelled',
+  errorMessage?: string
 }
 
 type Shipment = {
@@ -554,5 +552,11 @@ export {
   Shipment,
   tCARD_TYPES_TO_JESTA_CODES,
   Product,
-  ProductCategory
+  ProductCategory,
+  LocaleType,
+  PaymentState,
+  SentToOmsStatus,
+  OmsUpdate,
+  CarrierId,
+  ShippingServiceType
 }
