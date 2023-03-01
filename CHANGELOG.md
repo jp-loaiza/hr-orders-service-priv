@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.6.0...v1.7.0) (2023-03-01)
+
+
+### Features
+
+* HRC-6480: New consumer for hr-commerce order processing ([#467](https://github.com/HarryRosen/hr-orders-service/issues/467)) ([9736f6f](https://github.com/HarryRosen/hr-orders-service/commit/9736f6fa4742acc5782a69b6d800857f7b740932))
+
 ## [1.6.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.5.8...v1.6.0) (2023-02-10)
 
 
