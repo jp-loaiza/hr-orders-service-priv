@@ -33,23 +33,23 @@ export const SFTP_INCOMING_ORDERS_PATH = envProperties.SFTP_INCOMING_ORDERS_PATH
 
 export const NOTIFICATIONS_BEARER_TOKEN = envProperties.NOTIFICATIONS_BEARER_TOKEN
 
-export const shouldUploadOrders = process.env.SHOULD_UPLOAD_ORDERS === 'true'
+export const shouldUploadOrders = envProperties.SHOULD_UPLOAD_ORDERS === 'true'
 
-export const shouldSendNotifications = process.env.SHOULD_SEND_NOTIFICATIONS === 'true'
+export const shouldSendNotifications = envProperties.SHOULD_SEND_NOTIFICATIONS === 'true'
 
-export const shouldCheckForStuckOrders = process.env.SHOULD_CHECK_FOR_STUCK_ORDERS === 'true'
+export const shouldCheckForStuckOrders = envProperties.SHOULD_CHECK_FOR_STUCK_ORDERS === 'true'
 
-export const shouldSendOrderUpdates = process.env.SHOULD_SEND_ORDER_UPDATES === 'true'
+export const shouldSendOrderUpdates = envProperties.SHOULD_SEND_ORDER_UPDATES === 'true'
 
-export const shouldSendAlgoliaInfo = process.env.SHOULD_SEND_ALGOLIA_INFO === 'true'
+export const shouldSendAlgoliaInfo = envProperties.SHOULD_SEND_ALGOLIA_INFO === 'true'
 
-export const shouldSendDynamicYieldInfo = process.env.SHOULD_SEND_DYNAMIC_YIELD_INFO === 'true'
+export const shouldSendDynamicYieldInfo = envProperties.SHOULD_SEND_DYNAMIC_YIELD_INFO === 'true'
 
-export const shouldSendOrderNarvar = process.env.SHOULD_SEND_NARVAR_ORDERS === 'true'
+export const shouldSendOrderNarvar = envProperties.SHOULD_SEND_NARVAR_ORDERS === 'true'
 
-export const shouldSendCjConversions = process.env.SHOULD_SEND_CJ_CONVERSIONS === 'true'
+export const shouldSendCjConversions = envProperties.SHOULD_SEND_CJ_CONVERSIONS === 'true'
 
-export const shouldSendOrderSegment = process.env.SHOULD_SEND_SEGMENT_ORDERS === 'true'
+export const shouldSendOrderSegment = envProperties.SHOULD_SEND_SEGMENT_ORDERS === 'true'
 /**
  * Kafka connection credentials
  */

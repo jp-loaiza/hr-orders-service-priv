@@ -12,6 +12,11 @@ process.env.CJ_SIGNATURE = 'CJ_SIGNATURE'
 process.env.CJ_TYPE = 'CJ_TYPE'
 process.env.CJ_CONVERSION_BASE_URL = 'https://www.emjcd.com/u'
 process.env.SFTP_PRIVATE_KEY = 'SFTP_PRIVATE_KEY'
+
+//Job flags
+process.env.SHOULD_UPLOAD_ORDERS = true
+
+// Event Flags
 process.env.CREATE_UPLOAD_CSV_EVENT = true
 process.env.ORDER_UPDATE_EVENT = true
 process.env.EMAIL_NOTIFY_CRM_EVENT = true
