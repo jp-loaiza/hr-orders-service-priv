@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.0...v1.7.1) (2023-03-02)
+
+
+### Bug Fixes
+
+* HRC-6480: correct CheckJobsHealth issue ([#471](https://github.com/HarryRosen/hr-orders-service/issues/471)) ([7bc072f](https://github.com/HarryRosen/hr-orders-service/commit/7bc072fa67b83e80ff9652be157d8309aa698d8a))
+
 ## [1.7.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.6.0...v1.7.0) (2023-03-01)
 
 
