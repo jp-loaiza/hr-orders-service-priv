@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.1...v1.7.2) (2023-03-03)
+
+
+### Bug Fixes
+
+* HRC-6480: cleanup that was forgotten ([#473](https://github.com/HarryRosen/hr-orders-service/issues/473)) ([b2f4400](https://github.com/HarryRosen/hr-orders-service/commit/b2f4400adaeb50475b51c0c270e9c678971bc66a))
+
 ## [1.7.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.0...v1.7.1) (2023-03-02)
 
 
