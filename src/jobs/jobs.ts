@@ -21,7 +21,8 @@ import {
   startCjConversionJob,
   sendOrdersToSegment,
   sendOrderEmailNotificationByOrderIds,
-  jobTotalTimeout
+  jobTotalTimeout,
+  lastJobsRunTime
 } from './jobs.utils'
 import {
   fetchOrderIdsThatShouldBeSentToCrm,
@@ -43,13 +44,6 @@ import { Order } from "../orders"
 const timeoutSymbol = Symbol('timeout')
 
 logger.info(`Jobs total timeout set to: ${jobTotalTimeout}ms`)
-
-const lastJobsRunTime = {
-  createAndUploadCsvsJob: new Date(),
-  sendOrderEmailNotificationJob: new Date(),
-  checkForStuckOrdersJob: new Date(),
-  sendOrderUpdatesJob: new Date()
-}
 
 /**
  * @param {number} orderUploadInterval interval between each job in ms
@@ -128,7 +122,7 @@ async function sendOrderEmailNotificationJob(sendNotificationsInterval: number) 
       }
     } catch (error) {
       logger.error({
-        type: 'order_email_notification_failure',
+        type: 'email_notification',
         message: 'Failed to send notification requests to OMS',
         error: serializeError(error)
       })

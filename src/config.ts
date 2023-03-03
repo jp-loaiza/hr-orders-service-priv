@@ -85,3 +85,4 @@ export const PURCHASE_EVENTS_DY_EVENT = envProperties.PURCHASE_EVENTS_DY_EVENT ?
 export const NARVAR_ORDER_EVENT = envProperties.NARVAR_ORDER_EVENT ?? false
 export const SEGMENT_ORDER_EVENT = envProperties.SEGMENT_ORDER_EVENT ?? false
 export const ORDER_CONVERSION_TO_CJ_EVENT = envProperties.ORDER_CONVERSION_TO_CJ_EVENT ?? false
+export const STUCK_ORDER_EVENT = envProperties.STUCK_ORDER_EVENT ?? false

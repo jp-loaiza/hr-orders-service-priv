@@ -7,7 +7,8 @@ import {
     ORDER_CONVERSION_TO_CJ_EVENT,
     ORDER_UPDATE_EVENT,
     PURCHASE_EVENTS_DY_EVENT,
-    SEGMENT_ORDER_EVENT
+    SEGMENT_ORDER_EVENT,
+    STUCK_ORDER_EVENT
 } from "../config";
 import {
     DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
@@ -105,5 +106,8 @@ export function canLogStuckOrder(order: Order) {
     const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
     const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
     //query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
-    return order.custom?.fields.sentToOmsStatus === undefined || order.custom?.fields.sentToOmsStatus === SENT_TO_OMS_STATUSES.PENDING && order.createdAt <= staleOrderCutoffDate.toJSON()
+    return order.custom?.fields.sentToOmsStatus === undefined
+        || order.custom?.fields.sentToOmsStatus === SENT_TO_OMS_STATUSES.PENDING
+        && order.createdAt <= staleOrderCutoffDate.toJSON()
+        && STUCK_ORDER_EVENT
 }

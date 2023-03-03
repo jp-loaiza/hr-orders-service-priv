@@ -716,7 +716,7 @@ export async function sendOrderEmailNotificationByOrderIds(orderIds: string[]) {
   }))
 }
 
-const lastJobsRunTime = {
+export const lastJobsRunTime = {
   createAndUploadCsvsJob: new Date(),
   sendOrderEmailNotificationJob: new Date(),
   checkForStuckOrdersJob: new Date(),
@@ -745,11 +745,11 @@ export function checkJobsHealth(res: Response) {
   const enabledJobsLastExecutionTime = getEnabledJobsLastExecutionTime();
   const currentTime = new Date();
   for (const job in enabledJobsLastExecutionTime) {
-    const lastExecutionTime = (enabledJobsLastExecutionTime[job as keyof JobTime])?.getTime()
+    const lastExecutionTime = (enabledJobsLastExecutionTime[(job) as keyof JobTime])?.getTime()
     if (lastExecutionTime && ((currentTime.getTime() - lastExecutionTime) > jobTotalTimeout + 1000)) {
       logger.error({
-        type: 'check_job_health_failure',
-        message: `${job} failed to ran in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExecutionTime}.`
+        type: 'health_check',
+        message: `${job} failed to run in a timely manner. Current Time: ${currentTime.getTime()}, last execution times: ${lastExecutionTime}.`
       });
       res.status(500).send('failed');
       return false;

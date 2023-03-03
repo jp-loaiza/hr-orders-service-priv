@@ -25,3 +25,4 @@ process.env.PURCHASE_EVENTS_DY_EVENT = true
 process.env.NARVAR_ORDER_EVENT = true
 process.env.SEGMENT_ORDER_EVENT = true
 process.env.ORDER_CONVERSION_TO_CJ_EVENT = true
+process.env.STUCK_ORDER_EVENT = true
