@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.2...v1.7.3) (2023-03-03)
+
+
+### Bug Fixes
+
+* HRC-6480: parse env vars correctly ([#475](https://github.com/HarryRosen/hr-orders-service/issues/475)) ([e1468da](https://github.com/HarryRosen/hr-orders-service/commit/e1468dadfa6d1da159cd3c598e9a4211e7fdbc30))
+
 ## [1.7.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.1...v1.7.2) (2023-03-03)
 
 
