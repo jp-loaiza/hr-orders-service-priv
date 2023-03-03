@@ -71,18 +71,18 @@ export const KAFKA_ORDER_PROCESS_CONSUMER_GROUP_ID = envProperties.KAFKA_ORDER_P
 export const ORDER_PROCESS_MAX_BYTES_PER_PARTITION = parseInt(envProperties.ORDER_PROCESS_MAX_BYTES_PER_PARTITION ?? '1048576')
 export const ORDER_PROCESS_MAX_BYTES = parseInt(envProperties.ORDER_PROCESS_MAX_BYTES ?? '1048576')
 export const ORDER_PROCESS_CONCURRENT_PARTITIONS = parseInt(process.env.ORDER_PROCESS_CONCURRENT_PARTITIONS ?? '3')
-export const PROCESS_ORDER_EVENTS = envProperties.PROCESS_ORDER_EVENTS ?? false
+export const PROCESS_ORDER_EVENTS = envProperties.PROCESS_ORDER_EVENTS === 'true' ?? false
 
 export const EMAIL_API_URL = envProperties.EMAIL_API_URL
 export const EMAIL_API_USERNAME = envProperties.EMAIL_API_USERNAME
 export const EMAIL_API_PASSWORD = envProperties.EMAIL_API_PASSWORD
 
-export const CREATE_UPLOAD_CSV_EVENT = envProperties.CREATE_UPLOAD_CSV_EVENT ?? false
-export const ORDER_UPDATE_EVENT = envProperties.ORDER_UPDATE_EVENT ?? false
-export const EMAIL_NOTIFY_CRM_EVENT = envProperties.EMAIL_NOTIFY_CRM_EVENT ?? false
-export const ALGOLIA_CONVERSIONS_EVENT = envProperties.ALGOLIA_CONVERSIONS_EVENT ?? false
-export const PURCHASE_EVENTS_DY_EVENT = envProperties.PURCHASE_EVENTS_DY_EVENT ?? false
-export const NARVAR_ORDER_EVENT = envProperties.NARVAR_ORDER_EVENT ?? false
-export const SEGMENT_ORDER_EVENT = envProperties.SEGMENT_ORDER_EVENT ?? false
-export const ORDER_CONVERSION_TO_CJ_EVENT = envProperties.ORDER_CONVERSION_TO_CJ_EVENT ?? false
-export const STUCK_ORDER_EVENT = envProperties.STUCK_ORDER_EVENT ?? false
+export const CREATE_UPLOAD_CSV_EVENT = envProperties.CREATE_UPLOAD_CSV_EVENT === 'true' ?? false
+export const ORDER_UPDATE_EVENT = envProperties.ORDER_UPDATE_EVENT === 'true' ?? false
+export const EMAIL_NOTIFY_CRM_EVENT = envProperties.EMAIL_NOTIFY_CRM_EVENT === 'true' ?? false
+export const ALGOLIA_CONVERSIONS_EVENT = envProperties.ALGOLIA_CONVERSIONS_EVENT === 'true' ?? false
+export const PURCHASE_EVENTS_DY_EVENT = envProperties.PURCHASE_EVENTS_DY_EVENT === 'true' ?? false
+export const NARVAR_ORDER_EVENT = envProperties.NARVAR_ORDER_EVENT === 'true' ?? false
+export const SEGMENT_ORDER_EVENT = envProperties.SEGMENT_ORDER_EVENT === 'true' ?? false
+export const ORDER_CONVERSION_TO_CJ_EVENT = envProperties.ORDER_CONVERSION_TO_CJ_EVENT === 'true' ?? false
+export const STUCK_ORDER_EVENT = envProperties.STUCK_ORDER_EVENT === 'true' ?? false

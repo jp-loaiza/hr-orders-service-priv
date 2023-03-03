@@ -759,41 +759,48 @@ export function checkJobsHealth(res: Response) {
 }
 
 export const orderMessageDisperse = async (order: Order) => {
+  try {
+    if (canUploadCsv(order)) {
+      createAndUploadCsv(order)
+    }
 
-  if (canUploadCsv(order)) {
-    createAndUploadCsv(order)
-  }
+    if (canSendOrderUpdate(order)) {
+      sendOrderUpdate(order)
+    }
 
-  if (canSendOrderUpdate(order)) {
-    sendOrderUpdate(order)
-  }
+    if (canSendOrderEmailNotification(order)) {
+      sendOrderEmailNotificationByOrder(order)
+    }
 
-  if (canSendOrderEmailNotification(order)) {
-    sendOrderEmailNotificationByOrder(order)
-  }
+    if (canSendConversionToAlgolia(order)) {
+      sendConversionToAlgolia(order)
+    }
 
-  if (canSendConversionToAlgolia(order)) {
-    sendConversionToAlgolia(order)
-  }
+    if (canSendOrderToNarvar(order)) {
+      sendOrderToNarvar(order)
+    }
 
-  if (canSendOrderToNarvar(order)) {
-    sendOrderToNarvar(order)
-  }
+    if (canSendPurchaseEventToDY(order)) {
+      sendPurchaseEventToDY(order)
+    }
 
-  if (canSendPurchaseEventToDY(order)) {
-    sendPurchaseEventToDY(order)
-  }
+    if (canSendOrderToSegment(order)) {
+      sendOrderToSegment(order)
+    }
 
-  if (canSendOrderToSegment(order)) {
-    sendOrderToSegment(order)
-  }
+    if (canSendConversionToCJ(order)) {
+      sendConversionToCJ(order)
+    }
 
-  if (canSendConversionToCJ(order)) {
-    sendConversionToCJ(order)
-  }
-
-  if (canLogStuckOrder(order)) {
-    logStuckOrdersUtil(order)
+    if (canLogStuckOrder(order)) {
+      logStuckOrdersUtil(order)
+    }
+  } catch (error) {
+    logger.error({
+      type: 'order_disperse',
+      message: 'failure to disperse message',
+      error: serializeError(error)
+    })
   }
 }
 
