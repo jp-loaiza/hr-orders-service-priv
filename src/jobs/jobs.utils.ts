@@ -416,7 +416,7 @@ async function sendPurchaseEventToDY(order: Order) {
   try {
     const dynamicYieldEventData = getDYReportEventFromOrder(order)
     if (dynamicYieldEventData != undefined) {
-      await sendPurchaseEventToDynamicYield([dynamicYieldEventData])
+      await sendPurchaseEventToDynamicYield(dynamicYieldEventData)
       logger.info(`Sent Dynamic Yield purchase event for order ${order.orderNumber}`)
       await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS, SENT_TO_DYNAMIC_YIELD_STATUSES.SUCCESS)
     }

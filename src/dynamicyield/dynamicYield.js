@@ -70,7 +70,7 @@ const convertToDollars = (centAmount) => {
 }
 
 /**
- * @param {Array<import('../orders').DynamicYieldReportEventData>} dynamicYieldEventData
+ * @param {import('../orders').DynamicYieldReportEventData} dynamicYieldEventData
  */
 const sendPurchaseEventToDynamicYield = dynamicYieldEventData =>
   fetch(`${DYNAMIC_YIELD_API_URL}/v2/collect/user/event`, formatDynamicYieldRequestOptionsFromEventData(dynamicYieldEventData))
