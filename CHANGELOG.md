@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.3...v1.7.4) (2023-03-06)
+
+
+### Bug Fixes
+
+* HRC-6480: resolve uncaughtException issue ([#477](https://github.com/HarryRosen/hr-orders-service/issues/477)) ([76b9637](https://github.com/HarryRosen/hr-orders-service/commit/76b96377abad5c15cd90db09b49854a0b5d04e6b))
+
 ## [1.7.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.2...v1.7.3) (2023-03-03)
 
 
