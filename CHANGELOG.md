@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.4...v1.7.5) (2023-03-06)
+
+
+### Bug Fixes
+
+* HRC-6480: segment message &gt; 32kb issue ([#479](https://github.com/HarryRosen/hr-orders-service/issues/479)) ([c8fde29](https://github.com/HarryRosen/hr-orders-service/commit/c8fde295187c1378101195c854e233c69f49e2b8))
+
 ## [1.7.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.3...v1.7.4) (2023-03-06)
 
 
