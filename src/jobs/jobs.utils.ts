@@ -29,7 +29,6 @@ import {
   fetchStates,
   fetchShipments,
   fetchOrdersToSendToSegment,
-  setOrderSentToCrmStatus
 } from '../commercetools/commercetools'
 import { sendOrderUpdateToJesta } from '../jesta/jesta'
 import { generateCsvStringFromOrder } from '../csv/csv'
@@ -53,7 +52,6 @@ import { sendOrderConversionToCj } from "../cj/cj"
 import { Response } from 'express';
 import {
   sendOrderEmailNotificationByOrder,
-  sendOrderEmailNotificationByOrderId
 } from "../emails/email"
 import {
   canLogStuckOrder,
@@ -696,24 +694,6 @@ export function logStuckOrdersUtil(order: Order) {
     stuck_orders: 1,
     message: `Found stuck order # ${order.orderNumber}, id: ${order.id}`
   })
-}
-
-export async function sendOrderEmailNotificationByOrderIds(orderIds: string[]) {
-  await Promise.all(orderIds.map(async (orderId: string) => {
-    try {
-      await sendOrderEmailNotificationByOrderId(orderId)
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, true)
-    } catch (error) {
-      logger.error({
-        type: 'order_email_notification_failure',
-        message: `Failed to send order email notification to CRM for orderID:${orderId}`,
-        error: serializeError(error)
-      })
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, false)
-    }
-  }))
 }
 
 export const lastJobsRunTime = {

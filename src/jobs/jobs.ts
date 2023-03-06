@@ -20,13 +20,14 @@ import {
   sleep,
   startCjConversionJob,
   sendOrdersToSegment,
-  sendOrderEmailNotificationByOrderIds,
   jobTotalTimeout,
-  lastJobsRunTime
+  lastJobsRunTime,
+  retry
 } from './jobs.utils'
 import {
   fetchOrderIdsThatShouldBeSentToCrm,
-  fetchStuckOrderResults
+  fetchStuckOrderResults,
+  setOrderSentToCrmStatus
 } from '../commercetools/commercetools'
 import {
   shouldCheckForStuckOrders,
@@ -40,6 +41,7 @@ import {
   shouldUploadOrders
 } from "../config"
 import { Order } from "../orders"
+import { sendOrderEmailNotificationByOrderId } from "../emails/email"
 
 const timeoutSymbol = Symbol('timeout')
 
@@ -89,7 +91,7 @@ async function sendOrderUpdatesJob(orderUploadInterval: number) {
       }
     } catch (error) {
       logger.error({
-        type: 'order_updates_oms_failure',
+        type: 'order_updates_oms',
         message: 'Failed to send order updates to OMS',
         error: serializeError(error)
       })
@@ -103,7 +105,21 @@ export async function sendOrderEmailNotification() {
   const { orderIds, total } = await fetchOrderIdsThatShouldBeSentToCrm()
   orderIds.length ? logger.info(`Sending ${orderIds.length} orders to CRM (total in backlog: ${total}): ${orderIds}`) : null
 
-  await sendOrderEmailNotificationByOrderIds(orderIds)
+  await Promise.all(orderIds.map(async (orderId: string) => {
+    try {
+      await sendOrderEmailNotificationByOrderId(orderId)
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderSentToCrmStatus)(orderId, true)
+    } catch (error) {
+      logger.error({
+        type: 'order_email_notification_failure',
+        message: `Failed to send order email notification to CRM for orderID:${orderId}`,
+        error: serializeError(error)
+      })
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderSentToCrmStatus)(orderId, false)
+    }
+  }))
 }
 
 /**

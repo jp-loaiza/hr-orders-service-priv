@@ -47,13 +47,22 @@ export const sendOrderEmailNotificationByOrderId = async (orderId: string) => {
     throw new Error(`Order could not be fetched from commercetools: ${err.message}`)
   }
 
-  sendOrderEmailNotificationByOrder(order)
+  try {
+    await sendOrderEmailNotificationByOrder(order)
+  } catch (err) {
+    logger.error({
+      type: 'email_notify',
+      message: `failed to send email for orderID: ${order.id}, orderNumber: ${order.orderNumber}`,
+      error: serializeError(err)
+    })
+  }
+
 }
 
-export function sendOrderEmailNotificationByOrder(order: Order) {
+export async function sendOrderEmailNotificationByOrder(order: Order) {
   try {
     if (EMAIL_API_URL) {
-      fetchWithTimeout(EMAIL_API_URL, {
+      await fetchWithTimeout(EMAIL_API_URL, {
         body: JSON.stringify(formatEmailApiRequestBodyFromOrder(order)),
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +73,7 @@ export function sendOrderEmailNotificationByOrder(order: Order) {
     }
   } catch (error) {
     logger.error({
-      type: 'email_notify_failure',
+      type: 'email_notify',
       message: `failed to send email for orderID: ${order.id}, orderNumber: ${order.orderNumber}`,
       error: serializeError(error)
     })
