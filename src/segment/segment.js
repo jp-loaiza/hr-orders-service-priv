@@ -73,7 +73,6 @@ const getOrderData = async (order) => {
     products: await convertItems(order, states, shipments, isStorePickup),
     shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber)) ? shipment : null),
     pickups: convertPickups(order, shipments),
-    order
   }
   return orderData
 }
