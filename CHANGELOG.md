@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.5...v1.7.6) (2023-03-06)
+
+
+### Bug Fixes
+
+* HRC-6480: DY expects an object ([#481](https://github.com/HarryRosen/hr-orders-service/issues/481)) ([0ec8694](https://github.com/HarryRosen/hr-orders-service/commit/0ec8694e0062a5ddc6ff0330b4cc7551ca4645e3))
+
 ## [1.7.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.4...v1.7.5) (2023-03-06)
 
 
