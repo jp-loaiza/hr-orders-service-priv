@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.6...v1.7.7) (2023-03-08)
+
+
+### Bug Fixes
+
+* HRC-5778: format to view log errors ([#483](https://github.com/HarryRosen/hr-orders-service/issues/483)) ([0805225](https://github.com/HarryRosen/hr-orders-service/commit/0805225517b0c2cafe4b879347ad4fcb813fe209))
+
 ## [1.7.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.5...v1.7.6) (2023-03-06)
 
 
