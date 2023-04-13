@@ -4,9 +4,14 @@ const fetch = require('node-fetch')
 //import base64 from 'base-64'
 
 const baseUrl = process.env.NARVAR_BASE_URL
-const username = process.env.NARVAR_USERNAME
-const password = process.env.NARVAR_PASSWORD
 
+const harryRosenUsername = process.env.NARVAR_USERNAME_990
+const harryRosenpassword = process.env.NARVAR_PASSWORD_990
+
+const finalCutUsername = process.env.NARVAR_USERNAME_997
+const finalCutPassword = process.env.NARVAR_PASSWORD_997
+
+const finalCut = process.env.FINAL_CUT
 const { fetchItemInfo, fetchCategoryInfo } = require('../commercetools/commercetools')
 
 /**
@@ -38,11 +43,16 @@ const sendToNarvar = async (order) => {
   const options = {
     body: JSON.stringify(order),
     headers: {
-      Authorization: `Basic ${base64.encode(username + ':' + password)}`,
+      Authorization: `Basic ${ base64.encode(harryRosenUsername + ':' + harryRosenpassword) }`,
       'Content-Type': 'application/json'
     },
     method: 'POST'
   }
+
+  if (order.attributes.siteId === finalCut) {
+    options.headers.Authorization = `Basic ${ base64.encode(finalCutUsername + ':' + finalCutPassword) }`
+  }
+
   return makeNarvarRequest('/orders', options)
 }
 
