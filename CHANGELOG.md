@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.7...v1.7.8) (2023-04-13)
+
+
+### Bug Fixes
+
+* HRC-6689: Added a new monker for shopfinalcut to send orders to narvar ([#486](https://github.com/HarryRosen/hr-orders-service/issues/486)) ([be65938](https://github.com/HarryRosen/hr-orders-service/commit/be659385d7b8e3423ad99c13747d784a3b6f3c1c))
+
 ## [1.7.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.6...v1.7.7) (2023-03-08)
 
 
