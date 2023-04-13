@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.9](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.8...v1.7.9) (2023-04-13)
+
+
+### Bug Fixes
+
+* fixed the mapping in sendToNarvar function ([#488](https://github.com/HarryRosen/hr-orders-service/issues/488)) ([51cb367](https://github.com/HarryRosen/hr-orders-service/commit/51cb367290e6019f783e349e7c0c43557203464c))
+
 ## [1.7.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.7...v1.7.8) (2023-04-13)
 
 
