@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.10](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.9...v1.7.10) (2023-04-14)
+
+
+### Bug Fixes
+
+* HRC-6689: Modified siteID field reference in sendtonarvar function ([#490](https://github.com/HarryRosen/hr-orders-service/issues/490)) ([3105483](https://github.com/HarryRosen/hr-orders-service/commit/31054832d81b03e7aa663fbdc5a5874068d273ad))
+
 ## [1.7.9](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.8...v1.7.9) (2023-04-13)
 
 
