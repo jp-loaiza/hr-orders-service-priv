@@ -49,7 +49,7 @@ const sendToNarvar = async (order) => {
     method: 'POST'
   }
 
-  if (order.custom.fields.cartSourceWebsite === finalCut) {
+  if (order.order_info.attributes.siteId === finalCut) {
     options.headers.Authorization = `Basic ${ base64.encode(finalCutUsername + ':' + finalCutPassword) }`
   }
 
