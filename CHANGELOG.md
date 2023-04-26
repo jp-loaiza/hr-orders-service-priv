@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.11](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.10...v1.7.11) (2023-04-26)
+
+
+### Bug Fixes
+
+* HRC-6689: new message here ([#495](https://github.com/HarryRosen/hr-orders-service/issues/495)) ([f45dcfc](https://github.com/HarryRosen/hr-orders-service/commit/f45dcfc92e02282262d83ec7038f841e62152ae8))
+
 ## [1.7.10](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.9...v1.7.10) (2023-04-14)
 
 
