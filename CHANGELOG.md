@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.12](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.11...v1.7.12) (2023-04-26)
+
+
+### Bug Fixes
+
+* HRC-6689: Rectified the logger.info to accept the message ([#497](https://github.com/HarryRosen/hr-orders-service/issues/497)) ([f42db70](https://github.com/HarryRosen/hr-orders-service/commit/f42db707f50d0029b745852081c9c71b386d476d))
+
 ## [1.7.11](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.10...v1.7.11) (2023-04-26)
 
 
