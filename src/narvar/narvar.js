@@ -13,6 +13,7 @@ const finalCutPassword = process.env.NARVAR_PASSWORD_997
 
 const finalCut = process.env.FINAL_CUT
 const { fetchItemInfo, fetchCategoryInfo } = require('../commercetools/commercetools')
+const { default: logger } = require('../logger')
 
 /**
  * @param {string} path Path to the Api
@@ -53,6 +54,7 @@ const sendToNarvar = async (order) => {
     options.headers.Authorization = `Basic ${ base64.encode(finalCutUsername + ':' + finalCutPassword) }`
   }
 
+  logger.info('check the narvar payload', options.body)
   return makeNarvarRequest('/orders', options)
 }
 
