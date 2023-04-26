@@ -54,7 +54,7 @@ const sendToNarvar = async (order) => {
     options.headers.Authorization = `Basic ${ base64.encode(finalCutUsername + ':' + finalCutPassword) }`
   }
 
-  logger.info('check the narvar payload', options.body)
+  logger.info(`check the narvar payload: ${JSON.stringify(options.body)}`)
   return makeNarvarRequest('/orders', options)
 }
 
