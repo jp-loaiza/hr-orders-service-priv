@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.13](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.12...v1.7.13) (2023-04-27)
+
+
+### Bug Fixes
+
+* HRC-6785: trace wrapper not closed on endless loop ([#494](https://github.com/HarryRosen/hr-orders-service/issues/494)) ([c6a09e2](https://github.com/HarryRosen/hr-orders-service/commit/c6a09e261e15155212e33e747c1c048ea692f734))
+
 ## [1.7.12](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.11...v1.7.12) (2023-04-26)
 
 
