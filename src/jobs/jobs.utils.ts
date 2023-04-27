@@ -64,6 +64,7 @@ import {
   canSendPurchaseEventToDY,
   canUploadCsv
 } from "./validationService"
+import tracer from "../tracer"
 
 /**
  *
@@ -612,7 +613,7 @@ function createJob({
   }
 }
 
-export const startCjConversionJob = createJob({
+export const startCjConversionJob = tracer.wrap('send.conversions.to.cj', createJob({
   name: 'CJ conversions',
   fetchRelevantOrders: fetchOrdersWhoseConversionsShouldBeSentToCj,
   processOrder: sendOrderConversionToCj,
@@ -620,7 +621,7 @@ export const startCjConversionJob = createJob({
   nextRetryAtField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT,
   statusField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_STATUS,
   statuses: SENT_TO_CJ_STATUSES
-})
+}))
 
 type orderData = {
   loginradius_id: string,

@@ -56,7 +56,7 @@ async function createAndUploadCsvsJob(orderUploadInterval: number) {
     console.time('Create and uploads CSVs')
     try {
       const result = await Promise.race([
-        createAndUploadCsvs(),
+        tracer.wrap('create.upload.csv.orders', createAndUploadCsvs()),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
@@ -83,7 +83,7 @@ async function sendOrderUpdatesJob(orderUploadInterval: number) {
   while (true) {
     try {
       const result = await Promise.race([
-        sendOrderUpdates(),
+        tracer.wrap('order.updates.to.jesta', sendOrderUpdates()),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
@@ -130,7 +130,7 @@ async function sendOrderEmailNotificationJob(sendNotificationsInterval: number) 
   while (true) {
     try {
       const result = await Promise.race([
-        sendOrderEmailNotification(),
+        tracer.wrap('email.notifications', sendOrderEmailNotification()),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
@@ -154,7 +154,7 @@ async function sendOrderEmailNotificationJob(sendNotificationsInterval: number) 
 async function checkForStuckOrdersJob(stuckOrderCheckInterval: number) {
   //eslint-disable-next-line no-constant-condition
   while (true) {
-    const { results: stuckOrders, total: stuckOrderCount } = await fetchStuckOrderResults()
+    const { results: stuckOrders, total: stuckOrderCount } = await tracer.wrap('send.conversions.to.algolia', fetchStuckOrderResults())
 
     if (stuckOrderCount > 0) {
       const stringifiedStuckOrderNumbersAndIds = stuckOrders.map((order: Order) => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
@@ -180,7 +180,7 @@ async function sendConversionsToAlgoliaJob(sendToAlgoliaInterval: number) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      await sendConversionsToAlgolia()
+      tracer.wrap('send.conversions.to.algolia', await sendConversionsToAlgolia())
     }
     catch (error) {
       logger.error({
@@ -200,7 +200,7 @@ async function sendPurchaseEventsToDynamicYieldJob(sendToDynamicYieldInterval: n
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      await sendPurchaseEventsToDynamicYield()
+      await tracer.wrap('send.purchase.events.to.dynamicyield', sendPurchaseEventsToDynamicYield())
     }
     catch (error) {
       logger.error({
@@ -220,7 +220,7 @@ async function sendOrdersToNarvarJob(sendToNarvarInterval: number) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      await sendOrdersToNarvar()
+      await tracer.wrap('send.order.to.narvar', sendOrdersToNarvar())
     }
     catch (error) {
       logger.error({
@@ -257,70 +257,61 @@ if (shouldUploadOrders) {
   const orderUploadInterval = Number(ORDER_UPLOAD_INTERVAL)
   logger.info('Processing orders upload job at interval: ', orderUploadInterval)
   if (!(orderUploadInterval > 0)) throw new Error('ORDER_UPLOAD_INTERVAL must be a positive number')
-  const handleTraceCreateAndUploadCsvsJob = tracer.wrap('create.upload.csv.orders', createAndUploadCsvsJob)
-  handleTraceCreateAndUploadCsvsJob(orderUploadInterval)
+  createAndUploadCsvsJob(orderUploadInterval)
 }
 
 if (shouldSendOrderUpdates) {
   const orderUpdateInterval = Number(ORDER_UPDATE_INTERVAL)
   logger.info('Processing orders update job at interval: ', orderUpdateInterval)
   if (!(orderUpdateInterval > 0)) throw new Error('ORDER_UPDATE_INTERVAL must be a positive number')
-  const handleTraceSendOrderUpdatesJob = tracer.wrap('order.updates.to.jesta', sendOrderUpdatesJob)
-  handleTraceSendOrderUpdatesJob(orderUpdateInterval)
+  sendOrderUpdatesJob(orderUpdateInterval)
 }
 
 if (shouldSendNotifications) {
   const sendNotificationsInterval = Number(SEND_NOTIFICATIONS_INTERVAL)
   logger.info('Processing notifications job at interval: ', sendNotificationsInterval)
   if (!(sendNotificationsInterval > 0)) throw new Error('SEND_NOTIFICATIONS_INTERVAL must be a positive number')
-  const handleTraceSendOrderEmailNotificationJob = tracer.wrap('email.notifications.to.narvar', sendOrderEmailNotificationJob)
-  handleTraceSendOrderEmailNotificationJob(sendNotificationsInterval)
+  sendOrderEmailNotificationJob(sendNotificationsInterval)
 }
 
 if (shouldCheckForStuckOrders) {
   const stuckOrderCheckInterval = Number(STUCK_ORDER_CHECK_INTERVAL)
   logger.info('Processing stuck order check job at interval: ', stuckOrderCheckInterval)
   if (!(stuckOrderCheckInterval > 0)) throw new Error('STUCK_ORDER_CHECK_INTERVAL must be a positive number')
-  const handleTraceCheckForStuckOrdersJob = tracer.wrap('stuck.orders.check', checkForStuckOrdersJob)
-  handleTraceCheckForStuckOrdersJob(stuckOrderCheckInterval)
+  checkForStuckOrdersJob(stuckOrderCheckInterval)
 }
 
 if (shouldSendAlgoliaInfo) {
   const sendAlgoliaInfoInterval = Number(SEND_ALGOLIA_INFO_INTERVAL)
   logger.info('Processing Algolia job at interval: ', sendAlgoliaInfoInterval)
   if (!(sendAlgoliaInfoInterval > 0)) throw new Error('SEND_ALGOLIA_INFO_INTERVAL must be a positive number')
-  const handleTraceSendConversionsToAlgoliaJob = tracer.wrap('send.conversions.to.algolia', sendConversionsToAlgoliaJob)
-  handleTraceSendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
+  sendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
 }
 
 if (shouldSendDynamicYieldInfo) {
   const sendDynamicYieldInfoInterval = Number(SEND_DYNAMIC_YIELD_INFO_INTERVAL)
   logger.info('Processing Dynamic Yield job at interval: ', sendDynamicYieldInfoInterval)
   if (!(sendDynamicYieldInfoInterval > 0)) throw new Error('SEND_DYNAMIC_YIELD_INFO_INTERVAL must be a positive number')
-  const handleTraceSendPurchaseEventsToDynamicYieldJob = tracer.wrap('send.purchase.events.to.dynamicyield', sendPurchaseEventsToDynamicYieldJob)
-  handleTraceSendPurchaseEventsToDynamicYieldJob(sendDynamicYieldInfoInterval)
+  sendPurchaseEventsToDynamicYieldJob(sendDynamicYieldInfoInterval)
 }
 
 if (shouldSendOrderNarvar) {
   const sendToNarvarInterval = Number(SEND_NARVAR_ORDERS_INTERVAL)
   logger.info('Processing Narvar job at interval: ', sendToNarvarInterval)
   if (!(sendToNarvarInterval > 0)) throw Error('SEND_NARVAR_ORDERS_INTERVAL must be a positive number')
-  const handleTraceSendOrdersToNarvarJob = tracer.wrap('send.order.to.narvar', sendOrdersToNarvarJob)
-  handleTraceSendOrdersToNarvarJob(sendToNarvarInterval)
+  sendOrdersToNarvarJob(sendToNarvarInterval)
 }
 
 if (shouldSendCjConversions) {
   const sendCjConversionsInterval = Number(SEND_CJ_CONVERSIONS_INTERVAL)
   logger.info('Processing CJ job at interval: ', sendCjConversionsInterval)
   if (!(sendCjConversionsInterval > 0)) throw new Error('SEND_CJ_CONVERSIONS_INTERVAL must be a positive number')
-  const handleTraceStartCjConversionJob = tracer.wrap('send.conversions.to.cj', startCjConversionJob)
-  handleTraceStartCjConversionJob(sendCjConversionsInterval)
+  startCjConversionJob(sendCjConversionsInterval)
 }
 
 if (shouldSendOrderSegment) {
   const sendToSegmentInterval = Number(SEND_SEGMENT_ORDERS_INTERVAL)
   logger.info('Processing Segment job at interval: ', sendToSegmentInterval)
   if (!(sendToSegmentInterval > 0)) throw Error('SEND_SEGMENT_ORDERS_INTERVAL must be a positive number')
-  const handleTraceSendOrdersToSegmentJob = tracer.wrap('send.orders.to.segment', sendOrdersToSegmentJob)
-  handleTraceSendOrdersToSegmentJob(sendToSegmentInterval)
+  sendOrdersToSegmentJob(sendToSegmentInterval)
 }
