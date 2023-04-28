@@ -1,5 +1,5 @@
 # We're using a multi stage build to avoid huge images containing the whole src folder
-FROM node:16.15-alpine as build
+FROM node:16.20-alpine as build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:16.15-alpine as production
+FROM node:16.20-alpine as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
