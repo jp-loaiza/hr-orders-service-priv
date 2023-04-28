@@ -12,6 +12,8 @@ const finalCutUsername = process.env.NARVAR_USERNAME_997
 const finalCutPassword = process.env.NARVAR_PASSWORD_997
 
 const finalCut = process.env.FINAL_CUT
+const enableFinalCutToNarvar = process.env.SEND_FINAL_CUT_TO_NARVAR === 'true' ? true : false
+
 const { fetchItemInfo, fetchCategoryInfo } = require('../commercetools/commercetools')
 const { default: logger } = require('../logger')
 
@@ -49,8 +51,9 @@ const sendToNarvar = async (order) => {
     },
     method: 'POST'
   }
-
-  if (order.order_info.attributes.siteId === finalCut) {
+  
+  //@todo Remove after HRC-6808 is deployed
+  if (order.order_info.attributes.siteId === finalCut && enableFinalCutToNarvar) {
     options.headers.Authorization = `Basic ${ base64.encode(finalCutUsername + ':' + finalCutPassword) }`
   }
 

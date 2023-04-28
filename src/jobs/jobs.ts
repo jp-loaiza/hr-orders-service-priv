@@ -154,7 +154,7 @@ async function sendOrderEmailNotificationJob(sendNotificationsInterval: number) 
 async function checkForStuckOrdersJob(stuckOrderCheckInterval: number) {
   //eslint-disable-next-line no-constant-condition
   while (true) {
-    const { results: stuckOrders, total: stuckOrderCount } = await tracer.wrap('send.conversions.to.algolia', fetchStuckOrderResults())
+    const { results: stuckOrders, total: stuckOrderCount } = await tracer.wrap('check.stuck.orders', fetchStuckOrderResults())
 
     if (stuckOrderCount > 0) {
       const stringifiedStuckOrderNumbersAndIds = stuckOrders.map((order: Order) => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
