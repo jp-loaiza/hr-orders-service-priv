@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.14](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.13...v1.7.14) (2023-04-28)
+
+
+### Bug Fixes
+
+* added the flag for shopfinalcut orders ([#501](https://github.com/HarryRosen/hr-orders-service/issues/501)) ([ae197a7](https://github.com/HarryRosen/hr-orders-service/commit/ae197a7bfaa1167841b3c0eaf3704a7a9c40c474))
+* Updating base image from 16.15-alpine to 16.20-alpine ([7dea3e2](https://github.com/HarryRosen/hr-orders-service/commit/7dea3e226524fd9ddc4f261f591a67c3a386089d))
+
 ## [1.7.13](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.12...v1.7.13) (2023-04-27)
 
 
