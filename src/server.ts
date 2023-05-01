@@ -13,8 +13,8 @@ import {
   SFTP_INCOMING_ORDERS_PATH,
   NOTIFICATIONS_BEARER_TOKEN
 } from './config'
-import { keepAliveRequest } from './commercetools/commercetools'
-import { sendOrderEmailNotificationByOrderId } from './emails/email'
+import { fetchFullOrder, keepAliveRequest } from './commercetools/commercetools'
+import { sendOrderEmailNotificationByOrder } from './emails/email'
 import logger, { serializeError } from './logger'
 
 import kafkaClient from './events/kafkaClient'
@@ -93,7 +93,8 @@ app.post('/notifications/order-created', async (req: Request, res: Response) => 
   let orderId
   try {
     orderId = req.body.orderId
-    await sendOrderEmailNotificationByOrderId(orderId)
+    const order = await fetchFullOrder(orderId)
+    await sendOrderEmailNotificationByOrder(order)
     console.log(`Sent email notification for order ${orderId}`)
     res.send()
   } catch (err) {

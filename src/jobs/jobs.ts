@@ -21,13 +21,11 @@ import {
   startCjConversionJob,
   sendOrdersToSegment,
   jobTotalTimeout,
-  lastJobsRunTime,
-  retry
+  lastJobsRunTime
 } from './jobs.utils'
 import {
   fetchOrderIdsThatShouldBeSentToCrm,
-  fetchStuckOrderResults,
-  setOrderSentToCrmStatus
+  fetchStuckOrderResults
 } from '../commercetools/commercetools'
 import {
   shouldCheckForStuckOrders,
@@ -41,7 +39,7 @@ import {
   shouldUploadOrders
 } from "../config"
 import { Order } from "../orders"
-import { sendOrderEmailNotificationByOrderId } from "../emails/email"
+import { sendOrderEmailNotification } from "../emails/email"
 
 const timeoutSymbol = Symbol('timeout')
 
@@ -56,7 +54,7 @@ async function createAndUploadCsvsJob(orderUploadInterval: number) {
     console.time('Create and uploads CSVs')
     try {
       const result = await Promise.race([
-        tracer.wrap('create.upload.csv.orders', createAndUploadCsvs()),
+        createAndUploadCsvs(),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
@@ -83,7 +81,7 @@ async function sendOrderUpdatesJob(orderUploadInterval: number) {
   while (true) {
     try {
       const result = await Promise.race([
-        tracer.wrap('order.updates.to.jesta', sendOrderUpdates()),
+        sendOrderUpdates(),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
@@ -101,25 +99,15 @@ async function sendOrderUpdatesJob(orderUploadInterval: number) {
   }
 }
 
-export async function sendOrderEmailNotification() {
-  const { orderIds, total } = await fetchOrderIdsThatShouldBeSentToCrm()
-  orderIds.length ? logger.info(`Sending ${orderIds.length} orders to CRM (total in backlog: ${total}): ${orderIds}`) : null
+export async function sendOrderEmailNotifications() {
+  await tracer.trace('order_service_job_batch', { resource: 'order_email_notification_batch' }, async () => {
+    const { orders, total } = await fetchOrderIdsThatShouldBeSentToCrm()
+    orders.length ? logger.info(`Sending ${orders.length} orders to CRM (total in backlog: ${total})`) : null
 
-  await Promise.all(orderIds.map(async (orderId: string) => {
-    try {
-      await sendOrderEmailNotificationByOrderId(orderId)
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, true)
-    } catch (error) {
-      logger.error({
-        type: 'order_email_notification_failure',
-        message: `Failed to send order email notification to CRM for orderID:${orderId}`,
-        error: serializeError(error)
-      })
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderSentToCrmStatus)(orderId, false)
-    }
-  }))
+    await Promise.all(orders.map(async (order) => {
+      await sendOrderEmailNotification(order)
+    }))
+  })
 }
 
 /**
@@ -130,7 +118,7 @@ async function sendOrderEmailNotificationJob(sendNotificationsInterval: number) 
   while (true) {
     try {
       const result = await Promise.race([
-        tracer.wrap('email.notifications', sendOrderEmailNotification()),
+        sendOrderEmailNotifications(),
         sleep(jobTotalTimeout).then(() => timeoutSymbol)
       ])
       if (result === timeoutSymbol) {
@@ -154,7 +142,7 @@ async function sendOrderEmailNotificationJob(sendNotificationsInterval: number) 
 async function checkForStuckOrdersJob(stuckOrderCheckInterval: number) {
   //eslint-disable-next-line no-constant-condition
   while (true) {
-    const { results: stuckOrders, total: stuckOrderCount } = await tracer.wrap('check.stuck.orders', fetchStuckOrderResults())
+    const { results: stuckOrders, total: stuckOrderCount } = await fetchStuckOrderResults()
 
     if (stuckOrderCount > 0) {
       const stringifiedStuckOrderNumbersAndIds = stuckOrders.map((order: Order) => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
@@ -180,7 +168,7 @@ async function sendConversionsToAlgoliaJob(sendToAlgoliaInterval: number) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      tracer.wrap('send.conversions.to.algolia', await sendConversionsToAlgolia())
+      await sendConversionsToAlgolia()
     }
     catch (error) {
       logger.error({
@@ -200,7 +188,7 @@ async function sendPurchaseEventsToDynamicYieldJob(sendToDynamicYieldInterval: n
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      await tracer.wrap('send.purchase.events.to.dynamicyield', sendPurchaseEventsToDynamicYield())
+      await sendPurchaseEventsToDynamicYield()
     }
     catch (error) {
       logger.error({
@@ -220,7 +208,7 @@ async function sendOrdersToNarvarJob(sendToNarvarInterval: number) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      await tracer.wrap('send.order.to.narvar', sendOrdersToNarvar())
+      await sendOrdersToNarvar()
     }
     catch (error) {
       logger.error({

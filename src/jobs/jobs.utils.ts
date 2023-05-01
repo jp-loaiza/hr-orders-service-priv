@@ -34,7 +34,6 @@ import { sendOrderUpdateToJesta } from '../jesta/jesta'
 import { generateCsvStringFromOrder } from '../csv/csv'
 import {
   sftpConfig,
-  STATS_DISABLE,
   SFTP_INCOMING_ORDERS_PATH,
   shouldUploadOrders,
   shouldSendNotifications,
@@ -46,7 +45,6 @@ import { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } from '../d
 import { convertOrderForNarvar, sendToNarvar } from '../narvar/narvar'
 import { getOrderData } from '../segment/segment'
 import { sendSegmentTrackCall, sendSegmentIdentifyCall } from '../segment/segment.utils'
-import statsClient from '../statsClient'
 import logger, { serializeError } from '../logger'
 import { sendOrderConversionToCj } from "../cj/cj"
 import { Response } from 'express';
@@ -64,7 +62,8 @@ import {
   canSendPurchaseEventToDY,
   canUploadCsv
 } from "./validationService"
-import tracer from "../tracer"
+import tracer, { hydrateOrderSpanTags, spanSetError } from '../tracer'
+import { State } from "@commercetools/platform-sdk"
 
 /**
  *
@@ -172,93 +171,16 @@ export const generateFilenameFromOrder = (order: Order) => {
   return `Orders-${dateString}-${timeString}${order.orderNumber}.csv`
 }
 
-async function createAndUploadCsv(order: Order) {
-  let sftp
-  try {
-    let csvString
-    sftp = new client()
-    await sftp.connect(sftpConfig)
-    logger.info('Connected to SFTP server')
-
+async function createAndUploadCsv(order: Order, sftp: client) {
+  await tracer.trace('order_service_job', { resource: 'order_upload_csv' }, async () => {
+    hydrateOrderSpanTags(order)
     try {
-      if (!validateOrder(order)) throw new Error('Invalid order')
-      csvString = generateCsvStringFromOrder(order)
-    } catch (err) {
-      const orderNumber = order.orderNumber
-      const errorMessage =
-        err instanceof Error && err.message === `Invalid order: ${orderNumber}` ?
-          JSON.stringify(validateOrder.errors) : `Unable to generate CSV for order ${orderNumber}: `
-      logger.error({
-        type: 'order_validation_failure',
-        message: errorMessage,
-        error: await serializeError(err),
-      })
-
-      await setOrderErrorFields(order, errorMessage, true, {
-        retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
-        nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
-        statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
-      })
-    }
-
-    try {
-      logger.info(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
-      if (csvString) {
-        await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
-      } else {
-        throw new Error('Failed to upload CSV to JESTA')
-      }
-
-      logger.info(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
-    } catch (err) {
-      logger.error({
-        type: 'upload_csv_failure',
-        message: `Unable to upload CSV to JESTA for order ${order.orderNumber}`,
-        stack: serializeError(err)
-      })
-      await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
-        retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
-        nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
-        statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
-      })
-    }
-    await setOrderAsSentToOms(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
-  } catch (error) {
-    logger.error({
-      type: 'process_orders_failure',
-      message: 'Unable to process orders',
-      error: serializeError(error),
-    })
-  } finally {
-    if (sftp) {
-      await sftp.end()
-        .catch(function (err: any) {
-          logger.error({
-            type: 'sftp_connection_failure',
-            message: 'Unable to end SFTP connection',
-            error: serializeError(err),
-          })
-        })
-    }
-  }
-}
-
-export const createAndUploadCsvs = async () => {
-  let sftp
-  try {
-    sftp = new client()
-    await sftp.connect(sftpConfig)
-    logger.info('Connected to SFTP server')
-    const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
-    logger.info(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
-
-    let exportedOrders = 0
-    for (const order of orders) {
       let csvString
       try {
         if (!validateOrder(order)) throw new Error('Invalid order')
         csvString = generateCsvStringFromOrder(order)
       } catch (err) {
+        spanSetError(err)
         const orderNumber = order.orderNumber
         const errorMessage =
           err instanceof Error && err.message === `Invalid order: ${orderNumber}` ?
@@ -268,20 +190,25 @@ export const createAndUploadCsvs = async () => {
           message: errorMessage,
           error: await serializeError(err),
         })
-        // we retry in case the version of the order has changed by the notifications job
+
         await retry(setOrderErrorFields)(order, errorMessage, true, {
           retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
           nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
         })
-        continue
       }
+
       try {
         logger.info(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
-        await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
-        exportedOrders++
+        if (csvString) {
+          await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
+        } else {
+          throw new Error('Failed to upload CSV to JESTA')
+        }
+
         logger.info(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
       } catch (err) {
+        spanSetError(err)
         logger.error({
           type: 'upload_csv_failure',
           message: `Unable to upload CSV to JESTA for order ${order.orderNumber}`,
@@ -292,92 +219,161 @@ export const createAndUploadCsvs = async () => {
           nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
         })
-        continue
       }
-      // we retry in case the version of the order has changed by the notifications job
-      await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
-    }
-
-    logger.warn({
-      type: 'orders_ct_total',
-      ct_total: total
-    })
-
-    logger.warn({
-      type: 'orders_ct_exported',
-      ct_exported: exportedOrders
-    })
-
-    if (!STATS_DISABLE && statsClient) {
-      logger.info('Exporting logs to DD')
-      const statsDclient = statsClient.childClient({
-        globalTags: { product: 'HR-ORDER-SERVICE' }
+      await setOrderAsSentToOms(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
+    } catch (error) {
+      spanSetError(error)
+      logger.error({
+        type: 'process_orders_failure',
+        message: 'Unable to process orders',
+        error: serializeError(error),
       })
-      statsDclient.increment('orders.ct.total', total)
-      statsDclient.increment('orders.ct.exported', exportedOrders)
     }
-    logger.info('Done processing orders')
-  } catch (err) {
-    logger.error({
-      type: 'process_orders_failure',
-      message: 'Unable to process orders',
-      error: serializeError(err),
-    })
-  } finally {
-    if (sftp) {
-      await sftp.end()
-        .catch(function (err: any) {
+  })
+}
+
+export const createAndUploadCsvs = async () => {
+  await tracer.trace('order_service_job_batch', { resource: 'order_upload_csv_batch' }, async () => {
+    let sftp
+    try {
+      sftp = new client()
+      await sftp.connect(sftpConfig)
+      logger.info('Connected to SFTP server')
+      const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
+      logger.info(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
+
+      let exportedOrders = 0
+      for (const order of orders) {
+        const span = tracer.startSpan('order.csv.put')
+        hydrateOrderSpanTags(order)
+        let csvString
+        try {
+          if (!validateOrder(order)) throw new Error('Invalid order')
+          csvString = generateCsvStringFromOrder(order)
+        } catch (err) {
+          const orderNumber = order.orderNumber
+          const errorMessage =
+            err instanceof Error && err.message === `Invalid order: ${orderNumber}` ?
+              JSON.stringify(validateOrder.errors) : `Unable to generate CSV for order ${orderNumber}: `
           logger.error({
-            type: 'sftp_connection_failure',
-            message: 'Unable to end SFTP connection',
-            error: serializeError(err),
+            type: 'order_validation_failure',
+            message: errorMessage,
+            error: await serializeError(err),
           })
-        })
+          // we retry in case the version of the order has changed by the notifications job
+          await retry(setOrderErrorFields)(order, errorMessage, true, {
+            retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+            nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+            statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+          })
+          span.finish()
+          continue
+        }
+        try {
+          logger.info(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
+          await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
+          exportedOrders++
+          logger.info(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
+        } catch (err) {
+          logger.error({
+            type: 'upload_csv_failure',
+            message: `Unable to upload CSV to JESTA for order ${order.orderNumber}`,
+            stack: serializeError(err)
+          })
+          await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
+            retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
+            nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
+            statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
+          })
+          span.finish()
+          continue
+        }
+        // we retry in case the version of the order has changed by the notifications job
+        await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
+        span.finish()
+      }
+
+      logger.warn({
+        type: 'orders_ct_total',
+        ct_total: total
+      })
+
+      logger.warn({
+        type: 'orders_ct_exported',
+        ct_exported: exportedOrders
+      })
+
+      logger.info('Done processing orders')
+    } catch (err) {
+      spanSetError(err)
+      logger.error({
+        type: 'process_orders_failure',
+        message: 'Unable to process orders',
+        error: serializeError(err),
+      })
+    } finally {
+      if (sftp) {
+        await sftp.end()
+          .catch(function (err: any) {
+            logger.error({
+              type: 'sftp_connection_failure',
+              message: 'Unable to end SFTP connection',
+              error: serializeError(err),
+            })
+          })
+      }
     }
-  }
+  })
 }
 
 async function sendOrderUpdate(order: Order) {
-  try {
-    const orderPayment = transformToOrderPayment(order)
-    if (orderPayment.errorMessage || !orderPayment.orderNumber) {
-      await retry(setOrderErrorFields)(order, orderPayment.errorMessage, true, {
+  await tracer.trace('order_service_job', { resource: 'order_update' }, async () => {
+    hydrateOrderSpanTags(order)
+
+    try {
+      const orderPayment = transformToOrderPayment(order)
+      if (orderPayment.errorMessage || !orderPayment.orderNumber) {
+        await retry(setOrderErrorFields)(order, orderPayment.errorMessage, true, {
+          retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
+          nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
+          statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS
+        })
+      } else {
+        const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
+        const cartSourceWebsite = order.custom?.fields.cartSourceWebsite ? order.custom?.fields.cartSourceWebsite : ''
+
+        await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus, cartSourceWebsite)
+        // we retry in case the version of the order has changed by CSV job
+        await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
+      }
+    } catch (error) {
+      spanSetError(error)
+      logger.error({
+        type: 'order_update_failure',
+        message: `Failed to send order update to jesta for order number: ${order.orderNumber}`,
+        error: serializeError(error)
+      })
+      // we retry in case the version of the order has changed by CSV job
+      await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
         retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
         nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
         statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS
       })
-    } else {
-      const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
-      const cartSourceWebsite = order.custom?.fields.cartSourceWebsite ? order.custom?.fields.cartSourceWebsite : ''
-
-      await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus, cartSourceWebsite)
-      // we retry in case the version of the order has changed by CSV job
-      await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
     }
-  } catch (error) {
-    logger.error({
-      type: 'order_update_failure',
-      message: `Failed to send order update to jesta for order number: ${order.orderNumber}`,
-      error: serializeError(error)
-    })
-    // we retry in case the version of the order has changed by CSV job
-    await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
-      retryCountField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_RETRY_COUNT,
-      nextRetryAtField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_NEXT_RETRY_AT,
-      statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS
-    })
-  }
+  })
 }
 
 export async function sendOrderUpdates() {
-  const { orders, total } = await fetchOrdersThatShouldBeUpdatedInOMS()
-  if (orders.length) {
-    console.log(`Sending ${orders.length} order updates to OMS (total in backlog: ${total}): ${JSON.stringify(orders)}`)
-  }
+  await tracer.trace('order_service_job_batch', { resource: 'order_update_batch' }, async () => {
+    const { orders, total } = await fetchOrdersThatShouldBeUpdatedInOMS()
+    if (orders.length) {
+      console.log(`Sending ${orders.length} order updates to OMS (total in backlog: ${total}): ${JSON.stringify(orders)}`)
+    }
 
-  await Promise.all(orders.map(async orderToUpdate => {
-    await sendOrderUpdate(orderToUpdate)
-  }))
+    await Promise.all(orders.map(async orderToUpdate => {
+      await sendOrderUpdate(orderToUpdate)
+    }))
+  })
 }
 
 async function sendConversionToAlgolia(order: Order) {
@@ -451,59 +447,14 @@ export async function sendPurchaseEventsToDynamicYield() {
 // @todo HRC-6313 Remove this once optimized query has been validated.
 const NARVAR_DISABLE_UPDATE = process.env.NARVAR_DISABLE_UPDATE === 'true' ? true : false
 
-//TODO: Duplicating innards of sendOrdersToNarvar cause need to resolve the fetchStates() issue before reuse..
-async function sendOrderToNarvar(order: Order) {
-  if (!order.orderNumber) {
-    throw new Error(`order Number does not exist on ${order.id}`)
-  }
-  const states = await fetchStates()
-  try {
-    const shipments = await fetchShipments(order.orderNumber)
-    const narvarOrder = await convertOrderForNarvar(order, shipments, states)
-
-    if (narvarOrder && !NARVAR_DISABLE_UPDATE) {
-      const now = new Date().valueOf()
-      await sendToNarvar(narvarOrder)
-      logger.info(`Order Successfully Sent to NARVAR: ${order.orderNumber}`)
-
-      const actions = [
-        {
-          action: 'setCustomField',
-          name: ORDER_CUSTOM_FIELDS.NARVAR_STATUS,
-          value: SENT_TO_NARVAR_STATUSES.SUCCESS
-        },
-        {
-          action: 'setCustomField',
-          name: ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME,
-          value: new Date(now).toJSON()
-        }
-      ]
-      await setOrderCustomFields(order.id, order.version.toString(), actions)
-      logger.info(`Narvar status fields for order: ${order.orderNumber} set successfully`)
+async function sendOrderToNarvar(order: Order, states: State[]) {
+  await tracer.trace('order_service_job', { resource: 'order_narvar' }, async () => {
+    hydrateOrderSpanTags(order)
+    if (!order.orderNumber) {
+      throw new Error(`order Number does not exist on ${order.id}`)
     }
-  } catch (error) {
-    logger.error({
-      type: 'error',
-      message: `Failed to send order ${order.id}: to Narvar`,
-      error: await serializeError(error)
-    })
-  }
-}
 
-export async function sendOrdersToNarvar() {
-  const states = await fetchStates()
-  const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
-
-  logger.info(total > 0
-    ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`
-    : 'No orders found to send to Narvar.')
-
-  for await (const order of orders) {
     try {
-      if (!order.orderNumber) {
-        //Skip this order if no order number
-        continue
-      }
       const shipments = await fetchShipments(order.orderNumber)
       const narvarOrder = await convertOrderForNarvar(order, shipments, states)
 
@@ -524,22 +475,43 @@ export async function sendOrdersToNarvar() {
             value: new Date(now).toJSON()
           }
         ]
-        await retry(setOrderCustomFields)(order.id, order.version, actions)
+        await retry(setOrderCustomFields)(order.id, order.version.toString(), actions)
         logger.info(`Narvar status fields for order: ${order.orderNumber} set successfully`)
       }
     } catch (error) {
+      spanSetError(error)
       logger.error({
         type: 'error',
         message: `Failed to send order ${order.orderNumber}: to Narvar`,
         error: await serializeError(error)
       })
+
       await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
         retryCountField: ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT,
         nextRetryAtField: ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT,
         statusField: ORDER_CUSTOM_FIELDS.NARVAR_STATUS
       })
     }
-  }
+  })
+}
+
+export async function sendOrdersToNarvar() {
+  await tracer.trace('order_service_job_batch', { resource: 'order_narvar_batch' }, async () => {
+    const states = await fetchStates()
+    const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
+
+    logger.info(total > 0
+      ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`
+      : 'No orders found to send to Narvar.')
+
+    for await (const order of orders) {
+      if (!order.orderNumber) {
+        //Skip this order if no order number
+        continue
+      }
+      await sendOrderToNarvar(order, states)
+    }
+  })
 }
 
 async function sendConversionToCJ(order: Order) {
@@ -741,7 +713,10 @@ export function checkJobsHealth(res: Response) {
 export const orderMessageDisperse = async (order: Order) => {
   try {
     if (canUploadCsv(order)) {
-      createAndUploadCsv(order)
+      const sftp = new client()
+      await sftp.connect(sftpConfig)
+      logger.info('Connected to SFTP server')
+      createAndUploadCsv(order, sftp)
     }
 
     if (canSendOrderUpdate(order)) {
@@ -757,7 +732,8 @@ export const orderMessageDisperse = async (order: Order) => {
     }
 
     if (canSendOrderToNarvar(order)) {
-      sendOrderToNarvar(order)
+      const states = await fetchStates()
+      sendOrderToNarvar(order, states)
     }
 
     if (canSendPurchaseEventToDY(order)) {

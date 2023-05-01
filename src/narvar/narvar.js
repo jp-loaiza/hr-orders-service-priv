@@ -37,7 +37,7 @@ const makeNarvarRequest = async (path, options) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').NarvarOrder} order The order to send to Narvar
  */
 
@@ -46,15 +46,15 @@ const sendToNarvar = async (order) => {
   const options = {
     body: JSON.stringify(order),
     headers: {
-      Authorization: `Basic ${ base64.encode(harryRosenUsername + ':' + harryRosenpassword) }`,
+      Authorization: `Basic ${base64.encode(harryRosenUsername + ':' + harryRosenpassword)}`,
       'Content-Type': 'application/json'
     },
     method: 'POST'
   }
-  
+
   //@todo Remove after HRC-6808 is deployed
   if (order.order_info.attributes.siteId === finalCut && enableFinalCutToNarvar) {
-    options.headers.Authorization = `Basic ${ base64.encode(finalCutUsername + ':' + finalCutPassword) }`
+    options.headers.Authorization = `Basic ${base64.encode(finalCutUsername + ':' + finalCutPassword)}`
   }
 
   logger.info(`check the narvar payload: ${JSON.stringify(options.body)}`)
@@ -150,10 +150,10 @@ async function fetchProductCategory(item) {
   return categoryForNarvar
 }
 /**
- * 
+ *
  * @param {Array<{ name: string, value: any }>} attributes
- * @param {string} attrName 
- * @param {{value: boolean}} attrDefault 
+ * @param {string} attrName
+ * @param {{value: boolean}} attrDefault
  * @returns {{value: boolean}}
  */
 const getAttributeOrDefaultBoolean = (attributes, attrName, attrDefault) => {
@@ -162,10 +162,10 @@ const getAttributeOrDefaultBoolean = (attributes, attrName, attrDefault) => {
 }
 
 /**
- * 
- * @param {Array<{ name: string, value: any }>} attributes 
- * @param {string} attrName 
- * @param {{value: any}} attrDefault 
+ *
+ * @param {Array<{ name: string, value: any }>} attributes
+ * @param {string} attrName
+ * @param {{value: any}} attrDefault
  * @returns {{value: any}}
  */
 const getAttributeOrDefaultAny = (attributes, attrName, attrDefault) => {
@@ -174,8 +174,8 @@ const getAttributeOrDefaultAny = (attributes, attrName, attrDefault) => {
 }
 
 /**
- * 
- * @param {Array<{ name: string, value: any }>} attributes 
+ *
+ * @param {Array<{ name: string, value: any }>} attributes
  * @returns {string | null}
  */
 const findBarcode = (attributes) => {
@@ -184,7 +184,7 @@ const findBarcode = (attributes) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').LineItem} item
  * @returns {number}
  */
@@ -193,7 +193,7 @@ const findUnitPrice = (item) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').LineItem} item
  * @returns {number | null}
  */
@@ -202,7 +202,7 @@ const findDiscountedPrice = (item) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').LineItem} item
  * @returns {number | null}
  */
@@ -211,9 +211,9 @@ const findDiscountPercent = (item) => {
 }
 
 /**
- * 
- * @param {Array<import('../orders').LineItem>} items 
- * @param {string} item_id 
+ *
+ * @param {Array<import('../orders').LineItem>} items
+ * @param {string} item_id
  * @returns {string}
  */
 
@@ -223,9 +223,9 @@ const findItemSku = (items, item_id) => {
 }
 
 /**
- * 
- * @param {Array<import('../orders').Shipment>} shipments 
- * @param {string} lineItemId 
+ *
+ * @param {Array<import('../orders').Shipment>} shipments
+ * @param {string} lineItemId
  * @returns {number | null}
  */
 
@@ -235,9 +235,9 @@ const lineNumberFromShipments = (shipments, lineItemId) => {
 }
 
 /**
- * 
- * @param {import('../orders').NarvarShipment} shipment 
- * @param {string} order_number 
+ *
+ * @param {import('../orders').NarvarShipment} shipment
+ * @param {string} order_number
  * @returns {boolean}
  */
 
@@ -250,9 +250,9 @@ function filterMissingTrackingNumberMessages(shipment, order_number) {
 }
 
 /**
- * 
- * @param {import('../orders').NarvarShipment} shipment 
- * @param {string} order_number 
+ *
+ * @param {import('../orders').NarvarShipment} shipment
+ * @param {string} order_number
  * @returns {boolean}
  */
 
@@ -266,9 +266,9 @@ function checkShipmentItemIdForNull(shipment, order_number) {
 }
 
 /**
- * 
- * @param {import('../orders').NarvarShipment} shipment 
- * @param {string} order_number 
+ *
+ * @param {import('../orders').NarvarShipment} shipment
+ * @param {string} order_number
  * @returns {boolean}
  */
 
@@ -282,9 +282,9 @@ function checkShippedQuantity(shipment, order_number) {
 }
 
 /**
- * 
- * @param {Array<import('../orders').Shipment>} shipments 
- * @param {string} lineItemId 
+ *
+ * @param {Array<import('../orders').Shipment>} shipments
+ * @param {string} lineItemId
  * @returns {string | null}
  */
 
@@ -294,10 +294,10 @@ const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').Order} order
  * @param {Array<import('../orders').OrderState>} states
- * @param {Array<import('../orders').Shipment>} shipments 
+ * @param {Array<import('../orders').Shipment>} shipments
  * @returns {Promise<Array<import('../orders').NarvarOrderItem>>}
  */
 const convertItems = async (order, states, shipments, isStorePickup) => {
@@ -352,7 +352,7 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').Order} order
  * @param {Array<import('../orders').Shipment>} shipments
  * @returns {Array<import('../orders').NarvarShipment>}
@@ -410,7 +410,7 @@ const convertShipments = (order, shipments) => {
 }
 
 /**
- * 
+ *
  * @param {import('../orders').Order} order
  * @param {Array<import('../orders').Shipment>} shipments
  * @returns {Array<import('../orders').NarvarPickup>}
@@ -461,7 +461,7 @@ const convertPickups = (order, shipments) => {
  * if ANY shipmentDetail status == PICKEDUP => shipment status = PICKEDUP
  */
 /**
- * 
+ *
  * @param {import('../orders').Shipment} shipment
  */
 const getShipmentStatusMapping = (shipment) => {
@@ -493,7 +493,6 @@ const getShipmentStatusMapping = (shipment) => {
 /**
  * @param {import('../orders').Order} order
  * @param {Array<import('../orders').Shipment>} shipments
- * @param {Array<import('../orders').OrderState>} states
  * @returns {Promise<import('../orders').NarvarOrder | undefined>}
  */
 const convertOrderForNarvar = async (order, shipments, states) => {

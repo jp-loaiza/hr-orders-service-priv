@@ -38,6 +38,7 @@ const { createRequestBuilder } = require('@commercetools/api-request-builder')
 // @ts-ignore no types available for commercetools sdk
 const { createHttpMiddleware } = require('@commercetools/sdk-middleware-http')
 const { default: logger, serializeError } = require('../logger')
+const { apiRoot } = require('./ctClientV2')
 
 // commercetools SDK setup
 const projectKey = process.env.CT_PROJECT_KEY
@@ -202,18 +203,20 @@ async function fetchOrdersThatShouldBeUpdatedInOMS() {
 
 /**
  * Fetches all orders that that we should try to send to the Notification Service.
- * @returns {Promise<{ orderIds: Array<string>, total: number }>}
  */
 async function fetchOrderIdsThatShouldBeSentToCrm() {
-  const query = `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined)) and custom is defined`
-  // CRM is easily overloaded, so we limit the number of parallel requests to one.
-  const uri = requestBuilder.orders.perPage(1).where(query).build()
-  const { body } = await ctClient.execute({ method: 'GET', uri })
-  /**
-   * @type Array<string>
-   */
-  const orderIds = body.results.map((/** @type {import('../orders').Order} */ order) => order.id)
-  return { orderIds, total: body.total }
+  const response = await apiRoot
+    .orders()
+    .get({
+      queryArgs: {
+        where: `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined)) and custom is defined`,
+        // CRM is easily overloaded, so we limit the number of parallel requests to one.
+        limit: 1
+      }
+    })
+    .execute()
+
+  return { orders: response.body.results, total: response.body.total }
 }
 
 /**
@@ -422,18 +425,17 @@ const fetchOrdersThatShouldBeSentToNarvar = async () => {
   }
 }
 
-/**
- * @returns {Promise<Array<import('../orders').OrderState>>}
- */
 const fetchStates = async () => {
-  const uri = requestBuilder.states.build()
-  const { body } = await ctClient.execute({ method: 'GET', uri })
-  return body.results.map((/** @type {import('../orders').OrderState} */ result) => result)
+  const response = await apiRoot.states().get({
+    queryArgs: { where: 'type = "OrderState"' }
+  }).execute()
+
+  return response.body.results
 }
 
 /**
- * 
- * @param {string} orderNumber 
+ *
+ * @param {string} orderNumber
  * @returns {Promise<Array<import('../orders').Shipment>>}
  */
 
@@ -444,8 +446,8 @@ const fetchShipments = async orderNumber => {
 }
 
 /**
- * 
- * @param {string} itemNumber 
+ *
+ * @param {string} itemNumber
  * @returns {Promise<import('../orders').Product>}
  */
 
@@ -457,8 +459,8 @@ const fetchItemInfo = async itemNumber => {
 }
 
 /**
- * 
- * @param {Array<string>} categoryIds 
+ *
+ * @param {Array<string>} categoryIds
  * @returns {Promise<Array<import('../orders').ProductCategory>>}
  */
 
