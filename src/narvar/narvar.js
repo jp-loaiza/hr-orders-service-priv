@@ -5,8 +5,8 @@ const fetch = require('node-fetch')
 
 const baseUrl = process.env.NARVAR_BASE_URL
 
-const harryRosenUsername = process.env.NARVAR_USERNAME_990
-const harryRosenpassword = process.env.NARVAR_PASSWORD_990
+const harryRosenUsername = process.env.NARVAR_USERNAME
+const harryRosenpassword = process.env.NARVAR_PASSWORD
 
 const finalCutUsername = process.env.NARVAR_USERNAME_997
 const finalCutPassword = process.env.NARVAR_PASSWORD_997
