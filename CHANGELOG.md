@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.16](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.15...v1.7.16) (2023-05-01)
+
+
+### Bug Fixes
+
+* HRC-5778: Improve job tracing ([#499](https://github.com/HarryRosen/hr-orders-service/issues/499)) ([07fccc3](https://github.com/HarryRosen/hr-orders-service/commit/07fccc3739b6f7fa13e9129c570ed190d65f60c4))
+
 ## [1.7.15](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.14...v1.7.15) (2023-05-01)
 
 
