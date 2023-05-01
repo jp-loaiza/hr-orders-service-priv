@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.15](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.14...v1.7.15) (2023-05-01)
+
+
+### Bug Fixes
+
+* HRC-6689: fix for env var that does not exist ([#503](https://github.com/HarryRosen/hr-orders-service/issues/503)) ([9bed859](https://github.com/HarryRosen/hr-orders-service/commit/9bed8595c878b1b4437740d756e79119adaa831e))
+
 ## [1.7.14](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.13...v1.7.14) (2023-04-28)
 
 
