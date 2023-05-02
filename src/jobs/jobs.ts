@@ -290,6 +290,7 @@ if (shouldSendOrderNarvar) {
   sendOrdersToNarvarJob(sendToNarvarInterval)
 }
 
+//TODO: Remove/Investigate as this is not enabled in Production ->  https://harryrosen.atlassian.net/browse/HRC-6643
 if (shouldSendCjConversions) {
   const sendCjConversionsInterval = Number(SEND_CJ_CONVERSIONS_INTERVAL)
   logger.info('Processing CJ job at interval: ', sendCjConversionsInterval)

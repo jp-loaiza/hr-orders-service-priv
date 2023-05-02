@@ -196,6 +196,8 @@ async function createAndUploadCsv(order: Order, sftp: client) {
           nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
         })
+
+        return
       }
 
       try {
@@ -219,6 +221,8 @@ async function createAndUploadCsv(order: Order, sftp: client) {
           nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
           statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
         })
+
+        return
       }
       await setOrderAsSentToOms(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
     } catch (error) {
@@ -244,53 +248,8 @@ export const createAndUploadCsvs = async () => {
 
       let exportedOrders = 0
       for (const order of orders) {
-        const span = tracer.startSpan('order.csv.put')
-        hydrateOrderSpanTags(order)
-        let csvString
-        try {
-          if (!validateOrder(order)) throw new Error('Invalid order')
-          csvString = generateCsvStringFromOrder(order)
-        } catch (err) {
-          const orderNumber = order.orderNumber
-          const errorMessage =
-            err instanceof Error && err.message === `Invalid order: ${orderNumber}` ?
-              JSON.stringify(validateOrder.errors) : `Unable to generate CSV for order ${orderNumber}: `
-          logger.error({
-            type: 'order_validation_failure',
-            message: errorMessage,
-            error: await serializeError(err),
-          })
-          // we retry in case the version of the order has changed by the notifications job
-          await retry(setOrderErrorFields)(order, errorMessage, true, {
-            retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
-            nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
-            statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
-          })
-          span.finish()
-          continue
-        }
-        try {
-          logger.info(`Attempting to upload CSV to JESTA for order ${order.orderNumber}`)
-          await sftp.put(Buffer.from(csvString), SFTP_INCOMING_ORDERS_PATH + generateFilenameFromOrder(order))
-          exportedOrders++
-          logger.info(`Successfully uploaded CSV to JESTA for order ${order.orderNumber}`)
-        } catch (err) {
-          logger.error({
-            type: 'upload_csv_failure',
-            message: `Unable to upload CSV to JESTA for order ${order.orderNumber}`,
-            stack: serializeError(err)
-          })
-          await retry(setOrderErrorFields)(order, 'Unable to upload CSV to JESTA', true, {
-            retryCountField: ORDER_CUSTOM_FIELDS.RETRY_COUNT,
-            nextRetryAtField: ORDER_CUSTOM_FIELDS.NEXT_RETRY_AT,
-            statusField: ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS
-          })
-          span.finish()
-          continue
-        }
-        // we retry in case the version of the order has changed by the notifications job
-        await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.SENT_TO_OMS_STATUS)
-        span.finish()
+        await createAndUploadCsv(order, sftp)
+        exportedOrders++
       }
 
       logger.warn({
@@ -377,71 +336,83 @@ export async function sendOrderUpdates() {
 }
 
 async function sendConversionToAlgolia(order: Order) {
-  try {
-    const conversions = getConversionsFromOrder(order)
-    await sendManyConversionsToAlgolia(conversions)
-    logger.info(`Sent Algolia conversion updates for order ${order.orderNumber}`)
-    await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.SUCCESS)
-  } catch (error) {
-    logger.error({
-      type: 'algolia_conversion_error',
-      message: `Failed to send Algolia conversion updates for order ${order.orderNumber}`,
-      error: await serializeError(error)
-    })
-    await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
-      retryCountField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_RETRY_COUNT,
-      nextRetryAtField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT,
-      statusField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_STATUS
-    })
-  }
+  await tracer.trace('order_service_job', { resource: 'algolia_conversion_update' }, async () => {
+    hydrateOrderSpanTags(order)
+    try {
+      const conversions = getConversionsFromOrder(order)
+      await sendManyConversionsToAlgolia(conversions)
+      logger.info(`Sent Algolia conversion updates for order ${order.orderNumber}`)
+      await retry(setOrderCustomField)(order.id, 'sentToAlgoliaStatus', SENT_TO_ALGOLIA_STATUSES.SUCCESS)
+    } catch (error) {
+      spanSetError(error)
+      logger.error({
+        type: 'algolia_conversion_error',
+        message: `Failed to send Algolia conversion updates for order ${order.orderNumber}`,
+        error: await serializeError(error)
+      })
+      await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_STATUS
+      })
+    }
+  })
 }
 
 export async function sendConversionsToAlgolia() {
-  const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
+  await tracer.trace('order_service_job_batch', { resource: 'algolia_conversion_update_batch' }, async () => {
+    const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
 
-  logger.info(total > 0
-    ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.`
-    : 'No orders with conversion data to send to Algolia.')
+    logger.info(total > 0
+      ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.`
+      : 'No orders with conversion data to send to Algolia.')
 
-  for (const order of orders) {
-    await sendConversionToAlgolia(order)
-    await sleep(100) // prevent CT/Algolia from getting overloaded
-  }
+    for (const order of orders) {
+      await sendConversionToAlgolia(order)
+      await sleep(100) // prevent CT/Algolia from getting overloaded
+    }
+  })
 }
 
 async function sendPurchaseEventToDY(order: Order) {
-  try {
-    const dynamicYieldEventData = getDYReportEventFromOrder(order)
-    if (dynamicYieldEventData != undefined) {
-      await sendPurchaseEventToDynamicYield(dynamicYieldEventData)
-      logger.info(`Sent Dynamic Yield purchase event for order ${order.orderNumber}`)
-      await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS, SENT_TO_DYNAMIC_YIELD_STATUSES.SUCCESS)
+  await tracer.trace('order_service_job', { resource: 'dynamic_yield_event' }, async () => {
+    hydrateOrderSpanTags(order)
+    try {
+      const dynamicYieldEventData = getDYReportEventFromOrder(order)
+      if (dynamicYieldEventData != undefined) {
+        await sendPurchaseEventToDynamicYield(dynamicYieldEventData)
+        logger.info(`Sent Dynamic Yield purchase event for order ${order.orderNumber}`)
+        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS, SENT_TO_DYNAMIC_YIELD_STATUSES.SUCCESS)
+      }
+    } catch (error) {
+      spanSetError(error)
+      logger.error({
+        type: 'dynamic_yield_purchase_events_failure',
+        message: `Failed to send Dynamic Yield purchase event for order ${order.orderNumber}`,
+        error: await serializeError(error)
+      })
+      await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS
+      })
     }
-  } catch (error) {
-    logger.error({
-      type: 'dynamic_yield_purchase_events_failure',
-      message: `Failed to send Dynamic Yield purchase event for order ${order.orderNumber}`,
-      error: await serializeError(error)
-    })
-    await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
-      retryCountField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_RETRY_COUNT,
-      nextRetryAtField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT,
-      statusField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS
-    })
-  }
+  })
 }
 
 export async function sendPurchaseEventsToDynamicYield() {
-  const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
+  await tracer.trace('order_service_job_batch', { resource: 'dynamic_yield_event_batch' }, async () => {
+    const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
 
-  logger.info(total > 0
-    ? `Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`
-    : 'No orders with purchase data to send to Dynamic Yield.')
+    logger.info(total > 0
+      ? `Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`
+      : 'No orders with purchase data to send to Dynamic Yield.')
 
-  for (const order of orders) {
-    await sendPurchaseEventToDY(order)
-    await sleep(100) // prevent CT/Dynamic Yield from getting overloaded
-  }
+    for (const order of orders) {
+      await sendPurchaseEventToDY(order)
+      await sleep(100) // prevent CT/Dynamic Yield from getting overloaded
+    }
+  })
 }
 
 // @todo HRC-6313 Remove this once optimized query has been validated.
@@ -451,7 +422,7 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
   await tracer.trace('order_service_job', { resource: 'order_narvar' }, async () => {
     hydrateOrderSpanTags(order)
     if (!order.orderNumber) {
-      throw new Error(`order Number does not exist on ${order.id}`)
+      throw new Error(`Order Number does not exist on ${order.id}`)
     }
 
     try {
@@ -585,7 +556,7 @@ function createJob({
   }
 }
 
-export const startCjConversionJob = tracer.wrap('send.conversions.to.cj', createJob({
+export const startCjConversionJob = createJob({
   name: 'CJ conversions',
   fetchRelevantOrders: fetchOrdersWhoseConversionsShouldBeSentToCj,
   processOrder: sendOrderConversionToCj,
@@ -593,7 +564,7 @@ export const startCjConversionJob = tracer.wrap('send.conversions.to.cj', create
   nextRetryAtField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT,
   statusField: ORDER_CUSTOM_FIELDS.CJ_CONVERSION_STATUS,
   statuses: SENT_TO_CJ_STATUSES
-}))
+})
 
 type orderData = {
   loginradius_id: string,
@@ -614,50 +585,56 @@ const getIdentifyTraitsFromOrder = (order: orderData) => {
 }
 
 async function sendOrderToSegment(order: Order) {
-  try {
-    const orderData = await getOrderData(order)
-    var eventName = ''
-    if (!order.custom?.fields.segmentOrderState) {
-      eventName = 'Order Created'
-      sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
-      sendSegmentIdentifyCall(orderData.loginradius_id, getIdentifyTraitsFromOrder(orderData))
-      logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
-    } else if (order.orderState === 'Cancelled') {
-      eventName = 'Order Cancelled'
-      sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
-      logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+  await tracer.trace('order_service_job', { resource: 'order_segment' }, async () => {
+    hydrateOrderSpanTags(order)
+    try {
+      const orderData = await getOrderData(order)
+      var eventName = ''
+      if (!order.custom?.fields.segmentOrderState) {
+        eventName = 'Order Created'
+        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
+        sendSegmentIdentifyCall(orderData.loginradius_id, getIdentifyTraitsFromOrder(orderData))
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+      } else if (order.orderState === 'Cancelled') {
+        eventName = 'Order Cancelled'
+        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+      }
+      else if (order.orderState !== order.custom.fields.segmentOrderState) {
+        eventName = 'Order Modified'
+        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+      }
+      await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_STATUS, SENT_TO_SEGMENT_STATUSES.SUCCESS)
+      await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_ORDER_STATE, orderData.order_state)
+    } catch (error) {
+      spanSetError(error)
+      logger.error({
+        type: 'error',
+        message: `Failed to send order event for order ${order.orderNumber}`,
+        error: serializeError(error),
+      })
+      await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.SEGMENT_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.SEGMENT_STATUS,
+      })
     }
-    else if (order.orderState !== order.custom.fields.segmentOrderState) {
-      eventName = 'Order Modified'
-      sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
-      logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
-    }
-    await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_STATUS, SENT_TO_SEGMENT_STATUSES.SUCCESS)
-    await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_ORDER_STATE, orderData.order_state)
-  } catch (error) {
-    logger.error({
-      type: 'error',
-      message: `Failed to send order event for order ${order.orderNumber}`,
-      error: serializeError(error),
-    })
-    await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
-      retryCountField: ORDER_CUSTOM_FIELDS.SEGMENT_RETRY_COUNT,
-      nextRetryAtField: ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT,
-      statusField: ORDER_CUSTOM_FIELDS.SEGMENT_STATUS,
-    })
-  }
+  })
 }
 
 //Sending order events to Segment
 export async function sendOrdersToSegment() {
-  const { orders, total } = await fetchOrdersToSendToSegment()
+  await tracer.trace('order_service_job_batch', { resource: 'order_segment_batch' }, async () => {
+    const { orders, total } = await fetchOrdersToSendToSegment()
 
-  logger.info(total > 0 ? `Sending purchase events to Segment. ${total} orders pending.` : 'No orders with purchase data to send to Segment.')
+    logger.info(total > 0 ? `Sending purchase events to Segment. ${total} orders pending.` : 'No orders with purchase data to send to Segment.')
 
-  for (const order of orders) {
-    await sendOrderToSegment(order)
-    await sleep(100) // prevent Segment from getting overloaded
-  }
+    for (const order of orders) {
+      await sendOrderToSegment(order)
+      await sleep(100) // prevent Segment from getting overloaded
+    }
+  })
 }
 
 export function logStuckOrdersUtil(order: Order) {

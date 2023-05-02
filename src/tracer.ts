@@ -27,6 +27,7 @@ export const hydrateOrderSpanTags = (order: Order, extra_tags?: {}) => {
     order_id: order.id,
     order_customer_id: order.customerId,
     order_number: order.orderNumber,
+    order_custom: order.custom?.fields,
   })
 }
 
