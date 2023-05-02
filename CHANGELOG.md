@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.17](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.16...v1.7.17) (2023-05-02)
+
+
+### Bug Fixes
+
+* HRC-5778: add traces to rest of jobs ([#506](https://github.com/HarryRosen/hr-orders-service/issues/506)) ([7fcd623](https://github.com/HarryRosen/hr-orders-service/commit/7fcd623ae23450b7796323d35561b3cea3fc1395))
+
 ## [1.7.16](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.15...v1.7.16) (2023-05-01)
 
 
