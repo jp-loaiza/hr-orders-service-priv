@@ -100,10 +100,11 @@ async function sendOrderUpdatesJob(orderUploadInterval: number) {
 }
 
 export async function sendOrderEmailNotifications() {
-  await tracer.trace('order_service_job_batch', { resource: 'order_email_notification_batch' }, async () => {
-    const { orders, total } = await fetchOrderIdsThatShouldBeSentToCrm()
-    orders.length ? logger.info(`Sending ${orders.length} orders to CRM (total in backlog: ${total})`) : null
+  const { orders, total } = await fetchOrderIdsThatShouldBeSentToCrm()
+  if (orders.length === 0) return
 
+  logger.info(`Sending ${orders.length} orders to CRM (total in backlog: ${total})`)
+  await tracer.trace('order_service_job_batch', { resource: 'order_email_notification_batch' }, async () => {
     await Promise.all(orders.map(async (order) => {
       await sendOrderEmailNotification(order)
     }))

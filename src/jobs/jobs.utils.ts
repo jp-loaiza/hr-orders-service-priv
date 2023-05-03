@@ -237,52 +237,52 @@ async function createAndUploadCsv(order: Order, sftp: client) {
 }
 
 export const createAndUploadCsvs = async () => {
-  await tracer.trace('order_service_job_batch', { resource: 'order_upload_csv_batch' }, async () => {
-    let sftp
-    try {
-      sftp = new client()
-      await sftp.connect(sftpConfig)
-      logger.info('Connected to SFTP server')
-      const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
-      logger.info(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
+  const sftp = new client()
+  try {
+    await sftp.connect(sftpConfig)
+    logger.info('Connected to SFTP server')
+    const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
+    if (orders.length === 0) return
 
-      let exportedOrders = 0
+    logger.info(`Starting to process ${orders.length} orders (total in backlog: ${total})`)
+
+    let exportedOrders = 0
+    await tracer.trace('order_service_job_batch', { resource: 'order_upload_csv_batch' }, async () => {
       for (const order of orders) {
         await createAndUploadCsv(order, sftp)
         exportedOrders++
       }
+    })
 
-      logger.warn({
-        type: 'orders_ct_total',
-        ct_total: total
-      })
+    logger.warn({
+      type: 'orders_ct_total',
+      ct_total: total
+    })
 
-      logger.warn({
-        type: 'orders_ct_exported',
-        ct_exported: exportedOrders
-      })
+    logger.warn({
+      type: 'orders_ct_exported',
+      ct_exported: exportedOrders
+    })
 
-      logger.info('Done processing orders')
-    } catch (err) {
-      spanSetError(err)
-      logger.error({
-        type: 'process_orders_failure',
-        message: 'Unable to process orders',
-        error: serializeError(err),
-      })
-    } finally {
-      if (sftp) {
-        await sftp.end()
-          .catch(function (err: any) {
-            logger.error({
-              type: 'sftp_connection_failure',
-              message: 'Unable to end SFTP connection',
-              error: serializeError(err),
-            })
+    logger.info('Done processing orders')
+  } catch (err) {
+    logger.error({
+      type: 'process_orders_failure',
+      message: 'Unable to process orders',
+      error: serializeError(err),
+    })
+  } finally {
+    if (sftp) {
+      await sftp.end()
+        .catch(function (err: any) {
+          logger.error({
+            type: 'sftp_connection_failure',
+            message: 'Unable to end SFTP connection',
+            error: serializeError(err),
           })
-      }
+        })
     }
-  })
+  }
 }
 
 async function sendOrderUpdate(order: Order) {
@@ -323,12 +323,12 @@ async function sendOrderUpdate(order: Order) {
 }
 
 export async function sendOrderUpdates() {
+  const { orders, total } = await fetchOrdersThatShouldBeUpdatedInOMS()
+  if (orders.length === 0) {
+    return
+  }
+  logger.info(`Sending ${orders.length} order updates to OMS (total in backlog: ${total}): ${JSON.stringify(orders)}`)
   await tracer.trace('order_service_job_batch', { resource: 'order_update_batch' }, async () => {
-    const { orders, total } = await fetchOrdersThatShouldBeUpdatedInOMS()
-    if (orders.length) {
-      console.log(`Sending ${orders.length} order updates to OMS (total in backlog: ${total}): ${JSON.stringify(orders)}`)
-    }
-
     await Promise.all(orders.map(async orderToUpdate => {
       await sendOrderUpdate(orderToUpdate)
     }))
@@ -360,13 +360,16 @@ async function sendConversionToAlgolia(order: Order) {
 }
 
 export async function sendConversionsToAlgolia() {
+  const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
+
+  if (total === 0) {
+    logger.info('No orders with conversion data to send to Algolia.')
+    return
+  }
+
+  logger.info(`Sending conversion data to Algolia. ${total} orders for which to send conversion data.`)
+
   await tracer.trace('order_service_job_batch', { resource: 'algolia_conversion_update_batch' }, async () => {
-    const { orders, total } = await fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia()
-
-    logger.info(total > 0
-      ? `Sending conversion data to Algolia. ${total} orders for which to send conversion data.`
-      : 'No orders with conversion data to send to Algolia.')
-
     for (const order of orders) {
       await sendConversionToAlgolia(order)
       await sleep(100) // prevent CT/Algolia from getting overloaded
@@ -401,13 +404,16 @@ async function sendPurchaseEventToDY(order: Order) {
 }
 
 export async function sendPurchaseEventsToDynamicYield() {
+  const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
+
+  if (total === 0) {
+    logger.info('No orders with purchase data to send to Dynamic Yield.')
+    return
+  }
+
+  logger.info(`Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`)
+
   await tracer.trace('order_service_job_batch', { resource: 'dynamic_yield_event_batch' }, async () => {
-    const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
-
-    logger.info(total > 0
-      ? `Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`
-      : 'No orders with purchase data to send to Dynamic Yield.')
-
     for (const order of orders) {
       await sendPurchaseEventToDY(order)
       await sleep(100) // prevent CT/Dynamic Yield from getting overloaded
@@ -467,14 +473,17 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
 }
 
 export async function sendOrdersToNarvar() {
+  const states = await fetchStates()
+  const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
+
+  if (total === 0) {
+    logger.info('No orders found to send to Narvar.')
+    return
+  }
+
+  logger.info(`Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`)
+
   await tracer.trace('order_service_job_batch', { resource: 'order_narvar_batch' }, async () => {
-    const states = await fetchStates()
-    const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
-
-    logger.info(total > 0
-      ? `Fetched ${orders.length} orders to be sent to Narvar, total= ${total}`
-      : 'No orders found to send to Narvar.')
-
     for await (const order of orders) {
       if (!order.orderNumber) {
         //Skip this order if no order number
@@ -625,11 +634,16 @@ async function sendOrderToSegment(order: Order) {
 
 //Sending order events to Segment
 export async function sendOrdersToSegment() {
+  const { orders, total } = await fetchOrdersToSendToSegment()
+
+  if (total === 0) {
+    logger.info('No orders with purchase data to send to Segment.')
+    return
+  }
+
+  logger.info(`Sending purchase events to Segment. ${total} orders pending.`)
+
   await tracer.trace('order_service_job_batch', { resource: 'order_segment_batch' }, async () => {
-    const { orders, total } = await fetchOrdersToSendToSegment()
-
-    logger.info(total > 0 ? `Sending purchase events to Segment. ${total} orders pending.` : 'No orders with purchase data to send to Segment.')
-
     for (const order of orders) {
       await sendOrderToSegment(order)
       await sleep(100) // prevent Segment from getting overloaded
