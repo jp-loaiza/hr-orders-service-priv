@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.18](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.17...v1.7.18) (2023-05-03)
+
+
+### Bug Fixes
+
+* HRC-5778: prevent tracer spamming ([#508](https://github.com/HarryRosen/hr-orders-service/issues/508)) ([869dd9a](https://github.com/HarryRosen/hr-orders-service/commit/869dd9aabe9c2a7dcc75c6863489d8cf5a3b45d9))
+
 ## [1.7.17](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.16...v1.7.17) (2023-05-02)
 
 
