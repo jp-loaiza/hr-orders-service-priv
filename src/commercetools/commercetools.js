@@ -194,7 +194,7 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
  * @returns {Promise<{orders: Array<import('../orders').IOrder>, total: number}>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS() {
-  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}")) and custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined)))`
+  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}" and sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}" and (omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined) and posTransactionReferenceId is not defined))`
   const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
@@ -209,7 +209,7 @@ async function fetchOrderIdsThatShouldBeSentToCrm() {
     .orders()
     .get({
       queryArgs: {
-        where: `custom(fields(sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined)) and custom is defined`,
+        where: `custom(fields((sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined) and posTransactionReferenceId is not defined)) and custom is defined`,
         // CRM is easily overloaded, so we limit the number of parallel requests to one.
         limit: 1
       }
@@ -250,7 +250,7 @@ const fetchFullOrder = async orderId => {
  * @returns {Promise<{orders: Array<(import('../orders').IOrder)>, total: number}>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  const query = `custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}")) and custom(fields(sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}")) and (custom(fields(nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined))) and custom(fields(loginRadiusUid is defined))`
+  const query = `custom(fields((sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}" and sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}") and (nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined) and loginRadiusUid is defined and posTransactionReferenceId is not defined))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
@@ -272,7 +272,7 @@ const fetchStuckOrderResults = async () => {
   try {
     const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
     const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
-    const query = `(custom(fields(sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}")) or custom(fields(sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
+    const query = `(custom(fields(posTransactionReferenceId is not defined and (sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}" or sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
     const uri = requestBuilder.orders.where(query).build()
     return (await ctClient.execute({ method: 'GET', uri })).body
   } catch (error) {
@@ -362,7 +362,7 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   // The goal is to reduce the amount of response time for CT server-timing less than 25 ms
   // Using one week range filter, the response time is around 17 ms without losing any orders
   // The current retry logic indicate the total retry time should be 15000 ms
-  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}")) or custom(fields(sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined))))`
+  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(posTransactionReferenceId is not defined and (sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}" or sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
@@ -373,7 +373,7 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
 }
 
 const fetchOrdersWhoseConversionsShouldBeSentToCj = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} = "${SENT_TO_CJ_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.CJ_EVENT} is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} is not defined)))`
+  const query = `custom(fields(posTransactionReferenceId is not defined and (${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} = "${SENT_TO_CJ_STATUSES.PENDING}" or ${ORDER_CUSTOM_FIELDS.SENT_TO_CJ_STATUS} is not defined) and ${ORDER_CUSTOM_FIELDS.CJ_EVENT} is defined and (${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.CJ_CONVERSION_NEXT_RETRY_AT} is not defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
@@ -390,7 +390,7 @@ const fetchOrdersWhosePurchasesShouldBeSentToDynamicYield = async () => {
   const now = new Date()
   let oneWeekAgo = new Date()
   oneWeekAgo.setDate(now.getDate() - 7)
-  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined))))`
+  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined and posTransactionReferenceId is not defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined))))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('../orders').IOrder} */ order) => order.id)
@@ -407,7 +407,7 @@ const NARVAR_BATCH_SORT_RECENT = process.env.NARVAR_BATCH_SORT_RECENT === 'true'
  * @returns {Promise<{ orders: Array<(import('@commercetools/platform-sdk').Order)>, total: number }>}
  */
 const fetchOrdersThatShouldBeSentToNarvar = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined)) and (createdAt >= "2022-02-27")`
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} is not defined))) and custom(fields((${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.NARVAR_NEXT_RETRY_AT} is not defined) and posTransactionReferenceId is not defined)) and (createdAt >= "2022-02-27")`
   const uri = requestBuilder.orders
     .where(query)
     .expand('lineItems[*].variant.attributes[*].value[*]')
@@ -478,8 +478,7 @@ const fetchOrdersToSendToSegment = async () => {
   const now = new Date()
   let oneWeekAgo = new Date()
   oneWeekAgo.setDate(now.getDate() - 7)
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.LR_USER_ID} is defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined)) and (createdAt > "2022-03-27")`
-  // const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined))))`
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.LR_USER_ID} is defined and posTransactionReferenceId is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined)) and (createdAt > "2022-03-27")`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('../orders').IOrder} */ order) => order.id)
