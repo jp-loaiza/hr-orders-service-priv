@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.19](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.18...v1.7.19) (2023-05-04)
+
+
+### Bug Fixes
+
+* HRC-6820: exclude in-store transactions from order service ([#510](https://github.com/HarryRosen/hr-orders-service/issues/510)) ([1c266f3](https://github.com/HarryRosen/hr-orders-service/commit/1c266f304703dc33db4f66efaf7a440bfc317a1e))
+
 ## [1.7.18](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.17...v1.7.18) (2023-05-03)
 
 
