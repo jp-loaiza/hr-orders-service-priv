@@ -272,7 +272,7 @@ const fetchStuckOrderResults = async () => {
   try {
     const staleOrderCutoffTimeMs = Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) > 0 ? Number(process.env.STALE_ORDER_CUTOFF_TIME_MS) : DEFAULT_STALE_ORDER_CUTOFF_TIME_MS
     const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
-    const query = `(custom(fields(posTransactionReferenceId is not defined and (sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}" or sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
+    const query = `custom(fields(posTransactionReferenceId is not defined and (sentToOmsStatus = "${SENT_TO_OMS_STATUSES.PENDING}" or sentToOmsStatus is not defined))) and createdAt <= "${(staleOrderCutoffDate.toJSON())}"`
     const uri = requestBuilder.orders.where(query).build()
     return (await ctClient.execute({ method: 'GET', uri })).body
   } catch (error) {
@@ -362,7 +362,7 @@ const fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia = async () => {
   // The goal is to reduce the amount of response time for CT server-timing less than 25 ms
   // Using one week range filter, the response time is around 17 ms without losing any orders
   // The current retry logic indicate the total retry time should be 15000 ms
-  const query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(posTransactionReferenceId is not defined and (sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}" or sentToAlgoliaStatus is not defined))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined))))`
+  const query = `createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(posTransactionReferenceId is not defined and (sentToAlgoliaStatus = "${SENT_TO_ALGOLIA_STATUSES.PENDING}" or sentToAlgoliaStatus is not defined)))) and lineItems(custom(fields(algoliaAnalyticsData is defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.ALGOLIA_CONVERSION_NEXT_RETRY_AT} is not defined)))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('../orders').Order} */ order) => order.id)
