@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.20](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.19...v1.7.20) (2023-05-04)
+
+
+### Bug Fixes
+
+* **hrc-6820:** fix CT query typo ([#512](https://github.com/HarryRosen/hr-orders-service/issues/512)) ([cac2869](https://github.com/HarryRosen/hr-orders-service/commit/cac2869415b5a989a3f22765fc941f1923ed0243))
+
 ## [1.7.19](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.18...v1.7.19) (2023-05-04)
 
 
