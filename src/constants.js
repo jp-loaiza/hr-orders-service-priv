@@ -89,6 +89,7 @@ const ORDER_CUSTOM_FIELDS = {
   CJ_EVENT: 'cjEvent',
   NARVAR_LAST_SUCCESS_TIME: 'narvarLastSuccessTime',
   NARVAR_STATUS: 'narvarStatus',
+  NARVAR_MONIKER: 'narvarMoniker',
   NARVAR_RETRY_COUNT: 'narvarRetryCount',
   NARVAR_NEXT_RETRY_AT: 'narvarNextRetryAt',
   CART_SOURCE_WEBSITE: 'cartSourceWebsite',
@@ -370,6 +371,11 @@ const SENT_TO_NARVAR_STATUSES = {
   FAILURE: 'FAILURE'
 }
 
+const NARVAR_MONIKERS = {
+  990: '990',
+  997: '997',
+}
+
 const SENT_TO_CRM_STATUS = {
   SUCCESS: 'SUCCESS',
   PENDING: 'PENDING',
@@ -419,7 +425,7 @@ const CARRIER_IDS = {
   UPS: 'UPS'
 }
 
-const CARRIER_IDS_TO_NAMES =  {
+const CARRIER_IDS_TO_NAMES = {
   [CARRIER_IDS.CP]: 'Canada Post',
   [CARRIER_IDS.FDX]: 'FedEx',
   [CARRIER_IDS.PRL]: 'Purolator',
@@ -525,6 +531,7 @@ module.exports = {
   SENT_TO_CRM_STATUS,
   SENT_TO_DYNAMIC_YIELD_STATUSES,
   SENT_TO_NARVAR_STATUSES,
+  NARVAR_MONIKERS,
   SENT_TO_SEGMENT_STATUSES,
   SHIPPING_SERVICE_TYPES,
   SHIPPING_SERVICE_TYPES_TO_NAMES,

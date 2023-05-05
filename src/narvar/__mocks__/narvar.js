@@ -1,5 +1,5 @@
 module.exports = {
-  convertOrderForNarvar: jest.fn().mockReturnValue(Promise.resolve( {
+  convertOrderForNarvar: jest.fn().mockReturnValue(Promise.resolve({
     order_info: {
       order_number: 'order.orderNumber',
       order_date: 'order.custom.fields.orderDate || order.createdAt',
@@ -52,5 +52,6 @@ module.exports = {
       is_shoprunner_eligible: false,
     }
   })),
-  sendToNarvar: jest.fn()
+  sendToNarvar: jest.fn(),
+  shouldSendToNarvarFinalCut: jest.fn()
 }

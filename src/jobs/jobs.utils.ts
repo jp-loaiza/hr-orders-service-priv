@@ -14,6 +14,7 @@ import {
   SENT_TO_NARVAR_STATUSES,
   SENT_TO_SEGMENT_STATUSES,
   JOB_TASK_TIMEOUT,
+  NARVAR_MONIKERS,
 } from '../constants'
 import {
   fetchOrdersThatShouldBeSentToOms,
@@ -42,7 +43,7 @@ import {
 } from '../config'
 import { sendManyConversionsToAlgolia, getConversionsFromOrder } from '../algolia/algolia'
 import { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } from '../dynamicyield/dynamicYield'
-import { convertOrderForNarvar, sendToNarvar } from '../narvar/narvar'
+import { convertOrderForNarvar, sendToNarvar, shouldSendToNarvarFinalCut } from '../narvar/narvar'
 import { getOrderData } from '../segment/segment'
 import { sendSegmentTrackCall, sendSegmentIdentifyCall } from '../segment/segment.utils'
 import logger, { serializeError } from '../logger'
@@ -452,6 +453,21 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
             value: new Date(now).toJSON()
           }
         ]
+
+        if (shouldSendToNarvarFinalCut(narvarOrder)) {
+          actions.push({
+            action: 'setCustomField',
+            name: ORDER_CUSTOM_FIELDS.NARVAR_MONIKER,
+            value: NARVAR_MONIKERS['997'],
+          })
+        } else {
+          actions.push({
+            action: 'setCustomField',
+            name: ORDER_CUSTOM_FIELDS.NARVAR_MONIKER,
+            value: NARVAR_MONIKERS['990'],
+          })
+        }
+
         await retry(setOrderCustomFields)(order.id, order.version.toString(), actions)
         logger.info(`Narvar status fields for order: ${order.orderNumber} set successfully`)
       }

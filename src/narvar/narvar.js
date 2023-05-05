@@ -11,7 +11,7 @@ const harryRosenpassword = process.env.NARVAR_PASSWORD
 const finalCutUsername = process.env.NARVAR_USERNAME_997
 const finalCutPassword = process.env.NARVAR_PASSWORD_997
 
-const finalCut = process.env.FINAL_CUT
+const FINAL_CUT = '00997'
 const enableFinalCutToNarvar = process.env.SEND_FINAL_CUT_TO_NARVAR === 'true' ? true : false
 
 const { fetchItemInfo, fetchCategoryInfo } = require('../commercetools/commercetools')
@@ -52,14 +52,15 @@ const sendToNarvar = async (order) => {
     method: 'POST'
   }
 
-  //@todo Remove after HRC-6808 is deployed
-  if (order.order_info.attributes.siteId === finalCut && enableFinalCutToNarvar) {
+  if (shouldSendToNarvarFinalCut(order)) {
     options.headers.Authorization = `Basic ${base64.encode(finalCutUsername + ':' + finalCutPassword)}`
   }
 
   logger.info(`check the narvar payload: ${JSON.stringify(options.body)}`)
   return makeNarvarRequest('/orders', options)
 }
+
+const shouldSendToNarvarFinalCut = (narvarOrder) => narvarOrder.order_info.attributes.siteId === FINAL_CUT && enableFinalCutToNarvar
 
 const STATES_TO_NARVAR_STATUSES /** @type {import('./orders').NarvarStateMap} */ = {
   'SHIPPED': 'SHIPPED',
@@ -530,6 +531,7 @@ const convertOrderForNarvar = async (order, shipments, states) => {
 module.exports = {
   convertOrderForNarvar,
   sendToNarvar,
+  shouldSendToNarvarFinalCut,
   convertPickups,
   convertShipments,
   convertItems,
