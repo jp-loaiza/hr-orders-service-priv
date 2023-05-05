@@ -238,6 +238,9 @@ const fetchFullOrder = async orderId => {
     .expand('paymentInfo.payments[*].paymentStatus.state')
     .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
     .expand('custom.fields.dynamicYieldData')
+    .expand('custom.fields.gtagSessionNumber')
+    .expand('custom.fields.gtagSessionId')
+    .expand('custom.fields.gtagClientId')
     .build()
   const order = (await ctClient.execute({ method: 'GET', uri })).body
   return !order.locale ? { ...order, locale: 'en-CA' } : order
