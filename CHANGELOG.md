@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.21](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.20...v1.7.21) (2023-05-05)
+
+
+### Bug Fixes
+
+* CDP-171: Add GTAG props to Segment Events ([#493](https://github.com/HarryRosen/hr-orders-service/issues/493)) ([80b4ddd](https://github.com/HarryRosen/hr-orders-service/commit/80b4dddb2968f628ad52dd3a1cd0d4ac79b71e17))
+
 ## [1.7.20](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.19...v1.7.20) (2023-05-04)
 
 
