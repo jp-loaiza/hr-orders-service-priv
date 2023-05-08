@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.23](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.22...v1.7.23) (2023-05-08)
+
+
+### Bug Fixes
+
+* HRC-6845: Handling narvar moniker field on orders ([#517](https://github.com/HarryRosen/hr-orders-service/issues/517)) ([57fb775](https://github.com/HarryRosen/hr-orders-service/commit/57fb77515577180e1658463176a81af80b390232))
+* Revert CDP-171: Add GTAG props to Segment Events ([#519](https://github.com/HarryRosen/hr-orders-service/issues/519)) ([129367d](https://github.com/HarryRosen/hr-orders-service/commit/129367da359f23c8bc5a4ee3851289af84a6ddba))
+
 ## [1.7.22](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.21...v1.7.22) (2023-05-05)
 
 
