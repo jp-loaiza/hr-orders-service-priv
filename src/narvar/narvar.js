@@ -133,20 +133,24 @@ const getItemFulfillmentStatus = (item, states, locale, isStorePickup) => {
 
 /**
  * @param {import('../orders').LineItem} item
+ * @returns {Promise<Array<string>>}
  */
-async function fetchProductCategories(item) {
+
+async function fetchProductCategory(item) {
+  if (item.custom.fields.category) {
+    return [item.custom.fields.category]
+  }
   const productDetails = await fetchItemInfo(item.productId)
   const categoryInfo = await fetchCategoryInfo(productDetails.masterData.current.categories.map(x => x.id))
-  const level1Category = categoryInfo.find(x => x.key.startsWith('DPMROOTCATEGORY-') && x.ancestors.length === 1)
-  const level2Category = categoryInfo.find(x => x.key.startsWith('DPMROOTCATEGORY-') && x.ancestors.length === 2)
-  const level3Category = categoryInfo.find(x => x.key.startsWith('DPMROOTCATEGORY-') && x.ancestors.length === 3)
-  return {
-    level1Category: level1Category && level1Category.name['en-CA'] || null,
-    level2Category: level2Category && level2Category.name['en-CA'] || null,
-    level3Category: level3Category && level3Category.name['en-CA'] || null
-  }
+  /**
+   * @type {string[] | PromiseLike<string[]>}
+   */
+  const categoryForNarvar = categoryInfo.reduce(function (filtered, x) {
+    if (x.key.match('^DPMROOTCATEGORY-l1.*-l2.*-l3.*$')) filtered.push(x.name['en-CA'])
+    return filtered
+  }, [])
+  return categoryForNarvar
 }
-
 /**
  *
  * @param {Array<{ name: string, value: any }>} attributes
@@ -172,7 +176,17 @@ const getAttributeOrDefaultAny = (attributes, attrName, attrDefault) => {
 }
 
 /**
- * 
+ *
+ * @param {Array<{ name: string, value: any }>} attributes
+ * @returns {string | null}
+ */
+const findBarcode = (attributes) => {
+  const obj = attributes.find(a => a.name === 'barcodes')
+  return obj ? obj.value.reduce((acc, curr) => (acc === null || acc.obj.version < curr.obj.version) ? curr : acc).obj.value.barcode : null
+}
+
+/**
+ *
  * @param {import('../orders').LineItem} item
  * @returns {number}
  */
@@ -270,7 +284,19 @@ function checkShippedQuantity(shipment, order_number) {
 }
 
 /**
- * 
+ *
+ * @param {Array<import('../orders').Shipment>} shipments
+ * @param {string} lineItemId
+ * @returns {string | null}
+ */
+
+const shipmentItemLastModifiedDateFromShipments = (shipments, lineItemId) => {
+  const shipment = shipments.find(s => (s.value.shipmentDetails[0] && (s.value.shipmentDetails[0].lineItemId === lineItemId)))
+  return shipment && shipment.value.shipmentItemLastModifiedDate ? shipment.value.shipmentItemLastModifiedDate : null
+}
+
+/**
+ *
  * @param {import('../orders').Order} order
  * @param {Array<import('../orders').OrderState>} states
  * @param {Array<import('../orders').Shipment>} shipments
@@ -280,42 +306,44 @@ const convertItems = async (order, states, shipments, isStorePickup) => {
   const locale = order.locale
   let lineCounter = 1
   return Promise.all(order.lineItems.map(async (item) => {
-    const categories = await fetchProductCategories(item)
     return {
       item_id: item.id,
       sku: item.variant.sku,
       name: item.name[locale],
       quantity: item.quantity,
-      category_list: Object.values(categories).filter(c => c !== null),
-      category1: categories.level1Category,
-      category2: categories.level2Category,
-      category3: categories.level3Category,
-      price: item.price.value.centAmount / 100,
-      variant: item.variant.id,
+      categories: await fetchProductCategory(item),
       unit_price: findUnitPrice(item),
       discount_amount: findDiscountedPrice(item),
       discount_percent: findDiscountPercent(item),
-      image_url: item.variant.images[0].url,
+      item_image: item.variant.images[0].url,
       item_url: getItemUrl(item.productSlug[locale], locale),
-      final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true }).value,
+      is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true }).value,
       fulfillment_status: getItemFulfillmentStatus(item, states, locale, isStorePickup),
       fulfillment_type: order.custom.fields.isStorePickup ? 'BOPIS' : 'HD',
       is_gift: item.custom.fields.isGift,
       final_sale_date: order.custom.fields.orderCreatedDate || order.createdAt,
       line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
-      brand: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
+      attributes: {
+        orderItemLastModifiedDate: item.custom.fields.orderDetailLastModifiedDate || order.createdAt,
+        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
+        barcode: findBarcode(item.variant.attributes),
+        size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
+        reasonCode: item.custom.fields.reasonCode || order.custom.fields.reasonCode || null,
+        deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom.fields.orderDetailLastModifiedDate
+      },
       vendors: [
         { 'name': getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }
       ],
       line_price: (item.totalPrice.centAmount / 100),
       product_type: getAttributeOrDefaultAny(item.variant.attributes, 'productType', { value: null }).value,
-      product_id: item.productKey,
+      product_id: item.productId,
       dimensions: null,
-      backordered: null,
+      is_backordered: null,
       vendor: null,
       item_promise_date: null,
+      return_reason_code: null,
       events: null,
-      colour: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale]: null } }).value[locale],
+      color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale]: null } }).value[locale],
       size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
       //style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
       original_unit_price: item.variant.prices[0].value.centAmount / 100,
