@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.24](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.23...v1.7.24) (2023-05-08)
+
+
+### Bug Fixes
+
+* HRC-6854: improve console log with dd trace log ([#520](https://github.com/HarryRosen/hr-orders-service/issues/520)) ([3d33bfc](https://github.com/HarryRosen/hr-orders-service/commit/3d33bfc2e4a1546afe9847a0c4571c70ed2c38d6))
+
 ## [1.7.23](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.22...v1.7.23) (2023-05-08)
 
 
