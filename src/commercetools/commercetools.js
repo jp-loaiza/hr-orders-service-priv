@@ -170,7 +170,12 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
       const ctBody = (await ctClient.execute({ method: 'GET', uri })).body
       return produceOrderSaveMsg(ctBody, actions)
     } else {
-      console.log(`Updating order ${orderId}: ${body}`)
+      logger.info({
+        type: 'orders_set_custom_fields',
+        message: 'Updating Order',
+        orderId: orderId,
+        body: body,
+      })
       return ctClient.execute({ method: 'POST', uri, body })
     }
   } catch (error) {
