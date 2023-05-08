@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.25](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.24...v1.7.25) (2023-05-08)
+
+
+### Bug Fixes
+
+* HRC-6844: fix mapping for narvar CP ECONOMY ([#522](https://github.com/HarryRosen/hr-orders-service/issues/522)) ([4d2a576](https://github.com/HarryRosen/hr-orders-service/commit/4d2a57614a125f55d59f87981811caa262b31ccd))
+
 ## [1.7.24](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.23...v1.7.24) (2023-05-08)
 
 
