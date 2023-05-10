@@ -243,6 +243,9 @@ const fetchFullOrder = async orderId => {
     .expand('paymentInfo.payments[*].paymentStatus.state')
     .expand('lineItems[*].custom.fields.algoliaAnalyticsData')
     .expand('custom.fields.dynamicYieldData')
+    .expand('custom.fields.gtagSessionNumber')
+    .expand('custom.fields.gtagSessionId')
+    .expand('custom.fields.gtagClientId')
     .build()
   const order = (await ctClient.execute({ method: 'GET', uri })).body
   return !order.locale ? { ...order, locale: 'en-CA' } : order
@@ -480,10 +483,8 @@ const fetchCategoryInfo = async categoryIds => {
  * @returns {Promise<{ orders: Array<(import('../orders').IOrder)>, total: number }>}
  */
 const fetchOrdersToSendToSegment = async () => {
-  const now = new Date()
-  let oneWeekAgo = new Date()
-  oneWeekAgo.setDate(now.getDate() - 7)
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.LR_USER_ID} is defined and posTransactionReferenceId is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined)) and (createdAt > "2022-03-27")`
+  const oneMonthAgo = (new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).toJSON()
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} = "${SENT_TO_SEGMENT_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_STATUS} is not defined))) and (custom(fields(${ORDER_CUSTOM_FIELDS.LR_USER_ID} is defined and posTransactionReferenceId is not defined))) and custom(fields(${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.SEGMENT_NEXT_RETRY_AT} is not defined)) and (createdAt > "${oneMonthAgo}")`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
   const orderIds = body.results.map(( /** @type {import('../orders').IOrder} */ order) => order.id)
