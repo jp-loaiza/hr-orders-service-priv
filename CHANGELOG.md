@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.27](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.26...v1.7.27) (2023-05-12)
+
+
+### Bug Fixes
+
+* HRC-6858: order without orderNumber should not be processed ([#526](https://github.com/HarryRosen/hr-orders-service/issues/526)) ([65c81d3](https://github.com/HarryRosen/hr-orders-service/commit/65c81d370ff59f9296c5fb23486961bdffcf5a51))
+
 ## [1.7.26](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.25...v1.7.26) (2023-05-10)
 
 
