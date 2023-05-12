@@ -214,7 +214,7 @@ async function fetchOrderIdsThatShouldBeSentToCrm() {
     .orders()
     .get({
       queryArgs: {
-        where: `custom(fields((sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined) and posTransactionReferenceId is not defined)) and custom is defined`,
+        where: `custom is defined and orderNumber is defined and custom(fields((sentToCrmStatus = "${SENT_TO_CRM_STATUS.PENDING}" or sentToCrmStatus is not defined) and posTransactionReferenceId is not defined))`, // Staging is having weird order without orderNumber which keep spamming this job
         // CRM is easily overloaded, so we limit the number of parallel requests to one.
         limit: 1
       }
