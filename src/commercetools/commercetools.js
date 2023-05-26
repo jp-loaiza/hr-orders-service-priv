@@ -434,9 +434,7 @@ const fetchOrdersThatShouldBeSentToNarvar = async () => {
 }
 
 const fetchStates = async () => {
-  const response = await apiRoot.states().get({
-    queryArgs: { where: 'type = "OrderState"' }
-  }).execute()
+  const response = await apiRoot.states().get().execute()
 
   return response.body.results
 }
