@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.29](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.28...v1.7.29) (2023-05-30)
+
+
+### Bug Fixes
+
+* HRC-6918: rolling back last CDP changes on `narvar.js` file ([#531](https://github.com/HarryRosen/hr-orders-service/issues/531)) ([90aac4f](https://github.com/HarryRosen/hr-orders-service/commit/90aac4f61916f3568f874b87e7eefbbebc2b3748))
+
 ## [1.7.28](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.27...v1.7.28) (2023-05-26)
 
 
