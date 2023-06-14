@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.30](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.29...v1.7.30) (2023-06-14)
+
+
+### Bug Fixes
+
+* HRC-5778: Catch errors coming in from Narvar and Typescript changes ([#533](https://github.com/HarryRosen/hr-orders-service/issues/533)) ([447ac1e](https://github.com/HarryRosen/hr-orders-service/commit/447ac1ea44e9b07d6525fcdbb5fcf69056852afa))
+
 ## [1.7.29](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.28...v1.7.29) (2023-05-30)
 
 
