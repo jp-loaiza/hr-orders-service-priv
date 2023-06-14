@@ -48,11 +48,11 @@ interface Env {
 
 type NarvarOrder = {
   order_info: {
-    order_number: string,
+    order_number?: string,
     order_date: string,
     status: string | CommerceToolsOrderStates[],
     currency_code: string,
-    checkout_locale: string,
+    checkout_locale?: string,
     order_items: Array<NarvarOrderItem>,
     shipments?: Array<NarvarShipment>,
     pickups?: Array<NarvarPickup>,
@@ -68,9 +68,9 @@ type NarvarOrderItem = {
   name: string,
   quantity: number,
   categories: Array<string>,
-  item_image: string,
+  item_image?: string,
   item_url?: string,
-  sku: string,
+  sku?: string,
   is_final_sale: boolean,
   unit_price: number,
   discount_amount: number | null,
@@ -112,14 +112,14 @@ type NarvarPickup = {
   store: {
     id: string,
     address: NarvarAddress,
-    phone_number: string
+    phone_number?: string
   },
   type: string
 }
 
 type NarvarItemsInfo = {
   item_id: string,
-  sku: string,
+  sku?: string,
   quantity: number
 }
 
@@ -140,11 +140,11 @@ type NarvarCustomer = {
 }
 
 type NarvarShippedTo = {
-  first_name: string,
-  last_name: string,
-  phone: string,
-  email: string,
-  address: NarvarAddress,
+  first_name?: string,
+  last_name?: string,
+  phone?: string,
+  email?: string,
+  address?: NarvarAddress,
 
 }
 
@@ -157,12 +157,12 @@ type NarvarShippedFrom = {
 }
 
 type NarvarAddress = {
-  street_1: string,
+  street_1?: string,
   street_2?: string,
-  city: string,
-  state: string,
-  zip: string,
-  country: string
+  city?: string,
+  state?: string,
+  zip?: string,
+  country?: string
 }
 
 type OrderState = {
