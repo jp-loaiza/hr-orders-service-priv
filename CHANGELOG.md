@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.31](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.30...v1.7.31) (2023-06-15)
+
+
+### Bug Fixes
+
+* HRC-5778: adding unit test for getItemUrl method ([#535](https://github.com/HarryRosen/hr-orders-service/issues/535)) ([1218d0a](https://github.com/HarryRosen/hr-orders-service/commit/1218d0a76751806aa4d57187b7ce59c581608fa0))
+
 ## [1.7.30](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.29...v1.7.30) (2023-06-14)
 
 
