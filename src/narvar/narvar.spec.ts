@@ -1,9 +1,9 @@
 //const commercetools = require('../commercetools/__mocks__/commercetools')
-const { convertPickups } = require('./narvar')
+import { convertPickups, getItemUrl } from './narvar'
 
 const BASE_ORDER = require('../example-orders/24845933.json')
 
-const getShipment = (/** @type {string} */ createdAtDate, /** @type {string} */ lastModifedDate) =>  {
+const getShipment = (/** @type {string} */ createdAtDate: string, /** @type {string} */ lastModifedDate: string) =>  {
   return [{
     id: 'string',
     createdAt: createdAtDate,
@@ -54,5 +54,24 @@ describe('convertPickups', () => {
 
     const result = convertPickups(BASE_ORDER, getShipment(createdAtDate, ''))
     expect(result[0].status.date).toEqual(createdAtDate)  
+  })
+})
+
+describe('test getItemUrl', () => {
+  it('should get itemUrl when all params are passed', () => {
+    const locale = 'en-CA'
+    const productSlug = 'slug'
+
+
+    const result = getItemUrl(productSlug,locale)
+    expect(result).toEqual('https://harryrosen.com/en/product/slug')  
+  })
+
+  it('should return undefined when locale is missing', () => {
+    const locale = ''
+    const productSlug = 'slug'
+
+    const result = getItemUrl(productSlug,locale)
+    expect(result).toEqual(undefined)  
   })
 })

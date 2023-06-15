@@ -130,8 +130,12 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
  * @param {string} locale
  * @returns string
  */
-const getItemUrl = (productSlug: string, locale: string) =>
-  `https://harryrosen.com/${locale.substr(0, 2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
+export const getItemUrl = (productSlug: string, locale: string) => {
+  if(!locale) {
+    return undefined
+  }
+  return `https://harryrosen.com/${locale.substr(0, 2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
+}
 
 /**
  * @param {import('../orders').LineItem} item
