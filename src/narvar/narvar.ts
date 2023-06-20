@@ -564,7 +564,7 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
           },
         },
         amount: ((order.taxedPrice?.totalGross.centAmount ?? 0) / 100.0),
-        tax_amount: ((order.taxedPrice?.totalGross.centAmount ?? 0) - (order.taxedPrice?.totalNet.centAmount ?? 0) / 100.0),
+        tax_amount: ((order.taxedPrice?.taxPortions.reduce((accumulator, currentValue) => accumulator + currentValue.amount.centAmount, 0) || 0) / 100.0),
         shipping_handling: ((order.shippingInfo?.shippingRate.price.centAmount ?? 0) / 100)
       },
       customer: {
