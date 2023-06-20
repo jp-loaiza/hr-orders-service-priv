@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.32](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.31...v1.7.32) (2023-06-20)
+
+
+### Bug Fixes
+
+* HRC-6985: fix tax amount incorrect issue ([#537](https://github.com/HarryRosen/hr-orders-service/issues/537)) ([15e8dfa](https://github.com/HarryRosen/hr-orders-service/commit/15e8dfa5e5e881e1d479f0982631e135ed07c055))
+
 ## [1.7.31](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.30...v1.7.31) (2023-06-15)
 
 
