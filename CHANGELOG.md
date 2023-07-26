@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.33](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.32...v1.7.33) (2023-07-26)
+
+
+### Bug Fixes
+
+* **hrc-7013:** fix unit price and original price tag for narvar ([#539](https://github.com/HarryRosen/hr-orders-service/issues/539)) ([70322c2](https://github.com/HarryRosen/hr-orders-service/commit/70322c278cf4dd9b2bc0475dbeb858c146234242))
+
 ## [1.7.32](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.31...v1.7.32) (2023-06-20)
 
 
