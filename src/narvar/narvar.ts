@@ -213,10 +213,8 @@ const findBarcode = (attributes?: { name: string, value: any }[]) => {
  * @param {import('../orders').LineItem} item
  * @returns {number}
  */
-//TODO: please fix this by using the commercetools LineItem type
 const findUnitPrice = (item: LineItem) => {
-  //@ts-ignore TODO DiscountPrice does not exist on line item issue
-  return item.discountedPrice ? (item.discountedPrice.value.centAmount / 100) : (item.variant.prices[0].value.centAmount / 100)
+  return item.price.value.centAmount / 100
 }
 
 /**
@@ -375,7 +373,7 @@ export const convertItems = async (
       color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale]: null } }).value[locale],
       size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
       //style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
-      original_unit_price: item.variant.prices ? item.variant.prices[0].value.centAmount / 100 : 0,
+      original_unit_price: item.variant.attributes ? item.variant.attributes.find(({name}) => (name === 'originalPrice'))?.value.centAmount / 100 : null,
       original_line_price: null,
       narvar_convert_id: null
     }
