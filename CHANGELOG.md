@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.34](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.33...v1.7.34) (2023-08-01)
+
+
+### Bug Fixes
+
+* **hrc-6807:** add option for expedited in csv generation ([#541](https://github.com/HarryRosen/hr-orders-service/issues/541)) ([1130a29](https://github.com/HarryRosen/hr-orders-service/commit/1130a29cb1e936e3c4c96ef4be505bd222701c27))
+
 ## [1.7.33](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.32...v1.7.33) (2023-07-26)
 
 
