@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.35](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.34...v1.7.35) (2023-08-17)
+
+
+### Bug Fixes
+
+* HRC-7134: Removing slash on order since the env variable already contains it. ([#543](https://github.com/HarryRosen/hr-orders-service/issues/543)) ([7ef9cfe](https://github.com/HarryRosen/hr-orders-service/commit/7ef9cfec3cef2056b5c9cba6433a36da0514c8c5))
+
 ## [1.7.34](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.33...v1.7.34) (2023-08-01)
 
 
