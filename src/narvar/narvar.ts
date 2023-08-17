@@ -64,7 +64,7 @@ export const sendToNarvar = async (order: any) => {
   }
 
   logger.info(`check the narvar payload: ${JSON.stringify(options.body)}`)
-  return makeNarvarRequest('/orders', options)
+  return makeNarvarRequest('orders', options)
 }
 
 export const shouldSendToNarvarFinalCut = (narvarOrder: any) => narvarOrder.order_info.attributes.siteId === FINAL_CUT && enableFinalCutToNarvar
