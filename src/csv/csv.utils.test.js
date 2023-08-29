@@ -781,9 +781,9 @@ describe('getShippingInfoForOrder', () => {
     expect(getShippingInfoForOrder('00990','Purolator Priority Overnight').shippingServiceType).toBe('EXPRESS')
   })
 
-  it('parses endless aisle "Express" shipping name as FedEx Economy', () => {
-    expect(getShippingInfoForOrder('00990','Express').carrierId).toBe('FDX')
-    expect(getShippingInfoForOrder('00990','Express').shippingServiceType).toBe('ECONOMY')
+  it('parses endless aisle "Expedited" shipping name as FedEx Economy', () => {
+    expect(getShippingInfoForOrder('00990','Expedited').carrierId).toBe('FDX')
+    expect(getShippingInfoForOrder('00990','Expedited').shippingServiceType).toBe('ECONOMY')
   })
 
   it('parses endless aisle "Next Day" shipping name as FedEx Standard Overnight', () => {
@@ -792,7 +792,7 @@ describe('getShippingInfoForOrder', () => {
   })
 
   it('parses shipping name correctly even if it starts with extra whitespace', () => {
-    expect(getShippingInfoForOrder('00990',' Express')).toEqual({
+    expect(getShippingInfoForOrder('00990',' Expedited')).toEqual({
       carrierId: 'FDX',
       shippingServiceType: 'ECONOMY',
       shippingIsRush: false
