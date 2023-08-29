@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.37](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.36...v1.7.37) (2023-08-29)
+
+
+### Bug Fixes
+
+* HRC-6807: Revert for revert, due to hot fix ([#547](https://github.com/HarryRosen/hr-orders-service/issues/547)) ([68c8fda](https://github.com/HarryRosen/hr-orders-service/commit/68c8fdac67908c414535cfc3c20a88f8b293932b))
+
 ## [1.7.36](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.35...v1.7.36) (2023-08-17)
 
 
