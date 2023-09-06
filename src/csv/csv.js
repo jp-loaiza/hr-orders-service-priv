@@ -43,9 +43,10 @@ const {
 // we can feed into the CSV generator to create the CSV
 
 /**
- * @param {import('../orders').Order} order 
+ * @param {import('../orders').Order} order
  */
 const getHeaderObjectFromOrder = ({
+  cart,
   billingAddress,
   createdAt,
   custom,
@@ -101,7 +102,8 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'N',
     [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: paymentInfo !== undefined ? getSignatureRequiredIndicator(paymentInfo) : 'N',
     [HEADER_ROWS_ENUM.RELEASED]: paymentInfo !== undefined ? getPaymentReleasedStatus(paymentInfo) : 'Y',
-    [HEADER_ROWS_ENUM.GIFT_NOTE]: custom.fields.giftMessage
+    [HEADER_ROWS_ENUM.GIFT_NOTE]: custom.fields.giftMessage,
+    [HEADER_ROWS_ENUM.LOYALTY_SESSION_ID]: cart.id
   }
 }
 
@@ -123,7 +125,8 @@ const getDetailsObjectFromOrderAndLineItem = (/** @type {import('../orders').Ord
   [DETAILS_ROWS_ENUM.SALESPERSON_ID]: getDomainFromEmail(order) === 'harryrosen.com'
     ? 999
     : lineItem.custom.fields.salespersonId,
-  [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type
+  [DETAILS_ROWS_ENUM.SUB_TYPE]: getBarcodeInfoFromLineItem(lineItem).type,
+  [DETAILS_ROWS_ENUM.ITEM_IDENTIFIER]: lineItem.id
 })
 
 /**
@@ -231,7 +234,7 @@ const generateCsvHeaderNamesString = () => {
 }
 
 /**
- * @param {import('../events/OrderProcessMessage').IOrder} order 
+ * @param {import('../events/OrderProcessMessage').IOrder} order
  * @return {string}
  */
 const generateCsvStringFromOrder = order => {
