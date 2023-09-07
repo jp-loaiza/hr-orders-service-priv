@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.38](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.37...v1.7.38) (2023-09-07)
+
+
+### Bug Fixes
+
+* HRC-6803: add wasAuthenticated attribute for narvar payload ([#551](https://github.com/HarryRosen/hr-orders-service/issues/551)) ([e3935bd](https://github.com/HarryRosen/hr-orders-service/commit/e3935bd90cb555091548898e9180dcb42e397934))
+* HRC-7130: Updating order CSV to include loyalty identifiers ([#549](https://github.com/HarryRosen/hr-orders-service/issues/549)) ([8a7405b](https://github.com/HarryRosen/hr-orders-service/commit/8a7405b39231f68048db90155f73bf8f75ffe1fe))
+
 ## [1.7.37](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.36...v1.7.37) (2023-08-29)
 
 
