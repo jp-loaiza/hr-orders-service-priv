@@ -214,7 +214,8 @@ const findBarcode = (attributes?: { name: string, value: any }[]) => {
  * @returns {number}
  */
 const findUnitPrice = (item: LineItem) => {
-  return item.price.value.centAmount / 100
+  //@ts-ignore TODO DiscountPrice does not exist on line item issue
+  return item.discountedPrice ? (item.discountedPrice.value.centAmount / 100) : item.price.value.centAmount / 100
 }
 
 /**
