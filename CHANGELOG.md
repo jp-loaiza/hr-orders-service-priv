@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.39](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.38...v1.7.39) (2023-10-04)
+
+
+### Bug Fixes
+
+* HRC-7130: Updating order CSV to include loyalty identifiers ([#552](https://github.com/HarryRosen/hr-orders-service/issues/552)) ([6664ddd](https://github.com/HarryRosen/hr-orders-service/commit/6664ddd2f42dcde71fa81731423582591df09117))
+
 ## [1.7.38](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.37...v1.7.38) (2023-09-07)
 
 
