@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.40](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.39...v1.7.40) (2023-10-04)
+
+
+### Bug Fixes
+
+* **hrc-7300:** fix the discounted unit price when sent to narvar ([8f26d02](https://github.com/HarryRosen/hr-orders-service/commit/8f26d026b5bb3d5607f85203db8824d8158290c4))
+
 ## [1.7.39](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.38...v1.7.39) (2023-10-04)
 
 
