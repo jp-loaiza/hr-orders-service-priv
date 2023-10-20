@@ -100,7 +100,7 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.SERVICE_TYPE]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingServiceType,
     [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
     [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'N',
-    [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: paymentInfo !== undefined ? getSignatureRequiredIndicator(paymentInfo) : 'N',
+    [HEADER_ROWS_ENUM.SIGNATURE_REQUIRED_IND]: paymentInfo !== undefined ? getSignatureRequiredIndicator(paymentInfo,custom.fields.isStorePickup) : 'N',
     [HEADER_ROWS_ENUM.RELEASED]: paymentInfo !== undefined ? getPaymentReleasedStatus(paymentInfo) : 'Y',
     [HEADER_ROWS_ENUM.GIFT_NOTE]: custom.fields.giftMessage,
     [HEADER_ROWS_ENUM.LOYALTY_SESSION_ID]: cart.id

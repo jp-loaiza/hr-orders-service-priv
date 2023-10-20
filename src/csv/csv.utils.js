@@ -249,8 +249,17 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
 /**
  * Determines payment signature required indicator based on payment 
  * @param {import('../orders').PaymentInfo} paymentInfo
+ * @param {boolean} isStorePickup
  */
-const getSignatureRequiredIndicator = (paymentInfo) => {
+const getSignatureRequiredIndicator = (paymentInfo, isStorePickup) => {
+
+
+  // Checking Signature Required Indicator for non-BOPIS orders over 10k (HRC-7180)
+  const paymentTotal = getPaymentTotalFromPaymentInfo(paymentInfo)
+  if (!isStorePickup && paymentTotal >= 100000) {
+    return 'Y'; // Signature required
+  }
+
   //checking Klarna Signature Required Inidcator (HRC-5233)
   const klarnaPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna')
   if(klarnaPaymentInfo && klarnaPaymentInfo.obj.amountPlanned.centAmount >= 94000) {

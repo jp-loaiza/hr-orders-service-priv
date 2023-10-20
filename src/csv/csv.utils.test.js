@@ -361,7 +361,7 @@ describe('getPosEquivalenceFromPayment', () => {
       payments: [klarnaPayment]
     }
     // @ts-ignore incomplete payment for testing
-    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('Y')
+    expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('Y')
   })
 
   it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount below 94000', () => {
@@ -373,7 +373,7 @@ describe('getPosEquivalenceFromPayment', () => {
       payments: [klarnaPaymentBelow9400]
     }
     // @ts-ignore incomplete payment for testing
-    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('N')
+    expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('N')
   })
 
 
@@ -382,10 +382,48 @@ describe('getPosEquivalenceFromPayment', () => {
       payments: [payPalPayment]
     }
     // @ts-ignore incomplete payment for testing
-    expect(getSignatureRequiredIndicator(paymentInfo)).toBe('N')
+    expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('N')
+  })
+
+  it('returns the corret Jesta signature required indicator code when order above 10k and it is BOPIS', () => {
+    
+    const orderPaymentAbove100000 = {...unionPayPayment}
+    orderPaymentAbove100000.obj.amountPlanned.centAmount = 100000
+
+    const paymentInfo = {
+      payments: [orderPaymentAbove100000]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo, true)).toBe('N')
+  })
+
+  it('returns the corret Jesta signature required indicator code when order above 10k and it is NOT BOPIS', () => {
+    
+    const orderPaymentAbove100000 = {...unionPayPayment}
+    orderPaymentAbove100000.obj.amountPlanned.centAmount = 100000
+
+    const paymentInfo = {
+      payments: [orderPaymentAbove100000]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('Y')
+  })
+
+  it('returns the corret Jesta signature required indicator code when order above 10k and it is NOT BOPIS (undefined)', () => {
+    
+    const orderPaymentAbove100000 = {...unionPayPayment}
+    orderPaymentAbove100000.obj.amountPlanned.centAmount = 100000
+
+    const paymentInfo = {
+      payments: [orderPaymentAbove100000]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo, undefined)).toBe('Y')
   })
   
 })
+
+
 
 const incompleteLineItem = {
   custom: {
