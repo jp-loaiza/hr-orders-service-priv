@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.40...v1.8.0) (2023-10-20)
+
+
+### Features
+
+* HRC-7180: Signature requirements for net total within order CSV ([#555](https://github.com/HarryRosen/hr-orders-service/issues/555)) ([1cdd975](https://github.com/HarryRosen/hr-orders-service/commit/1cdd975c032b43de813e32bbb0b7a0c450ba64ee))
+
 ## [1.7.40](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.39...v1.7.40) (2023-10-04)
 
 
