@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.8.0...v1.8.1) (2023-10-23)
+
+
+### Bug Fixes
+
+* HRC-7180: adding an extra zero to fix the amount ([#557](https://github.com/HarryRosen/hr-orders-service/issues/557)) ([f647acf](https://github.com/HarryRosen/hr-orders-service/commit/f647acf1b289e28257043b1608fbf66645c25fcf))
+
 ## [1.8.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.7.40...v1.8.0) (2023-10-20)
 
 
