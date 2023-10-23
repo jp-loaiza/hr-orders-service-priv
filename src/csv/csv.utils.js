@@ -256,7 +256,7 @@ const getSignatureRequiredIndicator = (paymentInfo, isStorePickup) => {
 
   // Checking Signature Required Indicator for non-BOPIS orders over 10k (HRC-7180)
   const paymentTotal = getPaymentTotalFromPaymentInfo(paymentInfo)
-  if (!isStorePickup && paymentTotal >= 100000) {
+  if (!isStorePickup && paymentTotal >= 1000000) {
     return 'Y'; // Signature required
   }
 

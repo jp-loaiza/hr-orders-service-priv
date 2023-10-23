@@ -400,7 +400,7 @@ describe('getPosEquivalenceFromPayment', () => {
   it('returns the corret Jesta signature required indicator code when order above 10k and it is NOT BOPIS', () => {
     
     const orderPaymentAbove100000 = {...unionPayPayment}
-    orderPaymentAbove100000.obj.amountPlanned.centAmount = 100000
+    orderPaymentAbove100000.obj.amountPlanned.centAmount = 1000000
 
     const paymentInfo = {
       payments: [orderPaymentAbove100000]
@@ -412,7 +412,7 @@ describe('getPosEquivalenceFromPayment', () => {
   it('returns the corret Jesta signature required indicator code when order above 10k and it is NOT BOPIS (undefined)', () => {
     
     const orderPaymentAbove100000 = {...unionPayPayment}
-    orderPaymentAbove100000.obj.amountPlanned.centAmount = 100000
+    orderPaymentAbove100000.obj.amountPlanned.centAmount = 1000000
 
     const paymentInfo = {
       payments: [orderPaymentAbove100000]
@@ -421,6 +421,18 @@ describe('getPosEquivalenceFromPayment', () => {
     expect(getSignatureRequiredIndicator(paymentInfo, undefined)).toBe('Y')
   })
   
+  it('returns the corret Jesta signature required indicator code when order below 10k and it is NOT BOPIS', () => {
+    
+    const orderPaymentAbove100000 = {...creditCardPayment}
+    orderPaymentAbove100000.obj.amountPlanned.centAmount = 903435
+
+    const paymentInfo = {
+      payments: [orderPaymentAbove100000]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('N')
+  })
+
 })
 
 
