@@ -199,7 +199,7 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
  * @returns {Promise<{orders: Array<import('../orders').IOrder>, total: number}>}
  */
 async function fetchOrdersThatShouldBeUpdatedInOMS() {
-  const query = `custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}" and sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}" and (omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined) and posTransactionReferenceId is not defined))`
+  const query = `state is defined and custom(fields(omsUpdate = "${UPDATE_TO_OMS_STATUSES.PENDING}" and sentToOmsStatus = "${SENT_TO_OMS_STATUSES.SUCCESS}" and (omsUpdateNextRetryAt <= "${(new Date().toJSON())}" or omsUpdateNextRetryAt is not defined) and posTransactionReferenceId is not defined))`
   const uri = requestBuilder.orders.where(query).expand('paymentInfo.payments[*].paymentStatus.state').build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 
