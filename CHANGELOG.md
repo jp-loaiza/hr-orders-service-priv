@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.8.1...v1.8.2) (2023-10-26)
+
+
+### Bug Fixes
+
+* HRC-6930: adding state check before sending updates to Jesta ([#559](https://github.com/HarryRosen/hr-orders-service/issues/559)) ([d2cbcef](https://github.com/HarryRosen/hr-orders-service/commit/d2cbcefbef6e3d38b6fa4757c57d4d82abb7e63a))
+
 ## [1.8.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.8.0...v1.8.1) (2023-10-23)
 
 
