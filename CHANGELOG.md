@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.8.2...v1.9.0) (2023-10-30)
+
+
+### Features
+
+* HRC-7397: adding `on_sale` attribute to narvar Payload ([#561](https://github.com/HarryRosen/hr-orders-service/issues/561)) ([54d45a2](https://github.com/HarryRosen/hr-orders-service/commit/54d45a20dfb62a90477c40c0fcc1052296fecbc7))
+
 ## [1.8.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.8.1...v1.8.2) (2023-10-26)
 
 
