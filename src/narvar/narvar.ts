@@ -353,8 +353,8 @@ export const convertItems = async (
       is_gift: item.custom?.fields.isGift,
       final_sale_date: order.custom?.fields.orderCreatedDate || order.createdAt,
       line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
+      on_sale: item.custom?.fields.onSale,
       attributes: {
-        on_sale: item.custom?.fields.onSale,
         orderItemLastModifiedDate: item.custom?.fields.orderDetailLastModifiedDate || order.createdAt,
         brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),

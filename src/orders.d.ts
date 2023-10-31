@@ -72,6 +72,7 @@ type NarvarOrderItem = {
   item_url?: string,
   sku?: string,
   is_final_sale: boolean,
+  on_sale: boolean,
   unit_price: number,
   discount_amount: number | null,
   discount_percent: number | null,
