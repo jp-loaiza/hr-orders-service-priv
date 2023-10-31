@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.2...v1.9.3) (2023-10-31)
+
+
+### Bug Fixes
+
+* HRC-7397: removing negation on `boolean` ([#567](https://github.com/HarryRosen/hr-orders-service/issues/567)) ([7ea02f5](https://github.com/HarryRosen/hr-orders-service/commit/7ea02f56caf67543bc0f8d1d8fa540d2f49dda73))
+
 ## [1.9.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.1...v1.9.2) (2023-10-31)
 
 
