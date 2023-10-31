@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.0...v1.9.1) (2023-10-31)
+
+
+### Bug Fixes
+
+* HRC-7397: moving `on_sale` to same level as `is_final_sale` ([#563](https://github.com/HarryRosen/hr-orders-service/issues/563)) ([3ddf44d](https://github.com/HarryRosen/hr-orders-service/commit/3ddf44d3e4c17af059b0873ce669bc9cc0c4c2f3))
+
 ## [1.9.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.8.2...v1.9.0) (2023-10-30)
 
 
