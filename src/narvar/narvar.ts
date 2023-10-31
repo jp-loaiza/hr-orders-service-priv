@@ -354,7 +354,7 @@ export const convertItems = async (
       final_sale_date: order.custom?.fields.orderCreatedDate || order.createdAt,
       line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
       attributes: {
-        on_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'onSale', { value: false }).value,
+        on_sale: getAttributeOrDefaultBoolean(item.variant.attributes, 'onSale', { value: false }).value,
         orderItemLastModifiedDate: item.custom?.fields.orderDetailLastModifiedDate || order.createdAt,
         brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),
