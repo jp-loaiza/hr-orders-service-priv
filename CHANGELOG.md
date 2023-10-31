@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.1...v1.9.2) (2023-10-31)
+
+
+### Bug Fixes
+
+* HRC-7397: Getting onsale attribute from the proper place ([#565](https://github.com/HarryRosen/hr-orders-service/issues/565)) ([d32ddc3](https://github.com/HarryRosen/hr-orders-service/commit/d32ddc3b67854e77f25696b4598638a610f5f192))
+
 ## [1.9.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.0...v1.9.1) (2023-10-31)
 
 
