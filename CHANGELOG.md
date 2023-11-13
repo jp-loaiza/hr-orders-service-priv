@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.3...v1.10.0) (2023-11-13)
+
+
+### Features
+
+* HRC-7125: Implementing Narvar Webhook Notification ([#569](https://github.com/HarryRosen/hr-orders-service/issues/569)) ([2933f6f](https://github.com/HarryRosen/hr-orders-service/commit/2933f6f1e5fea5817ee4cbcefe17f71061f8aae3))
+
 ## [1.9.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.2...v1.9.3) (2023-10-31)
 
 
