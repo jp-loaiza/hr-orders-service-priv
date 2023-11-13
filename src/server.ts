@@ -4,6 +4,7 @@ require('newrelic')
 import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser'
 import client from 'ssh2-sftp-client'
+import basicAuth from 'basic-auth'
 
 require('./jobs/jobs')
 import {
@@ -21,6 +22,8 @@ import kafkaClient from './events/kafkaClient'
 import OrderSaveConsumer from './events/OrderSaveConsumer'
 import OrderProcessingConsumer from './events/OrderProcessingConsumer'
 import { checkJobsHealth } from './jobs/jobs.utils'
+import { processWebhookData } from './narvar/notifications-webhook/webhookProcessor'
+import { WebhookNotification } from './narvar/notifications-webhook/WebhookNotification'
 
 const app = express()
 // Parse application/x-www-form-urlencoded
@@ -102,6 +105,40 @@ app.post('/notifications/order-created', async (req: Request, res: Response) => 
     res.status(400).send()
   }
 })
+
+app.use('/narvar-notifications', (req, res, next) => {
+  const credentials = basicAuth(req);
+    if (!credentials || credentials.name !== process.env.NARVAR_NOTIFICATIONS_USERNAME || credentials.pass !== process.env.NARVAR_NOTIFICATIONS_PASSWORD) {
+        res.status(401).set('WWW-Authenticate', 'Basic realm="Authentication required"').send('Unauthorized');
+    } else {
+        next();
+    }
+})
+
+app.use('/narvar-notifications/order-delivered', (req, res, next) => {
+  //validate narvar payload for the required fields
+  const payload: WebhookNotification = req.body
+  if (!payload.version ||
+      !payload.narvar_tracer_id ||
+      !payload.notification_type ||
+      !payload.notification_triggered_by_tracking_number ||
+      !payload.published_date) {
+        res.status(400).json({ error: 'Payload is missing required fields' })
+  } else {
+      next()
+  }
+})
+
+app.post('/narvar-notifications/order-delivered', async (req, res) => {
+  try {
+      const receivedWebhook: WebhookNotification = req.body;
+      await processWebhookData(receivedWebhook);
+      res.status(200).json({ message: 'Narvar notifications webhook received successfully' });
+  } catch (error) {
+      console.error('Error processing narvar notifications webhook:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 /**
  * Can be used to setup an endpoint to retrieve list of orders

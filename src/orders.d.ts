@@ -425,6 +425,7 @@ export type OrderUpdate = {
 }
 
 type Shipment = {
+  
   id: string,
   createdAt: string,
   value: {
@@ -443,6 +444,7 @@ type Shipment = {
     trackingNumber?: string,
     shipmentItemLastModifiedDate?: string,
     shipmentDetails: Array<{
+      shipmentDetailLastModifiedDate?: string
       siteId: string,
       line: number,
       businessUnitId: string,

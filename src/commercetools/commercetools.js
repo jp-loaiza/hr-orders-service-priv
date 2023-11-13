@@ -194,6 +194,7 @@ const setOrderCustomFields = async (orderId, orderVersion, actions) => {
   }
 }
 
+
 /**
  * Fetches all orders that need to be updated in OMS
  * @returns {Promise<{orders: Array<import('../orders').IOrder>, total: number}>}
@@ -453,6 +454,67 @@ const fetchShipments = async orderNumber => {
 
 /**
  *
+ * @param {string} trackingNumber
+ * @returns {Promise<Array<import('../orders').Shipment>>}
+ */
+
+const fetchShipmentsByTrackingNumber = async trackingNumber => {
+  const uri = requestBuilder.customObjects.where(`container="shipments" and value(trackingNumber="${trackingNumber}")`).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  return body.results
+}
+
+/**
+ * This function replaces the shipment with this shipment passed based on the id
+ *
+ * @param {import('../orders').Shipment} shipment
+ */
+const updateShipment = async (shipment) => {
+  const method = 'POST';
+  const uri = requestBuilder.customObjects.build();
+  const body = JSON.stringify({
+    container: 'shipments',
+    key: shipment.key,
+    value: shipment.value
+  });
+  const response = await ctClient.execute({ method, uri, body });
+  return response.body;
+};
+
+const fetchOrderByNumber = async orderNumber => {
+  const method = 'GET';
+  const uri = requestBuilder.orders.where(`orderNumber = "${orderNumber}"`).build();
+  try {
+    const response = await ctClient.execute({ method, uri });
+    return response.body.results[0];
+  } catch (err) {
+    if (err.code === 404) return null;
+    throw err;
+  }
+}
+
+const updateOrder = async (orderNumber, actions) => {
+  try {
+    const order = await fetchOrderByNumber(orderNumber)
+
+    const method = 'POST';
+    const uri = requestBuilder.orders.byId(order.id).build();
+    const body = JSON.stringify({ version: order.version, actions });
+
+    return ctClient.execute({ method, uri, body });
+  } catch (error) {
+    logger.error({
+      type: 'update_order_failure',
+      message: 'Failed to update order',
+      error: serializeError(error)
+    })
+  }
+
+
+
+}
+/**
+ *
  * @param {string} itemNumber
  * @returns {Promise<import('../orders').Product>}
  */
@@ -492,6 +554,8 @@ const fetchOrdersToSendToSegment = async () => {
   }
 }
 
+
+
 module.exports = {
   fetchFullOrder,
   fetchOrdersThatShouldBeSentToOms,
@@ -502,6 +566,10 @@ module.exports = {
   fetchOrdersThatShouldBeSentToNarvar,
   fetchStates,
   fetchShipments,
+  fetchShipmentsByTrackingNumber,
+  updateShipment,
+  fetchOrderByNumber,
+  updateOrder,
   getActionsFromCustomFields,
   getNextRetryDateFromRetryCount,
   setOrderAsSentToOms,
