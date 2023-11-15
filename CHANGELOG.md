@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.10.0...v1.11.0) (2023-11-15)
+
+
+### Features
+
+* HRC-7432: correct usage of segmentUserId on Backend ([#571](https://github.com/HarryRosen/hr-orders-service/issues/571)) ([51eccf9](https://github.com/HarryRosen/hr-orders-service/commit/51eccf924b34cd683893c6e1fefbbbed17cc220c))
+
 ## [1.10.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.9.3...v1.10.0) (2023-11-13)
 
 
