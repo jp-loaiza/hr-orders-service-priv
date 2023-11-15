@@ -44,7 +44,7 @@ import {
 import { sendManyConversionsToAlgolia, getConversionsFromOrder } from '../algolia/algolia'
 import { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } from '../dynamicyield/dynamicYield'
 import { convertOrderForNarvar, sendToNarvar, shouldSendToNarvarFinalCut } from '../narvar/narvar'
-import { getOrderData } from '../segment/segment'
+import { getCrmCustomerId, getOrderData } from '../segment/segment'
 import { sendSegmentTrackCall, sendSegmentIdentifyCall } from '../segment/segment.utils'
 import logger, { serializeError } from '../logger'
 import { sendOrderConversionToCj } from "../cj/cj"
@@ -614,21 +614,23 @@ async function sendOrderToSegment(order: Order) {
     hydrateOrderSpanTags(order)
     try {
       const orderData = await getOrderData(order)
+      const customerId = await getCrmCustomerId(order)
+      const segmentUserId = customerId ?? orderData.segment_ajs_anonymous_id
       var eventName = ''
       if (!order.custom?.fields.segmentOrderState) {
         eventName = 'Order Created'
-        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
-        sendSegmentIdentifyCall(orderData.loginradius_id, getIdentifyTraitsFromOrder(orderData))
-        logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+        sendSegmentTrackCall(eventName, segmentUserId, orderData)
+        sendSegmentIdentifyCall(segmentUserId, getIdentifyTraitsFromOrder(orderData))
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${orderData}`)
       } else if (order.orderState === 'Cancelled') {
         eventName = 'Order Cancelled'
-        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
-        logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+        sendSegmentTrackCall(eventName, segmentUserId, orderData)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${orderData}`)
       }
       else if (order.orderState !== order.custom.fields.segmentOrderState) {
         eventName = 'Order Modified'
-        sendSegmentTrackCall(eventName, orderData.loginradius_id, orderData)
-        logger.info(`Sent Segment Call for order: ${order.orderNumber}`)
+        sendSegmentTrackCall(eventName, segmentUserId, orderData)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${orderData}`)
       }
       await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_STATUS, SENT_TO_SEGMENT_STATUSES.SUCCESS)
       await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_ORDER_STATE, orderData.order_state)

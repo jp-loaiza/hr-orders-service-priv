@@ -252,6 +252,15 @@ const fetchFullOrder = async orderId => {
   return !order.locale ? { ...order, locale: 'en-CA' } : order
 }
 
+/**
+ * @param {string} orderId
+ * @returns {Promise<import('../orders').Customer>}
+ */
+const fetchCustomer = async customerId => {
+  const uri = requestBuilder.customers.byId(customerId).build()
+  return await ctClient.execute({ method: 'GET', uri }).body
+}
+
 /** Fetches all orders that that we should try to send to the OMS. Includes
  *  both orders that we have never tried to send to the OMS, and ones that
  *  it is time to re-try sending to the OMS. Excludes orders that lack
@@ -582,5 +591,6 @@ module.exports = {
   keepAliveRequest,
   fetchItemInfo,
   fetchCategoryInfo,
-  fetchOrdersToSendToSegment
+  fetchOrdersToSendToSegment,
+  fetchCustomer,
 }

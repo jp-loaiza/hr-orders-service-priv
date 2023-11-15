@@ -1,5 +1,5 @@
 //Commercetools Functions
-const { fetchShipments, fetchStates } = require('../commercetools/commercetools')
+const { fetchShipments, fetchStates, fetchCustomer } = require('../commercetools/commercetools')
 
 //Reutilizing Narvar Functions
 const { convertItems, convertPickups, convertShipments, checkShipmentItemIdForNull, checkShippedQuantity, filterMissingTrackingNumberMessages } = require('../narvar/narvar')
@@ -82,10 +82,21 @@ const getOrderData = async (order) => {
     products: await convertItems(order, states, shipments, isStorePickup),
     shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber)) ? shipment : null),
     pickups: convertPickups(order, shipments),
+    segment_ajs_anonymous_id: order.custom.fields.segmentAjsAnonymousId,
   }
   return orderData
 }
 
+/**
+ * @param {import('@commercetools/platform-sdk').Order} order
+ */
+const getCrmCustomerId = async (order) => {
+  const customer = await fetchCustomer(order.customerId)
+  const crmCustomerId = customer.custom.fields.crmCustomerId
+  return crmCustomerId
+}
+
 module.exports = {
-  getOrderData
+  getOrderData,
+  getCrmCustomerId,
 }

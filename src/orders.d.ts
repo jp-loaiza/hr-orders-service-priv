@@ -1,4 +1,4 @@
-import { CustomFields, Order } from '@commercetools/platform-sdk'
+import { CustomFields, Order, Customer } from '@commercetools/platform-sdk'
 
 type StateCode = 'BC' | 'SK' | 'MB' | 'ON' | 'QC' | 'NB' | 'NL' | 'NS' | 'PE'
 type TaxDescriptionKey = 'GST' | 'PST_BC' | 'PST_SK' | 'PST_MB' | 'HST_ON' | 'QST_QC' | 'HST_NB' | 'HST_NL' | 'HST_NS' | 'HST_PE'
@@ -411,7 +411,8 @@ export interface Custom extends CustomFields {
   shippingTax2?: string,
   reasonCode?: string,
   segmentLastSuccessTime?: string,
-  segmentOrderState?: string
+  segmentOrderState?: string,
+  segmentAjsAnonymousId?: string
 }
 
 export interface IOrder extends Order {
@@ -560,5 +561,6 @@ export {
   SentToOmsStatus,
   OmsUpdate,
   CarrierId,
-  ShippingServiceType
+  ShippingServiceType,
+  Customer,
 }
