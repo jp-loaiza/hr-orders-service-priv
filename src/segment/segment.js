@@ -82,7 +82,7 @@ const getOrderData = async (order) => {
     products: await convertItems(order, states, shipments, isStorePickup),
     shipments: convertShipments(order, shipments).filter(shipment => (filterMissingTrackingNumberMessages(shipment, order.orderNumber) && checkShipmentItemIdForNull(shipment, order.orderNumber) && checkShippedQuantity(shipment, order.orderNumber)) ? shipment : null),
     pickups: convertPickups(order, shipments),
-    segment_ajs_anonymous_id: order.custom.fields.segmentAjsAnonymousId,
+    anonymous_id: order.custom.fields.segmentAjsAnonymousId,
   }
   return orderData
 }

@@ -9,11 +9,12 @@ const analytics = new Analytics(writeKey)
  * @param {object} properties
  */
 
-const sendSegmentTrackCall = (eventName, userId, properties) => {
+const sendSegmentTrackCall = (eventName, userId, anonymousId, properties) => {
   const segmentObject = {
-    userId: userId,
     event: eventName,
-    properties: properties
+    userId: userId,
+    anonymousId: anonymousId,
+    properties: {...properties}
   }
   analytics.track(segmentObject)
 }
@@ -23,9 +24,10 @@ const sendSegmentTrackCall = (eventName, userId, properties) => {
  * @param {object} properties
  */
 
-const sendSegmentIdentifyCall = (userId, properties) => {
+const sendSegmentIdentifyCall = (userId, anonymousId, properties) => {
   analytics.identify({
-    userId: userId,
+    userId: userId ? userId : undefined,
+    anonymousId: anonymousId ? anonymousId : undefined,
     traits: {
       ...properties
     }
