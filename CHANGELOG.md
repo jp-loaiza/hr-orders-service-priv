@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.0...v1.11.1) (2023-11-17)
+
+
+### Bug Fixes
+
+* HRC-7432: fixes requested by HR ([#573](https://github.com/HarryRosen/hr-orders-service/issues/573)) ([dc6289a](https://github.com/HarryRosen/hr-orders-service/commit/dc6289ab8d5585833fc2f01ffbce11edd550527b))
+
 ## [1.11.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.10.0...v1.11.0) (2023-11-15)
 
 
