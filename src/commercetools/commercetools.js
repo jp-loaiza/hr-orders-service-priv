@@ -258,13 +258,7 @@ const fetchFullOrder = async orderId => {
  * @returns {Promise<import('../orders').Customer>}
  */
 const fetchCustomer = async customerId => {
-  try {
-    const response = await apiRoot.customers().withId({ID: customerId}).get().execute()
-    return response.body.results[0];
-  } catch (err) {
-    if (err.code === 404) return null;
-    throw err;
-  }
+  return await apiRoot.customers().withId({ID: customerId}).get().execute()
 }
 
 /** Fetches all orders that that we should try to send to the OMS. Includes
