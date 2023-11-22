@@ -627,16 +627,16 @@ async function sendOrderToSegment(order: Order) {
         eventName = 'Order Created'
         sendSegmentTrackCall(eventName, customerId, anonymousId, orderDataWithCustomerId)
         sendSegmentIdentifyCall(customerId, anonymousId, getIdentifyTraitsFromOrder(orderDataWithCustomerId))
-        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${orderDataWithCustomerId}`)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${JSON.stringify(orderDataWithCustomerId)}`)
       } else if (order.orderState === 'Cancelled') {
         eventName = 'Order Cancelled'
         sendSegmentTrackCall(eventName, customerId, anonymousId, orderDataWithCustomerId)
-        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${orderDataWithCustomerId}`)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${JSON.stringify(orderDataWithCustomerId)}`)
       }
       else if (order.orderState !== order.custom.fields.segmentOrderState) {
         eventName = 'Order Modified'
         sendSegmentTrackCall(eventName, customerId, anonymousId, orderDataWithCustomerId)
-        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${orderDataWithCustomerId}`)
+        logger.info(`Sent Segment Call for order: ${order.orderNumber}, with segmentUserId ${segmentUserId} and segment payload ${JSON.stringify(orderDataWithCustomerId)}`)
       }
       await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_STATUS, SENT_TO_SEGMENT_STATUSES.SUCCESS)
       await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.SEGMENT_ORDER_STATE, orderData.order_state)
