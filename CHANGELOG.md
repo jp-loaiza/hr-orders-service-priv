@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.2...v1.11.3) (2023-11-22)
+
+
+### Bug Fixes
+
+* Hotfix retrieve customer ([#577](https://github.com/HarryRosen/hr-orders-service/issues/577)) ([327910b](https://github.com/HarryRosen/hr-orders-service/commit/327910bc81faad53f0f7aae4368bdab80283b5a3))
+
 ## [1.11.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.1...v1.11.2) (2023-11-22)
 
 
