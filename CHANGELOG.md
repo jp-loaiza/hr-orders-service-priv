@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.2](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.1...v1.11.2) (2023-11-22)
+
+
+### Bug Fixes
+
+* hotfixing segment calls and adding CT Scope variable ([#575](https://github.com/HarryRosen/hr-orders-service/issues/575)) ([b479198](https://github.com/HarryRosen/hr-orders-service/commit/b479198aad4f5de1a3dccac2f33e424f9a209f02))
+
 ## [1.11.1](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.0...v1.11.1) (2023-11-17)
 
 
