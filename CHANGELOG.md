@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.4...v1.11.5) (2023-11-22)
+
+
+### Bug Fixes
+
+* checking fields before retrieving ([#581](https://github.com/HarryRosen/hr-orders-service/issues/581)) ([393f017](https://github.com/HarryRosen/hr-orders-service/commit/393f017d6d37db58f1761d04ff825c0504d771c9))
+
 ## [1.11.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.3...v1.11.4) (2023-11-22)
 
 
