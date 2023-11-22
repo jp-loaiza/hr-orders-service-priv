@@ -15,6 +15,8 @@ const oauthHost = process.env.CT_OAUTH_HOST ?? ''
 const host = process.env.CT_HOST ?? ''
 const clientId = process.env.CT_CLIENT_ID ?? ''
 const clientSecret = process.env.CT_CLIENT_SECRET ?? ''
+const ctScopes = process.env.CT_SCOPE ? process.env.CT_SCOPE.split(',') : []
+
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
@@ -24,7 +26,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
     clientId,
     clientSecret,
   },
-  scopes: [`manage_orders:${projectKey}`, `view_payments:${projectKey}`, `view_products:${projectKey}`],
+  scopes: ctScopes,
   fetch,
 };
 
