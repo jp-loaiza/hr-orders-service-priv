@@ -93,7 +93,7 @@ const getOrderData = async (order) => {
 const getCrmCustomerId = async (order) => {
   const customer = await fetchCustomer(order.customerId)
   let crmCustomerId
-  if(customer) {
+  if(customer && customer.custom && customer.custom.fields && customer.custom.fields.crmCustomerId) {
     crmCustomerId = customer.custom.fields.crmCustomerId
   }
   return crmCustomerId
