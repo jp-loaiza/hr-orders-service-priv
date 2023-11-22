@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.3...v1.11.4) (2023-11-22)
+
+
+### Bug Fixes
+
+* fixing retrieve customer for segment ([#579](https://github.com/HarryRosen/hr-orders-service/issues/579)) ([ee7002f](https://github.com/HarryRosen/hr-orders-service/commit/ee7002f29bce86b2f8542b3d7beb267025159e75))
+
 ## [1.11.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.2...v1.11.3) (2023-11-22)
 
 
