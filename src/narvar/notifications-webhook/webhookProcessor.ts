@@ -8,10 +8,9 @@ export async function processWebhookData(webhookData: WebhookNotification): Prom
     await tracer.trace('narvar_webhook_processor', { resource: 'process_webhook_data' }, async () => { 
         if(webhookData.notification_type === NARVAR_DELIVERED_NOTIFICATION_TYPE) {
             const shipments = await fetchShipmentsByTrackingNumber(webhookData.notification_triggered_by_tracking_number)
-
-            await updateShipmentsToDelivered(shipments, webhookData.notification_triggered_by_tracking_number);
-        
-            await updateOrderDelivered(webhookData.order);    
+            if(shipments) {
+                await updateShipmentsToDelivered(shipments, webhookData.notification_triggered_by_tracking_number); 
+            }
         }   
     })
 }
@@ -25,7 +24,9 @@ export async function processWebhookData(webhookData: WebhookNotification): Prom
  */
 async function updateShipmentsToDelivered(shipments: Shipment[], narvarTrackingNumber: WebhookNotification["notification_triggered_by_tracking_number"]) {
     let isShipmentUpdated;
+    let orderNumber
     for (const shipment of shipments) {
+        orderNumber = shipment.value.orderNumber
         isShipmentUpdated = false;
         for (const shipmentDetail of shipment.value.shipmentDetails) {
             if (shipmentDetail.trackingNumber === narvarTrackingNumber) {
@@ -41,15 +42,15 @@ async function updateShipmentsToDelivered(shipments: Shipment[], narvarTrackingN
             await updateShipment(shipment);
         }
     }
+    updateOrderDelivered(orderNumber)
 }
 
 /**
  * Checks all order shipments and updates the order to Delivered if ALL shipments are with the `DELIVERED` status
  *
- * @param {WebhookNotification["order"]} narvarOrder Order Data received from Narvar
+ * @param string orderNumber OrderNumber gathered from shipments
  */
-async function updateOrderDelivered(narvarOrder: WebhookNotification["order"]) {
-    const orderNumber = narvarOrder?.order_number;
+async function updateOrderDelivered(orderNumber: string | undefined ) {
     if (orderNumber) {
         let isOrderDelivered = true;
         const shipments = await fetchShipments(orderNumber);

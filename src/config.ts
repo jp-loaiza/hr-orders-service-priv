@@ -65,6 +65,7 @@ export const ORDER_SAVE_MAX_BYTES_PER_PARTITION = parseInt(envProperties.ORDER_S
 export const ORDER_SAVE_MAX_BYTES = parseInt(envProperties.ORDER_SAVE_MAX_BYTES ?? '10485760')
 export const ORDER_SAVE_CONCURRENT_PARTITIONS = parseInt(envProperties.ORDER_SAVE_CONCURRENT_PARTITIONS ?? '1')
 export const DISABLE_ORDER_SAVE_ACTOR = envProperties.DISABLE_ORDER_SAVE_ACTOR ?? true
+export const RECEIVE_NARVAR_DELIVERED_EVENTS = envProperties.RECEIVE_NARVAR_DELIVERED_EVENTS === 'true' ?? false
 
 export const HR_COMMERCE_TOPIC = envProperties.HR_COMMERCE_TOPIC ?? 'commercetools-messages'
 export const KAFKA_ORDER_PROCESS_CONSUMER_GROUP_ID = envProperties.KAFKA_ORDER_PROCESS_CONSUMER_GROUP_ID ?? 'commercetools-order-process-consumer-group-id'

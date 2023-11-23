@@ -443,6 +443,7 @@ type Shipment = {
     fromStateId?: string,
     fromStoreName?: string,
     trackingNumber?: string,
+    orderNumber?: string,
     shipmentItemLastModifiedDate?: string,
     shipmentDetails: Array<{
       shipmentDetailLastModifiedDate?: string

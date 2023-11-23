@@ -12,7 +12,8 @@ import {
   DISABLE_ORDER_SAVE_ACTOR,
   PROCESS_ORDER_EVENTS,
   SFTP_INCOMING_ORDERS_PATH,
-  NOTIFICATIONS_BEARER_TOKEN
+  NOTIFICATIONS_BEARER_TOKEN,
+  RECEIVE_NARVAR_DELIVERED_EVENTS,
 } from './config'
 import { fetchFullOrder, keepAliveRequest } from './commercetools/commercetools'
 import { sendOrderEmailNotificationByOrder } from './emails/email'
@@ -130,14 +131,18 @@ app.use('/narvar-notifications/order-delivered', (req, res, next) => {
 })
 
 app.post('/narvar-notifications/order-delivered', async (req, res) => {
-  try {
+  if(RECEIVE_NARVAR_DELIVERED_EVENTS) {
+    try {
       const receivedWebhook: WebhookNotification = req.body;
       await processWebhookData(receivedWebhook);
       res.status(200).json({ message: 'Narvar notifications webhook received successfully' });
-  } catch (error) {
+    } catch (error) {
       console.error('Error processing narvar notifications webhook:', error);
       res.status(500).json({ error: 'Internal Server Error' });
-  }
+    }
+  } else {
+    res.status(423).json({ message: 'This service is currently disabled.'})
+  } 
 });
 
 /**
