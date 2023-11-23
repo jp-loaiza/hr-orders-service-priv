@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.5...v1.11.6) (2023-11-23)
+
+
+### Bug Fixes
+
+* HRC-7125: adding feature flag retrieve order from shipment ([#583](https://github.com/HarryRosen/hr-orders-service/issues/583)) ([3b8771f](https://github.com/HarryRosen/hr-orders-service/commit/3b8771f237184e202bb10a2d60130e5a462fb0a6))
+
 ## [1.11.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.4...v1.11.5) (2023-11-22)
 
 
