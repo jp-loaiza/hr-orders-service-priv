@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.6...v1.11.7) (2023-11-24)
+
+
+### Bug Fixes
+
+* HRC-7461: clean up CT logs ([#585](https://github.com/HarryRosen/hr-orders-service/issues/585)) ([295558c](https://github.com/HarryRosen/hr-orders-service/commit/295558cfeb1323577b646283e5be27d81ade0ca0))
+
 ## [1.11.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.5...v1.11.6) (2023-11-23)
 
 
