@@ -16,6 +16,7 @@ const host = process.env.CT_HOST ?? ''
 const clientId = process.env.CT_CLIENT_ID ?? ''
 const clientSecret = process.env.CT_CLIENT_SECRET ?? ''
 const ctScopes = process.env.CT_SCOPE ? process.env.CT_SCOPE.split(',') : []
+const DEBUG = process.env.DEBUG === 'true' ?? false
 
 
 // Configure authMiddlewareOptions
@@ -37,12 +38,16 @@ const httpMiddlewareOptions: HttpMiddlewareOptions = {
 };
 
 // Export the ClientBuilder
-export const ctpClient = new ClientBuilder()
+const ctpClientBuilder = new ClientBuilder()
   .withProjectKey(projectKey) // .withProjectKey() is not required if the projectKey is included in authMiddlewareOptions
   .withClientCredentialsFlow(authMiddlewareOptions)
   .withHttpMiddleware(httpMiddlewareOptions)
-  .withLoggerMiddleware() // Include middleware for logging
-  .build();
+
+if (DEBUG) {
+  ctpClientBuilder.withLoggerMiddleware()
+}
+
+export const ctpClient = ctpClientBuilder.build()
 
 export const apiRoot = createApiBuilderFromCtpClient(ctpClient)
   .withProjectKey({ projectKey });
