@@ -47,6 +47,8 @@ export const shouldSendDynamicYieldInfo = envProperties.SHOULD_SEND_DYNAMIC_YIEL
 
 export const shouldSendOrderNarvar = envProperties.SHOULD_SEND_NARVAR_ORDERS === 'true'
 
+export const shouldSendOrdersStatusPendingToLogs = envProperties.SHOULD_SEND_REPORT_FROM_ORDERS_SENT_TO_NARVAR === 'true'
+
 export const shouldSendCjConversions = envProperties.SHOULD_SEND_CJ_CONVERSIONS === 'true'
 
 export const shouldSendOrderSegment = envProperties.SHOULD_SEND_SEGMENT_ORDERS === 'true'

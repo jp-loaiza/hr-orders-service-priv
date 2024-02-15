@@ -10,12 +10,14 @@ const {
   SEND_CJ_CONVERSIONS_INTERVAL,
   SEND_DYNAMIC_YIELD_INFO_INTERVAL,
   SEND_NARVAR_ORDERS_INTERVAL,
-  SEND_SEGMENT_ORDERS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
+  SEND_SEGMENT_ORDERS_INTERVAL,
+  SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
 import {
   createAndUploadCsvs,
   sendConversionsToAlgolia,
   sendPurchaseEventsToDynamicYield,
   sendOrdersToNarvar,
+  sendOrdersStatusPendingToLogs,
   sendOrderUpdates,
   sleep,
   startCjConversionJob,
@@ -36,6 +38,7 @@ import {
   shouldSendOrderNarvar,
   shouldSendOrderSegment,
   shouldSendOrderUpdates,
+  shouldSendOrdersStatusPendingToLogs,
   shouldUploadOrders
 } from "../config"
 import { Order } from "../orders"
@@ -223,6 +226,23 @@ async function sendOrdersToNarvarJob(sendToNarvarInterval: number) {
 }
 
 /**
+ * @param {number} SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL
+ */
+async function sendOrdersStatusPendingToLogsJob(sendOrdersStatusPendingToLogsInterval: number) {
+  while(true) {
+    try {
+      await sendOrdersStatusPendingToLogs()
+    }catch (error) {
+      logger.error({
+        type: 'send_reports_to_narvar_failure',
+        error: serializeError(error)
+      })
+    }
+    await sleep(sendOrdersStatusPendingToLogsInterval)
+  }
+}
+
+/**
  * @param {number} sendToSegmentInterval
  */
 async function sendOrdersToSegmentJob(sendToSegmentInterval: number) {
@@ -289,6 +309,13 @@ if (shouldSendOrderNarvar) {
   logger.info('Processing Narvar job at interval: ', sendToNarvarInterval)
   if (!(sendToNarvarInterval > 0)) throw Error('SEND_NARVAR_ORDERS_INTERVAL must be a positive number')
   sendOrdersToNarvarJob(sendToNarvarInterval)
+}
+
+if (shouldSendOrdersStatusPendingToLogs) {
+  const sendOrdersStatusPendingToLogsInterval = Number(SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL)
+  logger.info('Processing Report_Orders_Narvar job at interval: ', sendOrdersStatusPendingToLogsInterval)
+  if (!(sendOrdersStatusPendingToLogsInterval>0)) throw Error('SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL must be a positive number')
+  sendOrdersStatusPendingToLogsJob(sendOrdersStatusPendingToLogsInterval)
 }
 
 //TODO: Remove/Investigate as this is not enabled in Production ->  https://harryrosen.atlassian.net/browse/HRC-6643
