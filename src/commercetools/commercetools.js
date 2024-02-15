@@ -443,25 +443,6 @@ const fetchOrdersThatShouldBeSentToNarvar = async () => {
   }
 }
 
-const fetchOrdersStatusPendingThatShouldBeSentToNarvar = async () => {
-  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT}>=1)))`
-
-  const body = await apiRoot.orders().get({queryArgs: {
-    where: query,
-    limit: NARVAR_BATCH_SIZE
-  }}).execute()
-
-  const ordersResult = []
-  for(const order of body.body.results){
-    ordersResult.push(order.orderNumber)
-  }
-
-  return {
-    orders: ordersResult,
-    total: body.body.total
-  }
-}
-
 const fetchStates = async () => {
   const response = await apiRoot.states().get().execute()
 
@@ -592,7 +573,6 @@ module.exports = {
   fetchOrdersWhoseConversionsShouldBeSentToCj,
   fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
   fetchOrdersThatShouldBeSentToNarvar,
-  fetchOrdersStatusPendingThatShouldBeSentToNarvar,
   fetchStates,
   fetchShipments,
   fetchShipmentsByTrackingNumber,

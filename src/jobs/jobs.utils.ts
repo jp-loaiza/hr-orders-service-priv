@@ -27,7 +27,6 @@ import {
   fetchOrdersWhoseConversionsShouldBeSentToCj,
   fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
   fetchOrdersThatShouldBeSentToNarvar,
-  fetchOrdersStatusPendingThatShouldBeSentToNarvar,
   fetchStates,
   fetchShipments,
   fetchOrdersToSendToSegment,
@@ -509,18 +508,6 @@ export async function sendOrdersToNarvar() {
       await sendOrderToNarvar(order, states)
     }
   })
-}
-
-export async function sendOrdersStatusPendingToLogs() {
-  const {orders, total } = await fetchOrdersStatusPendingThatShouldBeSentToNarvar()
-
-  logger.info(`Orders to be reported: ${orders} - Total: ${total}`)
-
-  if(total===0) {
-    logger.info('No orders found to be reported to send to Narvar.')
-    return
-  }
-
 }
 
 async function sendConversionToCJ(order: Order) {
