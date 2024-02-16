@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.0](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.7...v1.12.0) (2024-02-16)
+
+
+### Features
+
+* HRC-7477 Datadog Monitor for CT -&gt; Narvar messages ([#590](https://github.com/HarryRosen/hr-orders-service/issues/590)) ([76cfbd7](https://github.com/HarryRosen/hr-orders-service/commit/76cfbd7fd8fff5f8219f5007dac239f5599765be))
+* HRC-7477 Datadog Monitor for CT -&gt; Narvar messages: ([#587](https://github.com/HarryRosen/hr-orders-service/issues/587)) ([037bee7](https://github.com/HarryRosen/hr-orders-service/commit/037bee73ff9235da4b1fbeadb21e38e5be2c4ec9))
+
 ## [1.11.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.11.6...v1.11.7) (2023-11-24)
 
 
