@@ -96,7 +96,7 @@ const getHeaderObjectFromOrder = ({
     [HEADER_ROWS_ENUM.SHIPPING_TAX2]: getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1] && getShippingTaxAmountsFromShippingTaxes(custom.fields.shippingTaxes)[1],
     [HEADER_ROWS_ENUM.SHIPPING_TAX2_DESCRIPTION]: getShippingTaxDescriptionsFromShippingTaxes(custom.fields.shippingTaxes, shippingAddress.state)[1],
     [HEADER_ROWS_ENUM.REQUESTER_SITE_ID]: custom.fields.cartSourceWebsite || '00990',
-    [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: custom.fields.destinationSiteId,
+    [HEADER_ROWS_ENUM.DESTINATION_SITE_ID]: parseInt(custom.fields.destinationSiteId) ? custom.fields.destinationSiteId : null,
     [HEADER_ROWS_ENUM.SERVICE_TYPE]: getShippingInfoForOrder(custom.fields.cartSourceWebsite, shippingInfo.shippingMethodName).shippingServiceType,
     [HEADER_ROWS_ENUM.LANGUAGE_NO]: LOCALES_TO_JESTA_LANGUAGE_NUMBERS[locale],
     [HEADER_ROWS_ENUM.FREE_RETURN_IND]: 'N',

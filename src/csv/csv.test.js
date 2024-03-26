@@ -22,6 +22,26 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
     expect(generateCsvStringFromOrder(completeOrderEnglish)).toEqual(expectedOrderCsv)
   })
 
+  it('returns the correct CSV string when given a complete order whose destinationSiteId is not a number', () => {
+    const completeOrderWithInvalidDestinationSiteId = /** @type {import('../orders').Order} */ ({
+      ...completeOrderEnglish
+    })
+
+    completeOrderWithInvalidDestinationSiteId.custom.fields.destinationSiteId = false
+
+    const expectedOrderCsv = `RecordType H,SITE_ID,WFE_TRANS_ID,SHIP_TO_FIRST_NAME,SHIP_TO_LAST_NAME,,SHIP_TO_ADDRESS_1,SHIP_TO_ADDRESS_2,SHIP_TO_ADDRESS_3,SHIP_TO_CITY,SHIP_TO_STATE_ID,SHIP_TO_ZIP_CODE,SHIP_TO_COUNTRY_ID,WFE_CUSTOMER_ID,BILL_TO_FIRST_NAME,BILL_TO_LAST_NAME,BILL_TO_ADDRESS_1,BILL_TO_ADDRESS_2,BILL_TO_ADDRESS_3,BILL_TO_CITY,BILL_TO_STATE_ID,BILL_TO_ZIP_CODE,BILL_TO_COUNTRY_ID,BILL_TO_HOME_PHONE,EMAIL_ADDRESS,CARRIER_ID,RUSH_SHIPPING_IND,SHIP_COMPLETE_IND,,SHIPPING_CHARGES_TOTAL,TAX_TOTAL,,TRANSACTION_TOTAL,,POS_EQUIVALENCE,,,,,ORDER_DATE,ADDITIONAL_METADATA,SHIPPING_TAX1,SHIPPING_TAX1_DESCRIPTION,SHIPPING_TAX2,SHIPPING_TAX2_DESCRIPTION,SHIPPING_TAX3,SHIPPING_TAX3_DESCRIPTION,DESTINATION_SITE_ID,REQUESTER_SITE_ID,,,SERVICE_TYPE,LANGUAGE_NO,FREE_RETURN_IND,SIGNATURE_REQUIRED_IND,RELEASED,GIFT_NOTE,LOYALTY_SESSION_ID
+RecordType D,SITE_ID,LINE,WFE_TRANS_ID,,,,QTY_ORDERED,UNIT_PRICE,,EXTENSION_AMOUNT,LINE_SHIPPING_CHARGES,LINE_TOTAL_TAX,LINE_TOTAL_AMOUNT,BAR_CODE_ID,ENDLESS_AISLE_IND,EXT_REF_ID,GIFT_WRAP_IND,,,SALESPERSON_ID,ADDITIONAL_METADATA,SUB_TYPE,ITEM_IDENTIFIER
+RecordType T,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,MERCHANDISE_TAX_AMOUNT,MERCHANDISE_TAX_DESC
+RecordType N,SITE_ID,LINE,WFE_TRANS_ID,AMOUNT,POS_EQUIVALENCE,REFERENCENO,EXPDATE,,CARD_NO,AUTHORIZATION_NO
+RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT1,MISC_TAX_DESC1,MISC_TAX_AMOUNT2,MISC_TAX_DESC2
+"H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","Y","N",,28,114.14,,992.14,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",1,"N","N","Y","Happy birthday","4907963f-f36c-4874-83af-4c7b3c106594"
+"D","00990",1,"23551711",,,,1,850,,850,0,110.5,850,"89950453-01","N","496332a3-45d9-4ed8-ae44-5b55693c89ce","Y",,,"sp-0001",,"UPCE","496332a3-45d9-4ed8-ae44-5b55693c89ce"
+"T","00990",1,"23551711",1,110.5,"HST-ON"
+"N","00990",1,"23551711",992.14,"05","41","1122",,"1111","480"
+`.split('\n').join('\r\n') // the expected string has Windows line breaks
+    expect(generateCsvStringFromOrder(completeOrderWithInvalidDestinationSiteId)).toEqual(expectedOrderCsv)
+  })
+
   it('returns the correct CSV string when given a complete order whose locale is fr-CA', () => {
     const completeOrderFrench = /** @type {import('../orders').Order} */ ({
       ...completeOrderEnglish,
@@ -55,6 +75,7 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
 "T","00990",1,"23551711",1,110.5,"HST-ON"
 "N","00990",1,"23551711",992.14,"05","41","1122",,"1111","480"
 `.split('\n').join('\r\n')
+    console.log(generateCsvStringFromOrder(orderWithFailedPayment))
     // @ts-ignore
     expect(generateCsvStringFromOrder(orderWithFailedPayment)).toEqual(expectedOrderCsv)
   })
@@ -95,6 +116,7 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
   it('returns the correct CSV string when given a complete order when the payment method is klarna and the value is above 9400', () => {
     const orderWithKlarnaPaymentAbove9400 = { ...COMPLETE_ORDER_ENGLISH_UNTYPED }
 
+    orderWithKlarnaPaymentAbove9400.custom.fields.destinationSiteId = false
     orderWithKlarnaPaymentAbove9400.paymentInfo.payments[0].obj = {
       paymentMethodInfo: {
         paymentInterface: 'plugin_v2',
