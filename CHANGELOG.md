@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.3...v1.12.4) (2024-04-03)
+
+
+### Bug Fixes
+
+* adds klarna payments to CARD_TYPES_TO_JESTA_CODES - hotfix ([#599](https://github.com/HarryRosen/hr-orders-service/issues/599)) ([34ac477](https://github.com/HarryRosen/hr-orders-service/commit/34ac4770cc6518bde2c583f9b80f750b87ef63ae))
+
 ## [1.12.3](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.2...v1.12.3) (2024-04-03)
 
 
