@@ -87,11 +87,18 @@ const keepAlive = async () => {
       console.log('CommerceTools client success.')
     })
     .catch((/** @type {any} */error) => {
-      console.error('CommerceTools client failed: ')
       if (error.body && Array.isArray(error.body.errors)) {
-        error.body.errors.forEach(console.error)
+        logger.error({
+          type: 'commercetools.keepAlive',
+          message: 'CommerceTools client failed',
+          error: serializeError(error.body.errors)
+        })
       } else {
-        console.error(error)
+        logger.error({
+          type: 'commercetools.keepAlive',
+          message: 'Commercetools.keepAlive failed',
+          error: serializeError(error)
+        })
       }
     })
 }

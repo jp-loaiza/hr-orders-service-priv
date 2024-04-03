@@ -52,8 +52,11 @@ async function checkServicesHealth(res: Response) {
   } catch (error) {
     const message = 'Health check failed:'
     if (error.body && Array.isArray(error.body.errors)) {
-      console.error(message)
-      error.body.errors.forEach(console.error)
+      logger.error({
+        type: 'health_check',
+        message:message,
+        error: serializeError(error.body.errors)
+      })
     } else {
       logger.error({
         type: 'health_check',
