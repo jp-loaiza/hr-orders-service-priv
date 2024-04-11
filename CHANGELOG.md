@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.4...v1.12.5) (2024-04-11)
+
+
+### Bug Fixes
+
+* HOTFIX: Kafka client SSL support ([#601](https://github.com/HarryRosen/hr-orders-service/issues/601)) ([5299f9e](https://github.com/HarryRosen/hr-orders-service/commit/5299f9e8a953d7bb0de7bce92cbcb929643ef40a))
+
 ## [1.12.4](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.3...v1.12.4) (2024-04-03)
 
 
