@@ -59,6 +59,9 @@ export const DEBUG = envProperties.DEBUG === 'true' ?? false
 export const KAFKA_BROKERS = envProperties.KAFKA_BROKERS ?? ''
 export const KAFKA_USERNAME = envProperties.KAFKA_USERNAME ?? ''
 export const KAFKA_PASSWORD = envProperties.KAFKA_PASSWORD ?? ''
+export const KAFKA_SSL_CA = process.env.KAFKA_SSL_CA
+export const KAFKA_SSL_CERT = process.env.KAFKA_SSL_CERT
+export const KAFKA_SASL_MECHANISM = (process.env.KAFKA_SASL_MECHANISM as 'plain' | 'scram-sha-512') ?? 'plain'
 export const KAFKA_CLIENT_ID = envProperties.KAFKA_CLIENT_ID ?? 'hr-order-service'
 export const KAFKA_ORDER_SAVE_TOPIC = envProperties.KAFKA_ORDER_SAVE_TOPIC ?? 'commercetools-order-save'
 export const KAFKA_ORDER_SAVE_CONSUMER_GROUP_ID = envProperties.KAFKA_ORDER_SAVE_CONSUMER_GROUP_ID ?? 'hr-order-save'
