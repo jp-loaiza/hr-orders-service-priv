@@ -1,5 +1,4 @@
 require('dotenv').config()
-require('newrelic')
 
 import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser'
