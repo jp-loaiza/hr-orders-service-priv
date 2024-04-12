@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.5...v1.12.6) (2024-04-12)
+
+
+### Bug Fixes
+
+* remove newrelic dependency ([#603](https://github.com/HarryRosen/hr-orders-service/issues/603)) ([8121a67](https://github.com/HarryRosen/hr-orders-service/commit/8121a67f82ac95000bc2342a22db9411f243ba05))
+
 ## [1.12.5](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.4...v1.12.5) (2024-04-11)
 
 
