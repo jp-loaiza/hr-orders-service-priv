@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.6...v1.12.7) (2024-04-15)
+
+
+### Bug Fixes
+
+* HRC-7700 fix Unknown Carrier Type for carrier UPS ([#605](https://github.com/HarryRosen/hr-orders-service/issues/605)) ([3fac91e](https://github.com/HarryRosen/hr-orders-service/commit/3fac91e74cc41a7486f03405438389d9c38b4531))
+
 ## [1.12.6](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.5...v1.12.6) (2024-04-12)
 
 
