@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.7...v1.12.8) (2024-04-18)
+
+
+### Bug Fixes
+
+* HRC-7802 When generating the CVS don't send failed payments ([#607](https://github.com/HarryRosen/hr-orders-service/issues/607)) ([0667989](https://github.com/HarryRosen/hr-orders-service/commit/0667989e6ed7b83080296985b6ca98b1a60c3218))
+
 ## [1.12.7](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.6...v1.12.7) (2024-04-15)
 
 
