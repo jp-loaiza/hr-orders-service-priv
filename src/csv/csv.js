@@ -208,7 +208,9 @@ const generateTendersCsvStringFromOrder = (/** @type {import('../orders').Order}
     fields: TENDER_ROWS
   }
 
-  const tenderObjects = order.paymentInfo.payments.map(getTenderObjectFromOrderAndPaymentInfoItem(order))
+  const tenderObjects = order.paymentInfo.payments
+    .filter(payment => (!payment.obj.paymentStatus) || payment.obj.paymentStatus.interfaceCode !== 'failed')
+    .map(getTenderObjectFromOrderAndPaymentInfoItem(order))
   return parse(tenderObjects, options)
 }
 
