@@ -54,8 +54,7 @@ const fetchWithTimeout = async (url, options, verboseLogging = false) => {
   const error = new Error(`API responded with status ${response.status}: ${JSON.stringify(content)}.`)
   logger.error({
     type: 'request.utils.fetchWithTimeout',
-    message: 'fetchWithTimeout failed',
-    response: serializeError(response),
+    message: 'fetchWithTimeout failed: ' + response,
     error: serializeError(error)
   })
 
