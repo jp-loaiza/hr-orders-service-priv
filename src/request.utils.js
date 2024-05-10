@@ -1,6 +1,8 @@
 const fetch = require('node-fetch').default
 const AbortController = require('abort-controller')
 const { FETCH_ABORT_TIMEOUT } = require('./constants')
+const { serializeError } = require ('./logger')
+const logger = require('./logger').default
 
 /**
  * @param {{url: string, request: import('node-fetch').Request, response: import('node-fetch').Response, responseBody: object|string}} params
@@ -50,8 +52,13 @@ const fetchWithTimeout = async (url, options, verboseLogging = false) => {
   }
   if (response.ok) return content
   const error = new Error(`API responded with status ${response.status}: ${JSON.stringify(content)}.`)
-  console.error(error)
-  console.error(response)
+  logger.error({
+    type: 'request.utils.fetchWithTimeout',
+    message: 'fetchWithTimeout failed',
+    response: serializeError(response),
+    error: serializeError(error)
+  })
+
   throw error
 }
 
