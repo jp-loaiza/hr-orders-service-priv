@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.9](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.8...v1.12.9) (2024-05-10)
+
+
+### Bug Fixes
+
+* remove multiple lines logs ([#609](https://github.com/HarryRosen/hr-orders-service/issues/609)) ([012788b](https://github.com/HarryRosen/hr-orders-service/commit/012788bdd74b993103ad45e50173a71b5e07defd))
+
 ## [1.12.8](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.7...v1.12.8) (2024-04-18)
 
 
