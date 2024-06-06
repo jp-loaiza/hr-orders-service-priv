@@ -107,7 +107,8 @@ interface CarrierId {
 const JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID: CarrierId = {
   'FDX': 'fedex',
   'CP': 'canadapost',
-  'UPS': 'ups'
+  'UPS': 'ups',
+  'CANPAR': 'canpar'
 }
 
 const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
@@ -127,6 +128,9 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
   UPS: {
     'EXPEDITED PARCEL': 'EX',
     ECONOMY: 'DDP'
+  },
+  CANPAR: {
+    'EXPEDITED PARCEL': 'EXP'
   }
 }
 
