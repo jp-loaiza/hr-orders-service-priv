@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.11](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.10...v1.12.11) (2024-06-06)
+
+
+### Bug Fixes
+
+* HRC-7917 fix Unknown Carrier Type for carrier CANPAR ([#613](https://github.com/HarryRosen/hr-orders-service/issues/613)) ([50a6283](https://github.com/HarryRosen/hr-orders-service/commit/50a6283f9757cf53915703439a16797eb6158d1e))
+
 ## [1.12.10](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.9...v1.12.10) (2024-05-10)
 
 
