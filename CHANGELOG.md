@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.12](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.11...v1.12.12) (2024-06-07)
+
+
+### Bug Fixes
+
+* **HRC-7918:** HOTFIX: giftcard payment issue, set flag to N if the o… ([#615](https://github.com/HarryRosen/hr-orders-service/issues/615)) ([95de043](https://github.com/HarryRosen/hr-orders-service/commit/95de0435b4a189527e424519ff579e209d4d95e3))
+
 ## [1.12.11](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.10...v1.12.11) (2024-06-06)
 
 
