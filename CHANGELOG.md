@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.13](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.12...v1.12.13) (2024-06-10)
+
+
+### Bug Fixes
+
+* HRC-7921: add datadog alert job for orders with full giftcard payments ([#618](https://github.com/HarryRosen/hr-orders-service/issues/618)) ([3a9453b](https://github.com/HarryRosen/hr-orders-service/commit/3a9453bff6b07e1e041bf53d5363541090f7acb9))
+
 ## [1.12.12](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.11...v1.12.12) (2024-06-07)
 
 
