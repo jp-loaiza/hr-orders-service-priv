@@ -39,6 +39,8 @@ export const shouldSendNotifications = envProperties.SHOULD_SEND_NOTIFICATIONS =
 
 export const shouldCheckForStuckOrders = envProperties.SHOULD_CHECK_FOR_STUCK_ORDERS === 'true'
 
+export const shouldCheckForFullGiftCardOrders = envProperties.SHOULD_CHECK_FOR_FULL_GIFT_CARD_ORDERS === 'true' 
+
 export const shouldSendOrderUpdates = envProperties.SHOULD_SEND_ORDER_UPDATES === 'true'
 
 export const shouldSendAlgoliaInfo = envProperties.SHOULD_SEND_ALGOLIA_INFO === 'true'

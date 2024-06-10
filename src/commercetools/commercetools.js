@@ -310,6 +310,45 @@ const fetchStuckOrderResults = async () => {
 
 }
 
+const fetchFullGiftCardOrderResults = async () => {
+  try {
+    const staleOrderCutoffTimeMs = 60 * 60 * 24 * 1000 // We need to query for past one day
+    const staleOrderCutoffDate = new Date(Date.now() - staleOrderCutoffTimeMs)
+    const { body: results } = await apiRoot
+      .payments()
+      .get({
+        queryArgs: {
+          where: `paymentMethodInfo(method="plugin") and custom(fields(transaction_card_type="Harry Rosen Giftcard")) and lastModifiedAt > "${staleOrderCutoffDate.toJSON()}"`
+        }
+      })
+      .execute()
+    const paymentIds = results.results.map(payment => `"${payment.id}"`).join()
+    const { body } = await apiRoot
+      .orders()
+      .get({
+        queryArgs: {
+          expand: 'paymentInfo.payments[*]',
+          where: `paymentInfo(payments(id in (${paymentIds})))`
+        }
+      })
+      .execute()
+    const orders = body.results
+    return orders.filter(order => (order.paymentInfo.payments.length 
+      && order.paymentInfo.payments.filter(
+        payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'plugin'
+        && payment.obj.custom.fields.transaction_card_type === 'Harry Rosen Giftcard'
+      ).length === order.paymentInfo.payments.length))
+  } catch (error) {
+    logger.error({
+      type: 'full_gift_card_orders_fetch_failure',
+      message: 'Failed to fetch full gift card orders',
+      error: serializeError(error)
+    })
+  }
+
+}
+
+
 /**
  * @param {import('../orders').Order} order
  * @param {string} statusField
@@ -505,26 +544,26 @@ const fetchShipmentsByTrackingNumber = async trackingNumber => {
  * @param {import('../orders').Shipment} shipment
  */
 const updateShipment = async (shipment) => {
-  const method = 'POST';
-  const uri = requestBuilder.customObjects.build();
+  const method = 'POST'
+  const uri = requestBuilder.customObjects.build()
   const body = JSON.stringify({
     container: 'shipments',
     key: shipment.key,
     value: shipment.value
-  });
-  const response = await ctClient.execute({ method, uri, body });
-  return response.body;
-};
+  })
+  const response = await ctClient.execute({ method, uri, body })
+  return response.body
+}
 
 const fetchOrderByNumber = async orderNumber => {
-  const method = 'GET';
-  const uri = requestBuilder.orders.where(`orderNumber = "${orderNumber}"`).build();
+  const method = 'GET'
+  const uri = requestBuilder.orders.where(`orderNumber = "${orderNumber}"`).build()
   try {
-    const response = await ctClient.execute({ method, uri });
-    return response.body.results[0];
+    const response = await ctClient.execute({ method, uri })
+    return response.body.results[0]
   } catch (err) {
-    if (err.code === 404) return null;
-    throw err;
+    if (err.code === 404) return null
+    throw err
   }
 }
 
@@ -532,11 +571,11 @@ const updateOrder = async (orderNumber, actions) => {
   try {
     const order = await fetchOrderByNumber(orderNumber)
 
-    const method = 'POST';
-    const uri = requestBuilder.orders.byId(order.id).build();
-    const body = JSON.stringify({ version: order.version, actions });
+    const method = 'POST'
+    const uri = requestBuilder.orders.byId(order.id).build()
+    const body = JSON.stringify({ version: order.version, actions })
 
-    return ctClient.execute({ method, uri, body });
+    return ctClient.execute({ method, uri, body })
   } catch (error) {
     logger.error({
       type: 'update_order_failure',
@@ -620,4 +659,5 @@ module.exports = {
   fetchCategoryInfo,
   fetchOrdersToSendToSegment,
   fetchCustomer,
+  fetchFullGiftCardOrderResults,
 }

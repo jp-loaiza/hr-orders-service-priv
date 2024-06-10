@@ -6,6 +6,7 @@ const {
   ORDER_UPLOAD_INTERVAL,
   SEND_NOTIFICATIONS_INTERVAL,
   STUCK_ORDER_CHECK_INTERVAL,
+  FULL_GIFT_CARD_ORDER_CHECK_INTERVAL,
   SEND_ALGOLIA_INFO_INTERVAL,
   SEND_CJ_CONVERSIONS_INTERVAL,
   SEND_DYNAMIC_YIELD_INFO_INTERVAL,
@@ -27,10 +28,12 @@ import {
 } from './jobs.utils'
 import {
   fetchOrderIdsThatShouldBeSentToCrm,
-  fetchStuckOrderResults
+  fetchStuckOrderResults,
+  fetchFullGiftCardOrderResults
 } from '../commercetools/commercetools'
 import {
   shouldCheckForStuckOrders,
+  shouldCheckForFullGiftCardOrders,
   shouldSendAlgoliaInfo,
   shouldSendCjConversions,
   shouldSendDynamicYieldInfo,
@@ -165,6 +168,27 @@ async function checkForStuckOrdersJob(stuckOrderCheckInterval: number) {
   }
 }
 
+async function checkForFullGiftCardOrdersJob(fullGiftCardOrderCheckInterval: number) {
+  //eslint-disable-next-line no-constant-condition
+  while (true) {
+    const ordersPaidByFullGiftCard = await fetchFullGiftCardOrderResults()
+    if (ordersPaidByFullGiftCard && ordersPaidByFullGiftCard.length > 0) {
+      const stringifiedFullGiftCardOrderNumbersAndIds = ordersPaidByFullGiftCard.map((order: Order) => (JSON.stringify({ orderNumber: order.orderNumber, id: order.id })))
+
+      logger.warn({
+        type: 'fraud_order',
+        full_gift_card_orders: ordersPaidByFullGiftCard.length,
+        message: `Found order with only giftcard payment, (total: ${ordersPaidByFullGiftCard.length}): [${stringifiedFullGiftCardOrderNumbersAndIds.join(', ')}]`
+      })
+
+    } else {
+      logger.info('No order with only gift card payment in past period')
+    }
+    lastJobsRunTime.checkForFullGiftCardOrdersJob = new Date()
+    await sleep(fullGiftCardOrderCheckInterval)
+  }
+}
+
 /**
  * @param {number} sendToAlgoliaInterval
  */
@@ -288,6 +312,13 @@ if (shouldCheckForStuckOrders) {
   logger.info('Processing stuck order check job at interval: ', stuckOrderCheckInterval)
   if (!(stuckOrderCheckInterval > 0)) throw new Error('STUCK_ORDER_CHECK_INTERVAL must be a positive number')
   checkForStuckOrdersJob(stuckOrderCheckInterval)
+}
+
+if (shouldCheckForFullGiftCardOrders) {
+  const fullGiftCardOrderCheckInterval = Number(FULL_GIFT_CARD_ORDER_CHECK_INTERVAL)
+  logger.info('Processing stuck order check job at interval: ', fullGiftCardOrderCheckInterval)
+  if (!(fullGiftCardOrderCheckInterval > 0)) throw new Error('FULL_GIFT_CARD_ORDER_CHECK_INTERVAL must be a positive number')
+  checkForFullGiftCardOrdersJob(fullGiftCardOrderCheckInterval)
 }
 
 if (shouldSendAlgoliaInfo) {

@@ -708,7 +708,8 @@ export const lastJobsRunTime = {
   createAndUploadCsvsJob: new Date(),
   sendOrderEmailNotificationJob: new Date(),
   checkForStuckOrdersJob: new Date(),
-  sendOrderUpdatesJob: new Date()
+  sendOrderUpdatesJob: new Date(),
+  checkForFullGiftCardOrdersJob: new Date()
 }
 
 type JobTime = {
