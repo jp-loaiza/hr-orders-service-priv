@@ -21,7 +21,7 @@ const { JESTA_API_HOST,
  * @param {string} cartSourceWebsite 
  */
 const updateJestaOrder = async (accessToken, orderNumber, orderStatus, cartSourceWebsite) => {
-  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Edom/SalesOrders/${orderStatus}`
+  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Omni/OrderShipments/${orderStatus}`
   
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
