@@ -76,7 +76,9 @@ const STATES_TO_NARVAR_STATUSES /** @type {import('./orders').NarvarStateMap} */
   'IN PICKING': 'PROCESSING',
   'CANCELLED': 'CANCELLED',
   'PICKUP': 'READY_FOR_PICKUP',
-  'PICKEDUP': 'PICKED_UP'
+  'READY_FOR_PICK_UP': 'READY_FOR_PICKUP',
+  'PICKEDUP': 'PICKED_UP',
+  'PICKED_UP': 'PICKED_UP'
 }
 
 // As of 2021-11-30 this is the same as the one above, see comments on HRC-4777
@@ -88,7 +90,9 @@ const STATES_TO_NARVAR_PICKUP_STATUSES /** @type {import('./orders').NarvarState
   'IN PICKING': 'PROCESSING',
   'CANCELLED': 'CANCELLED',
   'PICKUP': 'READY_FOR_PICKUP',
-  'PICKEDUP': 'PICKED_UP'
+  'READY_FOR_PICK_UP': 'READY_FOR_PICKUP',
+  'PICKEDUP': 'PICKED_UP',
+  'PICKED_UP': 'PICKED_UP'
 }
 
 type LocaleToProduct = {
