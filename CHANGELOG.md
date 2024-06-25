@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.15](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.14...v1.12.15) (2024-06-25)
+
+
+### Bug Fixes
+
+* HRC-7946 Change jesta path ([#622](https://github.com/HarryRosen/hr-orders-service/issues/622)) ([59270d3](https://github.com/HarryRosen/hr-orders-service/commit/59270d3a028a0630d93aa728b0087a30b07b19be))
+
 ## [1.12.14](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.13...v1.12.14) (2024-06-25)
 
 
