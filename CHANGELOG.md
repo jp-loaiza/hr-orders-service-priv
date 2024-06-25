@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.16](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.15...v1.12.16) (2024-06-25)
+
+
+### Bug Fixes
+
+* HRC-7776 Increases limit to 100 ([#624](https://github.com/HarryRosen/hr-orders-service/issues/624)) ([310f15a](https://github.com/HarryRosen/hr-orders-service/commit/310f15a40668c0d8428271b9f6640a913af1da50))
+
 ## [1.12.15](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.14...v1.12.15) (2024-06-25)
 
 
