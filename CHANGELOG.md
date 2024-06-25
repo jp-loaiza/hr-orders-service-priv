@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.14](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.13...v1.12.14) (2024-06-25)
+
+
+### Bug Fixes
+
+* HRC-776 Adds new omni statuses ([#620](https://github.com/HarryRosen/hr-orders-service/issues/620)) ([bdb917b](https://github.com/HarryRosen/hr-orders-service/commit/bdb917b90a2b2c6c55384cf38a294904b96885bd))
+
 ## [1.12.13](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.12...v1.12.13) (2024-06-10)
 
 
