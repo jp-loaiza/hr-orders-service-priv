@@ -509,7 +509,11 @@ const fetchOrdersStatusPendingThatShouldBeSentToNarvar = async () => {
 }
 
 const fetchStates = async () => {
-  const response = await apiRoot.states().get().execute()
+  const response = await apiRoot.states().get({
+    queryArgs: {
+      limit: 100
+    },
+  }).execute()
 
   return response.body.results
 }
