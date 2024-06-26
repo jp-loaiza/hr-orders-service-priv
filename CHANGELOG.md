@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.17](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.16...v1.12.17) (2024-06-26)
+
+
+### Bug Fixes
+
+* HRC-7776 Include PICKED_UP and READY_FOR_PICK_UP when generating pickups ([#626](https://github.com/HarryRosen/hr-orders-service/issues/626)) ([3bab23e](https://github.com/HarryRosen/hr-orders-service/commit/3bab23e33c1017d8399eb819d8f314e34ad95188))
+
 ## [1.12.16](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.15...v1.12.16) (2024-06-25)
 
 
