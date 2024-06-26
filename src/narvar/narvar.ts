@@ -463,8 +463,13 @@ export const convertShipments = (order: Order, shipments: Shipment[]) => {
  */
 export const convertPickups = (order: Order, shipments: Shipment[]) => {
   return order.custom?.fields.isStorePickup && shipments.length
-    ? shipments.filter(shipment => getShipmentStatusMapping(shipment) === 'PICKUP'
-      || getShipmentStatusMapping(shipment) === 'PICKEDUP').map(shipment => {
+    ? shipments
+          .filter(shipment => {
+            const shipmentStatusMapping = getShipmentStatusMapping(shipment)
+            return shipmentStatusMapping &&
+                ["PICKUP", "PICKEDUP", "PICKED_UP", "READY_FOR_PICK_UP"].includes(shipmentStatusMapping)
+          })
+          .map(shipment => {
         const shipmentStatus = getShipmentStatusMapping(shipment)
         return {
           id: shipment.id,
@@ -533,6 +538,12 @@ const getShipmentStatusMapping = (shipment: Shipment) => {
       shipmentMapping = shipmentDetail.status
       break;
     } else if (shipmentDetail.status === 'PICKEDUP') {
+      shipmentMapping = shipmentDetail.status
+      break;
+    } else if (shipmentDetail.status === 'PICKED_UP') {
+      shipmentMapping = shipmentDetail.status
+      break;
+    } else if (shipmentDetail.status === 'READY_FOR_PICK_UP') {
       shipmentMapping = shipmentDetail.status
       break;
     }
