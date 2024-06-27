@@ -311,7 +311,7 @@ async function sendOrderUpdate(order: Order) {
         const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
         const cartSourceWebsite = order.custom?.fields.cartSourceWebsite ? order.custom?.fields.cartSourceWebsite : ''
 
-        await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus, cartSourceWebsite)
+        await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus, cartSourceWebsite, order.custom?.fields.isOmni)
         // we retry in case the version of the order has changed by CSV job
         await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
       }

@@ -18,10 +18,11 @@ const { JESTA_API_HOST,
  * @param {string} accessToken 
  * @param {string} orderNumber 
  * @param {string} orderStatus 
- * @param {string} cartSourceWebsite 
+ * @param {string} cartSourceWebsite
+ * @param {boolean} isOmni
  */
-const updateJestaOrder = async (accessToken, orderNumber, orderStatus, cartSourceWebsite) => {
-  const jestaUpdateOrderUrl = JESTA_API_HOST + `/Omni/OrderShipments/${orderStatus}`
+const updateJestaOrder = async (accessToken, orderNumber, orderStatus, cartSourceWebsite, isOmni) => {
+  let jestaUpdateOrderUrl = JESTA_API_HOST + (isOmni ? `/Omni/OrderShipments/${orderStatus}` : `/Edom/SalesOrders/${orderStatus}`)
   
   return fetchWithTimeout(jestaUpdateOrderUrl, {
     body: JSON.stringify({
@@ -62,10 +63,12 @@ const getJestaApiAccessToken = async () => {
  * @param {string} orderNumber
  * @param {string} orderStatus
  * @param {string} cartSourceWebsite
+ * @param {boolean} isOmni
  */
-const sendOrderUpdateToJesta = async (orderNumber, orderStatus, cartSourceWebsite) => {
+const sendOrderUpdateToJesta = async (orderNumber, orderStatus, cartSourceWebsite, isOmni) => {
+  console.log(`Sending OMS update for order ${orderNumber} with isOmni = ${isOmni}`)
   const jestaApiAccessToken = (await getJestaApiAccessToken()).access_token
-  const response = await updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus, cartSourceWebsite)
+  const response = await updateJestaOrder(jestaApiAccessToken, orderNumber, orderStatus, cartSourceWebsite, isOmni)
   const responseState = getJestaApiResponseState(response)
   if (responseState === JESTA_RESPONSE_STATES.FAILURE) throw new Error(`Invalid or failure Jesta response: ${JSON.stringify(response)}`)
   if (responseState === JESTA_RESPONSE_STATES.WARNING) console.warn(`Unexpected Jesta response for order: ${orderNumber}, status: '${orderStatus}': ${JSON.stringify(response)}`)
