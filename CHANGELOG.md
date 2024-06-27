@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.18](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.17...v1.12.18) (2024-06-27)
+
+
+### Bug Fixes
+
+* HRC-7776 Use omni endpoint for omni orders ([#628](https://github.com/HarryRosen/hr-orders-service/issues/628)) ([18b6de8](https://github.com/HarryRosen/hr-orders-service/commit/18b6de839d0664872aa59f393cacc7576b871bee))
+
 ## [1.12.17](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.16...v1.12.17) (2024-06-26)
 
 
