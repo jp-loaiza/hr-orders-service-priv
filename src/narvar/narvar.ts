@@ -334,6 +334,47 @@ const shipmentItemLastModifiedDateFromShipments = (shipments: Shipment[], lineIt
   return shipment && shipment.value.shipmentItemLastModifiedDate ? shipment.value.shipmentItemLastModifiedDate : null
 }
 
+interface ReasonCode {
+  [key: string]: string;
+}
+
+const ORDER_REASON_CODE : ReasonCode = {
+  'ORDER_FRAUD_FAILURE' : '5', //Fraud - Order Declined will not be filled
+  'ORDER_CUSTOMER_REMORSE' : '1', //Client Request - Ordered Wrong Item
+  'ORDER_CUSTOMER_REQUEST' : '2', //Client Request - Changed Mind / Not Needed
+  'ORDER_NO_INVENTORY' : '3', // Can Not Fill - Items damaged
+  'ORDER_NO_MORE_INVENTORY' : '4', //Can Not Fill - Inventory Error
+}
+
+const ORDER_ITEM_REASON_CODE : ReasonCode = {
+  'ORDER_DETAIL_CLIENT_REQUEST' : '1', //Client Request - Ordered Wrong Item
+  'ORDER_DETAIL_NO_MORE_INVENTORY' : '3', //Can Not Fill - Items damaged
+  'ORDER_DETAIL_FRAUD_FAILURE' : '5', //Fraud - Order Declined will not be filled
+  'ORDER_DETAIL_CUSTOMER_REMORSE' : '2', //Client Request - Changed Mind / Not Needed
+  'ORDER_DETAIL_NO_INVENTORY' : '4', //Can Not Fill - Inventory Error
+}
+
+/**
+ *
+ *
+ * @param item {import('../orders').LineItem}
+ * @param order {import('../orders').Order} order
+ */
+function getReasonCode(item: LineItem, order: Order) {
+  if(item.custom?.fields.reasonCode) {
+    return ORDER_REASON_CODE[item.custom?.fields.reasonCode as string] ||
+        ORDER_ITEM_REASON_CODE[item.custom?.fields.reasonCode as string] ||
+        item.custom?.fields.reasonCode
+  }
+
+  if(order.custom?.fields.reasonCode) {
+    return ORDER_REASON_CODE[order.custom?.fields.reasonCode as string] ||
+        ORDER_ITEM_REASON_CODE[order.custom?.fields.reasonCode as string] ||
+        order.custom?.fields.reasonCode
+  }
+  return null;
+}
+
 /**
  *
  * @param {import('../orders').Order} order
@@ -372,7 +413,7 @@ export const convertItems = async (
         brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
         barcode: findBarcode(item.variant.attributes),
         size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
-        reasonCode: item.custom?.fields.reasonCode || order.custom?.fields.reasonCode || null,
+        reasonCode: getReasonCode(item, order),
         deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom?.fields.orderDetailLastModifiedDate
       },
       vendors: [{ 'name': getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }],
