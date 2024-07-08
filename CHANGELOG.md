@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.19](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.18...v1.12.19) (2024-07-08)
+
+
+### Bug Fixes
+
+* HRC-7975 Add reason code mapping ([#630](https://github.com/HarryRosen/hr-orders-service/issues/630)) ([e15d4ad](https://github.com/HarryRosen/hr-orders-service/commit/e15d4ad915c78f246cd91ec415d0fe254d110cd3))
+
 ## [1.12.18](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.17...v1.12.18) (2024-06-27)
 
 
