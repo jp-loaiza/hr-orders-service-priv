@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.20](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.19...v1.12.20) (2024-07-12)
+
+
+### Bug Fixes
+
+* Add missing carriers to JESTA-NARVAR mappings ([#632](https://github.com/HarryRosen/hr-orders-service/issues/632)) ([518538a](https://github.com/HarryRosen/hr-orders-service/commit/518538acf5f439a20cae0bc81118451564400ceb))
+
 ## [1.12.19](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.18...v1.12.19) (2024-07-08)
 
 
