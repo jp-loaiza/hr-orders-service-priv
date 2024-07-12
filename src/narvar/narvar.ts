@@ -110,7 +110,9 @@ interface CarrierId {
 
 const JESTA_CARRIER_ID_TO_NARVAR_CARRIER_ID: CarrierId = {
   'FDX': 'fedex',
+  'FEDEX': 'fedex',
   'CP': 'canadapost',
+  'CANADA POST': 'canadapost',
   'UPS': 'ups',
   'CANPAR': 'canpar'
 }
@@ -124,7 +126,20 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
     STANDARD_OVERNIGHT: 'E1',
     'PRIORITY OVERNIGHT': 'E1AM'
   },
+  FEDEX: {
+    EXPRESS: 'E1AM',
+    GROUND: 'FG',
+    ECONOMY: 'E3',
+    OVERNIGHT: 'E1',
+    STANDARD_OVERNIGHT: 'E1',
+    'PRIORITY OVERNIGHT': 'E1AM'
+  },
   CP: {
+    'EXPEDITED PARCEL': 'EP',
+    XPRESSPOST: 'E2',
+    ECONOMY: 'CP'
+  },
+  'CANADA POST': {
     'EXPEDITED PARCEL': 'EP',
     XPRESSPOST: 'E2',
     ECONOMY: 'CP'
