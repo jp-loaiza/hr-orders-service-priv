@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.21](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.20...v1.12.21) (2024-08-02)
+
+
+### Bug Fixes
+
+* HRC-8038 prioritize UPCE barcodes ([#634](https://github.com/HarryRosen/hr-orders-service/issues/634)) ([77a5771](https://github.com/HarryRosen/hr-orders-service/commit/77a5771db96688dc536c1cfcc212fafe83b8f2a0))
+
 ## [1.12.20](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.19...v1.12.20) (2024-07-12)
 
 
