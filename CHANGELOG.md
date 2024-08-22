@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.22](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.21...v1.12.22) (2024-08-22)
+
+
+### Bug Fixes
+
+* HRC-7942 Split items before sending to Narvar if the item has more than 1 state ([#636](https://github.com/HarryRosen/hr-orders-service/issues/636)) ([2744baa](https://github.com/HarryRosen/hr-orders-service/commit/2744baa371974927828ecec6fec9dbfcc4e8c13d))
+
 ## [1.12.21](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.20...v1.12.21) (2024-08-02)
 
 
