@@ -14,7 +14,7 @@ const enableFinalCutToNarvar = process.env.SEND_FINAL_CUT_TO_NARVAR === 'true' ?
 
 import { fetchItemInfo, fetchCategoryInfo } from '../commercetools/commercetools'
 import { default as logger } from '../logger'
-import { LineItem, Order, State, } from '@commercetools/platform-sdk'
+import {ItemState, LineItem, Order, State,} from '@commercetools/platform-sdk'
 import { Shipment } from '../orders'
 
 /**
@@ -166,13 +166,13 @@ export const getItemUrl = (productSlug: string, locale: string) => {
 }
 
 /**
- * @param {import('../orders').LineItem} item
+ * @param {import('../orders').ItemState} itemState
  * @param {Array<import('../orders').OrderState>} states
  * @param { 'en-CA' | 'fr-CA' } locale
  * @returns string
  */
-const getItemFulfillmentStatus = (item: LineItem, states: State[], locale: 'en-CA' | 'fr-CA', isStorePickup: boolean) => {
-  const state = states.find(s => item.state[0].state.id === s.id)
+const getItemFulfillmentStatus = (itemState: ItemState, states: State[], locale: 'en-CA' | 'fr-CA', isStorePickup: boolean) => {
+  const state = states.find(s => itemState.state.id === s.id)
   if (isStorePickup) {
     //@ts-ignore
     return (state && STATES_TO_NARVAR_PICKUP_STATUSES[state.name[locale]]) ? STATES_TO_NARVAR_PICKUP_STATUSES[state.name[locale]] : 'PROCESSING'
@@ -390,6 +390,55 @@ function getReasonCode(item: LineItem, order: Order) {
   return null;
 }
 
+async function getNarvarLineItem(item: LineItem, locale: "en-CA" | "fr-CA", itemState: ItemState, states: State[], isStorePickup: boolean, order: Order, shipments: Shipment[], lineCounter: number, isUniqueState: boolean, index: number) {
+  const categories = await fetchProductCategory(item)
+  const itemStateKey = states.find(state => state.id === itemState.state.id)?.key
+  const lineItem = {
+    item_id: isUniqueState || itemStateKey !== 'canceledLineItemStatus' ? item.id : item.id + '-' + index,
+    sku: item.variant.sku,
+    name: item.name[locale],
+    quantity: itemState.quantity,
+    categories,
+    unit_price: findUnitPrice(item),
+    discount_amount: findDiscountedPrice(item),
+    discount_percent: findDiscountPercent(item),
+    item_image: item.variant.images ? item.variant.images[0].url : undefined,
+    item_url: item.productSlug ? getItemUrl(item.productSlug[locale], locale) : undefined,
+    is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', {value: true}).value,
+    fulfillment_status: getItemFulfillmentStatus(itemState, states, locale, isStorePickup),
+    fulfillment_type: order.custom?.fields.isStorePickup ? 'BOPIS' : 'HD',
+    is_gift: item.custom?.fields.isGift,
+    final_sale_date: order.custom?.fields.orderCreatedDate || order.createdAt,
+    line_number: lineNumberFromShipments(shipments, item.id) || lineCounter,
+    attributes: {
+      on_sale: getAttributeOrDefaultBoolean(item.variant.attributes, 'onSale', {value: false}).value,
+      orderItemLastModifiedDate: item.custom?.fields.orderDetailLastModifiedDate || order.createdAt,
+      brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', {value: {[locale]: null}}).value[locale],
+      barcode: findBarcode(item.variant.attributes),
+      size: getAttributeOrDefaultAny(item.variant.attributes, 'size', {value: {[locale]: null}}).value[locale],
+      reasonCode: getReasonCode(item, order),
+      deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom?.fields.orderDetailLastModifiedDate
+    },
+    vendors: [{'name': getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', {value: false}).value ? 'EA' : 'HR'}],
+    line_price: (item.totalPrice.centAmount / 100),
+    product_type: getAttributeOrDefaultAny(item.variant.attributes, 'productType', {value: null}).value,
+    product_id: item.productId,
+    dimensions: null,
+    is_backordered: null,
+    vendor: null,
+    item_promise_date: null,
+    return_reason_code: null,
+    events: null,
+    color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', {value: {[locale]: null}}).value[locale],
+    size: getAttributeOrDefaultAny(item.variant.attributes, 'size', {value: {[locale]: null}}).value[locale],
+    //style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
+    original_unit_price: item.variant.attributes ? item.variant.attributes.find(({name}) => (name === 'originalPrice'))?.value.centAmount / 100 : null,
+    original_line_price: null,
+    narvar_convert_id: null
+  };
+  return lineItem
+}
+
 /**
  *
  * @param {import('../orders').Order} order
@@ -403,52 +452,17 @@ export const convertItems = async (
   shipments: Shipment[],
   isStorePickup: boolean) => {
   const locale = order.locale as 'en-CA' | 'fr-CA'
-  let lineCounter = 1
-  return Promise.all(order.lineItems.map(async (item) => {
-    return {
-      item_id: item.id,
-      sku: item.variant.sku,
-      name: item.name[locale],
-      quantity: item.quantity,
-      categories: await fetchProductCategory(item),
-      unit_price: findUnitPrice(item),
-      discount_amount: findDiscountedPrice(item),
-      discount_percent: findDiscountPercent(item),
-      item_image: item.variant.images ? item.variant.images[0].url : undefined,
-      item_url: item.productSlug ? getItemUrl(item.productSlug[locale], locale) : undefined,
-      is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', { value: true }).value,
-      fulfillment_status: getItemFulfillmentStatus(item, states, locale, isStorePickup),
-      fulfillment_type: order.custom?.fields.isStorePickup ? 'BOPIS' : 'HD',
-      is_gift: item.custom?.fields.isGift,
-      final_sale_date: order.custom?.fields.orderCreatedDate || order.createdAt,
-      line_number: lineNumberFromShipments(shipments, item.id) || lineCounter++,
-      attributes: {
-        on_sale: getAttributeOrDefaultBoolean(item.variant.attributes, 'onSale', { value: false }).value,
-        orderItemLastModifiedDate: item.custom?.fields.orderDetailLastModifiedDate || order.createdAt,
-        brand_name: getAttributeOrDefaultAny(item.variant.attributes, 'brandName', { value: { [locale]: null } }).value[locale],
-        barcode: findBarcode(item.variant.attributes),
-        size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
-        reasonCode: getReasonCode(item, order),
-        deliveryItemLastModifiedDate: shipmentItemLastModifiedDateFromShipments(shipments, item.id) || item.custom?.fields.orderDetailLastModifiedDate
-      },
-      vendors: [{ 'name': getAttributeOrDefaultBoolean(item.variant.attributes, 'isEndlessAisle', { value: false }).value ? 'EA' : 'HR' }],
-      line_price: (item.totalPrice.centAmount / 100),
-      product_type: getAttributeOrDefaultAny(item.variant.attributes, 'productType', { value: null }).value,
-      product_id: item.productId,
-      dimensions: null,
-      is_backordered: null,
-      vendor: null,
-      item_promise_date: null,
-      return_reason_code: null,
-      events: null,
-      color: getAttributeOrDefaultAny(item.variant.attributes, 'colour', { value: { [locale]: null } }).value[locale],
-      size: getAttributeOrDefaultAny(item.variant.attributes, 'size', { value: { [locale]: null } }).value[locale],
-      //style: getAttributeOrDefaultAny(item.variant.attributes, 'styleAndMeasurements', { value: { [locale] : null } }).value[locale],
-      original_unit_price: item.variant.attributes ? item.variant.attributes.find(({name}) => (name === 'originalPrice'))?.value.centAmount / 100 : null,
-      original_line_price: null,
-      narvar_convert_id: null
-    }
+  let lineCounter = 1;
+
+  const items = await Promise.all(order.lineItems.flatMap(async (item) => {
+    return await Promise.all(item.state.map(async (itemState, index) => {
+      const isUniqueState = item.state.length === 1
+      return await getNarvarLineItem(item, locale, itemState, states, isStorePickup, order, shipments, lineCounter++, isUniqueState, index)
+    }))
+
+
   }))
+  return items.flat()
 }
 
 /**
