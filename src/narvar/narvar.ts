@@ -673,7 +673,9 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
           state: order.shippingAddress?.state,
           zip: order.shippingAddress?.postalCode,
           country: order.shippingAddress?.country
-        }
+        },
+        wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false',
+        loyaltyTier: order.custom?.fields.loyaltyTier
       },
       attributes: {
         orderLastModifiedDate: order.custom?.fields.orderLastModifiedDate || order.createdAt,
@@ -681,8 +683,7 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         shipping_tax2: order.custom?.fields.shippingTax2 ? (order.custom.fields.shippingTax2.centAmount / 100).toString() : '0',
         siteId: order.custom?.fields.cartSourceWebsite || '00990',
         isStorePickup: isStorePickup,
-        subtotal: (((order.taxedPrice?.totalNet.centAmount ?? 0) - (order.shippingInfo?.shippingRate.price.centAmount ?? 0)) / 100).toString(),
-        wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false'
+        subtotal: (((order.taxedPrice?.totalNet.centAmount ?? 0) - (order.shippingInfo?.shippingRate.price.centAmount ?? 0)) / 100).toString()
       },
       is_shoprunner_eligible: false,
     }
