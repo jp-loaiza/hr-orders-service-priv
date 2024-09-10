@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.23](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.22...v1.12.23) (2024-09-10)
+
+
+### Bug Fixes
+
+* HRC-8074 Pass loyaltyTier to Narvar Payload for 990 and 997 both ([#638](https://github.com/HarryRosen/hr-orders-service/issues/638)) ([80595a7](https://github.com/HarryRosen/hr-orders-service/commit/80595a729af2447acd877fba1d12cb2c13fb72bc))
+
 ## [1.12.22](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.21...v1.12.22) (2024-08-22)
 
 
