@@ -390,7 +390,9 @@ function getReasonCode(item: LineItem, order: Order) {
   return null;
 }
 
-async function getNarvarLineItem(item: LineItem, locale: "en-CA" | "fr-CA", itemState: ItemState, states: State[], isStorePickup: boolean, order: Order, shipments: Shipment[], lineCounter: number, isUniqueState: boolean, index: number) {
+async function getNarvarLineItem(item: LineItem, locale: "en-CA" | "fr-CA", itemState: ItemState, states: State[],
+                                 isStorePickup: boolean, order: Order, shipments: Shipment[], lineCounter : number,
+                                 isUniqueState: boolean, index: number, extraLineCounters: number) {
   const categories = await fetchProductCategory(item)
   const itemStateKey = states.find(state => state.id === itemState.state.id)?.key
   const lineItem = {
@@ -409,7 +411,7 @@ async function getNarvarLineItem(item: LineItem, locale: "en-CA" | "fr-CA", item
     fulfillment_type: order.custom?.fields.isStorePickup ? 'BOPIS' : 'HD',
     is_gift: item.custom?.fields.isGift,
     final_sale_date: order.custom?.fields.orderCreatedDate || order.createdAt,
-    line_number: lineNumberFromShipments(shipments, item.id) || lineCounter,
+    line_number: isUniqueState || itemStateKey !== 'canceledLineItemStatus' ? (lineNumberFromShipments(shipments, item.id) || lineCounter) : extraLineCounters,
     attributes: {
       on_sale: getAttributeOrDefaultBoolean(item.variant.attributes, 'onSale', {value: false}).value,
       orderItemLastModifiedDate: item.custom?.fields.orderDetailLastModifiedDate || order.createdAt,
@@ -452,12 +454,18 @@ export const convertItems = async (
   shipments: Shipment[],
   isStorePickup: boolean) => {
   const locale = order.locale as 'en-CA' | 'fr-CA'
-  let lineCounter = 1;
+  let lineCounter = 0;
+  let extraLineCounter = order.lineItems.length + 1;
 
   const items = await Promise.all(order.lineItems.flatMap(async (item) => {
     return await Promise.all(item.state.map(async (itemState, index) => {
       const isUniqueState = item.state.length === 1
-      return await getNarvarLineItem(item, locale, itemState, states, isStorePickup, order, shipments, lineCounter++, isUniqueState, index)
+      if (!isUniqueState) {
+        lineCounter++
+      }
+
+      return await getNarvarLineItem(item, locale, itemState, states, isStorePickup,
+          order, shipments, lineCounter++, isUniqueState, index, extraLineCounter)
     }))
 
 
