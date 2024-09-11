@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.24](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.23...v1.12.24) (2024-09-11)
+
+
+### Bug Fixes
+
+* HRC-7942 Generate a different line_number when we split an item ([#640](https://github.com/HarryRosen/hr-orders-service/issues/640)) ([e6af1f6](https://github.com/HarryRosen/hr-orders-service/commit/e6af1f6d2c10c00887e1a967269252c7fe33a6c6))
+
 ## [1.12.23](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.22...v1.12.23) (2024-09-10)
 
 
