@@ -675,15 +675,15 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         customer_id: order.custom?.fields.loginRadiusUid,
         phone: order.shippingAddress?.phone,
         email: order.shippingAddress?.email,
+        wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false',
+        loyaltyTier: order.custom?.fields.loyaltyTier || order.custom?.fields.clubHarryTier?.toLowerCase(),
         address: {
           street_1: order.shippingAddress?.streetName,
           city: order.shippingAddress?.city,
           state: order.shippingAddress?.state,
           zip: order.shippingAddress?.postalCode,
           country: order.shippingAddress?.country
-        },
-        wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false',
-        loyaltyTier: order.custom?.fields.loyaltyTier
+        }
       },
       attributes: {
         orderLastModifiedDate: order.custom?.fields.orderLastModifiedDate || order.createdAt,
