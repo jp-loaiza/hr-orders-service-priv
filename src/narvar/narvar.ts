@@ -675,8 +675,6 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         customer_id: order.custom?.fields.loginRadiusUid,
         phone: order.shippingAddress?.phone,
         email: order.shippingAddress?.email,
-        wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false',
-        loyaltyTier: order.custom?.fields.loyaltyTier || order.custom?.fields.clubHarryTier?.toLowerCase(),
         address: {
           street_1: order.shippingAddress?.streetName,
           city: order.shippingAddress?.city,
@@ -691,7 +689,9 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         shipping_tax2: order.custom?.fields.shippingTax2 ? (order.custom.fields.shippingTax2.centAmount / 100).toString() : '0',
         siteId: order.custom?.fields.cartSourceWebsite || '00990',
         isStorePickup: isStorePickup,
-        subtotal: (((order.taxedPrice?.totalNet.centAmount ?? 0) - (order.shippingInfo?.shippingRate.price.centAmount ?? 0)) / 100).toString()
+        subtotal: (((order.taxedPrice?.totalNet.centAmount ?? 0) - (order.shippingInfo?.shippingRate.price.centAmount ?? 0)) / 100).toString(),
+        wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false',
+        loyaltyTier: order.custom?.fields.loyaltyTier || order.custom?.fields.clubHarryTier?.toLowerCase()
       },
       is_shoprunner_eligible: false,
     }
