@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.27](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.26...v1.12.27) (2024-10-07)
+
+
+### Bug Fixes
+
+* HRC-8129 Only generate CSV for orders with payments ([#646](https://github.com/HarryRosen/hr-orders-service/issues/646)) ([e55b5f1](https://github.com/HarryRosen/hr-orders-service/commit/e55b5f1ad2851bdea56fb030f86f0e8d0b22142b))
+
 ## [1.12.26](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.25...v1.12.26) (2024-10-04)
 
 
