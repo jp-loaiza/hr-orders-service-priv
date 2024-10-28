@@ -295,16 +295,16 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
     
     if(name.trim() == 'Standard Shipping') {
       return {
-        carrierId : 'CP',
-        shippingServiceType : 'EXPEDITED PARCEL',
+        carrierId : 'FDX',
+        shippingServiceType : 'ECONOMY',
         shippingIsRush : false
       }
     }
 
     if(name.trim() == 'Express Shipping') {
       return {
-        carrierId : 'CP',
-        shippingServiceType : 'XPRESSPOST',
+        carrierId : 'FDX',
+        shippingServiceType : 'STANDARD_OVERNIGHT',
         shippingIsRush : true
       }
     }

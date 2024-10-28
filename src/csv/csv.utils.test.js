@@ -874,11 +874,11 @@ describe('getShippingInfoForOrder', () => {
 
 
 it('returns correctly parsed shipping service type when given a valid shipping name for 997 shippings', () => {
-  expect(getShippingInfoForOrder('00997',' Standard Shipping').shippingServiceType).toBe('EXPEDITED PARCEL')
-  expect(getShippingInfoForOrder('00997','Standard Shipping').carrierId).toBe('CP')
+  expect(getShippingInfoForOrder('00997',' Standard Shipping').shippingServiceType).toBe('ECONOMY')
+  expect(getShippingInfoForOrder('00997','Standard Shipping').carrierId).toBe('FDX')
   expect(getShippingInfoForOrder('00997','Standard Shipping').shippingIsRush).toBe(false)
-  expect(getShippingInfoForOrder('00997','Express Shipping').shippingServiceType).toBe('XPRESSPOST')
-  expect(getShippingInfoForOrder('00997','Express Shipping').carrierId).toBe('CP')
+  expect(getShippingInfoForOrder('00997','Express Shipping').shippingServiceType).toBe('STANDARD_OVERNIGHT')
+  expect(getShippingInfoForOrder('00997','Express Shipping').carrierId).toBe('FDX')
   expect(getShippingInfoForOrder('00997','Express Shipping').shippingIsRush).toBe(true)
 })
 
