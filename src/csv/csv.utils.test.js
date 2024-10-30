@@ -23,6 +23,7 @@ const {
   getPaymentReleasedStatus,
   getFirstLastName
 } = require('./csv.utils')
+const {ENABLE_CANADA_POST_CARRIER} = require('../config')
 
 describe('flatten', () => {
   it('returns its argument when given a non-nested array', () => {
@@ -874,11 +875,15 @@ describe('getShippingInfoForOrder', () => {
 
 
 it('returns correctly parsed shipping service type when given a valid shipping name for 997 shippings', () => {
-  expect(getShippingInfoForOrder('00997',' Standard Shipping').shippingServiceType).toBe('ECONOMY')
-  expect(getShippingInfoForOrder('00997','Standard Shipping').carrierId).toBe('FDX')
+  const expectedServiceTypeStandardShipping = ENABLE_CANADA_POST_CARRIER ? 'EXPEDITED PARCEL' : 'ECONOMY'
+  const expectedServiceTypeExpressShipping = ENABLE_CANADA_POST_CARRIER ? 'XPRESSPOST' : 'STANDARD_OVERNIGHT'
+  const expectedCarrierId = ENABLE_CANADA_POST_CARRIER ? 'CP' : 'FDX'
+
+  expect(getShippingInfoForOrder('00997',' Standard Shipping').shippingServiceType).toBe(expectedServiceTypeStandardShipping)
+  expect(getShippingInfoForOrder('00997','Standard Shipping').carrierId).toBe(expectedCarrierId)
   expect(getShippingInfoForOrder('00997','Standard Shipping').shippingIsRush).toBe(false)
-  expect(getShippingInfoForOrder('00997','Express Shipping').shippingServiceType).toBe('STANDARD_OVERNIGHT')
-  expect(getShippingInfoForOrder('00997','Express Shipping').carrierId).toBe('FDX')
+  expect(getShippingInfoForOrder('00997','Express Shipping').shippingServiceType).toBe(expectedServiceTypeExpressShipping)
+  expect(getShippingInfoForOrder('00997','Express Shipping').carrierId).toBe(expectedCarrierId)
   expect(getShippingInfoForOrder('00997','Express Shipping').shippingIsRush).toBe(true)
 })
 

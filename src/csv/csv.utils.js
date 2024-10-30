@@ -14,6 +14,7 @@ const {
   TRANSACTION_STATES,
   ENDLESS_AISLE_SHIPPING_NAMES_TO_CARRIER_IDS
 } = require('../constants')
+const { ENABLE_CANADA_POST_CARRIER } = require('../config')
 
 /**
  * Determines payment released status based on payment methods and current payment state 
@@ -294,19 +295,31 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
   if (cartSourceWebsite && cartSourceWebsite == '00997') {
     
     if(name.trim() == 'Standard Shipping') {
-      return {
-        carrierId : 'FDX',
-        shippingServiceType : 'ECONOMY',
-        shippingIsRush : false
-      }
+      return ENABLE_CANADA_POST_CARRIER ?
+        {
+          carrierId : 'CP',
+          shippingServiceType : 'EXPEDITED PARCEL',
+          shippingIsRush : false
+        } :
+        {
+          carrierId : 'FDX',
+          shippingServiceType : 'ECONOMY',
+          shippingIsRush : false
+        }
     }
 
     if(name.trim() == 'Express Shipping') {
-      return {
-        carrierId : 'FDX',
-        shippingServiceType : 'STANDARD_OVERNIGHT',
-        shippingIsRush : true
-      }
+      return ENABLE_CANADA_POST_CARRIER ?
+        {
+          carrierId : 'CP',
+          shippingServiceType : 'XPRESSPOST',
+          shippingIsRush : true
+        } :
+        {
+          carrierId : 'FDX',
+          shippingServiceType : 'STANDARD_OVERNIGHT',
+          shippingIsRush : true
+        }
     }
     
   } 

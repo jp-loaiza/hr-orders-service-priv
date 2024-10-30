@@ -94,3 +94,5 @@ export const NARVAR_ORDER_EVENT = envProperties.NARVAR_ORDER_EVENT === 'true' ??
 export const SEGMENT_ORDER_EVENT = envProperties.SEGMENT_ORDER_EVENT === 'true' ?? false
 export const ORDER_CONVERSION_TO_CJ_EVENT = envProperties.ORDER_CONVERSION_TO_CJ_EVENT === 'true' ?? false
 export const STUCK_ORDER_EVENT = envProperties.STUCK_ORDER_EVENT === 'true' ?? false
+
+export const ENABLE_CANADA_POST_CARRIER = envProperties.ENABLE_CANADA_POST_CARRIER === 'true' ?? false
