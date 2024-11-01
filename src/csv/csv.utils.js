@@ -261,7 +261,6 @@ const getShippingServiceTypeFromShippingName = (/** @type {string|null} **/ name
   return null
 }
 
-
 /**
  * Determines payment signature required indicator based on payment 
  * @param {import('../orders').PaymentInfo} paymentInfo
