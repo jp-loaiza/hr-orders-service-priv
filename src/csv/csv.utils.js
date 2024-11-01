@@ -317,7 +317,7 @@ const getShippingInfoForOrder = (/** @type {string|undefined} **/ cartSourceWebs
         } :
         {
           carrierId : 'FDX',
-          shippingServiceType : 'STANDARD_OVERNIGHT',
+          shippingServiceType : 'OVERNIGHT',
           shippingIsRush : true
         }
     }

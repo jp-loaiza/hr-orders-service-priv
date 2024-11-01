@@ -876,7 +876,7 @@ describe('getShippingInfoForOrder', () => {
 
 it('returns correctly parsed shipping service type when given a valid shipping name for 997 shippings', () => {
   const expectedServiceTypeStandardShipping = ENABLE_CANADA_POST_CARRIER ? 'EXPEDITED PARCEL' : 'ECONOMY'
-  const expectedServiceTypeExpressShipping = ENABLE_CANADA_POST_CARRIER ? 'XPRESSPOST' : 'STANDARD_OVERNIGHT'
+  const expectedServiceTypeExpressShipping = ENABLE_CANADA_POST_CARRIER ? 'XPRESSPOST' : 'OVERNIGHT'
   const expectedCarrierId = ENABLE_CANADA_POST_CARRIER ? 'CP' : 'FDX'
 
   expect(getShippingInfoForOrder('00997',' Standard Shipping').shippingServiceType).toBe(expectedServiceTypeStandardShipping)
