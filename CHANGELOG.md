@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.30](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.29...v1.12.30) (2024-11-01)
+
+
+### Bug Fixes
+
+* fix: HRC-8127 Disable/Configure Shipping Options When Carriers Are Unavailable ([#653](https://github.com/HarryRosen/hr-orders-service/issues/653)) ([22665aa](https://github.com/HarryRosen/hr-orders-service/commit/22665aa62f2fd53096a9e8a77eac998f9013c5c4))
+
 ## [1.12.29](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.28...v1.12.29) (2024-10-30)
 
 
