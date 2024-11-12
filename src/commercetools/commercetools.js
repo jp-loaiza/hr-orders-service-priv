@@ -275,7 +275,7 @@ const fetchCustomer = async customerId => {
  * @returns {Promise<{orders: Array<(import('../orders').IOrder)>, total: number}>}
  */
 const fetchOrdersThatShouldBeSentToOms = async () => {
-  const query = `custom(fields((sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}" and sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}") and (nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined) and loginRadiusUid is defined and posTransactionReferenceId is not defined)) and paymentInfo(payments is defined)`
+  const query = `custom(fields((sentToOmsStatus != "${SENT_TO_OMS_STATUSES.FAILURE}" and sentToOmsStatus != "${SENT_TO_OMS_STATUSES.SUCCESS}") and (nextRetryAt <= "${(new Date().toJSON())}" or nextRetryAt is not defined) and loginRadiusUid is defined and posTransactionReferenceId is not defined)) and (paymentInfo(payments is defined) or totalPrice(centAmount=0))`
   const uri = requestBuilder.orders.where(query).build()
   const { body } = await ctClient.execute({ method: 'GET', uri })
 

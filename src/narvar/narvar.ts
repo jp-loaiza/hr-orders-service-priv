@@ -150,6 +150,9 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
   },
   CANPAR: {
     'EXPEDITED PARCEL': 'EXP'
+  },
+  PRL: {
+    ECONOMY: 'PG'
   }
 }
 
