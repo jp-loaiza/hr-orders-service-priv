@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.31](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.30...v1.12.31) (2024-11-12)
+
+
+### Bug Fixes
+
+* HRC-8228 Include in fetchOrdersThatShouldBeSentToOms order with no payments and total=0 ([#655](https://github.com/HarryRosen/hr-orders-service/issues/655)) ([ed1ef97](https://github.com/HarryRosen/hr-orders-service/commit/ed1ef97aebd815d93176d52d7c1c0845dc4a4b2b))
+
 ## [1.12.30](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.29...v1.12.30) (2024-11-01)
 
 
