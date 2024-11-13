@@ -236,6 +236,7 @@ RecordType M,SITE_ID,LINE,WFE_TRANS_ID,SEQUENCE,AMOUNT,REASON_ID,MISC_TAX_AMOUNT
 "H","00990","23551711","Harry","Rosen",,"55 Fake St",,,"Toronto","ON","M4V 1H6","CA",,"Harry ","Rosen","55 Fake St",,,"Toronto","ON","M4V 1H6","CA","5551231234","user@gmail.com","FDX","Y","N",,28,114.14,,0,,,,,,,"2020-08-04 11:39","ed6c636af37a4d738ba8d374fa219cbc",3.64,"HST-ON",,,,,,"00990",,,"EXPRESS",1,"N","N","Y","Happy birthday","4907963f-f36c-4874-83af-4c7b3c106594"
 "D","00990",1,"23551711",,,,1,850,,850,0,110.5,850,"89950453-01","N","496332a3-45d9-4ed8-ae44-5b55693c89ce","Y",,,"sp-0001",,"UPCE","496332a3-45d9-4ed8-ae44-5b55693c89ce"
 "T","00990",1,"23551711",1,110.5,"HST-ON"
+"N","00990",1,"23551711",0,"37","","",,"",""
 `.split('\n').join('\r\n') // the expected string has Windows line breaks
     //@ts-ignore incomplete custom fields for testing purposes
     expect(generateCsvStringFromOrder(COMPLETE_ORDER_NO_PAYMENTS)).toEqual(expectedOrderCsv)

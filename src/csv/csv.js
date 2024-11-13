@@ -166,6 +166,19 @@ const getTenderObjectFromOrderAndPaymentInfoItem = (/** @type {import('../orders
   [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: getAuthorizationNumberFromPayment(payment)
 })
 
+const getTenderObjectFromOrderWithNoPayment = (/** @type {import('../orders').Order} */ order) =>  ({
+  [TENDER_ROWS_ENUM.RECORD_TYPE]: 'N',
+  [TENDER_ROWS_ENUM.SITE_ID]: order.custom.fields.cartSourceWebsite || '00990',
+  [TENDER_ROWS_ENUM.LINE]: 1, // From JESTA's docs: "Always 1 if 1 tender method. Increment if multiple tenders used"
+  [TENDER_ROWS_ENUM.WFE_TRANS_ID]: order.orderNumber,
+  [TENDER_ROWS_ENUM.AMOUNT]: 0,
+  [TENDER_ROWS_ENUM.POS_EQUIVALENCE]: '37', //Miscellaenous
+  [TENDER_ROWS_ENUM.REFERENCENO]: '',
+  [TENDER_ROWS_ENUM.EXPDATE]: '',
+  [TENDER_ROWS_ENUM.CARD_NO]: '',
+  [TENDER_ROWS_ENUM.AUTHORIZATION_NO]: ''
+})
+
 // The actual CSV string creation happens below
 //
 // The resulting CSV will contain data associated with four different headers,
@@ -208,9 +221,16 @@ const generateTendersCsvStringFromOrder = (/** @type {import('../orders').Order}
     fields: TENDER_ROWS
   }
 
-  const tenderObjects = order.paymentInfo.payments
-    .filter(payment => (!payment.obj.paymentStatus) || payment.obj.paymentStatus.interfaceCode !== 'failed')
-    .map(getTenderObjectFromOrderAndPaymentInfoItem(order))
+  let tenderObjects
+
+  if(order.paymentInfo) {
+    tenderObjects = order.paymentInfo.payments
+      .filter(payment => (!payment.obj.paymentStatus) || payment.obj.paymentStatus.interfaceCode !== 'failed')
+      .map(getTenderObjectFromOrderAndPaymentInfoItem(order))
+  } else {
+    tenderObjects = getTenderObjectFromOrderWithNoPayment(order)
+  }
+
   return parse(tenderObjects, options)
 }
 
@@ -247,7 +267,7 @@ const generateCsvStringFromOrder = order => {
   const headerData = generateHeadersCsvStringFromOrder(order)
   const details = generateDetailsCsvStringFromOrder(order)
   const tax = generateTaxCsvStringFromOrder(order)
-  const tenders = order.paymentInfo ? generateTendersCsvStringFromOrder(order) : ''
+  const tenders = generateTendersCsvStringFromOrder(order)
 
   if (!tenders) {
     return `${headerNames}\r\n${headerData}\r\n${details}\r\n${tax}\r\n`
