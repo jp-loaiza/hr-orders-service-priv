@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.32](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.31...v1.12.32) (2024-11-13)
+
+
+### Bug Fixes
+
+* HRC-8228 Add tender line for orders with no payments ([#657](https://github.com/HarryRosen/hr-orders-service/issues/657)) ([cebfd5f](https://github.com/HarryRosen/hr-orders-service/commit/cebfd5fb995c5215e42400919661927003590702))
+
 ## [1.12.31](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.30...v1.12.31) (2024-11-12)
 
 
