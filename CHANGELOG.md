@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.33](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.32...v1.12.33) (2024-12-10)
+
+
+### Bug Fixes
+
+* code format ([#660](https://github.com/HarryRosen/hr-orders-service/issues/660)) ([9a91c75](https://github.com/HarryRosen/hr-orders-service/commit/9a91c75920dfa2a9b740ea257eefae8b3bc213eb))
+
 ## [1.12.32](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.31...v1.12.32) (2024-11-13)
 
 
