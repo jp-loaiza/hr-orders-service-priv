@@ -285,7 +285,9 @@ const getSignatureRequiredIndicator = (paymentInfo, isStorePickup) => {
   }
 
   //checking PayPal Signature Required Inidcator (HRC-6526)
-  const payPalPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'paypal')
+  const payPalPaymentInfo = paymentInfo.payments.find(
+    payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'paypal'
+  )
   if(payPalPaymentInfo && payPalPaymentInfo.obj.amountPlanned.centAmount >= 85000) {
     return 'Y'
   }
