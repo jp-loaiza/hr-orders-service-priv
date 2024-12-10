@@ -190,6 +190,33 @@ const klarnaPayment = {
   }
 }
 
+const klarnaPaymentV2 = {
+  obj: {
+    paymentMethodInfo:{
+      paymentInterface:'plugin_v2',
+      method:'plugin',
+      name:{
+        en:'plugin_v2'
+      }
+    },
+    amountPlanned: {
+      type: 'centPrecision',
+      currencyCode: 'CAD',
+      centAmount: 94000,
+      fractionDigits: 2
+    },
+    custom: {
+      fields: {
+        transaction_card_last4:'Klarna',
+        transaction_card_expiry:'',
+        auth_number:'authNumber',
+        bin:'N/A',
+        transaction_card_type:'klarna payments'
+      }
+    }
+  }
+}
+
 const applePayVisaPayment = {
   obj: {
     paymentMethodInfo:{
@@ -356,10 +383,19 @@ describe('getPosEquivalenceFromPayment', () => {
   })
 
 
-  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount above 94000', () => {
+  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount above 94000 (klarna)', () => {
     
     const paymentInfo = {
       payments: [klarnaPayment]
+    }
+    // @ts-ignore incomplete payment for testing
+    expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('Y')
+  })
+
+  it('returns the corret Jesta signature required indicator code when given a Klarna payment with cent amount above 94000 (klarna payment)', () => {
+
+    const paymentInfo = {
+      payments: [klarnaPaymentV2]
     }
     // @ts-ignore incomplete payment for testing
     expect(getSignatureRequiredIndicator(paymentInfo, false)).toBe('Y')

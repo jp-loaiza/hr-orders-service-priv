@@ -276,7 +276,10 @@ const getSignatureRequiredIndicator = (paymentInfo, isStorePickup) => {
   }
 
   //checking Klarna Signature Required Inidcator (HRC-5233)
-  const klarnaPaymentInfo = paymentInfo.payments.find(payment => payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna')
+  const klarnaPaymentInfo = paymentInfo.payments.find(payment =>
+    payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna' ||
+    payment.obj.custom.fields.transaction_card_type.toLowerCase() === 'klarna payments'
+  )
   if(klarnaPaymentInfo && klarnaPaymentInfo.obj.amountPlanned.centAmount >= 94000) {
     return 'Y'
   }
