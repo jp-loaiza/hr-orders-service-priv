@@ -1,6 +1,7 @@
 import { Order } from "@commercetools/platform-sdk";
 import {
     ALGOLIA_CONVERSIONS_EVENT,
+    BOLD_ORDER_EVENT,
     CREATE_UPLOAD_CSV_EVENT,
     EMAIL_NOTIFY_CRM_EVENT,
     NARVAR_ORDER_EVENT,
@@ -19,7 +20,8 @@ import {
     SENT_TO_NARVAR_STATUSES,
     SENT_TO_OMS_STATUSES,
     SENT_TO_SEGMENT_STATUSES,
-    UPDATE_TO_OMS_STATUSES
+    UPDATE_TO_OMS_STATUSES,
+    SENT_TO_BOLD_STATUSES
 } from "../constants";
 
 export function canUploadCsv(order: Order) {
@@ -70,6 +72,17 @@ export function canSendOrderToNarvar(order: Order) {
         && (order.custom?.fields.narvarNextRetryAt === undefined || order.custom?.fields.narvarNextRetryAt <= new Date().toJSON())
         && order.createdAt > '2022-02-27'
         && NARVAR_ORDER_EVENT
+}
+
+export function canSendOrderToBold(order: Order) {
+    const now = new Date()
+    let oneWeekAgo = new Date()
+    oneWeekAgo.setDate(now.getDate() - 7)
+
+    return order.custom?.fields.boldStatus === undefined || order.custom?.fields.boldStatus === SENT_TO_BOLD_STATUSES.PENDING
+        && (order.custom?.fields.boldNextRetryAt === undefined || order.custom?.fields.boldNextRetryAt <= new Date().toJSON())
+        && order.createdAt > '2022-02-27'
+        && BOLD_ORDER_EVENT
 }
 
 export function canSendPurchaseEventToDY(order: Order) {

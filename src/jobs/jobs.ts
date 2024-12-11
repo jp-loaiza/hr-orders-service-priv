@@ -12,7 +12,8 @@ const {
   SEND_DYNAMIC_YIELD_INFO_INTERVAL,
   SEND_NARVAR_ORDERS_INTERVAL,
   SEND_SEGMENT_ORDERS_INTERVAL,
-  SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
+  SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL,
+  SEND_BOLD_ORDERS_INTERVAL } = (/** @type {import('../orders').Env} */ (process.env))
 import {
   createAndUploadCsvs,
   sendConversionsToAlgolia,
@@ -24,7 +25,8 @@ import {
   startCjConversionJob,
   sendOrdersToSegment,
   jobTotalTimeout,
-  lastJobsRunTime
+  lastJobsRunTime,
+  sendOrdersToBold
 } from './jobs.utils'
 import {
   fetchOrderIdsThatShouldBeSentToCrm,
@@ -42,7 +44,8 @@ import {
   shouldSendOrderSegment,
   shouldSendOrderUpdates,
   shouldSendOrdersStatusPendingToLogs,
-  shouldUploadOrders
+  shouldUploadOrders,
+  shouldSendOrderBold
 } from "../config"
 import { Order } from "../orders"
 import { sendOrderEmailNotification } from "../emails/email"
@@ -249,6 +252,21 @@ async function sendOrdersToNarvarJob(sendToNarvarInterval: number) {
   }
 }
 
+async function sendOrdersToBoldJob(sendOrdersToBoldInterval: number) {
+  while(true) {
+    try {
+      await sendOrdersToBold()
+    } catch (error) {
+      logger.error({
+        type: 'send_to_bold_failure',
+        message: 'Failed to send order fulfillment to Bold',
+        error: serializeError(error)
+      })
+    }
+    await sleep(sendOrdersToBoldInterval)
+  }
+}
+
 /**
  * @param {number} SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL
  */
@@ -340,6 +358,13 @@ if (shouldSendOrderNarvar) {
   logger.info('Processing Narvar job at interval: ', sendToNarvarInterval)
   if (!(sendToNarvarInterval > 0)) throw Error('SEND_NARVAR_ORDERS_INTERVAL must be a positive number')
   sendOrdersToNarvarJob(sendToNarvarInterval)
+}
+
+if (shouldSendOrderBold) {
+  const sendOrdersToBoldInterval = Number(SEND_BOLD_ORDERS_INTERVAL)
+  logger.info('Processing Bold job at interval: ', sendOrdersToBoldInterval)
+  if (!(sendOrdersToBoldInterval > 0)) throw Error('SEND_BOLD_ORDERS_INTERVAL must be a positive number')
+  sendOrdersToBoldJob(sendOrdersToBoldInterval)
 }
 
 if (shouldSendOrdersStatusPendingToLogs) {

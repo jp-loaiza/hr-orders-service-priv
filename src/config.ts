@@ -54,6 +54,8 @@ export const shouldSendOrdersStatusPendingToLogs = envProperties.SHOULD_SEND_REP
 export const shouldSendCjConversions = envProperties.SHOULD_SEND_CJ_CONVERSIONS === 'true'
 
 export const shouldSendOrderSegment = envProperties.SHOULD_SEND_SEGMENT_ORDERS === 'true'
+
+export const shouldSendOrderBold = envProperties.SHOULD_SEND_BOLD_ORDERS === 'true'
 /**
  * Kafka connection credentials
  */
@@ -96,3 +98,7 @@ export const ORDER_CONVERSION_TO_CJ_EVENT = envProperties.ORDER_CONVERSION_TO_CJ
 export const STUCK_ORDER_EVENT = envProperties.STUCK_ORDER_EVENT === 'true' ?? false
 
 export const ENABLE_CANADA_POST_CARRIER = envProperties.ENABLE_CANADA_POST_CARRIER === 'true' ?? false
+export const BOLD_ORDER_EVENT = envProperties.BOLD_ORDER_EVENT === 'true' ?? false
+
+export const DELIVERED_STATE_ID = envProperties.DELIVERED_STATE_ID ?? ''
+export const PICKED_UP_STATE_ID = envProperties.PICKED_UP_STATE_ID ?? ''

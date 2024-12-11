@@ -9,7 +9,8 @@ import {
     canSendOrderToNarvar,
     canSendOrderToSegment,
     canSendConversionToCJ,
-    canLogStuckOrder
+    canLogStuckOrder,
+    canSendOrderToBold
 } from "../validationService";
 
 describe("validationService", () => {
@@ -59,5 +60,10 @@ describe("validationService", () => {
         oneWeekAgo.setDate(now.getDate() - 7)
         //@ts-ignore
         expect(canLogStuckOrder(mockOrder('PENDING', '', oneWeekAgo.toJSON()))).toBeTruthy()
+    })
+
+    it('should return true if canSendOrderToBold for valid order', () => {
+        //@ts-ignore
+        expect(canSendOrderToBold(mockOrder('', ''))).toBeTruthy()
     })
 })

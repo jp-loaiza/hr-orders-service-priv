@@ -17,10 +17,13 @@ const {
   SENT_TO_CRM_STATUS,
   STATUS_FIELDS_TO_AVAILABLE_STATUSES,
   SENT_TO_SEGMENT_STATUSES,
+  SENT_TO_BOLD_STATUSES,
 } = require('../constants')
 
 const {
-  DISABLE_ORDER_SAVE_ACTOR
+  DISABLE_ORDER_SAVE_ACTOR,
+  DELIVERED_STATE_ID,
+  PICKED_UP_STATE_ID
 } = require('../config')
 const { default: OrderSaveProducer } = require('../events/OrderSaveProducer')
 const { default: kafkaClient } = require('../events/kafkaClient')
@@ -489,6 +492,23 @@ const fetchOrdersThatShouldBeSentToNarvar = async () => {
   }
 }
 
+const fetchOrdersToSendToBold = async () => {
+  const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.BOLD_STATUS} = "${SENT_TO_BOLD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.BOLD_STATUS} is not defined))) and custom(fields((${ORDER_CUSTOM_FIELDS.BOLD_NEXT_RETRY_AT} <= "${(new Date().toJSON())}" or ${ORDER_CUSTOM_FIELDS.BOLD_NEXT_RETRY_AT} is not defined))) and state(id in ("${DELIVERED_STATE_ID}", "${PICKED_UP_STATE_ID}")) and custom(fields(publicOrderId is defined))`
+
+  const uri = requestBuilder.orders
+    .where(query)
+    .perPage(NARVAR_BATCH_SIZE)
+    .sort('lastModifiedAt', NARVAR_BATCH_SORT_RECENT)
+    .build()
+
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+
+  return {
+    orders: body.results,
+    total: body.total
+  }
+}
+
 const fetchOrdersStatusPendingThatShouldBeSentToNarvar = async () => {
   const query = `(custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_STATUS} = "${SENT_TO_NARVAR_STATUSES.PENDING}")) and custom(fields(${ORDER_CUSTOM_FIELDS.NARVAR_RETRY_COUNT}>=1)))`
 
@@ -664,4 +684,5 @@ module.exports = {
   fetchOrdersToSendToSegment,
   fetchCustomer,
   fetchFullGiftCardOrderResults,
+  fetchOrdersToSendToBold,
 }

@@ -390,7 +390,8 @@ export function mockOrder(
                         algoliaAnalyticsData: {
                             'typeId': 'key-value-document',
                             'id': '56b2c185-10ad-4232-914d-311ca3147f3f'
-                        }
+                        },
+                        publicOrderId: 'ALD5zJedqLHvB3yxfkNjU8'
                     }
                 },
                 lineItemMode: 'Standard',

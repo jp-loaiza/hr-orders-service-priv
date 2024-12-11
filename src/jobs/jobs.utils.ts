@@ -15,6 +15,7 @@ import {
   SENT_TO_SEGMENT_STATUSES,
   JOB_TASK_TIMEOUT,
   NARVAR_MONIKERS,
+  SENT_TO_BOLD_STATUSES
 } from '../constants'
 import {
   fetchOrdersThatShouldBeSentToOms,
@@ -31,6 +32,7 @@ import {
   fetchStates,
   fetchShipments,
   fetchOrdersToSendToSegment,
+  fetchOrdersToSendToBold
 } from '../commercetools/commercetools'
 import { sendOrderUpdateToJesta } from '../jesta/jesta'
 import { generateCsvStringFromOrder } from '../csv/csv'
@@ -58,6 +60,7 @@ import {
   canSendConversionToAlgolia,
   canSendConversionToCJ,
   canSendOrderEmailNotification,
+  canSendOrderToBold,
   canSendOrderToNarvar,
   canSendOrderToSegment,
   canSendOrderUpdate,
@@ -66,6 +69,7 @@ import {
 } from "./validationService"
 import tracer, { hydrateOrderSpanTags, spanSetError } from '../tracer'
 import { State } from "@commercetools/platform-sdk"
+import { prepareOrderForBold, sendToBold } from "../bold/bold";
 
 /**
  *
@@ -497,6 +501,57 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
   })
 }
 
+async function sendOrderToBold(order: Order) {
+  await tracer.trace('order_service_job', {resource: 'order_bold'}, async () => {
+    hydrateOrderSpanTags(order)
+
+    if (!order.orderNumber) {
+      throw new Error(`Order Number does not exist on ${order.id}`)
+    }
+
+    try {
+      const publicOrderId = order.custom?.fields.publicOrderId
+
+      if (publicOrderId) {
+        const now = new Date().valueOf()
+        const boldPayload = prepareOrderForBold(order)
+        const response = await sendToBold(boldPayload, publicOrderId)
+        console.log(response)
+        logger.info(`Order Successfully Sent to BOLD: ${order.orderNumber}`)
+
+        const actions = [
+          {
+            action: 'setCustomField',
+            name: ORDER_CUSTOM_FIELDS.BOLD_STATUS,
+            value: SENT_TO_BOLD_STATUSES.SUCCESS
+          },
+          {
+            action: 'setCustomField',
+            name: ORDER_CUSTOM_FIELDS.BOLD_LAST_SUCCESS_TIME,
+            value: new Date(now).toJSON()
+          }
+        ]
+
+        await retry(setOrderCustomFields)(order.id, order.version, actions)
+        logger.info(`Bold status fields for order: ${order.orderNumber} set successfully`)
+      }
+    } catch (error) {
+      spanSetError(error)
+      logger.error({
+        type: 'error',
+        message: `Failed to send order ${order.orderNumber}: to Bold`,
+        error: await serializeError(error)
+      })
+
+      await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
+        retryCountField: ORDER_CUSTOM_FIELDS.BOLD_RETRY_COUNT,
+        nextRetryAtField: ORDER_CUSTOM_FIELDS.BOLD_NEXT_RETRY_AT,
+        statusField: ORDER_CUSTOM_FIELDS.BOLD_STATUS
+      })
+    }
+  })
+}
+
 export async function sendOrdersToNarvar() {
   const states = await fetchStates()
   const { orders, total } = await fetchOrdersThatShouldBeSentToNarvar()
@@ -515,6 +570,27 @@ export async function sendOrdersToNarvar() {
         continue
       }
       await sendOrderToNarvar(order, states)
+    }
+  })
+}
+
+export async function sendOrdersToBold() {
+  const { orders, total } = await fetchOrdersToSendToBold()
+
+  if (total === 0) {
+    logger.info('No orders found to send to Bold.')
+    return
+  }
+
+  logger.info(`Orders to be send to Bold: ${orders.length} - Total: ${total}`)
+
+  await tracer.trace('order_service_job_batch', { resource: 'order_bold_batch' }, async () => {
+    for await (const order of orders) {
+      if (!order.orderNumber) {
+        //Skip this order if no order number
+        continue
+      }
+      await sendOrderToBold(order)
     }
   })
 }
@@ -787,6 +863,10 @@ export const orderMessageDisperse = async (order: Order) => {
 
     if (canLogStuckOrder(order)) {
       logStuckOrdersUtil(order)
+    }
+
+    if (canSendOrderToBold(order)) {
+      sendOrderToBold(order)
     }
   } catch (error) {
     logger.error({
