@@ -1,5 +1,6 @@
 import { Order, LineItem } from "@commercetools/platform-sdk";
 import logger from "../logger";
+import fetch from 'node-fetch'
 
 const baseUrl = process.env.BOLD_BASE_URL
 const boldShopIdentifier = process.env.BOLD_SHOP_IDENTIFIER
