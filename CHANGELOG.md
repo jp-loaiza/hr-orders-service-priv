@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.35](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.34...v1.12.35) (2025-01-10)
+
+
+### Bug Fixes
+
+* HRC-8019: Fulfillment status upstream to Bold  ([#664](https://github.com/HarryRosen/hr-orders-service/issues/664)) ([ffa56a6](https://github.com/HarryRosen/hr-orders-service/commit/ffa56a6d04f2c4af8994f8ad78e639c7e52cf1c1))
+
 ## [1.12.34](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.33...v1.12.34) (2024-12-11)
 
 
