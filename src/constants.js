@@ -477,7 +477,8 @@ const PAYMENT_STATES = {
   PENDING: 'pending',
   PREAUTHED: 'preauthed',
   REFUNDED: 'refunded',
-  HELD_FOR_REVIEW: 'held_for_review'
+  HELD_FOR_REVIEW: 'held_for_review',
+  CAPTURED: 'captured'
 }
 
 const TRANSACTION_TYPES = {

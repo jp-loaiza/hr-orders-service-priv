@@ -135,7 +135,11 @@ export const transformToOrderPayment = (order: Order) => {
     return { ...orderUpdate, status: 'Success' }
   }
 
-  const creditPaymentInfo = order.paymentInfo?.payments.find(payment => payment.obj?.paymentMethodInfo.method === 'credit')
+  const creditPaymentInfo =
+      order.paymentInfo?.payments.find(payment =>
+          payment.obj?.paymentMethodInfo.method === 'credit' ||
+          payment.obj?.paymentMethodInfo.method === 'credit_card'
+      )
   if (!creditPaymentInfo) {
     orderUpdate.errorMessage = 'No credit card payment with payment release change'
     logger.error({
@@ -153,7 +157,8 @@ export const transformToOrderPayment = (order: Order) => {
   } else if (interfaceCode === PAYMENT_STATES.CANCELLED) { // delated capture is ON or OFF but DM rejected
     transaction = getTransaction(TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.FAILURE, creditPaymentInfo.obj?.transactions)
       || getTransaction(TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE, creditPaymentInfo.obj?.transactions)
-  } else if (interfaceCode === PAYMENT_STATES.PAID) { // delayed capture is OFF and DM accepted
+  } else if (interfaceCode === PAYMENT_STATES.PAID ||
+      interfaceCode === PAYMENT_STATES.CAPTURED) { // delayed capture is OFF and DM accepted
     transaction = getTransaction(TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.SUCCESS, creditPaymentInfo.obj?.transactions)
   }
 
