@@ -157,8 +157,7 @@ export const transformToOrderPayment = (order: Order) => {
   } else if (interfaceCode === PAYMENT_STATES.CANCELLED) { // delated capture is ON or OFF but DM rejected
     transaction = getTransaction(TRANSACTION_TYPES.AUTHORIZATION, TRANSACTION_STATES.FAILURE, creditPaymentInfo.obj?.transactions)
       || getTransaction(TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE, creditPaymentInfo.obj?.transactions)
-  } else if (interfaceCode === PAYMENT_STATES.PAID ||
-      interfaceCode === PAYMENT_STATES.CAPTURED) { // delayed capture is OFF and DM accepted
+  } else if (interfaceCode === PAYMENT_STATES.PAID || interfaceCode === PAYMENT_STATES.CAPTURED) { // delayed capture is OFF and DM accepted
     transaction = getTransaction(TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.SUCCESS, creditPaymentInfo.obj?.transactions)
   }
 
