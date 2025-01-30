@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.36](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.35...v1.12.36) (2025-01-29)
+
+
+### Bug Fixes
+
+* Eps changes ([#667](https://github.com/HarryRosen/hr-orders-service/issues/667)) ([79758e2](https://github.com/HarryRosen/hr-orders-service/commit/79758e2f286d0286fb34848af7a3d72d57e1f8ab))
+
 ## [1.12.35](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.34...v1.12.35) (2025-01-10)
 
 
