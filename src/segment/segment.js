@@ -91,7 +91,8 @@ const getOrderData = async (order) => {
  * @param {import('@commercetools/platform-sdk').Order} order
  */
 const getCrmCustomerId = async (order) => {
-  const customer = await fetchCustomer(order.customerId)
+  const customerResponse = await fetchCustomer(order.customerId)
+  const customer = customerResponse.body
   let crmCustomerId
   if(customer && customer.custom && customer.custom.fields && customer.custom.fields.crmCustomerId) {
     crmCustomerId = customer.custom.fields.crmCustomerId
