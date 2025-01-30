@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.37](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.36...v1.12.37) (2025-01-30)
+
+
+### Bug Fixes
+
+* HRC-8369 CT Orders Service Error Message in Recently Created Orders ([#669](https://github.com/HarryRosen/hr-orders-service/issues/669)) ([eb3eca6](https://github.com/HarryRosen/hr-orders-service/commit/eb3eca6abbf3f91db6d362570c96224f7a51614e))
+
 ## [1.12.36](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.35...v1.12.36) (2025-01-29)
 
 
