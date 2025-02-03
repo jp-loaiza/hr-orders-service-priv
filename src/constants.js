@@ -61,7 +61,8 @@ const CARD_TYPES_TO_JESTA_CODES = {
   'harry rosen loyalty': '49',
   'paypal': '80',
   'klarna': '93',
-  'klarna payments': '93'
+  'klarna payments': '93',
+  'amex': '07'
 }
 
 const CITCON_PAYMENT_METHODS = {
