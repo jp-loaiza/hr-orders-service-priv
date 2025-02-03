@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.38](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.37...v1.12.38) (2025-02-03)
+
+
+### Bug Fixes
+
+* Add new code card type for amex ([#671](https://github.com/HarryRosen/hr-orders-service/issues/671)) ([a696018](https://github.com/HarryRosen/hr-orders-service/commit/a696018a382bb64aed85565888367199f0176f43))
+
 ## [1.12.37](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.36...v1.12.37) (2025-01-30)
 
 
