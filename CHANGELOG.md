@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.39](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.38...v1.12.39) (2025-02-06)
+
+
+### Bug Fixes
+
+* Add credit_card as an option to credit ([#673](https://github.com/HarryRosen/hr-orders-service/issues/673)) ([cf7782b](https://github.com/HarryRosen/hr-orders-service/commit/cf7782be0be37971899aa8ee96804452f80509a1))
+
 ## [1.12.38](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.37...v1.12.38) (2025-02-03)
 
 
