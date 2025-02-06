@@ -31,7 +31,10 @@ const getPaymentReleasedStatus = (paymentInfo) => {
     return 'N'
   }
 
-  const creditPaymentInfo = paymentInfo.payments.find(payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit')
+  const creditPaymentInfo = paymentInfo.payments.find(payment =>
+    payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit' ||
+    payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit_card'
+  )
   if (!creditPaymentInfo) return 'Y' 
 
   const interfaceCode = creditPaymentInfo.obj.paymentStatus.interfaceCode
@@ -81,7 +84,10 @@ const convertAndFormatDate = jsonDateString => {
 
 const paymentIsByCreditCard =  (/** @type {import('../orders').Payment} */ payment) => (
   payment.obj.paymentMethodInfo.method
-  && payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit'
+  && (
+    payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit' ||
+    payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit_card'
+  )
 )
 
 const getCardReferenceNumberFromPayment =  (/** @type {import('../orders').Payment} */ payment)  => {
