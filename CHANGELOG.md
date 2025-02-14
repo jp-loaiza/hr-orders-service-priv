@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.40](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.39...v1.12.40) (2025-02-14)
+
+
+### Bug Fixes
+
+* Add advisor's info to narvar payload ([#675](https://github.com/HarryRosen/hr-orders-service/issues/675)) ([cf31c6e](https://github.com/HarryRosen/hr-orders-service/commit/cf31c6ea150635333f5c085b570502178d9572b5))
+
 ## [1.12.39](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.38...v1.12.39) (2025-02-06)
 
 
