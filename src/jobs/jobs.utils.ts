@@ -32,7 +32,8 @@ import {
   fetchStates,
   fetchShipments,
   fetchOrdersToSendToSegment,
-  fetchOrdersToSendToBold
+  fetchOrdersToSendToBold,
+  fetchShoppingList
 } from '../commercetools/commercetools'
 import { sendOrderUpdateToJesta } from '../jesta/jesta'
 import { generateCsvStringFromOrder } from '../csv/csv'
@@ -68,7 +69,7 @@ import {
   canUploadCsv
 } from "./validationService"
 import tracer, { hydrateOrderSpanTags, spanSetError } from '../tracer'
-import { State } from "@commercetools/platform-sdk"
+import {ShoppingList, State} from "@commercetools/platform-sdk"
 import { prepareOrderForBold, sendToBold } from "../bold/bold";
 
 /**
@@ -442,6 +443,14 @@ export async function sendPurchaseEventsToDynamicYield() {
 // @todo HRC-6313 Remove this once optimized query has been validated.
 const NARVAR_DISABLE_UPDATE = process.env.NARVAR_DISABLE_UPDATE === 'true' ? true : false
 
+async function getShoppingListFromAttributionSource(attributionSource: string) {
+  if(attributionSource) {
+    const shoppingListId = attributionSource.split("/")[3].split("?")[0]
+    return fetchShoppingList(shoppingListId)
+  }
+  return null;
+}
+
 async function sendOrderToNarvar(order: Order, states: State[]) {
   await tracer.trace('order_service_job', { resource: 'order_narvar' }, async () => {
     hydrateOrderSpanTags(order)
@@ -451,7 +460,8 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
 
     try {
       const shipments = await fetchShipments(order.orderNumber)
-      const narvarOrder = await convertOrderForNarvar(order, shipments, states)
+      const shoppingList : ShoppingList = await getShoppingListFromAttributionSource(order.custom?.fields.attributionSource)
+      const narvarOrder = await convertOrderForNarvar(order, shipments, states, shoppingList)
 
       if (narvarOrder && !NARVAR_DISABLE_UPDATE) {
         const now = new Date().valueOf()

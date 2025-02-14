@@ -652,6 +652,15 @@ const fetchOrdersToSendToSegment = async () => {
   }
 }
 
+/**
+ * @param {string} shoppingListId
+ */
+const fetchShoppingList = async (shoppingListId) => {
+  const uri = requestBuilder.shoppingLists.byId(shoppingListId).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  return body
+}
+
 
 
 module.exports = {
@@ -685,4 +694,5 @@ module.exports = {
   fetchCustomer,
   fetchFullGiftCardOrderResults,
   fetchOrdersToSendToBold,
+  fetchShoppingList,
 }

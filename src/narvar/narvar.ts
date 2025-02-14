@@ -14,7 +14,7 @@ const enableFinalCutToNarvar = process.env.SEND_FINAL_CUT_TO_NARVAR === 'true' ?
 
 import { fetchItemInfo, fetchCategoryInfo } from '../commercetools/commercetools'
 import { default as logger } from '../logger'
-import {ItemState, LineItem, Order, State,} from '@commercetools/platform-sdk'
+import {ItemState, LineItem, Order, ShoppingList, State,} from '@commercetools/platform-sdk'
 import { Shipment } from '../orders'
 
 /**
@@ -637,7 +637,7 @@ const getShipmentStatusMapping = (shipment: Shipment) => {
  * @param {Array<import('../orders').Shipment>} shipments
  * @returns {Promise<import('../orders').NarvarOrder | undefined>}
  */
-export const convertOrderForNarvar = async (order: Order, shipments: Shipment[], states: State[]) => {
+export const convertOrderForNarvar = async (order: Order, shipments: Shipment[], states: State[], advisorShoppingList: ShoppingList) => {
   const state = order.state ? states.find(s => order.state?.id === s.id) : null
   const locale = order.locale?.replace('-', '_')
   const isStorePickup = (order.custom?.fields.isStorePickup !== null && order.custom?.fields.isStorePickup) || false
@@ -694,7 +694,9 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         isStorePickup: isStorePickup,
         subtotal: (((order.taxedPrice?.totalNet.centAmount ?? 0) - (order.shippingInfo?.shippingRate.price.centAmount ?? 0)) / 100).toString(),
         wasAuthenticated: order.custom?.fields.wasAuthenticated ? 'true' : 'false',
-        loyaltyTier: order.custom?.fields.loyaltyTier || order.custom?.fields.clubHarryTier?.toLowerCase()
+        loyaltyTier: order.custom?.fields.loyaltyTier || order.custom?.fields.clubHarryTier?.toLowerCase(),
+        advisorFullName: advisorShoppingList ? advisorShoppingList.custom?.fields.advisorName : null,
+        advisorEmail: advisorShoppingList ? advisorShoppingList.custom?.fields.advisorEmail : null,
       },
       is_shoprunner_eligible: false,
     }
