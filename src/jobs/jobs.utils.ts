@@ -33,7 +33,8 @@ import {
   fetchShipments,
   fetchOrdersToSendToSegment,
   fetchOrdersToSendToBold,
-  fetchShoppingList
+  fetchShoppingList,
+  cleanErrorMessageOrderField
 } from '../commercetools/commercetools'
 import { sendOrderUpdateToJesta } from '../jesta/jesta'
 import { generateCsvStringFromOrder } from '../csv/csv'
@@ -160,6 +161,8 @@ export const transformToOrderPayment = (order: Order) => {
       || getTransaction(TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.FAILURE, creditPaymentInfo.obj?.transactions)
   } else if (interfaceCode === PAYMENT_STATES.PAID || interfaceCode === PAYMENT_STATES.CAPTURED) { // delayed capture is OFF and DM accepted
     transaction = getTransaction(TRANSACTION_TYPES.CHARGE, TRANSACTION_STATES.SUCCESS, creditPaymentInfo.obj?.transactions)
+  } else if (interfaceCode === PAYMENT_STATES.REFUNDED) {
+    return { ...orderUpdate, status: 'refunded'}
   }
 
   if (!transaction) {
@@ -317,12 +320,17 @@ async function sendOrderUpdate(order: Order) {
           statusField: ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS
         })
       } else {
+        if (orderPayment.status === "refunded") {
+          return;
+        }
         const orderStatus = orderPayment.status === TRANSACTION_STATES.SUCCESS ? JESTA_ORDER_STATUSES.RELEASED : JESTA_ORDER_STATUSES.CANCELLED
         const cartSourceWebsite = order.custom?.fields.cartSourceWebsite ? order.custom?.fields.cartSourceWebsite : ''
 
         await sendOrderUpdateToJesta(orderPayment.orderNumber, orderStatus, cartSourceWebsite, order.custom?.fields.isOmni)
         // we retry in case the version of the order has changed by CSV job
         await retry(setOrderAsSentToOms)(order, ORDER_CUSTOM_FIELDS.OMS_UPDATE_STATUS)
+        // We clean the order error field in case we have tried before and now is successful
+        await retry(cleanErrorMessageOrderField)(order, 'sendOrderUpdate')
       }
     } catch (error) {
       spanSetError(error)
