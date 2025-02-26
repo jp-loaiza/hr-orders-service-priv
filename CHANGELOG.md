@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.41](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.40...v1.12.41) (2025-02-26)
+
+
+### Bug Fixes
+
+* HRC-8380 Error message Order update is not for a status that jes… ([#677](https://github.com/HarryRosen/hr-orders-service/issues/677)) ([fa3185f](https://github.com/HarryRosen/hr-orders-service/commit/fa3185ff19ebb70c37c9033b5a539fb87749f4d8))
+
 ## [1.12.40](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.39...v1.12.40) (2025-02-14)
 
 
