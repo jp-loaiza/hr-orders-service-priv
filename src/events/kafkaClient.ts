@@ -13,14 +13,14 @@ import * as tls from 'tls'
 
 const brokers = KAFKA_BROKERS.split(',')
 
-const ssl: true | tls.ConnectionOptions =
+const ssl: boolean | tls.ConnectionOptions =
   KAFKA_SSL_CA && KAFKA_SSL_CERT
     ? {
         rejectUnauthorized: false,
         ca: KAFKA_SSL_CA,
         cert: KAFKA_SSL_CERT,
       }
-    : true
+    : false
 
 const sasl: SASLOptions = {
   mechanism: KAFKA_SASL_MECHANISM,
