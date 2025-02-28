@@ -11,22 +11,24 @@ import {
 } from '../config'
 import * as tls from 'tls'
 
-const brokers = KAFKA_BROKERS.split(',')
+const brokers = KAFKA_BROKERS.split(',');
 
-const ssl: boolean | tls.ConnectionOptions =
-  KAFKA_SSL_CA && KAFKA_SSL_CERT
-    ? {
-        rejectUnauthorized: false,
-        ca: KAFKA_SSL_CA,
-        cert: KAFKA_SSL_CERT,
-      }
-    : false
+// Dynamically enable SSL only if using port 9093 (TLS listener)
+const ssl: boolean | tls.ConnectionOptions = brokers.some(broker => broker.includes(':9093'))
+  ? (KAFKA_SSL_CA
+      ? {
+          rejectUnauthorized: false,
+          ca: KAFKA_SSL_CA,
+          ...(KAFKA_SSL_CERT ? { cert: KAFKA_SSL_CERT } : {}), // Only include cert if available
+        }
+      : true) // Enable SSL with CA, but no client cert if not provided
+  : false; // Ensure SSL is disabled for plain listener (port 9092)
 
 const sasl: SASLOptions = {
   mechanism: KAFKA_SASL_MECHANISM,
   username: KAFKA_USERNAME,
-  password: KAFKA_PASSWORD
-}
+  password: KAFKA_PASSWORD,
+};
 
 const kafkaClient = new Kafka({
   clientId: KAFKA_CLIENT_ID,
@@ -34,6 +36,6 @@ const kafkaClient = new Kafka({
   ssl,
   sasl,
   logLevel: DEBUG ? logLevel.INFO : logLevel.ERROR,
-})
+});
 
-export default kafkaClient
+export default kafkaClient;
