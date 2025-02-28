@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.43](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.42...v1.12.43) (2025-02-28)
+
+
+### Bug Fixes
+
+* **kafkaclient.ts:** fix kafka ssl issue in k8s ([#681](https://github.com/HarryRosen/hr-orders-service/issues/681)) ([c3f5ef3](https://github.com/HarryRosen/hr-orders-service/commit/c3f5ef356b3a304ff2821b86be36e228aa50a825))
+
 ## [1.12.42](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.41...v1.12.42) (2025-02-28)
 
 
