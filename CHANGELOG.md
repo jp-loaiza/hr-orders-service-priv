@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.42](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.41...v1.12.42) (2025-02-28)
+
+
+### Bug Fixes
+
+* GCP Migration, fix the tls logic for internal connection ([#679](https://github.com/HarryRosen/hr-orders-service/issues/679)) ([fc473b4](https://github.com/HarryRosen/hr-orders-service/commit/fc473b492ca4def45f2624cd9d0f26514e0abc1d))
+
 ## [1.12.41](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.40...v1.12.41) (2025-02-26)
 
 
