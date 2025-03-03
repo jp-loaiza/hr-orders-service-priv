@@ -7,6 +7,13 @@ export const sftpConfig = {
   privateKey: Buffer.from(envProperties.SFTP_PRIVATE_KEY as string, 'base64')
 }
 
+export const newSftpConfig = {
+  host: "40.233.92.134",
+  port: Number(envProperties.SFTP_PORT),
+  username: envProperties.SFTP_USERNAME,
+  privateKey: Buffer.from(envProperties.SFTP_PRIVATE_KEY as string, 'base64')
+}
+
 /**
  * Disable the creation of the statsd client. This is mostly used for local development.
  */
