@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.45](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.44...v1.12.45) (2025-03-04)
+
+
+### Bug Fixes
+
+* revert HRC-8380 and HRC-8388 ([#685](https://github.com/HarryRosen/hr-orders-service/issues/685)) ([07547ca](https://github.com/HarryRosen/hr-orders-service/commit/07547ca8a0fbbadf154c10870ebc7d2270c218b9))
+
 ## [1.12.44](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.43...v1.12.44) (2025-03-03)
 
 
