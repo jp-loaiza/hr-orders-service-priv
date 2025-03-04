@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.46](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.45...v1.12.46) (2025-03-04)
+
+
+### Bug Fixes
+
+* fix advisor issue ([#688](https://github.com/HarryRosen/hr-orders-service/issues/688)) ([475d09c](https://github.com/HarryRosen/hr-orders-service/commit/475d09c4a42f2dbc4ec1d1cf60c28c59b15a823e))
+
 ## [1.12.45](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.44...v1.12.45) (2025-03-04)
 
 
