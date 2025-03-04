@@ -418,24 +418,6 @@ const setOrderErrorFields = async (order, errorMessage, errorIsRecoverable, { re
   }
 }
 
-async function cleanErrorMessageOrderField(order, functionName) {
-  logger.info({
-    message: `Cleaning errorMessage field from the orderId: ${order.orderNumber}, function: ${functionName}`,
-    orderNumber: order.orderNumber,
-    functionName: functionName
-  })
-
-  const uri = requestBuilder.orders.byId(order.id).build()
-  const ctBody = (await ctClient.execute({ method: 'GET', uri })).body
-
-  const actions = getActionsFromCustomFields({
-    errorMessage: '',
-  })
-
-  const body = { version: ctBody.version, actions }
-  return ctClient.execute({ method: 'POST', uri, body })
-}
-
 /**
  * @returns {Promise<{ orders: Array<(import('../orders').IOrder)>, total: number }>}
  */
@@ -713,5 +695,4 @@ module.exports = {
   fetchFullGiftCardOrderResults,
   fetchOrdersToSendToBold,
   fetchShoppingList,
-  cleanErrorMessageOrderField,
 }

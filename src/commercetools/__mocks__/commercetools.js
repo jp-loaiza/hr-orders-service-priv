@@ -604,7 +604,6 @@ module.exports = {
     .mockImplementationOnce(() => ({ orders: [validOrder], total: 1}))
     .mockImplementationOnce(() => ({ orders: [], total: 1 })),
   setOrderAsSentToOms: jest.fn(),
-  cleanErrorMessageOrderField: jest.fn(),
   setOrderErrorFields: jest.fn(),
   fetchStates: jest.fn().mockReturnValue(Promise.resolve(state)),
   fetchOrdersThatShouldBeSentToNarvar: jest.fn()

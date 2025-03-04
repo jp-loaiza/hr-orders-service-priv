@@ -8,7 +8,6 @@ import basicAuth from 'basic-auth'
 require('./jobs/jobs')
 import {
   sftpConfig,
-  newSftpConfig,
   DISABLE_ORDER_SAVE_ACTOR,
   PROCESS_ORDER_EVENTS,
   SFTP_INCOMING_ORDERS_PATH,
@@ -147,24 +146,6 @@ app.post('/narvar-notifications/order-delivered', async (req, res) => {
     res.status(423).json({ message: 'This service is currently disabled.'})
   } 
 });
-
-app.get('/sftp-endpoint', async function (_,res: Response) {
-  try {
-    logger.info('Initiating sftp endpoint check...')
-    const sftp = new client()
-    await sftp.connect(newSftpConfig)
-    console.log('New SFTP connection successful.')
-    await sftp.end()
-    res.status(200).send('ok')
-  } catch (error) {
-    const message = 'Sftp endpoint check failed:'
-    logger.error({
-      type: 'sftp_endpoint_check',
-      message: message,
-      error: error.body?.errors ? serializeError(error.body.errors) : serializeError(error),
-    });
-  }
-})
 
 /**
  * Can be used to setup an endpoint to retrieve list of orders

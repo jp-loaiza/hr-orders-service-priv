@@ -419,7 +419,7 @@ export interface IOrder extends Order {
 
 export type OrderUpdate = {
   orderNumber?: string,
-  status?: 'success' | 'released' | 'cancelled' | 'refunded',
+  status?: 'success' | 'released' | 'cancelled',
   errorMessage?: string
 }
 
