@@ -446,9 +446,18 @@ const NARVAR_DISABLE_UPDATE = process.env.NARVAR_DISABLE_UPDATE === 'true' ? tru
 async function getShoppingListFromAttributionSource(attributionSource: string) {
   if(attributionSource) {
     const shoppingListId = attributionSource.split("/")[3].split("?")[0]
-    return fetchShoppingList(shoppingListId)
+    try {
+      return await fetchShoppingList(shoppingListId)
+    } catch (error) {
+      logger.error({
+        type: 'error',
+        message: `Failed to get shopping list from attribution source ${attributionSource}`,
+        error: await serializeError(error)
+      })
+      return null
+    }
   }
-  return null;
+  return null
 }
 
 async function sendOrderToNarvar(order: Order, states: State[]) {
