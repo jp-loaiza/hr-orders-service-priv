@@ -4,9 +4,7 @@ export const sftpConfig = {
   host: envProperties.SFTP_HOST,
   port: Number(envProperties.SFTP_PORT),
   username: envProperties.SFTP_USERNAME,
-  ...(envProperties.ENVIRONMENT === 'production'
-      ? { password: envProperties.PASSWORD }
-      : { privateKey: Buffer.from(envProperties.SFTP_PRIVATE_KEY as string, 'base64') })
+  privateKey: Buffer.from(envProperties.SFTP_PRIVATE_KEY as string, 'base64')
 }
 
 /**

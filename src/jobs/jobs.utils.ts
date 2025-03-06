@@ -261,7 +261,6 @@ async function createAndUploadCsv(order: Order, sftp: client) {
 export const createAndUploadCsvs = async () => {
   const sftp = new client()
   try {
-    logger.info(sftpConfig)
     await sftp.connect(sftpConfig)
     logger.info('Connected to SFTP server')
     const { orders, total } = await fetchOrdersThatShouldBeSentToOms()
