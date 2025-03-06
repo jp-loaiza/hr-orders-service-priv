@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.49](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.48...v1.12.49) (2025-03-06)
+
+
+### Bug Fixes
+
+* HRC-8388 Testing new SFTP Location ([#696](https://github.com/HarryRosen/hr-orders-service/issues/696)) ([bfe6e77](https://github.com/HarryRosen/hr-orders-service/commit/bfe6e771fe0727fdfa511aa64683fc61022b3115))
+
 ## [1.12.48](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.47...v1.12.48) (2025-03-06)
 
 
