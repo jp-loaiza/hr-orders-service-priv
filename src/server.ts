@@ -40,6 +40,7 @@ async function checkServicesHealth(res: Response) {
   try {
     const sftp = new client()
     logger.info('Initiating health check...')
+    logger.info(sftpConfig)
     await sftp.connect(sftpConfig)
     await Promise.all([
       keepAliveRequest(),
