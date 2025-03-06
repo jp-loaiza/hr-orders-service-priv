@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.47](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.46...v1.12.47) (2025-03-06)
+
+
+### Bug Fixes
+
+* HRC-8380 Error message Order update is not for a status that jesta recognizes: refunded ([#692](https://github.com/HarryRosen/hr-orders-service/issues/692)) ([01b963a](https://github.com/HarryRosen/hr-orders-service/commit/01b963a09c955ba631615daa44305b738a480d32))
+* HRC-8388 Testing new SFTP Location ([#691](https://github.com/HarryRosen/hr-orders-service/issues/691)) ([d6f7e2c](https://github.com/HarryRosen/hr-orders-service/commit/d6f7e2cd1514f74e22912d7b364afec7b28192de))
+
 ## [1.12.46](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.45...v1.12.46) (2025-03-04)
 
 
