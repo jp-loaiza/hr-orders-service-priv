@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.50](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.49...v1.12.50) (2025-03-11)
+
+
+### Bug Fixes
+
+* HRC-8424 Add CRM Id to Narvar ([#690](https://github.com/HarryRosen/hr-orders-service/issues/690)) ([707cf51](https://github.com/HarryRosen/hr-orders-service/commit/707cf51dd44982e0fd8ca1cd289115728c04424f))
+
 ## [1.12.49](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.48...v1.12.49) (2025-03-06)
 
 
