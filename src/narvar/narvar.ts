@@ -12,7 +12,7 @@ const finalCutPassword = process.env.NARVAR_PASSWORD_997
 const FINAL_CUT = '00997'
 const enableFinalCutToNarvar = process.env.SEND_FINAL_CUT_TO_NARVAR === 'true' ? true : false
 
-import { fetchItemInfo, fetchCategoryInfo } from '../commercetools/commercetools'
+import { fetchItemInfo, fetchCategoryInfo, fetchCRMCustomerId } from '../commercetools/commercetools'
 import { default as logger } from '../logger'
 import {ItemState, LineItem, Order, ShoppingList, State,} from '@commercetools/platform-sdk'
 import { Shipment } from '../orders'
@@ -641,6 +641,8 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
   const state = order.state ? states.find(s => order.state?.id === s.id) : null
   const locale = order.locale?.replace('-', '_')
   const isStorePickup = (order.custom?.fields.isStorePickup !== null && order.custom?.fields.isStorePickup) || false
+  const crmId = await fetchCRMCustomerId(order.customerId)
+
   return {
     order_info: {
       order_number: order.orderNumber,
@@ -697,6 +699,7 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         loyaltyTier: order.custom?.fields.loyaltyTier || order.custom?.fields.clubHarryTier?.toLowerCase(),
         advisorFullName: advisorShoppingList ? advisorShoppingList.custom?.fields.advisorName : null,
         advisorEmail: advisorShoppingList ? advisorShoppingList.custom?.fields.advisorEmail : null,
+        CRMId: crmId.custom?.fields ? crmId.custom?.fields.crmCustomerId : null,
       },
       is_shoprunner_eligible: false,
     }

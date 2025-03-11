@@ -679,6 +679,12 @@ const fetchShoppingList = async (shoppingListId) => {
   return body
 }
 
+const fetchCRMCustomerId = async (customerId) => {
+  const uri = requestBuilder.customers.byId(customerId).build()
+  const { body } = await ctClient.execute({ method: 'GET', uri })
+  return body
+}
+
 
 
 module.exports = {
@@ -713,5 +719,6 @@ module.exports = {
   fetchFullGiftCardOrderResults,
   fetchOrdersToSendToBold,
   fetchShoppingList,
+  fetchCRMCustomerId,
   cleanErrorMessageOrderField,
 }
