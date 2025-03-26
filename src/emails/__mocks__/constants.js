@@ -754,6 +754,6 @@ const COMPLETE_ORDER_ENGLISH_UNTYPED = {
   },
   itemShippingAddresses: [],
   refusedGifts: [],
-};
+}
 
-module.exports = { COMPLETE_ORDER_ENGLISH_UNTYPED };
+module.exports = { COMPLETE_ORDER_ENGLISH_UNTYPED }

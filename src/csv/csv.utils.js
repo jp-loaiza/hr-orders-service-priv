@@ -234,9 +234,9 @@ const getBarcodeInfoFromLineItem = lineItem => {
  * @returns Sum of the payments in cents
  */
 const getPaymentTotalFromPaymentInfo = paymentInfo => (
-    paymentInfo.payments
-        .filter(payment => (!payment.obj.paymentStatus) || payment.obj.paymentStatus.interfaceCode !== 'failed')
-        .reduce((total, payment) => total + payment.obj.amountPlanned.centAmount, 0)
+  paymentInfo.payments
+    .filter(payment => (!payment.obj.paymentStatus) || payment.obj.paymentStatus.interfaceCode !== 'failed')
+    .reduce((total, payment) => total + payment.obj.amountPlanned.centAmount, 0)
 )
 
 const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
@@ -280,7 +280,7 @@ const getSignatureRequiredIndicator = (paymentInfo, isStorePickup) => {
   // Checking Signature Required Indicator for non-BOPIS orders over 10k (HRC-7180)
   const paymentTotal = getPaymentTotalFromPaymentInfo(paymentInfo)
   if (!isStorePickup && paymentTotal >= 1000000) {
-    return 'Y'; // Signature required
+    return 'Y' // Signature required
   }
 
   //checking Klarna Signature Required Inidcator (HRC-5233)

@@ -18,7 +18,7 @@ const getTotalDiscountAmount = async (lineItems) => {
     item.discountedPrice ? discountPrice = discountPrice + item.discountedPrice.value.centAmount : total
   }
   return (total - discountPrice) / 100
-};
+}
 
 /**
  * @param {import('@commercetools/platform-sdk').Address} address
