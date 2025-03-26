@@ -234,7 +234,9 @@ const getBarcodeInfoFromLineItem = lineItem => {
  * @returns Sum of the payments in cents
  */
 const getPaymentTotalFromPaymentInfo = paymentInfo => (
-  paymentInfo.payments.reduce((total, payment) => total + payment.obj.amountPlanned.centAmount, 0)
+    paymentInfo.payments
+        .filter(payment => (!payment.obj.paymentStatus) || payment.obj.paymentStatus.interfaceCode !== 'failed')
+        .reduce((total, payment) => total + payment.obj.amountPlanned.centAmount, 0)
 )
 
 const getCarrierIdFromShippingName = (/** @type {string} **/ name) => {
