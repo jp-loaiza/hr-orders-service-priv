@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.51](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.50...v1.12.51) (2025-03-26)
+
+
+### Bug Fixes
+
+* Exclude failed payments from total calculation in getPaymentTotalFromPaymentInfo ([#700](https://github.com/HarryRosen/hr-orders-service/issues/700)) ([0038d78](https://github.com/HarryRosen/hr-orders-service/commit/0038d78a15f6c77f48feae9e0cfebe6629abc1b2))
+
 ## [1.12.50](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.49...v1.12.50) (2025-03-11)
 
 
