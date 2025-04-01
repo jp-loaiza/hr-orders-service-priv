@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.53](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.52...v1.12.53) (2025-04-01)
+
+
+### Bug Fixes
+
+* Add additional payment method constants ([#704](https://github.com/HarryRosen/hr-orders-service/issues/704)) ([16ec689](https://github.com/HarryRosen/hr-orders-service/commit/16ec6894a538edf5ff5bd32a35bde135cc70df85))
+
 ## [1.12.52](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.51...v1.12.52) (2025-03-26)
 
 
