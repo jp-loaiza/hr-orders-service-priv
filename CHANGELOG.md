@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.54](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.53...v1.12.54) (2025-04-02)
+
+
+### Bug Fixes
+
+* force rebuild  ([#707](https://github.com/HarryRosen/hr-orders-service/issues/707)) ([aabe3a5](https://github.com/HarryRosen/hr-orders-service/commit/aabe3a5638737a15d0d3a68de6efa570777af7d2))
+
 ## [1.12.53](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.52...v1.12.53) (2025-04-01)
 
 
