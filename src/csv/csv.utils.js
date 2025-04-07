@@ -21,16 +21,6 @@ const { ENABLE_CANADA_POST_CARRIER } = require('../config')
  * @param {import('../orders').PaymentInfo} paymentInfo
  */
 const getPaymentReleasedStatus = (paymentInfo) => {
-
-  // We are temporary set the release flag to N if the payments are all using giftcard
-  if (paymentInfo.payments.length 
-    && paymentInfo.payments.filter(
-      payment => payment.obj.paymentMethodInfo.method.toLowerCase() === 'plugin' && payment.obj.custom.fields.transaction_card_type === 'Harry Rosen Giftcard'
-    ).length === paymentInfo.payments.length) 
-  {
-    return 'N'
-  }
-
   const creditPaymentInfo = paymentInfo.payments.find(payment =>
     payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit' ||
     payment.obj.paymentMethodInfo.method.toLowerCase() === 'credit_card'
