@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.55](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.54...v1.12.55) (2025-04-07)
+
+
+### Bug Fixes
+
+* Remove Functionality that Puts Gift Card Orders on Hold ([#709](https://github.com/HarryRosen/hr-orders-service/issues/709)) ([c5b5cf0](https://github.com/HarryRosen/hr-orders-service/commit/c5b5cf07f8b22079df6681e76150f3938b4df33d))
+
 ## [1.12.54](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.53...v1.12.54) (2025-04-02)
 
 
