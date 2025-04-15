@@ -9,7 +9,6 @@ const {
   FULL_GIFT_CARD_ORDER_CHECK_INTERVAL,
   SEND_ALGOLIA_INFO_INTERVAL,
   SEND_CJ_CONVERSIONS_INTERVAL,
-  SEND_DYNAMIC_YIELD_INFO_INTERVAL,
   SEND_NARVAR_ORDERS_INTERVAL,
   SEND_SEGMENT_ORDERS_INTERVAL,
   SEND_ORDERS_STATUS_PENDING_TO_LOGS_INTERVAL,
@@ -17,7 +16,6 @@ const {
 import {
   createAndUploadCsvs,
   sendConversionsToAlgolia,
-  sendPurchaseEventsToDynamicYield,
   sendOrdersToNarvar,
   sendOrdersStatusPendingToLogs,
   sendOrderUpdates,
@@ -38,7 +36,6 @@ import {
   shouldCheckForFullGiftCardOrders,
   shouldSendAlgoliaInfo,
   shouldSendCjConversions,
-  shouldSendDynamicYieldInfo,
   shouldSendNotifications,
   shouldSendOrderNarvar,
   shouldSendOrderSegment,
@@ -213,26 +210,6 @@ async function sendConversionsToAlgoliaJob(sendToAlgoliaInterval: number) {
 }
 
 /**
- * @param {number} sendToDynamicYieldInterval
- */
-async function sendPurchaseEventsToDynamicYieldJob(sendToDynamicYieldInterval: number) {
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    try {
-      await sendPurchaseEventsToDynamicYield()
-    }
-    catch (error) {
-      logger.error({
-        type: 'send_to_dynamic_yield_failure',
-        message: 'Failed to send purchase events to Dynamic Yield',
-        error: serializeError(error)
-      })
-    }
-    await sleep(sendToDynamicYieldInterval)
-  }
-}
-
-/**
  * @param {number} sendToNarvarInterval
  */
 async function sendOrdersToNarvarJob(sendToNarvarInterval: number) {
@@ -344,13 +321,6 @@ if (shouldSendAlgoliaInfo) {
   logger.info('Processing Algolia job at interval: ', sendAlgoliaInfoInterval)
   if (!(sendAlgoliaInfoInterval > 0)) throw new Error('SEND_ALGOLIA_INFO_INTERVAL must be a positive number')
   sendConversionsToAlgoliaJob(sendAlgoliaInfoInterval)
-}
-
-if (shouldSendDynamicYieldInfo) {
-  const sendDynamicYieldInfoInterval = Number(SEND_DYNAMIC_YIELD_INFO_INTERVAL)
-  logger.info('Processing Dynamic Yield job at interval: ', sendDynamicYieldInfoInterval)
-  if (!(sendDynamicYieldInfoInterval > 0)) throw new Error('SEND_DYNAMIC_YIELD_INFO_INTERVAL must be a positive number')
-  sendPurchaseEventsToDynamicYieldJob(sendDynamicYieldInfoInterval)
 }
 
 if (shouldSendOrderNarvar) {

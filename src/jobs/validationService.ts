@@ -7,7 +7,6 @@ import {
     NARVAR_ORDER_EVENT,
     ORDER_CONVERSION_TO_CJ_EVENT,
     ORDER_UPDATE_EVENT,
-    PURCHASE_EVENTS_DY_EVENT,
     SEGMENT_ORDER_EVENT,
     STUCK_ORDER_EVENT
 } from "../config";
@@ -16,7 +15,6 @@ import {
     SENT_TO_ALGOLIA_STATUSES,
     SENT_TO_CJ_STATUSES,
     SENT_TO_CRM_STATUS,
-    SENT_TO_DYNAMIC_YIELD_STATUSES,
     SENT_TO_NARVAR_STATUSES,
     SENT_TO_OMS_STATUSES,
     SENT_TO_SEGMENT_STATUSES,
@@ -83,19 +81,6 @@ export function canSendOrderToBold(order: Order) {
         && (order.custom?.fields.boldNextRetryAt === undefined || order.custom?.fields.boldNextRetryAt <= new Date().toJSON())
         && order.createdAt > '2022-02-27'
         && BOLD_ORDER_EVENT
-}
-
-export function canSendPurchaseEventToDY(order: Order) {
-    //query = `(createdAt>"${oneWeekAgo.toJSON()}" and createdAt<="${now.toJSON()}" and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} = "${SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING}")) or custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS} is not defined))) and custom(fields(dynamicYieldData is defined)) and (custom(fields(${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} <= "${now.toJSON()}" or ${ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT} is not defined))))`
-    const now = new Date()
-    let oneWeekAgo = new Date()
-    oneWeekAgo.setDate(now.getDate() - 7)
-    return order.createdAt > oneWeekAgo.toJSON()
-        && order.createdAt <= now.toJSON()
-        && (order.custom?.fields.sentToDynamicYieldStatus === undefined || order.custom?.fields.sentToDynamicYieldStatus === SENT_TO_DYNAMIC_YIELD_STATUSES.PENDING)
-        && order.custom?.fields.dynamicYieldData
-        && (order.custom?.fields.dynamicYieldPurchaseNextRetryAt === undefined || order.custom?.fields.dynamicYieldPurchaseNextRetryAt <= now.toJSON())
-        && PURCHASE_EVENTS_DY_EVENT
 }
 
 export function canSendOrderToSegment(order: Order) {

@@ -87,8 +87,6 @@ const ORDER_CUSTOM_FIELDS = {
   ALGOLIA_CONVERSION_NEXT_RETRY_AT: 'algoliaConversionNextRetryAt',
   ALGOLIA_CONVERSION_RETRY_COUNT: 'algoliaConversionRetryCount',
   ALGOLIA_CONVERSION_STATUS: 'sentToAlgoliaStatus',
-  DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT: 'dynamicYieldPurchaseNextRetryAt',
-  DYNAMIC_YIELD_PURCHASE_RETRY_COUNT: 'dynamicYieldPurchaseRetryCount',
   DYNAMIC_YIELD_PURCHASE_STATUS: 'sentToDynamicYieldStatus',
   CJ_CONVERSION_NEXT_RETRY_AT: 'cjNextRetryAt',
   CJ_CONVERSION_RETRY_COUNT: 'cjRetryCount',
@@ -518,8 +516,6 @@ const STATUS_FIELDS_TO_AVAILABLE_STATUSES = {
 
 const ALGOLIA_INSIGHTS_URL = 'https://insights.algolia.io'
 
-const DYNAMIC_YIELD_API_URL = 'https://dy-api.com'
-
 module.exports = {
   ALGOLIA_INSIGHTS_URL,
   JESTA_ORDER_STATUSES,
@@ -534,7 +530,6 @@ module.exports = {
   DEFAULT_STALE_ORDER_CUTOFF_TIME_MS,
   DETAILS_ROWS,
   DETAILS_ROWS_ENUM,
-  DYNAMIC_YIELD_API_URL,
   EMAIL_API_OWNER_ID,
   FETCH_ABORT_TIMEOUT,
   GENERAL_CSV_OPTIONS,

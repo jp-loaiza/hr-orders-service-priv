@@ -10,7 +10,6 @@ import {
   JESTA_ORDER_STATUSES,
   SENT_TO_ALGOLIA_STATUSES,
   SENT_TO_CJ_STATUSES,
-  SENT_TO_DYNAMIC_YIELD_STATUSES,
   SENT_TO_NARVAR_STATUSES,
   SENT_TO_SEGMENT_STATUSES,
   JOB_TASK_TIMEOUT,
@@ -26,7 +25,6 @@ import {
   fetchOrdersThatShouldBeUpdatedInOMS,
   fetchOrdersWhoseTrackingDataShouldBeSentToAlgolia,
   fetchOrdersWhoseConversionsShouldBeSentToCj,
-  fetchOrdersWhosePurchasesShouldBeSentToDynamicYield,
   fetchOrdersThatShouldBeSentToNarvar,
   fetchOrdersStatusPendingThatShouldBeSentToNarvar,
   fetchStates,
@@ -47,7 +45,6 @@ import {
   shouldSendOrderUpdates,
 } from '../config'
 import { sendManyConversionsToAlgolia, getConversionsFromOrder } from '../algolia/algolia'
-import { getDYReportEventFromOrder, sendPurchaseEventToDynamicYield } from '../dynamicyield/dynamicYield'
 import { convertOrderForNarvar, sendToNarvar, shouldSendToNarvarFinalCut } from '../narvar/narvar'
 import { getCrmCustomerId, getOrderData } from '../segment/segment'
 import { sendSegmentTrackCall, sendSegmentIdentifyCall } from '../segment/segment.utils'
@@ -66,7 +63,6 @@ import {
   canSendOrderToNarvar,
   canSendOrderToSegment,
   canSendOrderUpdate,
-  canSendPurchaseEventToDY,
   canUploadCsv
 } from "./validationService"
 import tracer, { hydrateOrderSpanTags, spanSetError } from '../tracer'
@@ -404,49 +400,6 @@ export async function sendConversionsToAlgolia() {
   })
 }
 
-async function sendPurchaseEventToDY(order: Order) {
-  await tracer.trace('order_service_job', { resource: 'dynamic_yield_event' }, async () => {
-    hydrateOrderSpanTags(order)
-    try {
-      const dynamicYieldEventData = getDYReportEventFromOrder(order)
-      if (dynamicYieldEventData != undefined) {
-        await sendPurchaseEventToDynamicYield(dynamicYieldEventData)
-        logger.info(`Sent Dynamic Yield purchase event for order ${order.orderNumber}`)
-        await retry(setOrderCustomField)(order.id, ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS, SENT_TO_DYNAMIC_YIELD_STATUSES.SUCCESS)
-      }
-    } catch (error) {
-      spanSetError(error)
-      logger.error({
-        type: 'dynamic_yield_purchase_events_failure',
-        message: `Failed to send Dynamic Yield purchase event for order ${order.orderNumber}`,
-        error: await serializeError(error)
-      })
-      await retry(setOrderErrorFields)(order, error instanceof Error ? error.message : '', true, {
-        retryCountField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_RETRY_COUNT,
-        nextRetryAtField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_NEXT_RETRY_AT,
-        statusField: ORDER_CUSTOM_FIELDS.DYNAMIC_YIELD_PURCHASE_STATUS
-      })
-    }
-  })
-}
-
-export async function sendPurchaseEventsToDynamicYield() {
-  const { orders, total } = await fetchOrdersWhosePurchasesShouldBeSentToDynamicYield()
-
-  if (total === 0) {
-    logger.info('No orders with purchase data to send to Dynamic Yield.')
-    return
-  }
-
-  logger.info(`Sending purchase data to Dynamic Yield. ${total} orders for which to send purchase data.`)
-
-  await tracer.trace('order_service_job_batch', { resource: 'dynamic_yield_event_batch' }, async () => {
-    for (const order of orders) {
-      await sendPurchaseEventToDY(order)
-      await sleep(100) // prevent CT/Dynamic Yield from getting overloaded
-    }
-  })
-}
 
 // @todo HRC-6313 Remove this once optimized query has been validated.
 const NARVAR_DISABLE_UPDATE = process.env.NARVAR_DISABLE_UPDATE === 'true' ? true : false
@@ -878,10 +831,6 @@ export const orderMessageDisperse = async (order: Order) => {
     if (canSendOrderToNarvar(order)) {
       const states = await fetchStates()
       sendOrderToNarvar(order, states)
-    }
-
-    if (canSendPurchaseEventToDY(order)) {
-      sendPurchaseEventToDY(order)
     }
 
     if (canSendOrderToSegment(order)) {

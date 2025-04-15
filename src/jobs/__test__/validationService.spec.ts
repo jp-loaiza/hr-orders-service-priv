@@ -5,7 +5,6 @@ import {
     canSendOrderUpdate,
     canSendOrderEmailNotification,
     canSendConversionToAlgolia,
-    canSendPurchaseEventToDY,
     canSendOrderToNarvar,
     canSendOrderToSegment,
     canSendConversionToCJ,
@@ -32,11 +31,6 @@ describe("validationService", () => {
     it('should return true if canSendConversionToAlgolia for valid order', () => {
         //@ts-ignore
         expect(canSendConversionToAlgolia(mockOrder('', ''))).toBeTruthy()
-    })
-
-    it('should return true if canSendPurchaseEventToDY for valid order', () => {
-        //@ts-ignore
-        expect(canSendPurchaseEventToDY(mockOrder('', ''))).toBeTruthy()
     })
 
     it('should return true if canSendOrderToNarvar for valid order', () => {

@@ -25,8 +25,6 @@ export const ALGOLIA_APP_ID = envProperties.ALGOLIA_APP_ID;
 
 export const ALGOLIA_API_KEY = envProperties.ALGOLIA_API_KEY;
 
-export const DYNAMIC_YIELD_API_KEY_SERVER = envProperties.DYNAMIC_YIELD_API_KEY_SERVER;
-
 export const LOG_LEVEL = envProperties.LOG_LEVEL
 
 export const SFTP_INCOMING_ORDERS_PATH = envProperties.SFTP_INCOMING_ORDERS_PATH ?? './EDOM/pending/'
@@ -44,8 +42,6 @@ export const shouldCheckForFullGiftCardOrders = envProperties.SHOULD_CHECK_FOR_F
 export const shouldSendOrderUpdates = envProperties.SHOULD_SEND_ORDER_UPDATES === 'true'
 
 export const shouldSendAlgoliaInfo = envProperties.SHOULD_SEND_ALGOLIA_INFO === 'true'
-
-export const shouldSendDynamicYieldInfo = envProperties.SHOULD_SEND_DYNAMIC_YIELD_INFO === 'true'
 
 export const shouldSendOrderNarvar = envProperties.SHOULD_SEND_NARVAR_ORDERS === 'true'
 
