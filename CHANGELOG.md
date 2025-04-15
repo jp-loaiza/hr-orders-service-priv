@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.56](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.55...v1.12.56) (2025-04-15)
+
+
+### Bug Fixes
+
+* HRC-8504 remove Dynamic Yield integration ([#710](https://github.com/HarryRosen/hr-orders-service/issues/710)) ([0676ed1](https://github.com/HarryRosen/hr-orders-service/commit/0676ed112f23cfb931134d32bc388d224a5cef41))
+
 ## [1.12.55](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.54...v1.12.55) (2025-04-07)
 
 
