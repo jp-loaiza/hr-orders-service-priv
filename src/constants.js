@@ -107,6 +107,7 @@ const ORDER_CUSTOM_FIELDS = {
   BOLD_STATUS: 'boldStatus',
   BOLD_RETRY_COUNT: 'boldRetryCount',
   BOLD_NEXT_RETRY_AT: 'boldNextRetryAt',
+  IS_NARVAR_PROMISE_CONFIRMED: 'isNarvarPromiseConfirmed'
 }
 
 const HEADER_ROWS_ENUM = {

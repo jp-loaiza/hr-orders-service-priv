@@ -100,12 +100,14 @@ export const sendNarvarDeliveryPromise = async(order: any) => {
         message: `${response.body}. Failed to send promise ID Confirmation to Narvar ${order.order_info.attributes.narvarPromiseID} for orderNumber ${order.order_info.order_number}.`,
         orderNumber: order.order_info.order_number
       })
+      return response.status
     }
     logger.info({
       type: 'sendNarvarDeliveryPromise',
       message: 'sendNarvarDeliveryPromise: Successfully completed execution.',
       orderNumber: order.order_info.order_number
     })
+    return response.status
   } catch (error) {
     logger.error({
       type: 'sendNarvarDeliveryPromise',
@@ -113,6 +115,7 @@ export const sendNarvarDeliveryPromise = async(order: any) => {
       orderNumber: order.order_info.order_number,
       error: await serializeError(error)
     })
+    return 500
   }
 }
 

@@ -437,16 +437,24 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
       const shipments = await fetchShipments(order.orderNumber)
       const shoppingList : ShoppingList = await getShoppingListFromAttributionSource(order.custom?.fields.attributionSource)
       const narvarOrder = await convertOrderForNarvar(order, shipments, states, shoppingList)
+      const actions = []
 
       if (narvarOrder && !NARVAR_DISABLE_UPDATE) {
         const now = new Date().valueOf()
         if (narvarOrder.order_info.attributes.narvarPromiseID) {
-          await sendNarvarDeliveryPromise(narvarOrder)
+          const response = await sendNarvarDeliveryPromise(narvarOrder)
+          if (response === 200 || response === 201) {
+            actions.push({
+              action: 'setCustomField',
+              name: ORDER_CUSTOM_FIELDS.IS_NARVAR_PROMISE_CONFIRMED,
+              value: true
+            })
+          }
         }
         await sendToNarvar(narvarOrder)
         logger.info(`Order Successfully Sent to NARVAR: ${order.orderNumber}`)
 
-        const actions = [
+        actions.push(
           {
             action: 'setCustomField',
             name: ORDER_CUSTOM_FIELDS.NARVAR_STATUS,
@@ -457,7 +465,7 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
             name: ORDER_CUSTOM_FIELDS.NARVAR_LAST_SUCCESS_TIME,
             value: new Date(now).toJSON()
           }
-        ]
+        )
 
         if (shouldSendToNarvarFinalCut(narvarOrder)) {
           actions.push({
