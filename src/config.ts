@@ -98,3 +98,9 @@ export const BOLD_ORDER_EVENT = envProperties.BOLD_ORDER_EVENT === 'true' ?? fal
 
 export const DELIVERED_STATE_ID = envProperties.DELIVERED_STATE_ID ?? ''
 export const PICKED_UP_STATE_ID = envProperties.PICKED_UP_STATE_ID ?? ''
+
+export const PROMISE_API_URL = envProperties.PROMISE_API_URL ?? ''
+export const NARVAR_USERNAME_EDD_990 = envProperties.NARVAR_USERNAME_EDD_990 ?? ''
+export const NARVAR_USERNAME_EDD_997 = envProperties.NARVAR_USERNAME_EDD_997 ?? ''
+export const NARVAR_PASSWORD_EDD_990 = envProperties.NARVAR_PASSWORD_EDD_990 ?? ''
+export const NARVAR_PASSWORD_EDD_997 = envProperties.NARVAR_PASSWORD_EDD_997 ?? ''

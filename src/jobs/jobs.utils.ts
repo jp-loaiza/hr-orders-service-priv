@@ -45,7 +45,12 @@ import {
   shouldSendOrderUpdates,
 } from '../config'
 import { sendManyConversionsToAlgolia, getConversionsFromOrder } from '../algolia/algolia'
-import { convertOrderForNarvar, sendToNarvar, shouldSendToNarvarFinalCut } from '../narvar/narvar'
+import {
+  convertOrderForNarvar,
+  sendNarvarDeliveryPromise,
+  sendToNarvar,
+  shouldSendToNarvarFinalCut
+} from '../narvar/narvar'
 import { getCrmCustomerId, getOrderData } from '../segment/segment'
 import { sendSegmentTrackCall, sendSegmentIdentifyCall } from '../segment/segment.utils'
 import logger, { serializeError } from '../logger'
@@ -435,6 +440,9 @@ async function sendOrderToNarvar(order: Order, states: State[]) {
 
       if (narvarOrder && !NARVAR_DISABLE_UPDATE) {
         const now = new Date().valueOf()
+        if (narvarOrder.order_info.attributes.narvarPromiseID) {
+          await sendNarvarDeliveryPromise(narvarOrder)
+        }
         await sendToNarvar(narvarOrder)
         logger.info(`Order Successfully Sent to NARVAR: ${order.orderNumber}`)
 

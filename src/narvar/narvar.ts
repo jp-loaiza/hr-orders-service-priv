@@ -13,9 +13,16 @@ const FINAL_CUT = '00997'
 const enableFinalCutToNarvar = process.env.SEND_FINAL_CUT_TO_NARVAR === 'true' ? true : false
 
 import { fetchItemInfo, fetchCategoryInfo, fetchCRMCustomerId } from '../commercetools/commercetools'
-import { default as logger } from '../logger'
+import {default as logger, serializeError} from '../logger'
 import {ItemState, LineItem, Order, ShoppingList, State,} from '@commercetools/platform-sdk'
 import { Shipment } from '../orders'
+import {
+  NARVAR_PASSWORD_EDD_990,
+  NARVAR_PASSWORD_EDD_997,
+  NARVAR_USERNAME_EDD_990,
+  NARVAR_USERNAME_EDD_997,
+  PROMISE_API_URL
+} from "../config";
 
 /**
  * @param {string} path Path to the Api
@@ -41,6 +48,72 @@ const makeNarvarRequest = async (path: string, options: RequestInit | undefined)
     return result
   }
   throw new Error(JSON.stringify(result))
+}
+
+/**
+ * Sends a delivery EDD confirmation to the Narvar API with the EDD (Estimated Delivery Date) Promise ID.
+ *
+ * This function makes a POST request to Narvar EDD API, confirming the delivery promise.
+ * It returns a response object containing a status and message like:
+ *
+ * {
+ *   "messages": [
+ *     { "message": string }
+ *   ],
+ *   "status": string
+ * }
+ *
+ * @param {object} order - The object from where we take the data to be sent in the request body to Narvar.
+ */
+export const sendNarvarDeliveryPromise = async(order: any) => {
+  try {
+    logger.info({
+      type: 'sendNarvarDeliveryPromise',
+      message: 'sendNarvarDeliveryPromise: Starting now.',
+      orderNumber: order.order_info.order_number
+    })
+
+    let narvarApiKey
+    if (order.order_info.attributes.siteId === FINAL_CUT) {
+      narvarApiKey = Buffer.from(`${NARVAR_USERNAME_EDD_997}:${NARVAR_PASSWORD_EDD_997}`).toString('base64')
+    } else {
+      narvarApiKey = Buffer.from(`${NARVAR_USERNAME_EDD_990}:${NARVAR_PASSWORD_EDD_990}`).toString('base64')
+    }
+    const options = {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Basic ${narvarApiKey}`
+      },
+      body: JSON.stringify({
+        "channel": "website",
+        "order_id": order.order_info.order_number,
+        "promise_ids": order.order_info.attributes.narvarPromiseID.split(',')
+      })
+    }
+
+    const response = await fetch(PROMISE_API_URL, options)
+
+    if (!response.ok) {
+      logger.warn({
+        type: 'sendNarvarDeliveryPromise',
+        message: `${response.body}. Failed to send promise ID Confirmation to Narvar ${order.order_info.attributes.narvarPromiseID} for orderNumber ${order.order_info.order_number}.`,
+        orderNumber: order.order_info.order_number
+      })
+    }
+    logger.info({
+      type: 'sendNarvarDeliveryPromise',
+      message: 'sendNarvarDeliveryPromise: Successfully completed execution.',
+      orderNumber: order.order_info.order_number
+    })
+  } catch (error) {
+    logger.error({
+      type: 'sendNarvarDeliveryPromise',
+      message: `Failed to send promise ID Confirmation to Narvar ${order.order_info.attributes.narvarPromiseID} for orderNumber ${order.order_info.order_number}`,
+      orderNumber: order.order_info.order_number,
+      error: await serializeError(error)
+    })
+  }
 }
 
 /**
@@ -700,6 +773,7 @@ export const convertOrderForNarvar = async (order: Order, shipments: Shipment[],
         advisorFullName: advisorShoppingList ? advisorShoppingList.custom?.fields.advisorName : null,
         advisorEmail: advisorShoppingList ? advisorShoppingList.custom?.fields.advisorEmail : null,
         CRMId: crmId.custom?.fields ? crmId.custom?.fields.crmCustomerId : null,
+        narvarPromiseID: order.custom?.fields.narvarPromiseID?.join(',') ?? null
       },
       is_shoprunner_eligible: false,
     }
