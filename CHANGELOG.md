@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.57](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.56...v1.12.57) (2025-05-07)
+
+
+### Bug Fixes
+
+* HRC-8533 Sending the order confirmation to Narvar ([#713](https://github.com/HarryRosen/hr-orders-service/issues/713)) ([dc33e8c](https://github.com/HarryRosen/hr-orders-service/commit/dc33e8c00a042f39b9feb5c58ce9538c5b7d9ac9))
+
 ## [1.12.56](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.55...v1.12.56) (2025-04-15)
 
 
