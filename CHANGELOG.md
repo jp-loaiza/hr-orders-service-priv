@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.59](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.58...v1.12.59) (2025-05-30)
+
+
+### Bug Fixes
+
+* hotfix setOrderAsSentToOms in CT for orders with 'refunded' status ([#717](https://github.com/HarryRosen/hr-orders-service/issues/717)) ([351f609](https://github.com/HarryRosen/hr-orders-service/commit/351f6094b28f457be0794327c2599eaadaab30af))
+
 ## [1.12.58](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.57...v1.12.58) (2025-05-07)
 
 
