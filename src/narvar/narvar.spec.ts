@@ -63,15 +63,24 @@ describe('test getItemUrl', () => {
     const productSlug = 'slug'
 
 
-    const result = getItemUrl(productSlug,locale)
+    const result = getItemUrl(productSlug,locale, '')
     expect(result).toEqual('https://harryrosen.com/en/product/slug')  
+  })
+
+  it('should get itemUrl for shopfinalcut when all params are passed', () => {
+    const locale = 'en-CA'
+    const productSlug = 'slug'
+
+
+    const result = getItemUrl(productSlug,locale, '00997')
+    expect(result).toEqual('https://www.shopfinalcut.com/en/product/slug')
   })
 
   it('should return undefined when locale is missing', () => {
     const locale = ''
     const productSlug = 'slug'
 
-    const result = getItemUrl(productSlug,locale)
+    const result = getItemUrl(productSlug,locale,'')
     expect(result).toEqual(undefined)  
   })
 })

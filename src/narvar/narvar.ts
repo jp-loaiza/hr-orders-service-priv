@@ -235,13 +235,14 @@ const JESTA_SERVICE_TYPES_TO_NARVAR_SERVICE_TYPES = {
 /**
  * @param {string} productSlug
  * @param {string} locale
+ * @param {string} cartSourceWebsite Store where the order was placed
  * @returns string
  */
-export const getItemUrl = (productSlug: string, locale: string) => {
+export const getItemUrl = (productSlug: string, locale: string, cartSourceWebsite?: string) => {
   if(!locale) {
     return undefined
   }
-  return `https://harryrosen.com/${locale.substr(0, 2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
+  return `${cartSourceWebsite === FINAL_CUT ? 'https://www.shopfinalcut.com/' : 'https://harryrosen.com/'}${locale.substring(0, 2)}/${LOCALE_TO_PRODUCT[locale]}/${productSlug}`
 }
 
 /**
@@ -484,7 +485,7 @@ async function getNarvarLineItem(item: LineItem, locale: "en-CA" | "fr-CA", item
     discount_amount: findDiscountedPrice(item),
     discount_percent: findDiscountPercent(item),
     item_image: item.variant.images ? item.variant.images[0].url : undefined,
-    item_url: item.productSlug ? getItemUrl(item.productSlug[locale], locale) : undefined,
+    item_url: item.productSlug ? getItemUrl(item.productSlug[locale], locale, order.custom?.fields.cartSourceWebsite) : undefined,
     is_final_sale: !getAttributeOrDefaultBoolean(item.variant.attributes, 'isReturnable', {value: true}).value,
     fulfillment_status: getItemFulfillmentStatus(itemState, states, locale, isStorePickup),
     fulfillment_type: order.custom?.fields.isStorePickup ? 'BOPIS' : 'HD',
