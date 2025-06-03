@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.60](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.59...v1.12.60) (2025-06-03)
+
+
+### Bug Fixes
+
+* Send correct item_url to narvar ([#719](https://github.com/HarryRosen/hr-orders-service/issues/719)) ([e2ec515](https://github.com/HarryRosen/hr-orders-service/commit/e2ec51559aed5c2c3615a065f157e665e8ed3bf6))
+
 ## [1.12.59](https://github.com/HarryRosen/hr-orders-service/compare/v1.12.58...v1.12.59) (2025-05-30)
 
 
