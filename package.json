@@ -33,7 +33,7 @@
     "currency.js": "^2.0.3",
     "date-fns": "^2.15.0",
     "date-fns-tz": "^1.0.10",
-    "dd-trace": "^3.9.3",
+    "dd-trace": "^5.57.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "hot-shots": "^9.3.0",
