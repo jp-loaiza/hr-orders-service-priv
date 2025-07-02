@@ -68,5 +68,10 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "overrides": {
+    "analytics-node": {
+      "axios": "^0.30.0"
+    }
   }
 }
